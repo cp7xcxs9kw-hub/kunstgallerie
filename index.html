@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Great+Vibes&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -2087,6 +2087,7 @@
       buildLights(T);
       buildPictureLights(T);
       buildFurniture(T);
+      buildWallSigns(T);
       buildSeq(T);
       window.addEventListener('resize', onResize);
       function frame(ts){ rafId=requestAnimationFrame(frame); tick(T,ts); renderer.render(scene,cam); }
@@ -2524,42 +2525,49 @@
     }
 
     function buildChair(T, cx, cz, rotY) {
-      // Messing-Chrom Rahmen — sichtbar gegen dunklen Boden
-      const frameMat = new T.MeshStandardMaterial({color:0xb8a070, roughness:0.22, metalness:0.88});
-      // Warmes Beige wie Wandfarbe — starker Kontrast zum Boden
-      const cushMat  = new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.80});
+      // LC2-inspirierter Sessel: sichtbarer Chromrahmen + helle Polster
+      const chromeMat = new T.MeshStandardMaterial({color:0xd8d8d8, roughness:0.12, metalness:0.96});
+      const cushMat   = new T.MeshStandardMaterial({color:0xf8f3eb, roughness:0.78});
       const g = new T.Group();
-      const sW=0.64, sD=0.58, sH=0.43;
 
-      // Sitz — breite helle Platte
-      const seat = new T.Mesh(new T.BoxGeometry(sW, 0.14, sD), cushMat);
-      seat.position.set(0, sH + 0.07, 0); g.add(seat);
+      const sW=0.74, sD=0.68, sH=0.40, fw=0.038;
 
+      // ── Polster ───────────────────────────────────────────────
+      // Sitz
+      const seat = new T.Mesh(new T.BoxGeometry(sW-0.10, 0.16, sD-0.10), cushMat);
+      seat.position.set(0, sH+0.08, 0); g.add(seat);
       // Rückenlehne
-      const back = new T.Mesh(new T.BoxGeometry(sW - 0.02, 0.58, 0.12), cushMat);
-      back.position.set(0, sH + 0.38, -sD/2 + 0.08); g.add(back);
-
-      // 4 Messingbeine
-      const lx1=sW/2-0.07, lz1=sD/2-0.07;
-      [[-lx1,lz1],[lx1,lz1],[-lx1,-lz1],[lx1,-lz1]].forEach(([lx,lz])=>{
-        const leg = new T.Mesh(new T.BoxGeometry(0.028, sH, 0.028), frameMat);
-        leg.position.set(lx, sH/2, lz); g.add(leg);
+      const back = new T.Mesh(new T.BoxGeometry(sW-0.10, 0.62, 0.16), cushMat);
+      back.position.set(0, sH+0.43, -sD/2+0.10); g.add(back);
+      // Armlehnen
+      [-sW/2+0.07, sW/2-0.07].forEach(ax => {
+        const arm = new T.Mesh(new T.BoxGeometry(0.12, 0.10, sD-0.10), cushMat);
+        arm.position.set(ax, sH+0.21, 0); g.add(arm);
       });
 
-      // Hintere Verlängerungen bis Rückenlehnen-Oberkante
-      [-lx1, lx1].forEach(lx => {
-        const ext = new T.Mesh(new T.BoxGeometry(0.022, 0.62, 0.022), frameMat);
-        ext.position.set(lx, sH + 0.38, -lz1); g.add(ext);
+      // ── Außenrahmen (Chrom) ───────────────────────────────────
+      const fd=sD+0.06, fh=sH+0.82;
+      // Zwei seitliche U-Rahmen (jeder aus 3 Stäben)
+      [-sW/2-0.01, sW/2+0.01].forEach(fx => {
+        // Boden-Kufe
+        const run = new T.Mesh(new T.BoxGeometry(fw, fw, fd), chromeMat);
+        run.position.set(fx, fw/2, 0); g.add(run);
+        // Vorderes Bein
+        const fleg = new T.Mesh(new T.BoxGeometry(fw, sH+fw, fw), chromeMat);
+        fleg.position.set(fx, (sH+fw)/2, fd/2-fw/2); g.add(fleg);
+        // Hinteres Bein (bis Oberkante Rückenlehne)
+        const bleg = new T.Mesh(new T.BoxGeometry(fw, fh, fw), chromeMat);
+        bleg.position.set(fx, fh/2, -fd/2+fw/2); g.add(bleg);
       });
-
-      // Quersteg vorne (sichtbares Element)
-      const str = new T.Mesh(new T.BoxGeometry(sW - 0.14, 0.022, 0.022), frameMat);
-      str.position.set(0, sH * 0.40, lz1); g.add(str);
-
-      // Querstege seitlich
-      [-lx1, lx1].forEach(lx => {
-        const ss = new T.Mesh(new T.BoxGeometry(0.022, 0.022, sD - 0.14), frameMat);
-        ss.position.set(lx, sH * 0.40, 0); g.add(ss);
+      // Querstreben: vorne unten, hinten unten, hinten oben
+      [
+        [sW+0.06, fw, fw,  0, fw/2,       fd/2-fw/2],
+        [sW+0.06, fw, fw,  0, fw/2,      -fd/2+fw/2],
+        [sW+0.06, fw, fw,  0, fh-fw/2,   -fd/2+fw/2],
+        [sW+0.06, fw, fw,  0, sH+fw/2,    fd/2-fw/2],
+      ].forEach(([w,h,d,x,y,z])=>{
+        const bar = new T.Mesh(new T.BoxGeometry(w,h,d), chromeMat);
+        bar.position.set(x,y,z); g.add(bar);
       });
 
       g.position.set(cx, 0, cz);
@@ -2617,6 +2625,64 @@
         head.position.set(p.x + nx*(armLen - 0.025), lampY - 0.013, p.z + nz*(armLen - 0.025));
         scene.add(head);
       });
+    }
+
+    // ── Wall Signage ─────────────────────────────────────────────
+    function makeWallSignTex(T, large) {
+      const W=1024, H= large ? 640 : 480;
+      const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+      const ctx=cv.getContext('2d');
+
+      // Solider Anthrazit-Hintergrund — garantiert sichtbar, unabhängig von Font-Load
+      ctx.fillStyle='#252525';
+      ctx.fillRect(0,0,W,H);
+
+      const ink='rgba(242,236,222,0.94)';
+      ctx.fillStyle=ink;
+      ctx.textAlign='center';
+      ctx.textBaseline='alphabetic';
+
+      const scriptSize = large ? 188 : 142;
+      const capSize    = large ?  52 :  40;
+      const midY       = large ? 310 : 238;
+      const lineY      = large ? 346 : 268;
+      const capY       = large ? 430 : 336;
+
+      // Kalligrafisches Script
+      ctx.font=`${scriptSize}px "Great Vibes", "Snell Roundhand", cursive`;
+      ctx.fillText('Horst Schwab', W/2, midY);
+
+      // Dünne Trennlinie
+      ctx.strokeStyle=ink;
+      ctx.lineWidth=1.0;
+      ctx.beginPath(); ctx.moveTo(W/2-155,lineY); ctx.lineTo(W/2+155,lineY); ctx.stroke();
+
+      // Gesperrte Versalien
+      ctx.font=`300 ${capSize}px "Cormorant Garamond", serif`;
+      ctx.fillText('G  A  L  L  E  R  I  E', W/2, capY);
+
+      return new T.CanvasTexture(cv);
+    }
+
+    function buildWallSigns(T) {
+      function sign(w,h,x,y,z,ry,large){
+        const tex = makeWallSignTex(T, large);
+        const mat = new T.MeshBasicMaterial({map:tex, side:T.DoubleSide});
+        const m   = new T.Mesh(new T.PlaneGeometry(w,h), mat);
+        m.position.set(x,y,z); m.rotation.y=ry; scene.add(m);
+        // Font-Update sobald Great Vibes geladen
+        document.fonts.load(`${large?188:142}px "Great Vibes"`).then(()=>{
+          m.material.map = makeWallSignTex(T, large);
+          m.material.needsUpdate = true;
+        }).catch(()=>{});
+      }
+
+      // Rückwand Raum 2 z=-40 — groß, mittig, aus Raum 2 sichtbar
+      sign(3.20, 2.00,  0,   2.10, -39.90, 0,        true);
+      // Bogen z=-14 rechter Pfeiler — aus Raum 1 sichtbar
+      sign(1.30, 0.82,  3.4, 2.50, -13.90, 0,        false);
+      // Bogen z=-18 rechter Pfeiler — aus Raum 2 sichtbar
+      sign(1.30, 0.82,  3.4, 2.50, -18.10, Math.PI,  false);
     }
 
     // ── Camera Sequence ──────────────────────────────────────────
