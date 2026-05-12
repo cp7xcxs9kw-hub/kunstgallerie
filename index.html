@@ -608,6 +608,39 @@
     letter-spacing: 0.1em;
   }
 
+  /* ── VIRTUAL GALLERY ── */
+  #gallery-vr {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 960;
+    background: #050404;
+  }
+  #gallery-canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  #gallery-vr-close {
+    position: absolute;
+    top: 1.8rem;
+    right: 2rem;
+    background: transparent;
+    color: rgba(201,168,76,0.6);
+    border: 1px solid rgba(201,168,76,0.22);
+    padding: 0.55rem 1.5rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.32em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: color 0.25s ease, border-color 0.25s ease;
+    z-index: 961;
+  }
+  #gallery-vr-close:hover {
+    color: var(--gold);
+    border-color: rgba(201,168,76,0.55);
+  }
+
   /* ── TOOLTIP ── */
   .tooltip-wrap {
     position: relative;
@@ -654,6 +687,89 @@
   .tooltip-wrap:hover .tooltip-popup {
     opacity: 1;
     visibility: visible;
+  }
+
+  /* ── SOCIALS ── */
+  #socials {
+    background: var(--black);
+    padding: 7rem 3rem;
+    text-align: center;
+  }
+
+  #socials .section-label { color: var(--gold-dim); }
+
+  #socials h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  #socials > p {
+    font-size: 0.7rem;
+    color: var(--gray-mid);
+    letter-spacing: 0.1em;
+    margin-bottom: 4rem;
+  }
+
+  .socials-grid {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .social-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--white);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+
+  .social-item:hover {
+    transform: translateY(-6px);
+    color: var(--gold);
+  }
+
+  .social-icon {
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--gold-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .social-item:hover .social-icon {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .social-icon svg {
+    width: 26px;
+    height: 26px;
+    color: inherit;
+  }
+
+  .social-name {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0;
+  }
+
+  .social-handle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    color: var(--gray-mid);
+    margin: 0;
+    font-style: italic;
   }
 
   /* ── CONTACT ── */
@@ -745,6 +861,111 @@
     color: #333;
     text-transform: uppercase;
   }
+
+  /* ── LEGAL OVERLAYS (Impressum / Datenschutz) ─────────────── */
+  .legal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 600;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
+    -webkit-overflow-scrolling: touch;
+  }
+  .legal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .legal-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 7rem 3rem 6rem;
+  }
+  .legal-close-btn {
+    position: fixed;
+    top: 2rem;
+    right: 2.5rem;
+    background: none;
+    border: 1px solid #222;
+    color: var(--gray-mid);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.5rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: color 0.3s, border-color 0.3s;
+    z-index: 10;
+  }
+  .legal-close-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+  .legal-eyebrow {
+    font-size: 0.55rem;
+    letter-spacing: 0.45em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .legal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 3.5rem;
+    line-height: 1.15;
+  }
+  .legal-divider {
+    border: none;
+    border-top: 0.5px solid #1e1e1e;
+    margin: 2.8rem 0;
+  }
+  .legal-section-head {
+    font-size: 0.55rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.1rem;
+    margin-top: 0;
+  }
+  .legal-body {
+    font-size: 0.72rem;
+    line-height: 1.9;
+    color: var(--gray-mid);
+    letter-spacing: 0.02em;
+  }
+  .legal-body p { margin: 0 0 0.9rem; }
+  .legal-body p:last-child { margin-bottom: 0; }
+  .legal-body a {
+    color: var(--gold-dim);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--gold-dim);
+    transition: color 0.3s;
+  }
+  .legal-body a:hover { color: var(--gold); }
+  .legal-ph {
+    color: var(--gold);
+    font-style: italic;
+    background: rgba(201,168,76,0.07);
+    padding: 0 0.3em;
+    border-radius: 2px;
+  }
+  .legal-note {
+    font-size: 0.6rem;
+    color: #3a3a3a;
+    border-left: 2px solid #1e1e1e;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    line-height: 1.7;
+  }
+  .legal-block {
+    margin-bottom: 2.8rem;
+  }
+  .legal-block:last-child { margin-bottom: 0; }
 
   /* ── SUCCESS ── */
   .success-msg { display: none; text-align: center; padding: 1.5rem 0; }
@@ -910,6 +1131,7 @@
   body.zoom-transitioning #intro,
   body.zoom-transitioning #galerie,
   body.zoom-transitioning #ueber-uns,
+  body.zoom-transitioning #socials,
   body.zoom-transitioning #kontakt,
   body.zoom-transitioning footer,
   body.zoom-transitioning nav {
@@ -963,10 +1185,15 @@
     <li><a href="index.html" class="nav-reload">Galerie</a></li>
     <li><a href="#galerie">Werke</a></li>
     <li><a href="#ueber-uns">Biographie</a></li>
-    <li><a href="#kontakt">Socials</a></li>
+    <li><a href="#" id="btn-rundgang">Rundgang</a></li>
+    <li><a href="#socials">Socials</a></li>
     <li><a href="#kontakt">Kontakt</a></li>
   </ul>
 </nav>
+<div id="gallery-vr">
+  <canvas id="gallery-canvas"></canvas>
+  <button id="gallery-vr-close">&#x2715;&nbsp;&nbsp;BEENDEN</button>
+</div>
 
 
 <!-- ══════════════════════════════════════
@@ -1140,6 +1367,49 @@
 
 
 <!-- ══════════════════════════════════════
+     SOCIALS
+══════════════════════════════════════ -->
+<section id="socials">
+  <p class="section-label">Folgen Sie uns</p>
+  <h2>Bleiben Sie in Verbindung</h2>
+  <p>Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.</p>
+
+  <div class="socials-grid">
+    <a href="#" class="social-item">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <p class="social-name">Instagram</p>
+      <p class="social-handle">@galerie.horst.schwab</p>
+    </a>
+    <a href="#" class="social-item">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </div>
+      <p class="social-name">Facebook</p>
+      <p class="social-handle">Galerie Horst Schwab</p>
+    </a>
+    <a href="#" class="social-item">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+          <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <p class="social-name">YouTube</p>
+      <p class="social-handle">Galerie Horst Schwab</p>
+    </a>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════
      KONTAKT
 ══════════════════════════════════════ -->
 <section id="kontakt">
@@ -1165,13 +1435,338 @@
 
 
 <!-- ══════════════════════════════════════
+     IMPRESSUM OVERLAY
+══════════════════════════════════════ -->
+<div class="legal-overlay" id="overlay-impressum" role="dialog" aria-modal="true" aria-label="Impressum">
+  <button class="legal-close-btn" onclick="closeLegal('impressum')">&#x2715;&nbsp; Schließen</button>
+  <div class="legal-inner">
+
+    <p class="legal-eyebrow">Rechtliche Angaben</p>
+    <h1 class="legal-title">Impressum</h1>
+
+    <!-- 1. ANGABEN GEMÄß § 5 TMG -->
+    <div class="legal-block">
+      <p class="legal-section-head">Angaben gemäß § 5 TMG</p>
+      <div class="legal-body">
+        <p>
+          <span class="legal-ph">[VOLLSTÄNDIGER NAME]</span><br>
+          <span class="legal-ph">[STRASSE UND HAUSNUMMER]</span><br>
+          <span class="legal-ph">[POSTLEITZAHL]</span> <span class="legal-ph">[ORT]</span><br>
+          Deutschland
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 2. KONTAKT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Kontakt</p>
+      <div class="legal-body">
+        <p>
+          E-Mail:&nbsp; <span class="legal-ph">[E-MAIL-ADRESSE]</span><br>
+          Telefon:&nbsp; <span class="legal-ph">[TELEFONNUMMER]</span>
+        </p>
+        <p class="legal-note">
+          Hinweis: Eine Telefonnummer ist im Impressum nur erforderlich, wenn kein anderes schnelles elektronisches Kommunikationsmittel (z. B. E-Mail) angegeben wird. Bei Angabe beider ist die Telefonnummer optional, aber empfohlen.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 3. BERUFSBEZEICHNUNG -->
+    <div class="legal-block">
+      <p class="legal-section-head">Berufsbezeichnung &amp; Tätigkeitsbereich</p>
+      <div class="legal-body">
+        <p>
+          Berufsbezeichnung: Freischaffender Bildender Künstler<br>
+          Tätigkeitsbereich: Malerei, bildende Kunst, Kunstverkauf<br>
+          Zuständige Berufsorganisation: <span class="legal-ph">[BERUFSVERBAND / KAMMER, falls zutreffend — andernfalls diese Zeile entfernen]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 4. STEUERLICHE ANGABEN -->
+    <div class="legal-block">
+      <p class="legal-section-head">Steuerliche Angaben</p>
+      <div class="legal-body">
+        <p class="legal-note">
+          Option A — Umsatzsteuerpflichtig (§ 27a UStG):<br>
+          Umsatzsteuer-Identifikationsnummer: <span class="legal-ph">[DE_________]</span>
+        </p>
+        <p class="legal-note">
+          Option B — Kleinunternehmer (§ 19 UStG):<br>
+          Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Eine Umsatzsteuer-ID ist nicht vorhanden. — Bitte zutreffende Option wählen und die andere entfernen.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 5. VERANTWORTLICH FÜR DEN INHALT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</p>
+      <div class="legal-body">
+        <p>
+          <span class="legal-ph">[VOLLSTÄNDIGER NAME]</span><br>
+          <span class="legal-ph">[STRASSE UND HAUSNUMMER]</span><br>
+          <span class="legal-ph">[POSTLEITZAHL]</span> <span class="legal-ph">[ORT]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 6. EU-STREITSCHLICHTUNG -->
+    <div class="legal-block">
+      <p class="legal-section-head">EU-Streitschlichtung</p>
+      <div class="legal-body">
+        <p>
+          Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a>
+        </p>
+        <p>
+          Wir sind weder bereit noch verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 7. HAFTUNG FÜR INHALTE -->
+    <div class="legal-block">
+      <p class="legal-section-head">Haftung für Inhalte</p>
+      <div class="legal-body">
+        <p>
+          Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+        </p>
+        <p>
+          Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 8. HAFTUNG FÜR LINKS -->
+    <div class="legal-block">
+      <p class="legal-section-head">Haftung für Links</p>
+      <div class="legal-body">
+        <p>
+          Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
+        </p>
+        <p>
+          Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 9. URHEBERRECHT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Urheberrecht</p>
+      <div class="legal-body">
+        <p>
+          Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten — insbesondere alle Abbildungen von Kunstwerken, Fotografien und Texte — unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+        </p>
+        <p>
+          Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /.legal-inner -->
+</div><!-- /#overlay-impressum -->
+
+
+<!-- ══════════════════════════════════════
+     DATENSCHUTZ OVERLAY
+══════════════════════════════════════ -->
+<div class="legal-overlay" id="overlay-datenschutz" role="dialog" aria-modal="true" aria-label="Datenschutzerklärung">
+  <button class="legal-close-btn" onclick="closeLegal('datenschutz')">&#x2715;&nbsp; Schließen</button>
+  <div class="legal-inner">
+
+    <p class="legal-eyebrow">Rechtliche Angaben</p>
+    <h1 class="legal-title">Datenschutzerklärung</h1>
+
+    <!-- 1. VERANTWORTLICHE STELLE -->
+    <div class="legal-block">
+      <p class="legal-section-head">1 · Verantwortliche Stelle</p>
+      <div class="legal-body">
+        <p>
+          Verantwortliche Stelle im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
+        </p>
+        <p>
+          <span class="legal-ph">[VOLLSTÄNDIGER NAME]</span><br>
+          <span class="legal-ph">[STRASSE UND HAUSNUMMER]</span><br>
+          <span class="legal-ph">[POSTLEITZAHL]</span> <span class="legal-ph">[ORT]</span><br>
+          E-Mail: <span class="legal-ph">[E-MAIL-ADRESSE]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 2. ALLGEMEINES -->
+    <div class="legal-block">
+      <p class="legal-section-head">2 · Allgemeines zur Datenverarbeitung</p>
+      <div class="legal-body">
+        <p>
+          Wir nehmen den Schutz Ihrer persönlichen Daten ernst und behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.
+        </p>
+        <p>
+          Diese Website erhebt und verwendet personenbezogene Daten grundsätzlich nur, soweit dies zur Bereitstellung einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist. Die Erhebung und Verwendung personenbezogener Daten erfolgt regelmäßig nur nach Einwilligung der Nutzerin oder des Nutzers, sofern keine gesetzliche Grundlage die Verarbeitung erlaubt.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 3. SERVER-LOG-DATEIEN -->
+    <div class="legal-block">
+      <p class="legal-section-head">3 · Server-Log-Dateien &amp; Hosting</p>
+      <div class="legal-body">
+        <p>
+          Diese Website wird gehostet bei: <span class="legal-ph">[HOSTING-ANBIETER, z. B. GitHub Pages / Netlify / Hetzner / eigener Server — bitte eintragen]</span>
+        </p>
+        <p>
+          Der Hosting-Anbieter erhebt beim Aufruf dieser Website automatisch sogenannte Server-Log-Dateien. Diese enthalten:
+        </p>
+        <p>
+          Browsertyp und Browserversion · Verwendetes Betriebssystem · Referrer-URL · Hostname des zugreifenden Rechners · Uhrzeit der Serveranfrage · IP-Adresse (in der Regel anonymisiert)
+        </p>
+        <p>
+          Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an dem sicheren und fehlerfreien Betrieb der Website).
+        </p>
+        <p class="legal-note">
+          Hinweis: Falls Ihr Hosting-Anbieter einen Auftragsverarbeitungsvertrag (AVV) erfordert, schließen Sie diesen gemäß Art. 28 DSGVO ab. Ergänzen Sie ggf. den Namen und die Datenschutzrichtlinie des Anbieters.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 4. KONTAKTFORMULAR / ANGEBOTSFORMULAR -->
+    <div class="legal-block">
+      <p class="legal-section-head">4 · Kontakt- und Angebotsformular</p>
+      <div class="legal-body">
+        <p>
+          Diese Website enthält ein Formular, über das Sie Anfragen und Angebote zu Kunstwerken einreichen können. Wenn Sie das Formular nutzen, werden die von Ihnen eingegebenen Daten — darunter Vor- und Nachname, E-Mail-Adresse, Ihr Angebot sowie etwaige Mitteilungen — an uns übermittelt und verarbeitet.
+        </p>
+        <p>
+          Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bearbeitung von Anfragen).
+        </p>
+        <p class="legal-note">
+          Hinweis: Falls das Formular Daten an einen E-Mail-Dienst oder Drittanbieter sendet (z. B. Formspree, EmailJS, eigener SMTP-Server), bitte hier den jeweiligen Dienst, dessen Datenschutzrichtlinie und ggf. einen Hinweis zur Auftragsverarbeitung ergänzen.
+        </p>
+        <p>
+          Ihre Daten werden ausschließlich zur Bearbeitung Ihrer Anfrage genutzt und nicht an Dritte weitergegeben, sofern dies nicht zur Erfüllung des Vertrags erforderlich ist. Die Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 5. EXTERNE SCHRIFTEN (GOOGLE FONTS) -->
+    <div class="legal-block">
+      <p class="legal-section-head">5 · Externe Schriftarten (Google Fonts)</p>
+      <div class="legal-body">
+        <p>
+          Diese Website verwendet Schriftarten des Dienstes Google Fonts, bereitgestellt von Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA. Die Schriften werden beim Aufruf der Seite direkt von Google-Servern geladen, wobei Ihre IP-Adresse an Google übermittelt wird.
+        </p>
+        <p>
+          Rechtsgrundlage für die Einbindung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einheitlicher Darstellung der Website). Informationen zum Datenschutz bei Google finden Sie unter:
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">https://policies.google.com/privacy</a>
+        </p>
+        <p class="legal-note">
+          Empfehlung: Binden Sie Google Fonts lokal ein (Fonts herunterladen und selbst hosten), um die Übermittlung von IP-Adressen an Google vollständig zu vermeiden. In diesem Fall entfällt dieser Abschnitt.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 6. EXTERNE CDN-RESSOURCEN -->
+    <div class="legal-block">
+      <p class="legal-section-head">6 · Externe CDN-Ressourcen (3D-Galerie)</p>
+      <div class="legal-body">
+        <p>
+          Der interaktive Rundgang (virtuelle 3D-Galerie) dieser Website lädt die JavaScript-Bibliothek Three.js über das Content Delivery Network jsDelivr (Fondation jsDelivr, Luxemburg). Beim Aufruf des Rundgangs wird eine Verbindung zu Servern von jsDelivr hergestellt, dabei kann Ihre IP-Adresse übermittelt werden.
+        </p>
+        <p>
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der technischen Bereitstellung der Funktion). Datenschutzhinweise von jsDelivr:
+          <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener">jsDelivr Privacy Policy</a>
+        </p>
+        <p>
+          Das Laden der Bibliothek erfolgt ausschließlich dann, wenn die Nutzerin oder der Nutzer aktiv den Rundgang startet. Ohne diese Interaktion wird keine Verbindung zu jsDelivr hergestellt.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 7. COOKIES -->
+    <div class="legal-block">
+      <p class="legal-section-head">7 · Cookies und lokale Speicherung</p>
+      <div class="legal-body">
+        <p>
+          Diese Website setzt keine Tracking- oder Analyse-Cookies ein. Es werden keine Cookies zu Werbezwecken oder zur Verfolgung des Nutzerverhaltens gesetzt.
+        </p>
+        <p class="legal-note">
+          Hinweis: Falls Sie künftig Analyse-Dienste (z. B. Google Analytics, Matomo) oder Marketing-Tools einbinden, ist dieser Abschnitt entsprechend zu ergänzen und ein Cookie-Banner verpflichtend.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 8. RECHTE DER BETROFFENEN -->
+    <div class="legal-block">
+      <p class="legal-section-head">8 · Ihre Rechte als betroffene Person</p>
+      <div class="legal-body">
+        <p>Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
+        <p>
+          <strong style="color:var(--white);font-weight:400;">Auskunft</strong> — Art. 15 DSGVO: Sie können jederzeit Auskunft über die zu Ihrer Person gespeicherten Daten verlangen.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Berichtigung</strong> — Art. 16 DSGVO: Sie haben das Recht, unrichtige oder unvollständige Daten berichtigen zu lassen.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Löschung</strong> — Art. 17 DSGVO: Sie können unter bestimmten Voraussetzungen die Löschung Ihrer Daten verlangen.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Einschränkung der Verarbeitung</strong> — Art. 18 DSGVO: Sie können die Einschränkung der Verarbeitung Ihrer Daten verlangen.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Widerspruch</strong> — Art. 21 DSGVO: Sie können der Verarbeitung Ihrer Daten widersprechen, sofern die Verarbeitung auf berechtigtem Interesse beruht.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Datenübertragbarkeit</strong> — Art. 20 DSGVO: Sie haben das Recht, Ihre Daten in einem strukturierten, maschinenlesbaren Format zu erhalten.
+        </p>
+        <p>
+          Zur Ausübung Ihrer Rechte wenden Sie sich bitte an: <span class="legal-ph">[E-MAIL-ADRESSE]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 9. BESCHWERDERECHT -->
+    <div class="legal-block">
+      <p class="legal-section-head">9 · Beschwerderecht bei der Aufsichtsbehörde</p>
+      <div class="legal-body">
+        <p>
+          Unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher Rechtsbehelfe steht Ihnen das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde zu, wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt.
+        </p>
+        <p>
+          Die zuständige Aufsichtsbehörde richtet sich nach dem Bundesland des Wohnsitzes des Verantwortlichen. Eine Übersicht aller deutschen Aufsichtsbehörden finden Sie unter:
+          <a href="https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html" target="_blank" rel="noopener">www.bfdi.bund.de</a>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 10. ÄNDERUNGEN -->
+    <div class="legal-block">
+      <p class="legal-section-head">10 · Änderungen dieser Datenschutzerklärung</p>
+      <div class="legal-body">
+        <p>
+          Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, um sie stets den aktuellen rechtlichen Anforderungen zu entsprechen oder um Änderungen unserer Leistungen umzusetzen. Die jeweils aktuelle Version gilt für Ihren nächsten Besuch.
+        </p>
+        <p>Stand: <span class="legal-ph">[MONAT JAHR — bitte aktuelles Datum eintragen]</span></p>
+      </div>
+    </div>
+
+  </div><!-- /.legal-inner -->
+</div><!-- /#overlay-datenschutz -->
+
+
+<!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
 <footer>
   <span class="footer-name">Galerie Horst Schwab</span>
   <ul class="footer-links">
-    <li><a href="#">Impressum</a></li>
-    <li><a href="#">Datenschutz</a></li>
+    <li><a href="#" onclick="openLegal('impressum'); return false;">Impressum</a></li>
+    <li><a href="#" onclick="openLegal('datenschutz'); return false;">Datenschutz</a></li>
   </ul>
   <span class="footer-copy">© 2026 · Kunst · Leidenschaft · Zeitlos</span>
 </footer>
@@ -1407,6 +2002,676 @@
   }, { threshold: 0.4 });
 
   sectionEls.forEach(el => { if (el) activeObserver.observe(el); });
+
+  // ══════════════════════════════════════════════════════════════
+  //  VIRTUELLER GALERIE-RUNDGANG  — Three.js r128
+  // ══════════════════════════════════════════════════════════════
+  (function() {
+    'use strict';
+
+    const openBtn  = document.getElementById('btn-rundgang');
+    const vrEl     = document.getElementById('gallery-vr');
+    const closeBtn = document.getElementById('gallery-vr-close');
+    if (!openBtn || !vrEl) return;
+
+    function loadThree(cb) {
+      if (window.THREE) { cb(); return; }
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
+      s.onload = cb;
+      document.head.appendChild(s);
+    }
+    openBtn.addEventListener('click', e => { e.preventDefault(); vrEl.style.display='block'; loadThree(initGallery); });
+    closeBtn.addEventListener('click', () => { vrEl.style.display='none'; teardown(); });
+
+    let renderer, scene, cam, rafId, fadeDiv;
+    let seq, seqIdx, phase, t0;
+    let fromPos=null, fromQuat=null;
+
+    // ── Layout ────────────────────────────────────────────────────
+    // Room 1 (Eingangssaal):  z:  0 → -14   width 10
+    // Durchgang:              z: -14 → -18   width 3.6
+    // Room 2 (Hauptgalerie):  z: -18 → -40  width 10
+    const RW=10, RH=4.4, WALLX=4.82;   // room width/height, painting-wall x
+    const PW=1.75, PH=2.15, PY=2.05;   // painting size & height
+    const CAM_Y=1.70;
+    const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+
+    // Painting definitions: {x, y, z, rotY}
+    // rotY: 0=faces+z, π=faces-z, -π/2=faces+x, π/2=faces-x
+    const PICS = [
+      // Room 1 – left wall (faces +x = rotY -π/2)
+      {x:-WALLX, y:PY, z:-3,  rotY:-Math.PI/2},
+      {x:-WALLX, y:PY, z:-7,  rotY:-Math.PI/2},
+      {x:-WALLX, y:PY, z:-11, rotY:-Math.PI/2},
+      // Room 1 – right wall (faces -x = rotY +π/2)
+      {x: WALLX, y:PY, z:-3,  rotY: Math.PI/2},
+      {x: WALLX, y:PY, z:-7,  rotY: Math.PI/2},
+      {x: WALLX, y:PY, z:-11, rotY: Math.PI/2},
+      // Room 1 – end wall, flanking archway (faces +z = rotY 0, but from Room1 side)
+      {x:-3.2,   y:PY, z:-13.98, rotY:Math.PI},
+      {x: 3.2,   y:PY, z:-13.98, rotY:Math.PI},
+      // Room 2 – left wall
+      {x:-WALLX, y:PY, z:-21, rotY:-Math.PI/2},
+      {x:-WALLX, y:PY, z:-25, rotY:-Math.PI/2},
+      {x:-WALLX, y:PY, z:-29, rotY:-Math.PI/2},
+      {x:-WALLX, y:PY, z:-33, rotY:-Math.PI/2},
+      // Room 2 – right wall
+      {x: WALLX, y:PY, z:-21, rotY: Math.PI/2},
+      {x: WALLX, y:PY, z:-25, rotY: Math.PI/2},
+      {x: WALLX, y:PY, z:-29, rotY: Math.PI/2},
+      {x: WALLX, y:PY, z:-33, rotY: Math.PI/2},
+      // Room 2 – end wall (faces +z from room side = rotY Math.PI)
+      {x:-2.2,   y:PY, z:-39.98, rotY:Math.PI},
+      {x: 2.2,   y:PY, z:-39.98, rotY:Math.PI},
+    ];
+
+    // ── Init ─────────────────────────────────────────────────────
+    function initGallery() {
+      const T = window.THREE;
+      const cv = document.getElementById('gallery-canvas');
+      renderer = new T.WebGLRenderer({canvas:cv, antialias:true});
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+      renderer.outputEncoding = T.sRGBEncoding;
+      renderer.toneMapping = T.LinearToneMapping;
+      renderer.toneMappingExposure = 0.82;
+      scene = new T.Scene();
+      scene.background = new T.Color(0xf0ece4);
+      scene.fog = new T.Fog(0xf0ece4, 32, 65);
+      cam = new T.PerspectiveCamera(72, innerWidth/innerHeight, 0.05, 80);
+      fromPos  = new T.Vector3();
+      fromQuat = new T.Quaternion();
+      buildRooms(T);
+      buildPaintings(T);
+      buildLights(T);
+      buildFurniture(T);
+      buildSeq(T);
+      window.addEventListener('resize', onResize);
+      function frame(ts){ rafId=requestAnimationFrame(frame); tick(T,ts); renderer.render(scene,cam); }
+      requestAnimationFrame(frame);
+    }
+
+    // ── Rooms ─────────────────────────────────────────────────────
+    function buildRooms(T) {
+      const wW  = new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.FrontSide});
+      const wF  = new T.MeshBasicMaterial({color:0xfafafa});
+      const flTex = makeFloorTex(T);
+      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.20, metalness:0.10});
+      const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
+
+      const aw=3.6, ah=3.2, lw=(RW-aw)/2, rw=lw;
+
+      // ── Room 1 ──────────────────────────────────────────────────
+      addPlane(T, RW, 14, wFl, [0,0,-7],        [-Math.PI/2,0,0]);
+      addPlane(T, RW, 14, wF,  [0,RH,-7],       [ Math.PI/2,0,0]);
+      addPlane(T, 14, RH, wW,  [-RW/2,RH/2,-7], [0, Math.PI/2,0]);
+      addPlane(T, 14, RH, wW,  [ RW/2,RH/2,-7], [0,-Math.PI/2,0]);
+      addPlane(T, RW, RH, wW,  [0,RH/2, 0.05],  [0, Math.PI,0]);
+
+      // Room 1 end wall + archway
+      addBox(T, lw,     RH,    0.18, wW, [-(RW/2-lw/2), RH/2, -14]);
+      addBox(T, rw,     RH,    0.18, wW, [ (RW/2-rw/2), RH/2, -14]);
+      addBox(T, aw,  RH-ah,    0.18, wW, [0, ah+(RH-ah)/2, -14]);
+
+      // ── Connector ───────────────────────────────────────────────
+      addPlane(T, 4, RH, wAll, [-aw/2, RH/2,-16],[0, Math.PI/2,0]);
+      addPlane(T, 4, RH, wAll, [ aw/2, RH/2,-16],[0,-Math.PI/2,0]);
+      addPlane(T, aw, RH, wF,  [0, RH,-16],      [ Math.PI/2,0,0]);
+      addPlane(T, aw,  4, wFl, [0,  0,-16],      [-Math.PI/2,0,0]);
+
+      // ── Room 2 ──────────────────────────────────────────────────
+      const r2d=22, r2cz=-29;
+      addPlane(T, RW, r2d, wFl, [0,0,r2cz],        [-Math.PI/2,0,0]);
+      addPlane(T, RW, r2d, wF,  [0,RH,r2cz],       [ Math.PI/2,0,0]);
+      addPlane(T, r2d, RH, wW,  [-RW/2,RH/2,r2cz], [0, Math.PI/2,0]);
+      addPlane(T, r2d, RH, wW,  [ RW/2,RH/2,r2cz], [0,-Math.PI/2,0]);
+      addPlane(T, RW,  RH, wW,  [0,RH/2,-40],      [0,0,0]);
+
+      // Room 2 entry wall
+      addBox(T, lw,    RH,   0.18, wW, [-(RW/2-lw/2), RH/2, -18]);
+      addBox(T, rw,    RH,   0.18, wW, [ (RW/2-rw/2), RH/2, -18]);
+      addBox(T, aw, RH-ah,   0.18, wW, [0, ah+(RH-ah)/2, -18]);
+
+      // ── Skylight grid + Track lighting (both rooms) ─────────────
+      buildSkylightGrid(T, 14, -7);
+      buildSkylightGrid(T, r2d, r2cz);
+      buildTrackRails(T, 14, -7);
+      buildTrackRails(T, r2d, r2cz);
+    }
+
+    // ── Skylight ceiling grid ─────────────────────────────────────
+    function buildSkylightGrid(T, depth, cz) {
+      // Bright frosted glass panels (always white)
+      const glassMat = new T.MeshBasicMaterial({color:0xffffff});
+      const gW=7.2, gD=depth*0.72;
+      addPlane(T, gW, gD, glassMat, [0, RH-0.012, cz], [Math.PI/2,0,0]);
+
+      // Dark metal structural frame grid
+      const fMat = new T.MeshStandardMaterial({color:0x5c5c5c, roughness:0.55, metalness:0.75});
+      const bw=0.055, bh=0.10;
+      // Longitudinal beams (along z axis)
+      const cols=6, colStep=gW/(cols);
+      for(let i=0;i<=cols;i++){
+        const x=-gW/2+i*colStep;
+        addBox(T, bw, bh, gD, fMat, [x, RH, cz]);
+      }
+      // Cross beams (along x axis)
+      const rows=Math.round(gD/1.25);
+      for(let i=0;i<=rows;i++){
+        const z=cz-gD/2+i*(gD/rows);
+        addBox(T, gW, bh, bw, fMat, [0, RH, z]);
+      }
+      // Outer perimeter frame (thicker)
+      const pf=0.09;
+      addBox(T, pf, bh*1.4, gD+pf, fMat, [-gW/2, RH, cz]);
+      addBox(T, pf, bh*1.4, gD+pf, fMat, [ gW/2, RH, cz]);
+      addBox(T, gW+pf*2, bh*1.4, pf, fMat, [0, RH, cz-gD/2]);
+      addBox(T, gW+pf*2, bh*1.4, pf, fMat, [0, RH, cz+gD/2]);
+    }
+
+    // ── Track lighting rails ──────────────────────────────────────
+    function buildTrackRails(T, depth, cz) {
+      const rMat = new T.MeshStandardMaterial({color:0x4a4a4a, roughness:0.45, metalness:0.85});
+      const hMat = new T.MeshStandardMaterial({color:0x333333, roughness:0.40, metalness:0.90});
+      const trackY = RH-0.07;
+
+      // Two rails each side (parallel, 35cm apart)
+      [[-2.2,-2.6],[2.2,2.6]].forEach(([xa,xb])=>{
+        [xa,xb].forEach(rx=>{
+          addBox(T, 0.038, 0.045, depth, rMat, [rx, trackY, cz]);
+          // Spot heads every ~1.35m
+          const startZ = cz-depth/2+0.7;
+          const count  = Math.floor(depth/1.35);
+          for(let i=0;i<count;i++){
+            const sz=startZ+i*1.35;
+            addBox(T, 0.075, 0.115, 0.075, hMat, [rx, trackY-0.09, sz]);
+            addBox(T, 0.022, 0.065, 0.022, rMat, [rx, trackY-0.04, sz]);
+          }
+        });
+      });
+    }
+
+    function buildMoldings(T, depth, cz) {
+      // Minimal: thin dark shadow-line trim where wall meets ceiling
+      const trimMat = new T.MeshStandardMaterial({color:0xc8c8c8, roughness:0.82});
+      [[-RW/2+0.01],[RW/2-0.01]].forEach(([x])=>{
+        addBox(T, 0.02, 0.04, depth, trimMat, [x, RH-0.02, cz]);
+        addBox(T, 0.02, 0.04, depth, trimMat, [x, 0.02,    cz]);
+      });
+    }
+
+    function addPlane(T, w, h, mat, pos, rot) {
+      const m = new T.Mesh(new T.PlaneGeometry(w,h), mat);
+      m.position.set(...pos); m.rotation.set(...rot);
+      scene.add(m); return m;
+    }
+    function addBox(T, w, h, d, mat, pos) {
+      const m = new T.Mesh(new T.BoxGeometry(w,h,d), mat);
+      m.position.set(...pos);
+      scene.add(m); return m;
+    }
+
+    function makeWallTex(T) {
+      const S=1024;
+      const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
+      const ctx=cv.getContext('2d');
+
+      // Basis: warmes Off-White
+      ctx.fillStyle='#efefec';
+      ctx.fillRect(0,0,S,S);
+
+      // ── Große Putzflecken (deutlich sichtbar) ─────────────────
+      const patches=[
+        [120,140,260,0.13],[400,80,300,0.10],[700,220,240,0.12],
+        [180,500,280,0.11],[550,450,320,0.09],[850,120,200,0.11],
+        [80,820,240,0.10],[450,780,300,0.12],[780,700,260,0.09],
+        [300,300,200,0.08],[650,600,220,0.10],[920,500,180,0.08],
+      ];
+      patches.forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(130,125,118,${a})`);
+        g.addColorStop(0.5,`rgba(130,125,118,${a*0.4})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,S,S);
+      });
+
+      // ── Helle Reflexzonen (Lichtreflexion auf Putz) ───────────
+      [[200,200,180,0.08],[600,350,200,0.07],[400,700,160,0.06]].forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(255,255,252,${a})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,S,S);
+      });
+
+      // ── Sichtbares Putz-Korn (mittlere Körnung) ───────────────
+      for(let i=0;i<6000;i++){
+        const x=((i*7919+i*i*3)%S), y=((i*6271+i*7)%S);
+        const r=0.8+((i*1234)%8)*0.15;
+        const dark=((i*2341)%3)===0;
+        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+        ctx.fillStyle=dark ? `rgba(80,78,74,0.14)` : `rgba(255,253,250,0.16)`;
+        ctx.fill();
+      }
+
+      // ── Farbroller-Spuren (horizontale Pinselstruktur) ────────
+      for(let i=0;i<120;i++){
+        const y=((i*97+i*i)%S);
+        const x0=((i*233)%S);
+        const len=60+((i*127)%200);
+        ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x0+len,y);
+        const a=0.06+((i*17)%12)*0.007;
+        ctx.strokeStyle=`rgba(100,97,92,${a})`;
+        ctx.lineWidth=0.6+((i*31)%4)*0.3; ctx.stroke();
+      }
+
+      // ── Leichte Wolkenstruktur (Wandschatten) ─────────────────
+      [[0,0,500,0.06],[1024,0,500,0.05],[512,1024,400,0.05]].forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(100,96,90,${a})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,S,S);
+      });
+
+      const tex=new T.CanvasTexture(cv);
+      tex.wrapS=tex.wrapT=T.RepeatWrapping;
+      tex.repeat.set(2,1.5);
+      return tex;
+    }
+
+    function makeFloorTex(T) {
+      const S=1024;
+      const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
+      const ctx=cv.getContext('2d');
+
+      // Base: medium grey
+      ctx.fillStyle='#b0b0b0';
+      ctx.fillRect(0,0,S,S);
+
+      // Per-tile tone variation — clearly distinguishable grey shades
+      const tw=256, th=256;
+      for(let tx=0;tx<4;tx++){
+        for(let ty=0;ty<4;ty++){
+          const v=158+((tx*13+ty*17+tx*ty*7)%28);
+          ctx.fillStyle=`rgb(${v},${v},${v})`;
+          ctx.fillRect(tx*tw+2, ty*th+2, tw-4, th-4);
+        }
+      }
+
+      // Fugen: dunkle, klar sichtbare Trennlinien
+      ctx.strokeStyle='rgba(80,80,80,1.0)';
+      ctx.lineWidth=4;
+      for(let x=0;x<=S;x+=tw){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,S);ctx.stroke();}
+      for(let y=0;y<=S;y+=th){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(S,y);ctx.stroke();}
+
+      // Helle Innenkante jeder Platte (leichter 3D-Effekt)
+      ctx.strokeStyle='rgba(200,200,200,0.35)';
+      ctx.lineWidth=1.2;
+      for(let tx=0;tx<4;tx++) for(let ty=0;ty<4;ty++){
+        ctx.strokeRect(tx*tw+4, ty*th+4, tw-8, th-8);
+      }
+
+      const tex=new T.CanvasTexture(cv);
+      tex.wrapS=tex.wrapT=T.RepeatWrapping;
+      tex.repeat.set(4,7);
+      return tex;
+    }
+
+    function makeMarbleTex(T) {
+      const cv=document.createElement('canvas'); cv.width=1024; cv.height=1024;
+      const ctx=cv.getContext('2d');
+
+      // ── Basis: tiefes Anthrazit-Schwarz ──────────────────────
+      ctx.fillStyle='#0e0e0e';
+      ctx.fillRect(0,0,1024,1024);
+
+      // Dunkelgraue Wolken-/Steinstruktur (wie im Referenzbild)
+      const cloudSeeds=[
+        [180,160,320,0.22],[450,80,400,0.18],[750,300,360,0.20],
+        [120,520,280,0.16],[600,680,440,0.19],[300,820,300,0.15],
+        [820,150,250,0.17],[50,700,350,0.14]
+      ];
+      cloudSeeds.forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(52,48,44,${a})`);
+        g.addColorStop(0.5,`rgba(32,30,28,${a*0.5})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,1024,1024);
+      });
+
+      // Noch dunklere Einschlüsse für Tiefe
+      [[260,400,120,0.35],[600,250,90,0.28],[780,720,110,0.30],[100,900,80,0.25]].forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(5,5,5,${a})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,1024,1024);
+      });
+
+      // ── Pseudo-random deterministic ───────────────────────────
+      function pr(s){ return ((s*9301+49297)%233280)/233280; }
+
+      // Ader mit mehreren Passes: weiter Glow + mittlerer Halo + scharfe Kern
+      function vein(x0,y0,x1,y1,w,alpha,c1,c2,seed){
+        const pts=[], steps=70;
+        for(let i=0;i<=steps;i++){
+          const t=i/steps, s=seed+i*3;
+          const disp=(pr(s)-0.5)*48*(Math.sin(Math.PI*t)*2.0+0.3);
+          const disp2=(pr(s+200)-0.5)*16;
+          pts.push([x0+(x1-x0)*t+disp, y0+(y1-y0)*t+disp2]);
+        }
+        function drawPath(){
+          ctx.beginPath();
+          ctx.moveTo(pts[0][0],pts[0][1]);
+          for(let i=1;i<pts.length-2;i++){
+            ctx.quadraticCurveTo(pts[i][0],pts[i][1],
+              (pts[i][0]+pts[i+1][0])/2,(pts[i][1]+pts[i+1][1])/2);
+          }
+        }
+        // Äußerer Glow (sehr breit, orange-warm)
+        drawPath();
+        ctx.strokeStyle=`rgba(${c2},${alpha*0.12})`; ctx.lineWidth=w*14; ctx.stroke();
+        // Mittlerer Halo
+        drawPath();
+        ctx.strokeStyle=`rgba(${c2},${alpha*0.30})`; ctx.lineWidth=w*6; ctx.stroke();
+        // Innerer Halo
+        drawPath();
+        ctx.strokeStyle=`rgba(${c1},${alpha*0.60})`; ctx.lineWidth=w*2.5; ctx.stroke();
+        // Kern — helles Gold
+        drawPath();
+        ctx.strokeStyle=`rgba(${c1},${alpha})`; ctx.lineWidth=w; ctx.stroke();
+        // Zentraler Highlight
+        drawPath();
+        ctx.strokeStyle=`rgba(255,230,120,${alpha*0.45})`; ctx.lineWidth=w*0.4; ctx.stroke();
+      }
+
+      // Farben wie im Referenzbild: orange-gold Kern, warmer Glow
+      const gCore  = '245,185,55';   // helles gelb-gold
+      const gGlow  = '200,110,10';   // tiefes orange (Glow-Halo)
+      const gDeep  = '220,155,35';   // mittleres Gold
+
+      // ── Haupt-Adern (dick, wie im Bild) ──────────────────────
+      vein(  0, 180, 1024,  520, 9.0, 0.95, gCore, gGlow,  11);
+      vein( 60,   0,  480, 1024, 7.5, 0.90, gCore, gGlow,  23);
+      vein(350,   0,  900,  800, 6.0, 0.88, gDeep, gGlow,  37);
+      vein(  0, 680,  650, 1024, 5.5, 0.85, gCore, gGlow,  47);
+      vein(700,  40, 1024,  700, 5.0, 0.82, gDeep, gGlow,  59);
+
+      // ── Mittlere Adern ────────────────────────────────────────
+      vein(150,   0,  620,  700, 4.0, 0.80, gCore, gGlow,  71);
+      vein(  0, 420,  480,  750, 3.5, 0.78, gDeep, gGlow,  83);
+      vein(550, 300, 1024,  900, 3.8, 0.76, gCore, gGlow,  97);
+      vein(250, 800,  800, 1024, 3.2, 0.74, gDeep, gGlow, 107);
+      vein(820, 200, 1024,  580, 3.0, 0.72, gCore, gGlow, 117);
+
+      // ── Feine Verzweigungen ───────────────────────────────────
+      vein( 80, 300,  350,  580, 2.0, 0.68, gDeep, gGlow, 131);
+      vein(400, 150,  700,  420, 1.8, 0.65, gCore, gGlow, 143);
+      vein(600, 550,  950,  850, 2.2, 0.70, gDeep, gGlow, 157);
+      vein(100, 750,  450,  950, 1.6, 0.62, gCore, gGlow, 169);
+      vein(300, 450,  600,  650, 1.4, 0.58, gDeep, gGlow, 181);
+
+      // ── Haarfeine Linien ──────────────────────────────────────
+      for(let i=0;i<12;i++){
+        const sx=pr(i*19)*1024, ex=pr(i*19+7)*1024;
+        const sy=pr(i*13)*200, ey=pr(i*13+3)*1024;
+        vein(sx,sy,ex,ey, 0.8, 0.50, gCore, gGlow, i*43+200);
+      }
+
+      // ── Fliesennetz ───────────────────────────────────────────
+      const tile=256;
+      ctx.strokeStyle='rgba(200,155,35,0.75)';
+      ctx.lineWidth=2.5;
+      for(let x=0;x<=1024;x+=tile){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1024);ctx.stroke();}
+      for(let y=0;y<=1024;y+=tile){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(1024,y);ctx.stroke();}
+      // Innere Fliesenrahmung
+      ctx.strokeStyle='rgba(210,165,45,0.25)';
+      ctx.lineWidth=1.0;
+      for(let tx=0;tx<4;tx++) for(let ty=0;ty<4;ty++){
+        ctx.strokeRect(tx*tile+8, ty*tile+8, tile-16, tile-16);
+      }
+
+      const tex=new T.CanvasTexture(cv);
+      tex.wrapS=tex.wrapT=T.RepeatWrapping;
+      tex.repeat.set(3,5);
+      return tex;
+    }
+
+    // ── Paintings ────────────────────────────────────────────────
+    function buildPaintings(T) {
+      PICS.forEach((p,i) => addPainting(T, i, p.x, p.y, p.z, p.rotY));
+    }
+
+    function addPainting(T, idx, x, y, z, rotY) {
+      const g = new T.Group();
+      const tex = makeTex(T,idx);
+      const paint = new T.Mesh(new T.PlaneGeometry(PW,PH),
+        new T.MeshStandardMaterial({map:tex, roughness:0.82}));
+      paint.position.z=0.025; g.add(paint);
+
+      // Thin minimal dark frame (like reference photo)
+      const fm=new T.MeshStandardMaterial({color:0x1c1c1c, roughness:0.90, metalness:0.02});
+      const fw=PW+0.05, fh=PH+0.05, fd=0.022, fb=0.028;
+      [[fw,fb,fd, 0, fh/2,0],[fw,fb,fd, 0,-fh/2,0],
+       [fb,fh,fd,-fw/2,0,0],[fb,fh,fd, fw/2,0,0]
+      ].forEach(([w,h,d,px,py,pz])=>{
+        const b=new T.Mesh(new T.BoxGeometry(w,h,d),fm);
+        b.position.set(px,py,pz); g.add(b);
+      });
+
+      // Small label card below painting
+      const lm=new T.MeshStandardMaterial({color:0xfafafa, roughness:0.95});
+      const lb=new T.Mesh(new T.BoxGeometry(0.32,0.055,0.003),lm);
+      lb.position.set(0,-(fh/2+0.07),0.01); g.add(lb);
+
+      g.position.set(x,y,z); g.rotation.y=rotY;
+      scene.add(g);
+    }
+
+    const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII'];
+    const PAL=[['#c0af96','#ae9d82'],['#97aab4','#879aa4'],['#b0baa6','#9eaa94'],
+               ['#c2ae98','#b09e88'],['#a2aabb','#929aaa'],['#b6ae9e','#a69e8e']];
+
+    function makeTex(T,idx){
+      const cv=document.createElement('canvas'); cv.width=500; cv.height=620;
+      const ctx=cv.getContext('2d');
+      const [c1,c2]=PAL[idx%PAL.length];
+      const gr=ctx.createLinearGradient(0,0,500,620);
+      gr.addColorStop(0,c1); gr.addColorStop(1,c2);
+      ctx.fillStyle=gr; ctx.fillRect(0,0,500,620);
+      ctx.strokeStyle='rgba(28,16,4,0.16)'; ctx.lineWidth=1.5;
+      ctx.strokeRect(26,26,448,568); ctx.strokeRect(30,30,440,560);
+      ctx.fillStyle='rgba(38,22,8,0.36)';
+      ctx.font='300 80px "Georgia","Times New Roman",serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(ROMAN[idx]||String(idx+1),250,255);
+      ctx.font='300 13px Arial,sans-serif'; ctx.fillStyle='rgba(38,22,8,0.28)';
+      ctx.fillText('HORST  SCHWAB',250,358);
+      ctx.fillText('KUNSTWERK  ·  PLATZHALTER',250,381);
+      ctx.strokeStyle='rgba(45,28,10,0.20)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(130,406); ctx.lineTo(370,406); ctx.stroke();
+      return new T.CanvasTexture(cv);
+    }
+
+    // ── Furniture ────────────────────────────────────────────────
+    function buildFurniture(T) {
+      // Cream/sand upholstered solid bench blocks (museum style)
+      const topMat = new T.MeshStandardMaterial({color:0xd6cfbb, roughness:0.88, metalness:0.0});
+      const sideMat= new T.MeshStandardMaterial({color:0xc8c0ab, roughness:0.90, metalness:0.0});
+      const legMat = new T.MeshStandardMaterial({color:0xaaaaaa, roughness:0.42, metalness:0.65});
+
+      [[-7],[-29]].forEach(([bz])=>{
+        [[-0.95],[0.95]].forEach(([bx])=>{
+          // Cushion body
+          const body=new T.Mesh(new T.BoxGeometry(1.50, 0.36, 0.58), topMat);
+          body.position.set(bx, 0.27, bz); scene.add(body);
+          // Side face (slightly darker)
+          const side=new T.Mesh(new T.BoxGeometry(1.50, 0.36, 0.58), sideMat);
+          side.position.set(bx, 0.27, bz); scene.add(side);
+          // Four slim metal legs
+          [[-0.62,0.22],[0.62,0.22],[-0.62,-0.22],[0.62,-0.22]].forEach(([lx,lz])=>{
+            const leg=new T.Mesh(new T.BoxGeometry(0.045,0.34,0.045),legMat);
+            leg.position.set(bx+lx, 0.17, bz+lz); scene.add(leg);
+          });
+        });
+      });
+    }
+
+    // ── Lights ───────────────────────────────────────────────────
+    function buildLights(T) {
+      // Diffuses Deckenlicht — niedrig genug damit Wandfarbe + Schatten sichtbar werden
+      scene.add(new T.AmbientLight(0xfff8f0, 0.55));
+
+      // Overhead fill lights
+      [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],
+       [0,RH-0.2,-20],[0,RH-0.2,-26],[0,RH-0.2,-32],[0,RH-0.2,-38]
+      ].forEach(([x,y,z])=>{
+        const pl=new T.PointLight(0xffffff, 0.45, 18, 1.1);
+        pl.position.set(x,y,z); scene.add(pl);
+      });
+
+      // Track spotlights per painting
+      PICS.forEach(p=>{
+        const lx=p.x+Math.sin(p.rotY)*(-1.25);
+        const lz=p.z+Math.cos(p.rotY)*(-1.25);
+        const sl=new T.SpotLight(0xfff8f0, 2.2, 5.0, Math.PI/7, 0.28, 1.2);
+        sl.position.set(lx, RH-0.10, lz);
+        sl.target.position.set(p.x, p.y, p.z);
+        scene.add(sl); scene.add(sl.target);
+      });
+    }
+
+    // ── Camera Sequence ──────────────────────────────────────────
+    function buildSeq(T) {
+      seq=[];
+      function add(px,py,pz,lx,ly,lz,trans,hold){
+        const pos=new T.Vector3(px,py,pz);
+        const d=new T.Object3D(); d.position.copy(pos);
+        d.lookAt(new T.Vector3(lx,ly,lz));
+        seq.push({pos,quat:d.quaternion.clone(),trans,hold});
+      }
+
+      // LY_W = look-at y for walking shots (slightly above eye = ceiling visible)
+      const LY_W = CAM_Y + 1.10;  // look upward — ceiling + skylight visible
+
+      // ── Room 1 entrance ─────────────────────────────────────────
+      add(0,CAM_Y, 1.2,  0, LY_W, -4,  0, 800);
+
+      // Pair z=-3
+      add(0,CAM_Y,-3,  -WALLX+0.05, PY, -3,  950,3800);
+      add(0,CAM_Y,-3,   WALLX-0.05, PY, -3,  1700,3800);
+      // Pair z=-7
+      add(0,CAM_Y,-7,  0, LY_W, -10,  2000,400);
+      add(0,CAM_Y,-7,  -WALLX+0.05, PY, -7,  1300,3800);
+      add(0,CAM_Y,-7,   WALLX-0.05, PY, -7,  1700,3800);
+      // Pair z=-11
+      add(0,CAM_Y,-11, 0, LY_W, -13,  2000,400);
+      add(0,CAM_Y,-11, -WALLX+0.05, PY,-11,  1300,3800);
+      add(0,CAM_Y,-11,  WALLX-0.05, PY,-11,  1700,3800);
+      // End wall paintings
+      add(0,CAM_Y,-11,  -3.2, PY,-14,  1400,3200);
+      add(0,CAM_Y,-11,   3.2, PY,-14,  1600,3200);
+
+      // ── Walk through archway into Room 2 ─────────────────────────
+      add(0,CAM_Y,-16,  0, LY_W,-21, 2200,600);
+
+      // ── Room 2 ──────────────────────────────────────────────────
+      // Pair z=-21
+      add(0,CAM_Y,-21, -WALLX+0.05, PY,-21, 1300,3800);
+      add(0,CAM_Y,-21,  WALLX-0.05, PY,-21, 1700,3800);
+      // Pair z=-25
+      add(0,CAM_Y,-25, 0, LY_W,-28,  2000,400);
+      add(0,CAM_Y,-25, -WALLX+0.05, PY,-25, 1300,3800);
+      add(0,CAM_Y,-25,  WALLX-0.05, PY,-25, 1700,3800);
+      // Pair z=-29
+      add(0,CAM_Y,-29, 0, LY_W,-32,  2000,400);
+      add(0,CAM_Y,-29, -WALLX+0.05, PY,-29, 1300,3800);
+      add(0,CAM_Y,-29,  WALLX-0.05, PY,-29, 1700,3800);
+      // Pair z=-33
+      add(0,CAM_Y,-33, 0, LY_W,-36,  2000,400);
+      add(0,CAM_Y,-33, -WALLX+0.05, PY,-33, 1300,3800);
+      add(0,CAM_Y,-33,  WALLX-0.05, PY,-33, 1700,3800);
+      // End wall
+      add(0,CAM_Y,-36, 0, LY_W,-40,  2200,600);
+      add(0,CAM_Y,-36, -2.2,PY,-40,  1400,3800);
+      add(0,CAM_Y,-36,  2.2,PY,-40,  1700,3800);
+
+      cam.position.copy(seq[0].pos);
+      cam.quaternion.copy(seq[0].quat);
+      fromPos.copy(seq[0].pos); fromQuat.copy(seq[0].quat);
+      seqIdx=0; phase='hold'; t0=performance.now();
+    }
+
+    // ── Tick ─────────────────────────────────────────────────────
+    function tick(T,now){
+      if(!seq) return;
+      const s=seq[seqIdx], dt=now-t0;
+      if(phase==='trans'){
+        const raw=Math.min(dt/Math.max(s.trans,1),1), et=ease(raw);
+        cam.position.lerpVectors(fromPos,s.pos,et);
+        cam.quaternion.slerpQuaternions(fromQuat,s.quat,et);
+        if(raw>=1){phase='hold';t0=now;}
+      } else {
+        cam.position.y=s.pos.y+Math.sin(now*0.00065)*0.005;
+        if(dt>=s.hold){
+          fromPos.copy(cam.position); fromQuat.copy(cam.quaternion);
+          seqIdx++;
+          if(seqIdx>=seq.length){doLoop(now);return;}
+          phase='trans'; t0=now;
+        }
+      }
+    }
+
+    function doLoop(now){
+      if(!fadeDiv){
+        fadeDiv=document.createElement('div');
+        fadeDiv.style.cssText='position:absolute;inset:0;background:#080706;pointer-events:none;opacity:0;transition:opacity 1.2s ease;z-index:1;';
+        document.getElementById('gallery-vr').appendChild(fadeDiv);
+      }
+      fadeDiv.style.opacity='1';
+      setTimeout(()=>{
+        cam.position.copy(seq[0].pos); cam.quaternion.copy(seq[0].quat);
+        fromPos.copy(seq[0].pos); fromQuat.copy(seq[0].quat);
+        seqIdx=0; phase='hold'; t0=performance.now();
+        setTimeout(()=>{fadeDiv.style.opacity='0';},200);
+      },1300);
+    }
+
+    function teardown(){
+      if(rafId) cancelAnimationFrame(rafId);
+      if(renderer){renderer.dispose();renderer=null;}
+      scene=null;cam=null;seq=null;fadeDiv=null;
+      window.removeEventListener('resize',onResize);
+    }
+    function onResize(){
+      if(!cam||!renderer) return;
+      cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix();
+      renderer.setSize(innerWidth,innerHeight);
+    }
+  })();
+
+
+  // ── Legal Overlays ──────────────────────────────────────────
+  function openLegal(which) {
+    const el = document.getElementById('overlay-' + which);
+    if (!el) return;
+    el.scrollTop = 0;
+    el.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLegal(which) {
+    const el = document.getElementById('overlay-' + which);
+    if (!el) return;
+    el.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      ['impressum','datenschutz'].forEach(closeLegal);
+    }
+  });
+
+
 </script>
 
 </body>
