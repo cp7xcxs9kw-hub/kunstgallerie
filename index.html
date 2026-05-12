@@ -2075,7 +2075,7 @@
       renderer.setPixelRatio(Math.min(devicePixelRatio,2));
       renderer.outputEncoding = T.sRGBEncoding;
       renderer.toneMapping = T.LinearToneMapping;
-      renderer.toneMappingExposure = 0.82;
+      renderer.toneMappingExposure = 0.92;
       scene = new T.Scene();
       scene.background = new T.Color(0xf0ece4);
       scene.fog = new T.Fog(0xf0ece4, 32, 65);
@@ -2085,6 +2085,7 @@
       buildRooms(T);
       buildPaintings(T);
       buildLights(T);
+      buildPictureLights(T);
       buildFurniture(T);
       buildSeq(T);
       window.addEventListener('resize', onResize);
@@ -2097,8 +2098,9 @@
       const wW  = new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.FrontSide});
       const wF  = new T.MeshBasicMaterial({color:0xfafafa});
       const flTex = makeFloorTex(T);
-      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.20, metalness:0.10});
+      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.72, metalness:0.03});
       const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
+      const wTrans = new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide});
 
       const aw=3.6, ah=3.2, lw=(RW-aw)/2, rw=lw;
 
@@ -2107,16 +2109,16 @@
       addPlane(T, RW, 14, wF,  [0,RH,-7],       [ Math.PI/2,0,0]);
       addPlane(T, 14, RH, wW,  [-RW/2,RH/2,-7], [0, Math.PI/2,0]);
       addPlane(T, 14, RH, wW,  [ RW/2,RH/2,-7], [0,-Math.PI/2,0]);
-      addPlane(T, RW, RH, wW,  [0,RH/2, 0.05],  [0, Math.PI,0]);
+      addPlane(T, RW, RH, wTrans, [0,RH/2, 0.05],  [0, Math.PI,0]);
 
-      // Room 1 end wall + archway
-      addBox(T, lw,     RH,    0.18, wW, [-(RW/2-lw/2), RH/2, -14]);
-      addBox(T, rw,     RH,    0.18, wW, [ (RW/2-rw/2), RH/2, -14]);
-      addBox(T, aw,  RH-ah,    0.18, wW, [0, ah+(RH-ah)/2, -14]);
+      // Room 1 end wall + archway (anthracite transition)
+      addBox(T, lw,     RH,    0.18, wTrans, [-(RW/2-lw/2), RH/2, -14]);
+      addBox(T, rw,     RH,    0.18, wTrans, [ (RW/2-rw/2), RH/2, -14]);
+      addBox(T, aw,  RH-ah,    0.18, wTrans, [0, ah+(RH-ah)/2, -14]);
 
       // ── Connector ───────────────────────────────────────────────
-      addPlane(T, 4, RH, wAll, [-aw/2, RH/2,-16],[0, Math.PI/2,0]);
-      addPlane(T, 4, RH, wAll, [ aw/2, RH/2,-16],[0,-Math.PI/2,0]);
+      addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-16],[0, Math.PI/2,0]);
+      addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-16],[0,-Math.PI/2,0]);
       addPlane(T, aw, RH, wF,  [0, RH,-16],      [ Math.PI/2,0,0]);
       addPlane(T, aw,  4, wFl, [0,  0,-16],      [-Math.PI/2,0,0]);
 
@@ -2126,12 +2128,12 @@
       addPlane(T, RW, r2d, wF,  [0,RH,r2cz],       [ Math.PI/2,0,0]);
       addPlane(T, r2d, RH, wW,  [-RW/2,RH/2,r2cz], [0, Math.PI/2,0]);
       addPlane(T, r2d, RH, wW,  [ RW/2,RH/2,r2cz], [0,-Math.PI/2,0]);
-      addPlane(T, RW,  RH, wW,  [0,RH/2,-40],      [0,0,0]);
+      addPlane(T, RW,  RH, wTrans, [0,RH/2,-40],      [0,0,0]);
 
-      // Room 2 entry wall
-      addBox(T, lw,    RH,   0.18, wW, [-(RW/2-lw/2), RH/2, -18]);
-      addBox(T, rw,    RH,   0.18, wW, [ (RW/2-rw/2), RH/2, -18]);
-      addBox(T, aw, RH-ah,   0.18, wW, [0, ah+(RH-ah)/2, -18]);
+      // Room 2 entry wall (anthracite transition)
+      addBox(T, lw,    RH,   0.18, wTrans, [-(RW/2-lw/2), RH/2, -18]);
+      addBox(T, rw,    RH,   0.18, wTrans, [ (RW/2-rw/2), RH/2, -18]);
+      addBox(T, aw, RH-ah,   0.18, wTrans, [0, ah+(RH-ah)/2, -18]);
 
       // ── Skylight grid + Track lighting (both rooms) ─────────────
       buildSkylightGrid(T, 14, -7);
@@ -2143,7 +2145,7 @@
     // ── Skylight ceiling grid ─────────────────────────────────────
     function buildSkylightGrid(T, depth, cz) {
       // Bright frosted glass panels (always white)
-      const glassMat = new T.MeshBasicMaterial({color:0xffffff});
+      const glassMat = new T.MeshBasicMaterial({color:0xfff8ec});
       const gW=7.2, gD=depth*0.72;
       addPlane(T, gW, gD, glassMat, [0, RH-0.012, cz], [Math.PI/2,0,0]);
 
@@ -2283,37 +2285,38 @@
       const S=1024;
       const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
       const ctx=cv.getContext('2d');
+      function pr(s){ return ((s*9301+49297)%233280)/233280; }
 
-      // Base: medium grey
-      ctx.fillStyle='#b0b0b0';
+      const tw=256, th=256;
+      const grout=72; // helleres Grau für Fugen
+
+      // Fugen-Hintergrund
+      ctx.fillStyle=`rgb(${grout},${grout},${grout})`;
       ctx.fillRect(0,0,S,S);
 
-      // Per-tile tone variation — clearly distinguishable grey shades
-      const tw=256, th=256;
+      // Anthrazit-Platten mit leichter Tonvariation (wie Wandfarbe 0x252525)
       for(let tx=0;tx<4;tx++){
         for(let ty=0;ty<4;ty++){
-          const v=158+((tx*13+ty*17+tx*ty*7)%28);
+          const v=34+Math.floor(pr(tx*7+ty*13+1)*14); // 34–48, nahe #252525
           ctx.fillStyle=`rgb(${v},${v},${v})`;
-          ctx.fillRect(tx*tw+2, ty*th+2, tw-4, th-4);
+          ctx.fillRect(tx*tw+4, ty*th+4, tw-8, th-8);
         }
       }
 
-      // Fugen: dunkle, klar sichtbare Trennlinien
-      ctx.strokeStyle='rgba(80,80,80,1.0)';
-      ctx.lineWidth=4;
-      for(let x=0;x<=S;x+=tw){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,S);ctx.stroke();}
-      for(let y=0;y<=S;y+=th){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(S,y);ctx.stroke();}
-
-      // Helle Innenkante jeder Platte (leichter 3D-Effekt)
-      ctx.strokeStyle='rgba(200,200,200,0.35)';
-      ctx.lineWidth=1.2;
-      for(let tx=0;tx<4;tx++) for(let ty=0;ty<4;ty++){
-        ctx.strokeRect(tx*tw+4, ty*th+4, tw-8, th-8);
+      // Minimaler Glanzreflex-Schimmer auf jeder Platte (heller Streifen oben-links)
+      for(let tx=0;tx<4;tx++){
+        for(let ty=0;ty<4;ty++){
+          const grd=ctx.createLinearGradient(tx*tw+4,ty*th+4, tx*tw+tw/2,ty*th+th/2);
+          grd.addColorStop(0,'rgba(255,255,255,0.04)');
+          grd.addColorStop(1,'rgba(255,255,255,0)');
+          ctx.fillStyle=grd;
+          ctx.fillRect(tx*tw+4, ty*th+4, tw-8, th-8);
+        }
       }
 
       const tex=new T.CanvasTexture(cv);
       tex.wrapS=tex.wrapT=T.RepeatWrapping;
-      tex.repeat.set(4,7);
+      tex.repeat.set(3,5);
       return tex;
     }
 
@@ -2514,18 +2517,66 @@
           });
         });
       });
+
+      // Two gallery chairs — one in each back corner
+      buildChair(T, -3.8, -12.8, -0.55);   // Room 1, back-left corner
+      buildChair(T,  3.8, -38.5,  Math.PI+0.55); // Room 2, back-right corner
+    }
+
+    function buildChair(T, cx, cz, rotY) {
+      // Messing-Chrom Rahmen — sichtbar gegen dunklen Boden
+      const frameMat = new T.MeshStandardMaterial({color:0xb8a070, roughness:0.22, metalness:0.88});
+      // Warmes Beige wie Wandfarbe — starker Kontrast zum Boden
+      const cushMat  = new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.80});
+      const g = new T.Group();
+      const sW=0.64, sD=0.58, sH=0.43;
+
+      // Sitz — breite helle Platte
+      const seat = new T.Mesh(new T.BoxGeometry(sW, 0.14, sD), cushMat);
+      seat.position.set(0, sH + 0.07, 0); g.add(seat);
+
+      // Rückenlehne
+      const back = new T.Mesh(new T.BoxGeometry(sW - 0.02, 0.58, 0.12), cushMat);
+      back.position.set(0, sH + 0.38, -sD/2 + 0.08); g.add(back);
+
+      // 4 Messingbeine
+      const lx1=sW/2-0.07, lz1=sD/2-0.07;
+      [[-lx1,lz1],[lx1,lz1],[-lx1,-lz1],[lx1,-lz1]].forEach(([lx,lz])=>{
+        const leg = new T.Mesh(new T.BoxGeometry(0.028, sH, 0.028), frameMat);
+        leg.position.set(lx, sH/2, lz); g.add(leg);
+      });
+
+      // Hintere Verlängerungen bis Rückenlehnen-Oberkante
+      [-lx1, lx1].forEach(lx => {
+        const ext = new T.Mesh(new T.BoxGeometry(0.022, 0.62, 0.022), frameMat);
+        ext.position.set(lx, sH + 0.38, -lz1); g.add(ext);
+      });
+
+      // Quersteg vorne (sichtbares Element)
+      const str = new T.Mesh(new T.BoxGeometry(sW - 0.14, 0.022, 0.022), frameMat);
+      str.position.set(0, sH * 0.40, lz1); g.add(str);
+
+      // Querstege seitlich
+      [-lx1, lx1].forEach(lx => {
+        const ss = new T.Mesh(new T.BoxGeometry(0.022, 0.022, sD - 0.14), frameMat);
+        ss.position.set(lx, sH * 0.40, 0); g.add(ss);
+      });
+
+      g.position.set(cx, 0, cz);
+      g.rotation.y = rotY;
+      scene.add(g);
     }
 
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
       // Diffuses Deckenlicht — niedrig genug damit Wandfarbe + Schatten sichtbar werden
-      scene.add(new T.AmbientLight(0xfff8f0, 0.55));
+      scene.add(new T.AmbientLight(0xfff8f0, 0.95));
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],
        [0,RH-0.2,-20],[0,RH-0.2,-26],[0,RH-0.2,-32],[0,RH-0.2,-38]
       ].forEach(([x,y,z])=>{
-        const pl=new T.PointLight(0xffffff, 0.45, 18, 1.1);
+        const pl=new T.PointLight(0xfff8f0, 0.60, 18, 1.1);
         pl.position.set(x,y,z); scene.add(pl);
       });
 
@@ -2533,10 +2584,38 @@
       PICS.forEach(p=>{
         const lx=p.x+Math.sin(p.rotY)*(-1.25);
         const lz=p.z+Math.cos(p.rotY)*(-1.25);
-        const sl=new T.SpotLight(0xfff8f0, 2.2, 5.0, Math.PI/7, 0.28, 1.2);
+        const sl=new T.SpotLight(0xfff8f0, 1.4, 5.0, Math.PI/5.5, 0.55, 1.2);
         sl.position.set(lx, RH-0.10, lz);
         sl.target.position.set(p.x, p.y, p.z);
         scene.add(sl); scene.add(sl.target);
+      });
+    }
+
+    // ── Picture Lights (decorative brass lamps above each frame) ─
+    function buildPictureLights(T) {
+      const bMat = new T.MeshStandardMaterial({color:0xb89520, roughness:0.35, metalness:0.82});
+      const armLen = 0.22;
+      const lampY = PY + PH/2 + 0.12;  // just above top of frame
+
+      PICS.forEach(p => {
+        const nx = -Math.sin(p.rotY);
+        const nz = -Math.cos(p.rotY);
+
+        // Small back plate flush against wall
+        const plate = new T.Mesh(new T.BoxGeometry(0.08, 0.06, 0.012), bMat);
+        plate.position.set(p.x - nx*0.02, lampY, p.z - nz*0.02);
+        scene.add(plate);
+
+        // Horizontal arm projecting outward from wall
+        const arm = new T.Mesh(new T.BoxGeometry(armLen, 0.020, 0.020), bMat);
+        arm.position.set(p.x + nx*(armLen/2 - 0.02), lampY, p.z + nz*(armLen/2 - 0.02));
+        arm.rotation.y = -p.rotY - Math.PI/2;
+        scene.add(arm);
+
+        // Lamp head at tip of arm
+        const head = new T.Mesh(new T.BoxGeometry(0.09, 0.028, 0.055), bMat);
+        head.position.set(p.x + nx*(armLen - 0.025), lampY - 0.013, p.z + nz*(armLen - 0.025));
+        scene.add(head);
       });
     }
 
