@@ -641,6 +641,67 @@
     border-color: rgba(201,168,76,0.55);
   }
 
+  /* ── GALLERY LOADER ── */
+  #gallery-loader {
+    position: absolute;
+    inset: 0;
+    background: #141210;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 962;
+    transition: opacity 1.0s ease;
+  }
+  #gallery-loader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .gl-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .gl-script {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2.8rem, 6vw, 4.6rem);
+    color: rgba(201,168,76,0.90);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .gl-rule {
+    width: 140px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.55), transparent);
+    margin: 0.55rem 0;
+  }
+  .gl-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+    font-weight: 300;
+    letter-spacing: 0.38em;
+    color: rgba(242,236,222,0.55);
+    margin-bottom: 2.8rem;
+  }
+  .gl-dots {
+    display: flex;
+    gap: 10px;
+  }
+  .gl-dots span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.50);
+    animation: gl-pulse 1.4s ease-in-out infinite;
+  }
+  .gl-dots span:nth-child(2) { animation-delay: 0.22s; }
+  .gl-dots span:nth-child(3) { animation-delay: 0.44s; }
+  @keyframes gl-pulse {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); }
+    40%            { opacity: 1;   transform: scale(1.15); }
+  }
+
   /* ── TOOLTIP ── */
   .tooltip-wrap {
     position: relative;
@@ -1193,6 +1254,14 @@
 <div id="gallery-vr">
   <canvas id="gallery-canvas"></canvas>
   <button id="gallery-vr-close">&#x2715;&nbsp;&nbsp;BEENDEN</button>
+  <div id="gallery-loader">
+    <div class="gl-inner">
+      <div class="gl-script">Horst Schwab</div>
+      <div class="gl-rule"></div>
+      <div class="gl-label">G &nbsp; A &nbsp; L &nbsp; L &nbsp; E &nbsp; R &nbsp; I &nbsp; E</div>
+      <div class="gl-dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
 </div>
 
 
@@ -2022,7 +2091,12 @@
       document.head.appendChild(s);
     }
     openBtn.addEventListener('click', e => { e.preventDefault(); vrEl.style.display='block'; loadThree(initGallery); });
-    closeBtn.addEventListener('click', () => { vrEl.style.display='none'; teardown(); });
+    closeBtn.addEventListener('click', () => {
+      vrEl.style.display='none';
+      teardown();
+      const loader=document.getElementById('gallery-loader');
+      if(loader){ loader.style.display='flex'; loader.classList.remove('fade-out'); }
+    });
 
     let renderer, scene, cam, rafId, fadeDiv;
     let seq, seqIdx, phase, t0;
@@ -2087,10 +2161,22 @@
       buildLights(T);
       buildPictureLights(T);
       buildFurniture(T);
+      buildPlants(T);
       buildWallSigns(T);
       buildSeq(T);
       window.addEventListener('resize', onResize);
-      function frame(ts){ rafId=requestAnimationFrame(frame); tick(T,ts); renderer.render(scene,cam); }
+      // Ladescreen ausblenden sobald erste Frames gerendert sind
+      let loaderGone = false;
+      function frame(ts){
+        rafId=requestAnimationFrame(frame);
+        tick(T,ts);
+        renderer.render(scene,cam);
+        if(!loaderGone){
+          loaderGone=true;
+          const loader=document.getElementById('gallery-loader');
+          if(loader){ setTimeout(()=>{ loader.classList.add('fade-out'); setTimeout(()=>loader.style.display='none',1200); }, 2200); }
+        }
+      }
       requestAnimationFrame(frame);
     }
 
@@ -2110,7 +2196,35 @@
       addPlane(T, RW, 14, wF,  [0,RH,-7],       [ Math.PI/2,0,0]);
       addPlane(T, 14, RH, wW,  [-RW/2,RH/2,-7], [0, Math.PI/2,0]);
       addPlane(T, 14, RH, wW,  [ RW/2,RH/2,-7], [0,-Math.PI/2,0]);
-      addPlane(T, RW, RH, wTrans, [0,RH/2, 0.05],  [0, Math.PI,0]);
+      // Eingangswand mit Wandpaneelen als Canvas-Textur
+      {
+        const W=2048, H=896;
+        const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+        const ctx=cv.getContext('2d');
+        // Anthrazit-Hintergrund
+        ctx.fillStyle='#252525';
+        ctx.fillRect(0,0,W,H);
+        // Paneellinien: creme-gold, halbtransparent
+        ctx.strokeStyle='rgba(210,190,140,0.30)';
+        ctx.lineWidth=5;
+        const mX=W*0.040, mY=H*0.070; // Randabstand
+        // Äußerer Rahmen
+        ctx.strokeRect(mX, mY, W-2*mX, H-2*mY);
+        // Zwei vertikale Teiler → 3 Paneele
+        const p1x=mX+(W-2*mX)/3, p2x=mX+(W-2*mX)*2/3;
+        ctx.beginPath(); ctx.moveTo(p1x, mY); ctx.lineTo(p1x, H-mY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(p2x, mY); ctx.lineTo(p2x, H-mY); ctx.stroke();
+        // Innere Panelrahmen (je Panel einen eingerückten Rahmen)
+        ctx.strokeStyle='rgba(210,190,140,0.16)';
+        ctx.lineWidth=3;
+        const inset=W*0.018;
+        [[mX, p1x],[p1x, p2x],[p2x, W-mX]].forEach(([x0,x1])=>{
+          ctx.strokeRect(x0+inset, mY+inset*2.2, x1-x0-2*inset, H-2*mY-2*inset*2.2);
+        });
+        const tex=new T.CanvasTexture(cv);
+        const entranceMat=new T.MeshStandardMaterial({map:tex, roughness:0.88, side:T.DoubleSide});
+        addPlane(T, RW, RH, entranceMat, [0,RH/2, 0.05], [0, Math.PI,0]);
+      }
 
       // Room 1 end wall + archway (anthracite transition)
       addBox(T, lw,     RH,    0.18, wTrans, [-(RW/2-lw/2), RH/2, -14]);
@@ -2527,7 +2641,7 @@
     function buildChair(T, cx, cz, rotY) {
       // LC2-inspirierter Sessel: sichtbarer Chromrahmen + helle Polster
       const chromeMat = new T.MeshStandardMaterial({color:0xd8d8d8, roughness:0.12, metalness:0.96});
-      const cushMat   = new T.MeshStandardMaterial({color:0xf8f3eb, roughness:0.78});
+      const cushMat   = new T.MeshStandardMaterial({color:0x8b4513, roughness:0.65, metalness:0.04});
       const g = new T.Group();
 
       const sW=0.74, sD=0.68, sH=0.40, fw=0.038;
@@ -2575,16 +2689,126 @@
       scene.add(g);
     }
 
+    // ── Plants ───────────────────────────────────────────────────
+    function buildPlants(T) {
+      buildPlant(T,  4.0, -1.5);
+      buildPlant(T,  4.0, -13.2);
+      buildPlant(T, -4.0, -19.5);
+    }
+
+    function makeLeafTex(T) {
+      const W = 256, H = 512;
+      const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      const ctx = cv.getContext('2d');
+      ctx.clearRect(0, 0, W, H);
+
+      // Ovale Blattform ausschneiden
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(W/2, H*0.48, W*0.42, H*0.46, 0, 0, Math.PI*2);
+      ctx.clip();
+
+      // Grundfarbe: sattes Strelitzia-Grün
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0,   '#3d7a2e');
+      grad.addColorStop(0.4, '#4a8f36');
+      grad.addColorStop(1,   '#2e6022');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Mittelrippe (hellgrün)
+      ctx.strokeStyle = '#5aaa40';
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.moveTo(W/2, H*0.04);
+      ctx.lineTo(W/2, H*0.94);
+      ctx.stroke();
+
+      // Seitenrippen
+      ctx.strokeStyle = 'rgba(80,160,55,0.35)';
+      ctx.lineWidth = 3;
+      for (let i = 1; i <= 6; i++) {
+        const y = H * (0.18 + i * 0.12);
+        const spread = W * 0.34 * (1 - Math.abs(i-3.5)/5);
+        ctx.beginPath();
+        ctx.moveTo(W/2, y);
+        ctx.lineTo(W/2 - spread, y + H*0.06);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(W/2, y);
+        ctx.lineTo(W/2 + spread, y + H*0.06);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      const tex = new T.CanvasTexture(cv);
+      return tex;
+    }
+
+    function buildPlant(T, cx, cz) {
+      const potMat  = new T.MeshStandardMaterial({color:0x868686, roughness:0.87, metalness:0.02});
+      const soilMat = new T.MeshStandardMaterial({color:0x1e1208, roughness:0.97});
+      const stemMat = new T.MeshStandardMaterial({color:0x2e5a1e, roughness:0.92});
+      const leafTex = makeLeafTex(T);
+      const leafMat = new T.MeshStandardMaterial({
+        map: leafTex, transparent: true, alphaTest: 0.4,
+        roughness: 0.72, side: T.DoubleSide
+      });
+
+      // Betonkübel
+      const pot = new T.Mesh(new T.CylinderGeometry(0.25, 0.23, 0.52, 32), potMat);
+      pot.position.set(cx, 0.26, cz); scene.add(pot);
+      const soil = new T.Mesh(new T.CylinderGeometry(0.238, 0.238, 0.03, 32), soilMat);
+      soil.position.set(cx, 0.54, cz); scene.add(soil);
+
+      // Strelitzia-Fächer: Stiele in einem Bogen, Blätter als ovale Canvas-Texturen
+      // [rotY, tilt, Stiellänge, BlattBreite, BlattHöhe]
+      [
+        [-0.60, 0.10, 0.55, 0.38, 0.70],
+        [-0.38, 0.07, 0.70, 0.42, 0.80],
+        [-0.18, 0.04, 0.85, 0.44, 0.88],
+        [ 0.00, 0.03, 0.95, 0.46, 0.92],
+        [ 0.18, 0.04, 0.82, 0.44, 0.86],
+        [ 0.38, 0.07, 0.68, 0.40, 0.78],
+        [ 0.60, 0.10, 0.52, 0.36, 0.68],
+        [-0.48, 0.08, 0.46, 0.34, 0.64],
+        [ 0.48, 0.09, 0.44, 0.33, 0.62],
+        [-0.25, 0.05, 0.60, 0.38, 0.72],
+        [ 0.25, 0.06, 0.58, 0.37, 0.70],
+      ].forEach(([ry, tilt, sLen, lW, lH]) => {
+        const g = new T.Group();
+        g.position.set(cx, 0.55, cz);
+        g.rotation.y = ry;
+
+        const sg = new T.Group();
+        sg.rotation.z = -tilt;
+
+        // Stiel — dicker Blattstiel wie Strelitzia
+        const stem = new T.Mesh(new T.CylinderGeometry(0.012, 0.018, sLen, 6), stemMat);
+        stem.position.y = sLen / 2;
+        sg.add(stem);
+
+        // Blatt oben mit ovaler Textur, leicht nach außen geneigt
+        const leaf = new T.Mesh(new T.PlaneGeometry(lW, lH), leafMat);
+        leaf.position.set(0, sLen + lH * 0.40, 0);
+        leaf.rotation.x = 0.25;
+        sg.add(leaf);
+
+        g.add(sg);
+        scene.add(g);
+      });
+    }
+
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
       // Diffuses Deckenlicht — niedrig genug damit Wandfarbe + Schatten sichtbar werden
-      scene.add(new T.AmbientLight(0xfff8f0, 0.95));
+      scene.add(new T.AmbientLight(0xffffff, 0.95));
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],
        [0,RH-0.2,-20],[0,RH-0.2,-26],[0,RH-0.2,-32],[0,RH-0.2,-38]
       ].forEach(([x,y,z])=>{
-        const pl=new T.PointLight(0xfff8f0, 0.60, 18, 1.1);
+        const pl=new T.PointLight(0xffffff, 0.60, 18, 1.1);
         pl.position.set(x,y,z); scene.add(pl);
       });
 
@@ -2737,8 +2961,15 @@
       add(0,CAM_Y,-33,  WALLX-0.05, PY,-33, 1700,3800);
       // End wall
       add(0,CAM_Y,-36, 0, LY_W,-40,  2200,600);
-      add(0,CAM_Y,-36, -2.2,PY,-40,  1400,3800);
-      add(0,CAM_Y,-36,  2.2,PY,-40,  1700,3800);
+
+      // Abschluss: direkt berechneter Quaternion — frontal auf hintere graue Wand, kein Object3D-Flip
+      {
+        const fPos = new T.Vector3(0, CAM_Y, -36.5);
+        // Pitch: leicht nach oben zum Schild (y=2.10, Kamera y=1.70, z-Abstand=3.5m)
+        const pitch = Math.atan2(2.10 - CAM_Y, 3.5);
+        const fQuat = new T.Quaternion().setFromEuler(new T.Euler(pitch, 0, 0, 'YXZ'));
+        seq.push({pos: fPos, quat: fQuat, trans: 1800, hold: 3000});
+      }
 
       cam.position.copy(seq[0].pos);
       cam.quaternion.copy(seq[0].quat);
