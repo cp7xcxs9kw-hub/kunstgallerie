@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23080706'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' font-weight='300' fill='%23C9A84C' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Great+Vibes&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -390,12 +391,23 @@
     transition: background 0.5s;
   }
 
+  .artwork-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    transform: scaleX(0);
+    transition: transform 0.45s ease;
+    z-index: 2;
+  }
+  .artwork-card:hover::after { transform: scaleX(1); }
   .artwork-card:hover .artwork-overlay { background: rgba(10,10,10,0.78); }
 
   .artwork-info {
-    transform: translateY(20px);
+    transform: translateY(22px);
     opacity: 0;
-    transition: all 0.4s;
+    transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.42s ease;
   }
 
   .artwork-card:hover .artwork-info {
@@ -1247,8 +1259,10 @@
     gap: 0;
   }
   .gl-script {
-    font-family: 'Great Vibes', cursive;
-    font-size: clamp(2.8rem, 6vw, 4.6rem);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 5.5vw, 4rem);
+    font-weight: 300;
+    letter-spacing: 0.18em;
     color: rgba(201,168,76,0.90);
     line-height: 1;
     margin-bottom: 0.5rem;
@@ -1518,6 +1532,36 @@
     text-transform: uppercase;
   }
 
+  /* ── NACH-OBEN BUTTON ── */
+  #back-to-top {
+    position: fixed;
+    bottom: 2.2rem;
+    right: 2.2rem;
+    width: 42px;
+    height: 42px;
+    background: rgba(8,7,6,0.88);
+    border: 1px solid rgba(201,168,76,0.35);
+    color: var(--gold);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 300;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease, background 0.25s, border-color 0.25s;
+    backdrop-filter: blur(6px);
+  }
+  #back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  #back-to-top:hover {
+    background: rgba(201,168,76,0.12);
+    border-color: rgba(201,168,76,0.7);
+  }
+
   /* ── LEGAL OVERLAYS (Impressum / Datenschutz) ─────────────── */
   .legal-overlay {
     position: fixed;
@@ -1624,23 +1668,33 @@
   .legal-block:last-child { margin-bottom: 0; }
 
   /* ── SUCCESS ── */
-  .success-msg { display: none; text-align: center; padding: 1.5rem 0; }
-  .success-msg.show { display: block; }
-
+  .success-msg {
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+    text-align: center; padding: 2rem 1rem;
+    opacity: 0; transform: translateY(14px);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .success-msg.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .success-msg-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.5);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 1.3rem;
+  }
   .success-msg p {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.2rem;
     color: var(--gold);
     font-style: italic;
   }
-
   .success-msg .sub {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     color: var(--gray-mid);
     font-family: 'Montserrat', sans-serif;
-    margin-top: 0.5rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
     font-style: normal;
+    text-transform: uppercase;
   }
 
   /* ── ANIMATIONS ── */
@@ -1662,9 +1716,9 @@
   /* ── Raumübergang ── */
   .fade-in-section {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(22px);
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .fade-in-section.visible {
@@ -2789,6 +2843,8 @@
   <span class="footer-copy">© 2026 · Kunst · Leidenschaft · Zeitlos</span>
 </footer>
 
+<button id="back-to-top" aria-label="Nach oben">↑</button>
+
 
 <!-- ══════════════════════════════════════
      ANGEBOTS-MODAL
@@ -2881,6 +2937,7 @@
     </div>
 
     <div class="success-msg" id="success-msg">
+      <div class="success-msg-icon">✓</div>
       <p>Vielen Dank für Ihr Angebot.</p>
       <p class="sub">Wir melden uns in Kürze bei Ihnen.</p>
     </div>
@@ -3345,7 +3402,7 @@
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.07 });
 
   document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
   document.querySelectorAll('.gold-divider').forEach(el => observer.observe(el));
@@ -4443,6 +4500,18 @@
         img.style.transform = 'translateY(' + (window.scrollY * 0.38) + 'px)';
       }
     }, { passive: true });
+  })();
+
+  /* ══ NACH-OBEN BUTTON ══ */
+  (function() {
+    var btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    window.addEventListener('scroll', function() {
+      btn.classList.toggle('visible', window.scrollY > 420);
+    }, { passive: true });
+    btn.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   })();
 
 </script>
