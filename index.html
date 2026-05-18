@@ -587,6 +587,23 @@
   }
 
   /* ── LANGUAGE TOGGLE ── */
+  #lang-switcher {
+    position: fixed;
+    top: 1.4rem;
+    right: 2.5rem;
+    z-index: 200;
+    background: rgba(250,250,248,0.92);
+    backdrop-filter: blur(8px);
+    padding: 0.45rem 1rem;
+    border: 1px solid rgba(201,168,76,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #lang-switcher.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
   .lang-toggle-btn {
     background: none; border: none; cursor: pointer;
     font-family: 'Montserrat', sans-serif; font-size: 0.50rem;
@@ -860,7 +877,7 @@
 
   .modal-close {
     position: absolute;
-    top: 1.5rem; right: 1.5rem;
+    top: 1.5rem; left: 1.5rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -1460,7 +1477,7 @@
   .legal-close-btn {
     position: fixed;
     top: 2rem;
-    right: 2.5rem;
+    left: 2.5rem;
     background: none;
     border: 1px solid #222;
     color: var(--gray-mid);
@@ -1745,9 +1762,64 @@
     .nav-links { gap: 1.2rem; }
     .nav-links a { font-size: 0.52rem; }
   }
+
+  /* ── CUSTOM CURSOR ── */
+  @media (pointer: fine) {
+    body { cursor: none; }
+    a, button, .artwork-card, .cat-tile, .coll-card, [onclick] { cursor: none; }
+  }
+  #custom-cursor {
+    position: fixed;
+    width: 32px; height: 32px;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-3px, -3px);
+    opacity: 0;
+    will-change: left, top;
+    transition: opacity 0.3s, transform 0.15s ease;
+  }
+  #custom-cursor.visible { opacity: 1; }
+  #custom-cursor.hovered { transform: translate(-3px, -3px) scale(1.25); }
+  @media (pointer: coarse) { #custom-cursor { display: none !important; } }
+
+  /* ── SCROLL PROGRESS BAR ── */
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(to right, rgba(201,168,76,0.6), var(--gold));
+    z-index: 9998;
+    pointer-events: none;
+  }
+
+  /* ── 3D TILT ARTWORK CARDS ── */
+  .gallery-grid { perspective: 1400px; }
+  .artwork-card { transform-style: preserve-3d; will-change: transform; transition: transform 0.08s ease, box-shadow 0.3s; }
+  .artwork-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(201,168,76,0.18); }
+
+  /* ── HERO PARALLAX ── */
+  .hero-scene img { height: 116%; top: -8%; position: relative; will-change: transform; }
 </style>
 </head>
 <body>
+<div id="custom-cursor">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <!-- Pinselhaare (Spitze oben-links bei ~2,2) -->
+    <path d="M2 2 Q0 7 3.5 9.5 Q6.5 11.5 9 9.5 L11 7 Q9 3.5 4.5 2 Z" fill="#C9A84C" opacity="0.88"/>
+    <!-- Einzelne Haarlinien -->
+    <line x1="3" y1="3" x2="5" y2="9" stroke="rgba(0,0,0,0.18)" stroke-width="0.6"/>
+    <line x1="5.5" y1="2.5" x2="7.5" y2="8.5" stroke="rgba(0,0,0,0.18)" stroke-width="0.6"/>
+    <line x1="8" y1="3.5" x2="9.5" y2="8" stroke="rgba(0,0,0,0.18)" stroke-width="0.6"/>
+    <!-- Zwinge (Metallring) -->
+    <path d="M8.5 8.5 L12 5 L14 7 L10.5 10.5 Z" fill="#9a7a2e"/>
+    <!-- Stiel (Griff) -->
+    <line x1="12" y1="9" x2="29" y2="29" stroke="#C9A84C" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Stiel-Glanzlinie -->
+    <line x1="12" y1="9" x2="27" y2="27" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" stroke-linecap="round"/>
+  </svg>
+</div>
+<div id="scroll-progress"></div>
 
 <!-- Raumübergang-Overlay -->
 <div id="room-overlay"></div>
@@ -1767,9 +1839,11 @@
     <li><a href="#socials" id="nav-socials">Socials</a></li>
     <li><a href="#kontakt" id="nav-kontakt">Kontakt</a></li>
     <li><a href="#" id="btn-favs" onclick="event.preventDefault();openFavs()"><span id="nav-favs-label">Merkliste</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
-    <li><button class="lang-toggle-btn" onclick="toggleLang()" id="lang-btn"><span id="l-de" class="l-active">DE</span><span class="l-sep">·</span><span id="l-en">EN</span></button></li>
   </ul>
 </nav>
+<div id="lang-switcher">
+  <button class="lang-toggle-btn" onclick="toggleLang()" id="lang-btn"><span id="l-de" class="l-active">DE</span><span class="l-sep">·</span><span id="l-en">EN</span></button>
+</div>
 <div id="gallery-vr">
   <canvas id="gallery-canvas"></canvas>
   <button id="gallery-vr-close">&#x2715;&nbsp;&nbsp;BEENDEN</button>
@@ -3050,12 +3124,18 @@
   const heroEl  = document.getElementById('hero');
   const navEl   = document.querySelector('nav');
   const navLinks = document.querySelectorAll('.nav-links a');
+  const langSwitcher = document.getElementById('lang-switcher');
 
-  // Nav nach Hero einblenden
+  // Nav + Sprachumschalter nach Hero einblenden
   const heroObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (!entry.isIntersecting) navEl.classList.add('visible');
-      else navEl.classList.remove('visible');
+      if (!entry.isIntersecting) {
+        navEl.classList.add('visible');
+        if (langSwitcher) langSwitcher.classList.add('visible');
+      } else {
+        navEl.classList.remove('visible');
+        if (langSwitcher) langSwitcher.classList.remove('visible');
+      }
     });
   }, { threshold: 0.05 });
   heroObserver.observe(heroEl);
@@ -3082,7 +3162,7 @@
   (function() {
     'use strict';
 
-    const openBtn  = document.getElementById('btn-rundgang');
+    const openBtn  = document.getElementById('nav-rundgang');
     const vrEl     = document.getElementById('gallery-vr');
     const closeBtn = document.getElementById('gallery-vr-close');
     if (!openBtn || !vrEl) return;
@@ -4069,6 +4149,62 @@
   /* ── INIT: apply saved language ── */
   setLang(_lang);
   _updateFavBadge();
+
+  /* ══ CUSTOM CURSOR ══ */
+  (function() {
+    const cur = document.getElementById('custom-cursor');
+    if (!cur || window.matchMedia('(pointer: coarse)').matches) return;
+    let mx = 0, my = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx + 'px';
+      cur.style.top  = my + 'px';
+      cur.classList.add('visible');
+    });
+    document.addEventListener('mouseleave', () => cur.classList.remove('visible'));
+    const hoverEls = 'a, button, .artwork-card, .cat-tile, .coll-card, [onclick], label, input, textarea, select';
+    document.querySelectorAll(hoverEls).forEach(el => {
+      el.addEventListener('mouseenter', () => cur.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => cur.classList.remove('hovered'));
+    });
+  })();
+
+  /* ══ SCROLL PROGRESS BAR ══ */
+  (function() {
+    const bar = document.getElementById('scroll-progress');
+    if (!bar) return;
+    window.addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (max > 0 ? (window.scrollY / max * 100) : 0) + '%';
+    }, { passive: true });
+  })();
+
+  /* ══ 3D TILT ON ARTWORK CARDS ══ */
+  (function() {
+    document.querySelectorAll('.artwork-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform = `rotateY(${x * 9}deg) rotateX(${-y * 9}deg) scale(1.025) translateZ(0)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  })();
+
+  /* ══ HERO PARALLAX ══ */
+  (function() {
+    const img = document.querySelector('.hero-scene img');
+    const hero = document.getElementById('hero');
+    if (!img || !hero) return;
+    window.addEventListener('scroll', () => {
+      if (window.scrollY < hero.offsetHeight) {
+        img.style.transform = 'translateY(' + (window.scrollY * 0.38) + 'px)';
+      }
+    }, { passive: true });
+  })();
 
 </script>
 
