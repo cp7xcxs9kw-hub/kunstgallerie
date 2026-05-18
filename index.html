@@ -1891,54 +1891,6 @@
     #ad-info-panel { top: calc(52px + 38vh) !important; }
   }
 
-  /* ══ INTRO LADESCREEN ══ */
-  #intro-loader {
-    position: fixed;
-    inset: 0;
-    background: #080706;
-    z-index: 9990;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.8rem;
-    animation: intro-fade-out 0.9s ease 2.2s forwards;
-    pointer-events: none;
-  }
-  @keyframes intro-fade-out {
-    to { opacity: 0; visibility: hidden; }
-  }
-  .intro-mono {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3.8rem;
-    font-weight: 300;
-    letter-spacing: 0.75em;
-    padding-left: 0.75em;
-    color: var(--gold);
-    opacity: 0;
-    animation: intro-mono-in 0.9s ease 0.4s forwards;
-  }
-  @keyframes intro-mono-in {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .intro-loader-line {
-    width: 0;
-    height: 0.5px;
-    background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
-    animation: intro-line-grow 1.2s ease 0.7s forwards;
-  }
-  @keyframes intro-line-grow { to { width: 100px; } }
-  .intro-loader-sub {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.48rem;
-    letter-spacing: 0.5em;
-    color: rgba(201,168,76,0.35);
-    text-transform: uppercase;
-    opacity: 0;
-    animation: intro-mono-in 0.8s ease 0.9s forwards;
-  }
-
   /* ══ HERO SPOTLIGHTS ══ */
   .hero-spot {
     position: absolute;
@@ -2062,11 +2014,6 @@
 </style>
 </head>
 <body>
-<div id="intro-loader">
-  <div class="intro-mono">H S</div>
-  <div class="intro-loader-line"></div>
-  <div class="intro-loader-sub">Galerie Horst Schwab</div>
-</div>
 <div id="custom-cursor">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 36 36">
     <!-- Stiel (Griff) — oben rechts, dicker runder Stab -->
@@ -4441,14 +4388,6 @@
     inp.addEventListener('change', upd);
     upd();
   });
-
-  /* ══ INTRO LOADER: aus DOM entfernen nach Animation ══ */
-  var il = document.getElementById('intro-loader');
-  if (il) {
-    il.addEventListener('animationend', function(e) {
-      if (e.animationName === 'intro-fade-out') il.remove();
-    });
-  }
 
   /* ══ CUSTOM CURSOR ══ */
   (function() {
