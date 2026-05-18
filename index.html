@@ -981,11 +981,11 @@
   .field textarea {
     width: 100%;
     border: none;
-    border-bottom: 0.5px solid var(--gray-light);
+    border-bottom: 0.5px solid rgba(201,168,76,0.25);
     padding: 0.6rem 0.85rem;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.75rem;
-    color: var(--text-dark);
+    color: rgba(250,250,248,0.88);
     background: transparent;
     outline: none;
     transition: border-color 0.3s;
@@ -1429,6 +1429,203 @@
     margin: 0;
     font-style: italic;
   }
+
+  /* ── KALENDER OVERLAY ── */
+  #cal-overlay {
+    position: fixed; inset: 0; z-index: 800;
+    background: rgba(5,4,3,0.88); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s;
+  }
+  #cal-overlay.active { opacity: 1; pointer-events: auto; visibility: visible; }
+  .cal-box {
+    background: #100f0d; border: 1px solid rgba(201,168,76,0.22);
+    padding: 2.5rem 2rem 2rem; width: min(420px, 92vw);
+    position: relative;
+  }
+  .cal-close {
+    position: absolute; top: 1rem; right: 1.2rem;
+    background: none; border: none; color: rgba(201,168,76,0.5);
+    font-size: 1rem; cursor: pointer; transition: color 0.2s;
+  }
+  .cal-close:hover { color: var(--gold); }
+  .cal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.8rem;
+  }
+  .cal-nav {
+    background: none; border: none;
+    color: rgba(201,168,76,0.5); font-size: 1.1rem;
+    cursor: pointer; padding: 0.2rem 0.6rem; transition: color 0.2s;
+  }
+  .cal-nav:hover { color: var(--gold); }
+  .cal-month-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-weight: 300;
+    letter-spacing: 0.15em; color: var(--gold);
+  }
+  .cal-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 0.5rem;
+  }
+  .cal-weekdays span {
+    text-align: center; font-size: 0.42rem;
+    letter-spacing: 0.2em; color: rgba(201,168,76,0.4);
+    text-transform: uppercase; padding-bottom: 0.6rem;
+  }
+  .cal-days {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+  }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-family: 'Montserrat', sans-serif; font-size: 0.62rem;
+    color: rgba(250,250,248,0.7); cursor: pointer; border-radius: 2px;
+    transition: background 0.2s, color 0.2s; border: 1px solid transparent;
+  }
+  .cal-day:hover:not(.cal-empty):not(.cal-past) {
+    background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.3); color: var(--gold);
+  }
+  .cal-day.cal-today { border-color: rgba(201,168,76,0.4); color: var(--gold); }
+  .cal-day.cal-selected { background: rgba(201,168,76,0.18); border-color: var(--gold); color: var(--gold); }
+  .cal-day.cal-past { color: rgba(250,250,248,0.2); cursor: default; }
+  .cal-day.cal-empty { cursor: default; }
+  .cal-confirm {
+    margin-top: 1.6rem; text-align: center;
+    font-size: 0.55rem; letter-spacing: 0.18em;
+    color: rgba(201,168,76,0.4); text-transform: uppercase;
+    min-height: 1.4rem;
+  }
+  .cal-confirm.has-date { color: var(--gold); }
+  .cal-book-btn {
+    display: block; width: 100%; margin-top: 1.2rem;
+    background: transparent; border: 1px solid rgba(201,168,76,0.35);
+    color: var(--gold); font-family: 'Montserrat', sans-serif;
+    font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 0.85rem; cursor: pointer;
+    transition: background 0.25s, border-color 0.25s;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s, background 0.25s;
+  }
+  .cal-book-btn.visible { opacity: 1; pointer-events: auto; }
+  .cal-book-btn:hover { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.7); }
+  /* ── AUTH SCREEN ── */
+  #cal-auth { padding: 0.5rem 0; }
+  .cal-auth-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300;
+    color: var(--gold); text-align: center; margin-bottom: 0.3rem; letter-spacing: 0.08em;
+  }
+  .cal-auth-sub {
+    font-size: 0.48rem; letter-spacing: 0.22em; color: rgba(201,168,76,0.35);
+    text-transform: uppercase; text-align: center; margin-bottom: 1.8rem;
+  }
+  .cal-auth-tabs {
+    display: flex; border-bottom: 0.5px solid rgba(201,168,76,0.18); margin-bottom: 1.4rem;
+  }
+  .cal-auth-tab {
+    flex: 1; background: none; border: none; padding: 0.6rem 0;
+    font-family: 'Montserrat', sans-serif; font-size: 0.5rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: rgba(250,250,248,0.3); cursor: pointer;
+    border-bottom: 1px solid transparent; margin-bottom: -0.5px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .cal-auth-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .cal-auth-fields { display: flex; flex-direction: column; gap: 0.2rem; }
+  .cal-auth-field { position: relative; padding-top: 1.2rem; }
+  .cal-auth-field label {
+    position: absolute; top: 1.55rem; left: 0.7rem;
+    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(120,115,100,0.5); pointer-events: none;
+    transition: top 0.2s, font-size 0.2s, color 0.2s;
+  }
+  .cal-auth-field:focus-within label,
+  .cal-auth-field.has-val label { top: 0.1rem; font-size: 0.42rem; letter-spacing: 0.28em; color: var(--gold); }
+  .cal-auth-field input {
+    width: 100%; border: none; border-bottom: 0.5px solid rgba(201,168,76,0.2);
+    padding: 0.55rem 0.7rem; background: transparent;
+    font-family: 'Montserrat', sans-serif; font-size: 0.72rem;
+    color: rgba(250,250,248,0.88); outline: none; transition: border-color 0.25s;
+  }
+  .cal-auth-field input:focus { border-color: var(--gold); }
+  .cal-auth-btn {
+    margin-top: 1.4rem; width: 100%; background: transparent;
+    border: 1px solid rgba(201,168,76,0.35); color: var(--gold);
+    font-family: 'Montserrat', sans-serif; font-size: 0.52rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 0.85rem; cursor: pointer; transition: background 0.25s, border-color 0.25s;
+  }
+  .cal-auth-btn:hover { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.65); }
+  .cal-auth-error {
+    font-size: 0.48rem; letter-spacing: 0.1em; color: rgba(220,80,80,0.8);
+    text-align: center; margin-top: 0.7rem; min-height: 0.8rem;
+  }
+  .cal-auth-greeting {
+    text-align: center; padding: 0.5rem 0 1rem;
+    font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+    color: rgba(250,250,248,0.7); font-style: italic; letter-spacing: 0.05em;
+  }
+  .cal-auth-greeting strong { color: var(--gold); font-style: normal; font-weight: 300; }
+  .cal-auth-logout {
+    display: block; margin: 0.4rem auto 0; background: none; border: none;
+    font-size: 0.42rem; letter-spacing: 0.2em; color: rgba(201,168,76,0.3);
+    text-transform: uppercase; cursor: pointer; text-decoration: underline;
+    text-underline-offset: 3px; transition: color 0.2s;
+  }
+  .cal-auth-logout:hover { color: rgba(201,168,76,0.65); }
+
+  /* Zeitwähler Roller */
+  .cal-time-wrap {
+    overflow: hidden; max-height: 0; opacity: 0;
+    transition: max-height 0.42s ease, opacity 0.32s ease;
+    margin-top: 0.6rem;
+  }
+  .cal-time-wrap.open { max-height: 180px; opacity: 1; }
+  .cal-time-label {
+    text-align: center; font-size: 0.42rem; letter-spacing: 0.32em;
+    color: rgba(201,168,76,0.38); text-transform: uppercase; margin-bottom: 0.7rem;
+  }
+  .cal-rollers { display: flex; align-items: center; justify-content: center; }
+  .cal-roller-wrap { position: relative; width: 72px; height: 132px; overflow: hidden; }
+  .cal-roller-highlight {
+    position: absolute; left: 8px; right: 8px; top: 44px; height: 44px;
+    border-top: 1px solid rgba(201,168,76,0.38);
+    border-bottom: 1px solid rgba(201,168,76,0.38);
+    background: rgba(201,168,76,0.05); pointer-events: none; z-index: 2;
+  }
+  .cal-roller-fade {
+    position: absolute; left: 0; right: 0; height: 48px; z-index: 3; pointer-events: none;
+  }
+  .cal-roller-fade.top { top: 0; background: linear-gradient(to bottom, #100f0d 30%, transparent); }
+  .cal-roller-fade.bot { bottom: 0; background: linear-gradient(to top, #100f0d 30%, transparent); }
+  .cal-roller {
+    height: 132px; overflow-y: scroll; scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .cal-roller::-webkit-scrollbar { display: none; }
+  .cal-roller-item {
+    height: 44px; display: flex; align-items: center; justify-content: center;
+    scroll-snap-align: center; font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem; color: rgba(250,250,248,0.22); user-select: none;
+    transition: color 0.15s, font-size 0.15s;
+  }
+  .cal-roller-item.r-active { color: var(--gold); font-size: 1rem; }
+  .cal-roller-sep {
+    font-size: 1.4rem; color: rgba(201,168,76,0.45);
+    padding: 0 2px; line-height: 132px;
+  }
+
+  .cal-success {
+    text-align: center; padding: 1rem 0;
+    display: none; flex-direction: column; align-items: center; gap: 0.8rem;
+  }
+  .cal-success.show { display: flex; }
+  .cal-success-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.5);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 1.2rem;
+  }
+  .cal-success p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold); font-style: italic; }
+  .cal-success .sub { font-family: 'Montserrat', sans-serif; font-size: 0.52rem; letter-spacing: 0.15em; color: var(--gray-mid); font-style: normal; text-transform: uppercase; }
 
   /* ── CONTACT ── */
   #kontakt {
@@ -2494,15 +2691,19 @@
       <p class="social-name">Facebook</p>
       <p class="social-handle">Galerie Horst Schwab</p>
     </a>
-    <a href="#" class="social-item">
+    <a href="#" class="social-item" onclick="openCal(); return false;">
       <div class="social-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
-          <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <rect x="7" y="13" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" opacity="0.7"/>
+          <rect x="11" y="13" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" opacity="0.7"/>
         </svg>
       </div>
-      <p class="social-name">YouTube</p>
-      <p class="social-handle">Galerie Horst Schwab</p>
+      <p class="social-name" id="soc-cal-label">Termin buchen</p>
+      <p class="social-handle" id="soc-cal-sub">Besichtigung vereinbaren</p>
     </a>
   </div>
 </section>
@@ -2898,6 +3099,84 @@
 
 <button id="back-to-top" aria-label="Nach oben">↑</button>
 
+<!-- ══ KALENDER OVERLAY ══ -->
+<div id="cal-overlay" role="dialog" aria-modal="true" aria-label="Termin buchen">
+  <div class="cal-box">
+    <button class="cal-close" onclick="closeCal()">&#x2715;</button>
+
+    <!-- AUTH SCREEN -->
+    <div id="cal-auth">
+      <p class="cal-auth-title">Mein Konto</p>
+      <p class="cal-auth-sub" id="cal-auth-sub">Bitte anmelden oder registrieren</p>
+
+      <!-- Eingeloggt-Ansicht -->
+      <div id="cal-auth-logged" style="display:none">
+        <div class="cal-auth-greeting" id="cal-auth-greeting"></div>
+        <button class="cal-auth-logout" onclick="calLogout()">Abmelden</button>
+      </div>
+
+      <!-- Login / Register Tabs -->
+      <div id="cal-auth-form">
+        <div class="cal-auth-tabs">
+          <button class="cal-auth-tab active" id="tab-login" onclick="calSwitchTab('login')">Anmelden</button>
+          <button class="cal-auth-tab" id="tab-register" onclick="calSwitchTab('register')">Registrieren</button>
+        </div>
+        <div class="cal-auth-fields">
+          <div class="cal-auth-field" id="auth-field-name" style="display:none">
+            <label>Name</label>
+            <input type="text" id="auth-name" autocomplete="name">
+          </div>
+          <div class="cal-auth-field">
+            <label>E-Mail</label>
+            <input type="email" id="auth-email" autocomplete="email">
+          </div>
+        </div>
+        <div class="cal-auth-error" id="cal-auth-error"></div>
+        <button class="cal-auth-btn" id="cal-auth-submit" onclick="calSubmitAuth()">Anmelden</button>
+      </div>
+    </div>
+
+    <div id="cal-main" style="display:none">
+      <div class="cal-header">
+        <button class="cal-nav" id="cal-prev">&#8249;</button>
+        <span class="cal-month-label" id="cal-month-label"></span>
+        <button class="cal-nav" id="cal-next">&#8250;</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+      </div>
+      <div class="cal-days" id="cal-days"></div>
+
+      <div class="cal-time-wrap" id="cal-time-wrap">
+        <div class="cal-time-label" id="cal-time-label">Uhrzeit wählen</div>
+        <div class="cal-rollers">
+          <div class="cal-roller-wrap">
+            <div class="cal-roller-highlight"></div>
+            <div class="cal-roller-fade top"></div>
+            <div class="cal-roller-fade bot"></div>
+            <div class="cal-roller" id="cal-roller-h"></div>
+          </div>
+          <div class="cal-roller-sep">:</div>
+          <div class="cal-roller-wrap">
+            <div class="cal-roller-highlight"></div>
+            <div class="cal-roller-fade top"></div>
+            <div class="cal-roller-fade bot"></div>
+            <div class="cal-roller" id="cal-roller-m"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cal-confirm" id="cal-confirm">Datum wählen</div>
+      <button class="cal-book-btn" id="cal-book-btn" onclick="confirmBooking()">Termin anfragen</button>
+    </div>
+    <div class="cal-success" id="cal-success">
+      <div class="cal-success-icon">✓</div>
+      <p id="cal-success-text">Anfrage gesendet.</p>
+      <p class="sub" id="cal-success-sub">Wir bestätigen Ihren Termin per E-Mail.</p>
+    </div>
+  </div>
+</div>
+
 
 <!-- ══════════════════════════════════════
      ANGEBOTS-MODAL
@@ -3131,6 +3410,8 @@
       'coll-back-acryl-t':'Zurück','coll-back-oel-t':'Zurück','coll-back-aquarell-t':'Zurück','coll-back-mixed-t':'Zurück',
       'coll-head-acryl':'A C R Y L','coll-head-oel':'Ö L','coll-head-aquarell':'A Q U A R E L L',
       'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.',
+      'soc-cal-label':'Termin buchen','soc-cal-sub':'Besichtigung vereinbaren',
+      'cal-success-text':'Anfrage gesendet.','cal-success-sub':'Wir bestätigen Ihren Termin per E-Mail.',
       'kon-label':'Kontakt','kon-heading':'Sprechen Sie mit uns','kon-sub':'Für Anfragen, private Besichtigungen oder Kooperationen.',
       'kon-email-label':'E-Mail','kon-phone-label':'Telefon','kon-studio-label':'Atelier','kon-studio-val':'Nach Vereinbarung',
       'kon-form-name-label':'Name','kon-form-email-label':'E-Mail','kon-form-msg-label':'Nachricht',
@@ -3156,6 +3437,8 @@
       'coll-back-acryl-t':'Back','coll-back-oel-t':'Back','coll-back-aquarell-t':'Back','coll-back-mixed-t':'Back',
       'coll-head-acryl':'A C R Y L I C','coll-head-oel':'O I L','coll-head-aquarell':'W A T E R C O L O U R',
       'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'Discover new works, exhibitions and behind-the-scenes insights.',
+      'soc-cal-label':'Book appointment','soc-cal-sub':'Schedule a viewing',
+      'cal-success-text':'Request sent.','cal-success-sub':'We will confirm your appointment by e-mail.',
       'kon-label':'Contact','kon-heading':'Get in Touch','kon-sub':'For enquiries, private viewings or collaborations.',
       'kon-email-label':'E-Mail','kon-phone-label':'Phone','kon-studio-label':'Studio','kon-studio-val':'By appointment',
       'kon-form-name-label':'Name','kon-form-email-label':'E-Mail','kon-form-msg-label':'Message',
@@ -3485,7 +3768,7 @@
   heroObserver.observe(heroEl);
 
   // Aktiven Abschnitt in Nav markieren
-  const sections = ['galerie', 'ueber-uns', 'kontakt'];
+  const sections = ['galerie', 'ueber-uns', 'socials', 'kontakt'];
   const sectionEls = sections.map(id => document.getElementById(id));
 
   const activeObserver = new IntersectionObserver((entries) => {
@@ -4496,8 +4779,9 @@
   _updateFavBadge();
 
   /* ══ FLOATING LABELS ══ */
-  document.querySelectorAll('.field input, .field textarea').forEach(function(inp) {
-    function upd() { inp.closest('.field').classList.toggle('has-value', inp.value.length > 0); }
+  document.querySelectorAll('.field input, .field textarea, .cal-auth-field input').forEach(function(inp) {
+    var parent = inp.closest('.field') || inp.closest('.cal-auth-field');
+    function upd() { parent.classList.toggle('has-value', inp.value.length > 0); parent.classList.toggle('has-val', inp.value.length > 0); }
     inp.addEventListener('input', upd);
     inp.addEventListener('change', upd);
     upd();
@@ -4578,6 +4862,252 @@
       document.getElementById('kon-success-msg').classList.add('show');
     }, 300);
   }
+
+  /* ══ KALENDER AUTH ══ */
+  function calGetAccounts() {
+    try { return JSON.parse(localStorage.getItem('_gal_accounts') || '{}'); } catch(e) { return {}; }
+  }
+  function calGetSession() {
+    try { return JSON.parse(localStorage.getItem('_gal_session') || 'null'); } catch(e) { return null; }
+  }
+  function calSaveSession(user) {
+    localStorage.setItem('_gal_session', JSON.stringify(user));
+  }
+
+  window.calSwitchTab = function(tab) {
+    var isReg = tab === 'register';
+    document.getElementById('tab-login').classList.toggle('active', !isReg);
+    document.getElementById('tab-register').classList.toggle('active', isReg);
+    document.getElementById('auth-field-name').style.display = isReg ? '' : 'none';
+    document.getElementById('cal-auth-submit').textContent = isReg ? 'Konto erstellen' : 'Anmelden';
+    document.getElementById('cal-auth-error').textContent = '';
+    document.getElementById('auth-email').value = '';
+    document.getElementById('auth-name').value = '';
+  };
+
+  window.calSubmitAuth = function() {
+    var isReg = document.getElementById('tab-register').classList.contains('active');
+    var email = document.getElementById('auth-email').value.trim().toLowerCase();
+    var name  = document.getElementById('auth-name').value.trim();
+    var err   = document.getElementById('cal-auth-error');
+    var lang  = document.documentElement.lang === 'en' ? 'en' : 'de';
+
+    if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+      err.textContent = lang === 'en' ? 'Please enter a valid e-mail.' : 'Bitte gültige E-Mail eingeben.';
+      return;
+    }
+    var accounts = calGetAccounts();
+    if (isReg) {
+      if (!name) { err.textContent = lang === 'en' ? 'Please enter your name.' : 'Bitte Namen eingeben.'; return; }
+      if (accounts[email]) { err.textContent = lang === 'en' ? 'E-mail already registered.' : 'E-Mail bereits registriert.'; return; }
+      accounts[email] = { name: name, email: email };
+      localStorage.setItem('_gal_accounts', JSON.stringify(accounts));
+      calSaveSession(accounts[email]);
+    } else {
+      if (!accounts[email]) { err.textContent = lang === 'en' ? 'No account found.' : 'Kein Konto gefunden.'; return; }
+      calSaveSession(accounts[email]);
+    }
+    calShowLoggedIn(calGetSession());
+  };
+
+  function calShowLoggedIn(user) {
+    document.getElementById('cal-auth-form').style.display = 'none';
+    document.getElementById('cal-auth-logged').style.display = '';
+    document.getElementById('cal-auth-sub').style.display = 'none';
+    var lang = document.documentElement.lang === 'en' ? 'en' : 'de';
+    document.getElementById('cal-auth-greeting').innerHTML =
+      (lang === 'en' ? 'Welcome back, ' : 'Willkommen, ') +
+      '<strong>' + user.name + '</strong>';
+    setTimeout(function() {
+      if (window.showCalMain) window.showCalMain();
+    }, 1200);
+  }
+
+  window.calLogout = function() {
+    localStorage.removeItem('_gal_session');
+    document.getElementById('cal-auth-logged').style.display = 'none';
+    document.getElementById('cal-auth-form').style.display = '';
+    document.getElementById('cal-auth-sub').style.display = '';
+    calSwitchTab('login');
+  };
+
+  /* ══ KALENDER ══ */
+  (function() {
+    var MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+    var MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var today = new Date();
+    var cur = { year: today.getFullYear(), month: today.getMonth() };
+    var selectedDate = null;
+
+    function getLang() { return document.documentElement.lang === 'en' ? 'en' : 'de'; }
+
+    function renderCal() {
+      var lang = getLang();
+      var months = lang === 'en' ? MONTHS_EN : MONTHS_DE;
+      document.getElementById('cal-month-label').textContent = months[cur.month] + ' ' + cur.year;
+      var grid = document.getElementById('cal-days');
+      grid.innerHTML = '';
+      var firstDay = new Date(cur.year, cur.month, 1).getDay();
+      var offset = (firstDay === 0) ? 6 : firstDay - 1;
+      var daysInMonth = new Date(cur.year, cur.month + 1, 0).getDate();
+      for (var i = 0; i < offset; i++) {
+        var empty = document.createElement('div');
+        empty.className = 'cal-day cal-empty';
+        grid.appendChild(empty);
+      }
+      for (var d = 1; d <= daysInMonth; d++) {
+        var btn = document.createElement('div');
+        btn.className = 'cal-day';
+        btn.textContent = d;
+        var isPast = (cur.year < today.getFullYear()) ||
+          (cur.year === today.getFullYear() && cur.month < today.getMonth()) ||
+          (cur.year === today.getFullYear() && cur.month === today.getMonth() && d < today.getDate());
+        var isToday = cur.year === today.getFullYear() && cur.month === today.getMonth() && d === today.getDate();
+        if (isPast) btn.classList.add('cal-past');
+        if (isToday) btn.classList.add('cal-today');
+        if (selectedDate && selectedDate.d === d && selectedDate.m === cur.month && selectedDate.y === cur.year)
+          btn.classList.add('cal-selected');
+        if (!isPast) btn.addEventListener('click', (function(day) {
+          return function() { selectDay(day); };
+        })(d));
+        grid.appendChild(btn);
+      }
+    }
+
+    /* ── Roller ── */
+    var HOURS = ['09','10','11','12','13','14','15','16','17','18'];
+    var MINS  = ['00','15','30','45'];
+    var ITEM_H = 44;
+
+    function buildRoller(id, values, defaultIdx) {
+      var roller = document.getElementById(id);
+      roller.innerHTML = '';
+      var ghost1 = document.createElement('div');
+      ghost1.className = 'cal-roller-item';
+      roller.appendChild(ghost1);
+      values.forEach(function(v, i) {
+        var el = document.createElement('div');
+        el.className = 'cal-roller-item' + (i === defaultIdx ? ' r-active' : '');
+        el.textContent = v;
+        roller.appendChild(el);
+      });
+      var ghost2 = document.createElement('div');
+      ghost2.className = 'cal-roller-item';
+      roller.appendChild(ghost2);
+      roller.scrollTop = defaultIdx * ITEM_H;
+    }
+
+    function getRollerValue(id, values) {
+      var roller = document.getElementById(id);
+      var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
+      return values[Math.max(0, idx)];
+    }
+
+    function updateRollerActive(id, values) {
+      var roller = document.getElementById(id);
+      var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
+      var items = roller.querySelectorAll('.cal-roller-item');
+      items.forEach(function(el, i) { el.classList.toggle('r-active', i === idx + 1); });
+    }
+
+    function updateConfirmText() {
+      if (!selectedDate) return;
+      var lang = getLang();
+      var months = lang === 'en' ? MONTHS_EN : MONTHS_DE;
+      var h = getRollerValue('cal-roller-h', HOURS);
+      var m = getRollerValue('cal-roller-m', MINS);
+      var conf = document.getElementById('cal-confirm');
+      conf.textContent = (lang === 'en' ? 'Selected: ' : 'Gewählt: ') +
+        selectedDate.d + '. ' + months[selectedDate.m] + ' ' + selectedDate.y +
+        ' · ' + h + ':' + m + ' Uhr';
+      conf.classList.add('has-date');
+      document.getElementById('cal-book-btn').classList.add('visible');
+    }
+
+    function attachRollerScroll(id, values) {
+      var roller = document.getElementById(id);
+      var t;
+      roller.addEventListener('scroll', function() {
+        clearTimeout(t);
+        updateRollerActive(id, values);
+        t = setTimeout(function() {
+          var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
+          roller.scrollTo({ top: idx * ITEM_H, behavior: 'smooth' });
+          updateRollerActive(id, values);
+          if (selectedDate) updateConfirmText();
+        }, 120);
+      }, { passive: true });
+    }
+
+    function selectDay(d) {
+      selectedDate = { d: d, m: cur.month, y: cur.year };
+      renderCal();
+      document.getElementById('cal-time-wrap').classList.add('open');
+      updateConfirmText();
+    }
+
+    window.showCalMain = function showCalMain() {
+      selectedDate = null;
+      cur = { year: today.getFullYear(), month: today.getMonth() };
+      document.getElementById('cal-success').classList.remove('show');
+      document.getElementById('cal-auth').style.display = 'none';
+      document.getElementById('cal-main').style.display = '';
+      document.getElementById('cal-time-wrap').classList.remove('open');
+      buildRoller('cal-roller-h', HOURS, 0);
+      buildRoller('cal-roller-m', MINS, 0);
+      attachRollerScroll('cal-roller-h', HOURS);
+      attachRollerScroll('cal-roller-m', MINS);
+      renderCal();
+      var conf = document.getElementById('cal-confirm');
+      conf.textContent = getLang() === 'en' ? 'Select a date' : 'Datum wählen';
+      conf.classList.remove('has-date');
+      document.getElementById('cal-book-btn').classList.remove('visible');
+    }
+
+    window.openCal = function() {
+      var session = calGetSession();
+      document.getElementById('cal-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (session) {
+        showCalMain();
+      } else {
+        document.getElementById('cal-main').style.display = 'none';
+        document.getElementById('cal-auth').style.display = '';
+        document.getElementById('cal-auth-logged').style.display = 'none';
+        document.getElementById('cal-auth-form').style.display = '';
+        document.getElementById('cal-auth-sub').style.display = '';
+        document.getElementById('cal-auth-error').textContent = '';
+        calSwitchTab('login');
+      }
+    };
+
+    window.closeCal = function() {
+      document.getElementById('cal-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    window.confirmBooking = function() {
+      if (!selectedDate) return;
+      document.getElementById('cal-main').style.display = 'none';
+      document.getElementById('cal-success').classList.add('show');
+      setTimeout(function() { closeCal(); }, 3200);
+    };
+
+    document.getElementById('cal-prev').addEventListener('click', function() {
+      cur.month--; if (cur.month < 0) { cur.month = 11; cur.year--; }
+      renderCal();
+    });
+    document.getElementById('cal-next').addEventListener('click', function() {
+      cur.month++; if (cur.month > 11) { cur.month = 0; cur.year++; }
+      renderCal();
+    });
+    document.getElementById('cal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeCal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeCal();
+    });
+  })();
 
   /* ══ NACH-OBEN BUTTON ══ */
   (function() {
