@@ -75,6 +75,7 @@
     display: flex;
     gap: 3rem;
     list-style: none;
+    align-items: center;
   }
 
   .nav-links a {
@@ -86,6 +87,8 @@
     font-weight: 300;
     transition: color 0.3s;
     position: relative;
+    line-height: 1;
+    vertical-align: middle;
   }
 
   .nav-links a::after {
@@ -103,6 +106,22 @@
   .nav-links a:hover::after { transform: scaleX(1); }
   .nav-links a.active { color: var(--gold); }
   .nav-links a.active::after { transform: scaleX(1); }
+
+  #nav-account {
+    background: none; border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.38rem;
+    font-family: 'Montserrat', sans-serif; font-size: 0.58rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gray-mid); transition: color 0.25s; padding: 0;
+    line-height: 1; vertical-align: middle;
+  }
+  #nav-account:hover { color: var(--gold); }
+  #nav-account .nav-acc-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold); display: none; flex-shrink: 0;
+  }
+  #nav-account.logged-in { color: var(--gold); }
+  #nav-account.logged-in .nav-acc-dot { display: block; }
 
   /* ── HERO – vollbild ── */
   #hero {
@@ -2330,6 +2349,7 @@
     <li><a href="#socials" id="nav-socials">Socials</a></li>
     <li><a href="#kontakt" id="nav-kontakt">Kontakt</a></li>
     <li><a href="#" id="btn-favs" onclick="event.preventDefault();openFavs()"><span id="nav-favs-label">Merkliste</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
+    <li><button id="nav-account" onclick="openNavAccount()"><span class="nav-acc-dot"></span><span id="nav-acc-label">Anmelden</span></button></li>
   </ul>
 </nav>
 <div id="lang-switcher">
@@ -2374,10 +2394,6 @@
     <a href="#galerie" class="hero-enter" id="hero-enter">Galerie betreten</a>
   </div>
 
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span class="scroll-text" id="hero-scroll">Entdecken</span>
-  </div>
 
   <div class="hero-floor"></div>
 </section>
@@ -3401,7 +3417,7 @@
   const I18N = {
     de: {
       'nav-galerie':'Galerie','nav-werke':'Werke','nav-bio':'Biographie','nav-rundgang':'Rundgang',
-      'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste',
+      'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste','nav-acc-label':'Anmelden',
       'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-scroll':'Entdecken',
       'intro-label':'Willkommen',
       'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
@@ -3428,7 +3444,7 @@
     },
     en: {
       'nav-galerie':'Gallery','nav-werke':'Works','nav-bio':'Biography','nav-rundgang':'Tour',
-      'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist',
+      'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist','nav-acc-label':'Sign in',
       'hero-tagline':'Art  |  Passion  |  Timeless','hero-enter':'Enter Gallery','hero-scroll':'Discover',
       'intro-label':'Welcome',
       'gal-label':'Current Works','gal-heading':'Selected Collection',
@@ -4907,6 +4923,7 @@
       if (!accounts[email]) { err.textContent = lang === 'en' ? 'No account found.' : 'Kein Konto gefunden.'; return; }
       calSaveSession(accounts[email]);
     }
+    updateNavAccount();
     calShowLoggedIn(calGetSession());
   };
 
@@ -4923,12 +4940,48 @@
     }, 1200);
   }
 
+  function updateNavAccount() {
+    var session = calGetSession();
+    var btn = document.getElementById('nav-account');
+    var label = document.getElementById('nav-acc-label');
+    if (!btn || !label) return;
+    if (session) {
+      btn.classList.add('logged-in');
+      label.textContent = session.name;
+    } else {
+      btn.classList.remove('logged-in');
+      var lang = document.documentElement.lang === 'en' ? 'en' : 'de';
+      label.textContent = lang === 'en' ? 'Sign in' : 'Anmelden';
+    }
+  }
+  updateNavAccount();
+
+  window.openNavAccount = function() {
+    var session = calGetSession();
+    if (session) {
+      document.getElementById('cal-main').style.display = 'none';
+      document.getElementById('cal-auth').style.display = '';
+      document.getElementById('cal-auth-form').style.display = 'none';
+      document.getElementById('cal-auth-sub').style.display = 'none';
+      document.getElementById('cal-auth-logged').style.display = '';
+      var lang = document.documentElement.lang === 'en' ? 'en' : 'de';
+      document.getElementById('cal-auth-greeting').innerHTML =
+        (lang === 'en' ? 'Signed in as ' : 'Angemeldet als ') +
+        '<strong>' + session.name + '</strong>';
+      document.getElementById('cal-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } else {
+      openCal();
+    }
+  };
+
   window.calLogout = function() {
     localStorage.removeItem('_gal_session');
     document.getElementById('cal-auth-logged').style.display = 'none';
     document.getElementById('cal-auth-form').style.display = '';
     document.getElementById('cal-auth-sub').style.display = '';
     calSwitchTab('login');
+    updateNavAccount();
   };
 
   /* ══ KALENDER ══ */
