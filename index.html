@@ -2,6 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos</title>
 
@@ -618,8 +621,14 @@
     width: 100%; aspect-ratio: 4/3;
     background: #1a1a18;
     display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
   .coll-card-img svg { opacity: 0.18; }
+  .coll-card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+    display: block;
+  }
   .coll-card-body { padding: 1.4rem 1.6rem 1.8rem; }
   .coll-card-title {
     font-family: 'Cormorant Garamond', serif;
@@ -766,7 +775,10 @@
     width: 60%;
     min-height: 0;
     align-self: stretch;
-    background: #1c1a17;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255,252,240,0.55) 0%, transparent 70%),
+      radial-gradient(ellipse 100% 60% at 50% 100%, rgba(160,155,145,0.18) 0%, transparent 70%),
+      #efefec;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -839,9 +851,12 @@
   }
   /* Real image once added */
   .ad-img-el img {
-    max-width: 84%; max-height: 84%;
+    max-width: 68%; max-height: 72%;
     object-fit: contain; display: block;
-    box-shadow: 0 12px 80px rgba(0,0,0,0.55);
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.10),
+      0 8px 24px rgba(0,0,0,0.14),
+      0 28px 60px rgba(0,0,0,0.12);
   }
   .ad-zoom-hint {
     position: absolute;
@@ -2511,7 +2526,7 @@
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Komposition I')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.5"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
+        <div class="coll-card-img"><img src="artwork-linie.png" alt="Komposition I"></div>
         <div class="coll-card-body"><p class="coll-card-title">Komposition I</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 120 × 90 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-price">€ 4.800 – 7.200</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Komposition I')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Stille II')">
@@ -2567,7 +2582,7 @@
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Vergänglichkeit')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.5" transform="rotate(45 32 32)"/></svg></div>
+        <div class="coll-card-img"><img src="artwork-linie.png" alt="Vergänglichkeit"></div>
         <div class="coll-card-body"><p class="coll-card-title">Vergänglichkeit</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 60 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-price">€ 1.800 – 3.200</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Vergänglichkeit')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Morgenrot')">
@@ -3261,7 +3276,7 @@
   </div>
 
   <!-- Left: dark image panel -->
-  <div id="ad-img-panel" style="position:absolute;top:64px;left:0;width:60%;bottom:0;background:#1c1a17;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+  <div id="ad-img-panel" style="position:absolute;top:64px;left:0;width:60%;bottom:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
     <div id="ad-img-inner" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:zoom-in;overflow:hidden;">
       <div id="ad-img-el" style="transform-origin:center center;transition:transform 0.08s ease;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1.8rem;"></div>
     </div>
@@ -3433,7 +3448,7 @@
 
   /* ══ ARTWORK DATA ══ */
   const ARTWORKS = {
-    'Komposition I':   { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', price:'4.800 – 7.200', cat:'Acryl', cat_en:'Acrylic', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Komposition I':   { img:'artwork-linie.png', technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', price:'4.800 – 7.200', cat:'Acryl', cat_en:'Acrylic', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Stille II':       { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'80 × 60 cm', year:'2023', price:'2.200 – 3.800', cat:'Acryl', cat_en:'Acrylic', story:'Stille II ist das zweite Werk einer Reihe, die sich dem Thema innerer Ruhe widmet. Schwab arbeitete hier mit ausgesprochen reduzierter Farbpalette — fast ausschließlich Weiß- und Grautöne, unterbrochen von einem einzigen warmen Akzent. Das Kreisformat innerhalb des rechteckigen Trägers erzeugt eine meditative Wirkung, die Betrachtende zum Innehalten einlädt.', story_en:'Stille II is the second work in a series dedicated to inner stillness. Schwab worked here with an exceptionally reduced palette — almost exclusively whites and greys, broken by a single warm accent. The circular form within the rectangular support creates a meditative effect, inviting the viewer to pause.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Aufbruch':        { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'100 × 80 cm', year:'2024', price:'3.200 – 4.800', cat:'Acryl', cat_en:'Acrylic', story:'Aufbruch entstand in einer Phase intensiver Veränderung. Die nach oben strebende Dreiecksform ist bewusst gewählt — sie symbolisiert Bewegung, Entscheidung und den Mut zur Veränderung. Warme Ockertöne treffen auf kühle Blaugrau-Flächen; diese Spannung macht das Bild zu einem emotionalen Dokument seiner Entstehungszeit.', story_en:'Aufbruch (Departure) was created during a period of intense change. The upward-pointing triangular form is deliberate — it symbolises movement, decision and the courage to change. Warm ochres meet cool blue-grey fields; this tension makes the painting an emotional document of the time in which it was made.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
     'Horizont':        { technique:'Acryl auf Papier', technique_en:'Acrylic on paper', size:'70 × 50 cm', year:'2023', price:'1.900 – 3.100', cat:'Acryl', cat_en:'Acrylic', story:'Eine schlichte, fast minimalistische Arbeit — und doch eine der persönlichsten. Die horizontale Linie, die das Bild in zwei nahezu gleiche Hälften teilt, steht für den Moment kurz vor dem Sonnenuntergang. Schwab malte diese Serie während eines längeren Aufenthalts im ländlichen Raum, täglich zur gleichen Stunde, mit dem Blick auf denselben Horizont.', story_en:'A simple, almost minimalist work — yet one of the most personal. The horizontal line dividing the canvas into two near-equal halves represents the moment just before sunset. Schwab painted this series during an extended stay in the countryside, at the same hour each day, looking out at the same horizon.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
@@ -3441,7 +3456,7 @@
     'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', price:'4.200 – 6.500', cat:'Öl', cat_en:'Oil', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
     'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', price:'2.800 – 4.200', cat:'Öl', cat_en:'Oil', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
     'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', price:'5.000 – 8.000', cat:'Öl', cat_en:'Oil', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.800 – 3.200', cat:'Aquarell', cat_en:'Watercolour', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
+    'Vergänglichkeit': { img:'artwork-linie.png', technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.800 – 3.200', cat:'Aquarell', cat_en:'Watercolour', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
     'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', price:'1.400 – 2.600', cat:'Aquarell', cat_en:'Watercolour', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', price:'2.100 – 3.600', cat:'Aquarell', cat_en:'Watercolour', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
     'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', price:'1.600 – 2.900', cat:'Aquarell', cat_en:'Watercolour', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
@@ -3543,7 +3558,7 @@
     });
     // re-render open artwork if any
     var adEl = document.getElementById('artwork-detail');
-    if (_adCurrentTitle && adEl && adEl.classList.contains('active')) openArtwork(_adCurrentTitle);
+    if (_adCurrentTitle && adEl && adEl.classList.contains('active')) openArtwork(_adCurrentTitle, true);
     // re-render favs if open
     var favEl = document.getElementById('fav-overlay');
     if (favEl && favEl.classList.contains('active')) renderFavs();
@@ -3640,10 +3655,16 @@
 
   /* ══ ARTWORK DETAIL ══ */
   let _adCurrentTitle = '';
+  let _adParentCol = null;
 
-  function openArtwork(title) {
+  function openArtwork(title, rerender) {
     const d = ARTWORKS[title]; if (!d) return;
     _adCurrentTitle = title;
+    if (!rerender) {
+      const activeCol = document.querySelector('.coll-overlay.active:not(#fav-overlay)');
+      _adParentCol = activeCol ? activeCol.id.replace('coll-', '') : null;
+    }
+    history.replaceState(null, '', '#artwork=' + encodeURIComponent(title));
     const isEN = _lang === 'en';
     const cat  = isEN ? d.cat_en : d.cat;
     const tech = isEN ? d.technique_en : d.technique;
@@ -3659,18 +3680,19 @@
     if (document.getElementById('ad-offer-btn')) document.getElementById('ad-offer-btn').textContent = t['ad-offer-btn'];
     if (document.getElementById('ad-back-text')) document.getElementById('ad-back-text').textContent = t['ad-back-text'];
     const subTxt = t['ad-sub-text'];
-    document.getElementById('ad-img-el').innerHTML =
-      '<div class="ad-placeholder">' +
-        '<div class="ad-placeholder-frame">' +
-          '<div class="ad-placeholder-svg">' +
-            '<svg viewBox="0 0 64 64" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">' + d.svg + '</svg>' +
+    document.getElementById('ad-img-el').innerHTML = d.img
+      ? '<img src="' + d.img + '" alt="' + title + '">'
+      : '<div class="ad-placeholder">' +
+          '<div class="ad-placeholder-frame">' +
+            '<div class="ad-placeholder-svg">' +
+              '<svg viewBox="0 0 64 64" width="80" height="80" fill="none" xmlns="http://www.w3.org/2000/svg">' + d.svg + '</svg>' +
+            '</div>' +
           '</div>' +
-        '</div>' +
-        '<div class="ad-placeholder-caption">' +
-          '<span class="ad-placeholder-name">' + title + '</span>' +
-          '<span class="ad-placeholder-sub">' + subTxt + '</span>' +
-        '</div>' +
-      '</div>';
+          '<div class="ad-placeholder-caption">' +
+            '<span class="ad-placeholder-name">' + title + '</span>' +
+            '<span class="ad-placeholder-sub">' + subTxt + '</span>' +
+          '</div>' +
+        '</div>';
     document.getElementById('ad-details-grid').innerHTML =
       '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-tech-label'] + '</span><span class="ad-detail-value">' + tech + '</span></div>' +
       '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-size-label'] + '</span><span class="ad-detail-value">' + d.size + '</span></div>' +
@@ -3689,6 +3711,12 @@
   function closeArtwork() {
     document.getElementById('artwork-detail').classList.remove('active');
     document.body.style.overflow = '';
+    if (_adParentCol) {
+      history.replaceState(null, '', '#col=' + encodeURIComponent(_adParentCol));
+      openCollection(_adParentCol, true);
+    } else {
+      history.replaceState(null, '', location.pathname);
+    }
   }
 
   // Zoom + Pan
@@ -3731,6 +3759,22 @@
     document.getElementById('ad-img-inner')?.classList.remove('dragging');
   });
   document.getElementById('ad-back-btn')?.addEventListener('click', closeArtwork);
+
+  // Overlay-Zustand per URL-Hash wiederherstellen (z.B. nach Refresh)
+  const _CAT_TO_COL = { 'Acryl':'acryl', 'Öl':'oel', 'Aquarell':'aquarell', 'Gemischte Technik':'mixed' };
+  (function() {
+    const h = location.hash;
+    if (h.startsWith('#artwork=')) {
+      const title = decodeURIComponent(h.slice('#artwork='.length));
+      if (ARTWORKS[title]) {
+        openArtwork(title, true);
+        _adParentCol = _CAT_TO_COL[ARTWORKS[title].cat] || null;
+      }
+    } else if (h.startsWith('#col=')) {
+      const cat = decodeURIComponent(h.slice('#col='.length));
+      if (document.getElementById('coll-' + cat)) openCollection(cat);
+    }
+  })();
   document.getElementById('ad-offer-btn')?.addEventListener('click', () => {
     closeArtwork();
     const d = ARTWORKS[_adCurrentTitle];
@@ -3756,18 +3800,20 @@
     }
   }
 
-  function openCollection(cat) {
+  function openCollection(cat, noHash) {
     const el = document.getElementById('coll-' + cat);
     if (!el) return;
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
     el.scrollTop = 0;
+    if (!noHash) history.replaceState(null, '', '#col=' + encodeURIComponent(cat));
   }
   function closeCollection(cat) {
     const el = document.getElementById('coll-' + cat);
     if (!el) return;
     el.classList.remove('active');
     document.body.style.overflow = '';
+    history.replaceState(null, '', location.pathname);
   }
 
   function submitOffer() {
@@ -3845,6 +3891,7 @@
   // ══════════════════════════════════════════════════════════════
   (function() {
     'use strict';
+
 
     const openBtn  = document.getElementById('nav-rundgang');
     const vrEl     = document.getElementById('gallery-vr');
@@ -4331,7 +4378,7 @@
       const g = new T.Group();
       const tex = makeTex(T,idx);
       const paint = new T.Mesh(new T.PlaneGeometry(PW,PH),
-        new T.MeshStandardMaterial({map:tex, roughness:0.82}));
+        new T.MeshStandardMaterial({map:tex, roughness:0.88, metalness:0.0, side:T.DoubleSide}));
       paint.position.z=0.025; g.add(paint);
 
       // Thin minimal dark frame (like reference photo)
@@ -4354,8 +4401,8 @@
     }
 
     const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII'];
-    const PAL=[['#c0af96','#ae9d82'],['#97aab4','#879aa4'],['#b0baa6','#9eaa94'],
-               ['#c2ae98','#b09e88'],['#a2aabb','#929aaa'],['#b6ae9e','#a69e8e']];
+    const PAL=[['#5a3520','#8c5a34'],['#1a3a6a','#2e5e96'],['#1a5535','#2a7a50'],
+               ['#5a1a1a','#8c2e2e'],['#3a2060','#5a3a8c'],['#3a3a10','#5a5a22']];
 
     function makeTex(T,idx){
       const cv=document.createElement('canvas'); cv.width=500; cv.height=620;
@@ -4364,18 +4411,34 @@
       const gr=ctx.createLinearGradient(0,0,500,620);
       gr.addColorStop(0,c1); gr.addColorStop(1,c2);
       ctx.fillStyle=gr; ctx.fillRect(0,0,500,620);
-      ctx.strokeStyle='rgba(28,16,4,0.16)'; ctx.lineWidth=1.5;
+      ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=1.5;
       ctx.strokeRect(26,26,448,568); ctx.strokeRect(30,30,440,560);
-      ctx.fillStyle='rgba(38,22,8,0.36)';
+      ctx.fillStyle='rgba(255,255,255,0.85)';
       ctx.font='300 80px "Georgia","Times New Roman",serif';
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(ROMAN[idx]||String(idx+1),250,255);
-      ctx.font='300 13px Arial,sans-serif'; ctx.fillStyle='rgba(38,22,8,0.28)';
+      ctx.font='300 13px Arial,sans-serif'; ctx.fillStyle='rgba(255,255,255,0.70)';
       ctx.fillText('HORST  SCHWAB',250,358);
       ctx.fillText('KUNSTWERK  ·  PLATZHALTER',250,381);
-      ctx.strokeStyle='rgba(45,28,10,0.20)'; ctx.lineWidth=1;
+      ctx.strokeStyle='rgba(255,255,255,0.40)'; ctx.lineWidth=1;
       ctx.beginPath(); ctx.moveTo(130,406); ctx.lineTo(370,406); ctx.stroke();
-      return new T.CanvasTexture(cv);
+      const tex=new T.CanvasTexture(cv);
+      tex.encoding=T.sRGBEncoding;
+      // Load real artwork image where available
+      const artImg={0:'artwork-linie.png',8:'artwork-linie.png'}[idx];
+      if(artImg){
+        const img=new Image();
+        img.onload=()=>{
+          ctx.clearRect(0,0,500,620);
+          ctx.fillStyle='#f5f0e8'; ctx.fillRect(0,0,500,620);
+          const s=Math.min(460/img.width,580/img.height);
+          const w=img.width*s, h=img.height*s;
+          ctx.drawImage(img,(500-w)/2,(620-h)/2,w,h);
+          tex.needsUpdate=true;
+        };
+        img.src=artImg;
+      }
+      return tex;
     }
 
     // ── Furniture ────────────────────────────────────────────────
