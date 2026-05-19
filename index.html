@@ -3955,6 +3955,14 @@
       {x: 2.2,   y:PY, z:-39.98, rotY:Math.PI},
     ];
 
+    // Artwork titles mapped to painting index (idx 0–15 = 16 artworks, 16–17 = leere Rückwand)
+    const PAINTING_TITLES = [
+      'Komposition I','Stille II','Aufbruch','Horizont',
+      'Tiefe','Stille I','Dämmerung','Landschaft I',
+      'Vergänglichkeit','Morgenrot','Nebel','Fluss',
+      'Licht & Schatten','Struktur','Fragment','Übergang',
+    ];
+
     // ── Init ─────────────────────────────────────────────────────
     function initGallery() {
       const T = window.THREE;
@@ -3980,6 +3988,28 @@
       buildWallSigns(T);
       buildSeq(T);
       window.addEventListener('resize', onResize);
+
+      // ── Raycaster: Klick auf Gemälde öffnet Artwork-Detail ──────
+      const raycaster = new T.Raycaster();
+      const mouse = new T.Vector2();
+      cv.addEventListener('click', e => {
+        mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
+        mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, cam);
+        const hits = raycaster.intersectObjects(scene.children, true);
+        for (const hit of hits) {
+          const title = hit.object.userData.artworkTitle;
+          if (title) { openArtwork(title); break; }
+        }
+      });
+      cv.addEventListener('mousemove', e => {
+        mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
+        mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, cam);
+        const hits = raycaster.intersectObjects(scene.children, true);
+        const hover = hits.some(h => h.object.userData.artworkTitle);
+        cv.style.cursor = hover ? 'pointer' : 'default';
+      });
       // Ladescreen ausblenden sobald erste Frames gerendert sind
       let loaderGone = false;
       function frame(ts){
@@ -4379,7 +4409,9 @@
       const tex = makeTex(T,idx);
       const paint = new T.Mesh(new T.PlaneGeometry(PW,PH),
         new T.MeshStandardMaterial({map:tex, roughness:0.88, metalness:0.0, side:T.DoubleSide}));
-      paint.position.z=0.025; g.add(paint);
+      paint.position.z=0.025;
+      if (PAINTING_TITLES[idx]) paint.userData.artworkTitle = PAINTING_TITLES[idx];
+      g.add(paint);
 
       // Thin minimal dark frame (like reference photo)
       const fm=new T.MeshStandardMaterial({color:0x1c1c1c, roughness:0.90, metalness:0.02});
