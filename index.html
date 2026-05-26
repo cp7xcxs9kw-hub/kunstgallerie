@@ -2601,9 +2601,62 @@
   @media (max-width: 480px) {
     #rundgang-hint { right: 1rem; left: 1rem; max-width: none; bottom: 1.2rem; }
   }
+
+  /* ── PRELOADER ── */
+  #preloader {
+    position: fixed;
+    inset: 0;
+    background: #0A0A0A;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .preloader-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    font-weight: 300;
+    color: #C9A84C;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    animation: preloader-fade-in 0.9s ease forwards 0.2s;
+  }
+  .preloader-line {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    animation: preloader-line-grow 1.1s ease forwards 0.5s;
+  }
+  .preloader-text {
+    font-size: 0.5rem;
+    letter-spacing: 0.6em;
+    color: rgba(201,168,76,0.45);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: preloader-fade-in 0.7s ease forwards 1s;
+  }
+  @keyframes preloader-fade-in {
+    to { opacity: 1; }
+  }
+  @keyframes preloader-line-grow {
+    to { width: 120px; }
+  }
 </style>
 </head>
 <body>
+<div id="preloader">
+  <div class="preloader-logo">H</div>
+  <div class="preloader-line"></div>
+  <p class="preloader-text">Galerie Horst Schwab</p>
+</div>
 <div id="custom-cursor"></div>
 <div id="scroll-progress"></div>
 
@@ -2964,11 +3017,11 @@
      SOCIALS
 ══════════════════════════════════════ -->
 <section id="socials">
-  <p class="section-label" id="soc-label">Folgen Sie uns</p>
+  <p class="section-label fade-in-section" id="soc-label">Folgen Sie uns</p>
   <h2 id="soc-heading">Bleiben Sie in Verbindung</h2>
   <p id="soc-sub">Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.</p>
 
-  <div class="socials-grid">
+  <div class="socials-grid fade-in-section" style="transition-delay:0.15s">
     <a href="#" class="social-item">
       <div class="social-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
@@ -3011,11 +3064,11 @@
      KONTAKT
 ══════════════════════════════════════ -->
 <section id="kontakt">
-  <p class="section-label" id="kon-label">Kontakt</p>
+  <p class="section-label fade-in-section" id="kon-label">Kontakt</p>
   <h2 id="kon-heading">Sprechen Sie mit uns</h2>
   <p id="kon-sub">Für Anfragen, private Besichtigungen oder Kooperationen.</p>
 
-  <div class="contact-grid">
+  <div class="contact-grid fade-in-section" style="transition-delay:0.15s">
     <div class="contact-item">
       <p class="label" id="kon-email-label">E-Mail</p>
       <p class="value">info@galerie-schwab.de</p>
@@ -3386,7 +3439,7 @@
 <!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
-<footer>
+<footer class="fade-in-section">
   <span class="footer-name">Galerie Horst Schwab</span>
   <ul class="footer-links">
     <li><a href="#" onclick="openLegal('impressum'); return false;">Impressum</a></li>
@@ -5736,5 +5789,22 @@
 
 </script>
 
+
+  <script>
+  /* ── PRELOADER JS ── */
+  (function(){
+    var pl = document.getElementById('preloader');
+    if (!pl) return;
+    var hide = function(){
+      pl.classList.add('hidden');
+      setTimeout(function(){ pl.remove(); }, 900);
+    };
+    if (document.readyState === 'complete') {
+      setTimeout(hide, 1800);
+    } else {
+      window.addEventListener('load', function(){ setTimeout(hide, 400); });
+    }
+  })();
+  </script>
 </body>
 </html>
