@@ -2620,15 +2620,6 @@
     visibility: hidden;
     pointer-events: none;
   }
-  .preloader-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 5rem;
-    font-weight: 300;
-    color: #C9A84C;
-    letter-spacing: 0.08em;
-    opacity: 0;
-    animation: preloader-fade-in 0.9s ease forwards 0.2s;
-  }
   .preloader-line {
     width: 0;
     height: 1px;
@@ -2649,11 +2640,66 @@
   @keyframes preloader-line-grow {
     to { width: 120px; }
   }
+
+  /* ── NAV SWEEP TRANSITION ── */
+  #nav-sweep {
+    position: fixed;
+    inset: 0;
+    background: #0A0A0A;
+    z-index: 800;
+    pointer-events: none;
+    opacity: 0;
+    overflow: hidden;
+    transition: opacity 0.22s ease;
+  }
+  #nav-sweep.active { opacity: 1; pointer-events: all; }
+  #nav-sweep.out    { opacity: 0; transition: opacity 0.45s ease; }
+
+  .sweep-comet {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 32vw;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.1) 15%, rgba(201,168,76,0.55) 55%, rgba(201,168,76,1) 83%, #fff9e0 93%, #ffffff 100%);
+    box-shadow: 0 0 10px 1px rgba(201,168,76,0.45), 0 0 3px rgba(255,248,220,0.7);
+    filter: blur(0.25px);
+    transform: translateX(-32vw) translateY(-50%);
+    opacity: 0;
+  }
+  .sweep-comet-2 {
+    top: calc(50% + 10px);
+    height: 0.5px;
+    width: 22vw;
+    opacity: 0;
+    filter: blur(0.6px);
+    background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.08) 20%, rgba(201,168,76,0.35) 70%, rgba(201,168,76,0.6) 100%);
+    transform: translateX(-22vw) translateY(-50%);
+    box-shadow: none;
+  }
+  #nav-sweep.active .sweep-comet {
+    animation: sweep-fly 0.72s cubic-bezier(0.22, 0, 0.68, 1) 0.04s forwards;
+  }
+  #nav-sweep.active .sweep-comet-2 {
+    animation: sweep-fly-2 0.72s cubic-bezier(0.22, 0, 0.68, 1) 0.09s forwards;
+  }
+  @keyframes sweep-fly {
+    0%   { transform: translateX(-32vw) translateY(-50%); opacity: 0; }
+    8%   { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translateX(110vw) translateY(-50%); opacity: 0; }
+  }
+  @keyframes sweep-fly-2 {
+    0%   { transform: translateX(-22vw) translateY(-50%); opacity: 0; }
+    8%   { opacity: 0.55; }
+    88%  { opacity: 0.4; }
+    100% { transform: translateX(110vw) translateY(-50%); opacity: 0; }
+  }
 </style>
 </head>
 <body>
+<div id="nav-sweep"><div class="sweep-comet"></div><div class="sweep-comet sweep-comet-2"></div></div>
 <div id="preloader">
-  <div class="preloader-logo">H</div>
   <div class="preloader-line"></div>
   <p class="preloader-text">Galerie Horst Schwab</p>
 </div>
@@ -3694,14 +3740,19 @@
   }
 
   function roomTransition(targetId) {
-    overlay.classList.add('entering');
+    const sweep = document.getElementById('nav-sweep');
+    sweep.classList.remove('out');
+    sweep.classList.add('active');
+    // Scroll während Overlay sichtbar ist
     setTimeout(() => {
       const target = document.getElementById(targetId);
       if (target) target.scrollIntoView({ behavior: 'instant' });
-      setTimeout(() => {
-        overlay.classList.remove('entering');
-      }, 120);
-    }, 520);
+    }, 420);
+    // Ausblenden nach Kometendurchflug
+    setTimeout(() => {
+      sweep.classList.add('out');
+      setTimeout(() => sweep.classList.remove('active', 'out'), 500);
+    }, 730);
   }
 
   // Hero-Button: Zoom-In Effekt
