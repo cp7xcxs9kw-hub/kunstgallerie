@@ -445,41 +445,6 @@
   }
   .hero-enter-ghost:hover { color: var(--gold); }
 
-  .hero-portrait {
-    position: absolute;
-    bottom: 3.5rem;
-    right: 4rem;
-    width: 150px;
-    z-index: 2;
-    opacity: 0;
-    animation: fadeIn 2.5s ease forwards 3.5s;
-    pointer-events: none;
-  }
-  .hero-portrait img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    object-position: center top;
-    display: block;
-    filter: brightness(0.78) grayscale(0.15) sepia(0.05);
-    border: 1px solid rgba(201,168,76,0.35);
-  }
-  .hero-portrait::before {
-    content: '';
-    position: absolute;
-    inset: -5px;
-    border: 0.5px solid rgba(201,168,76,0.20);
-    pointer-events: none;
-  }
-  .hero-portrait-name {
-    margin-top: 0.65rem;
-    text-align: center;
-    font-size: 0.44rem;
-    letter-spacing: 0.45em;
-    color: rgba(201,168,76,0.38);
-    text-transform: uppercase;
-  }
-
   .hero-scroll {
     position: absolute;
     bottom: 1.8rem;
@@ -2332,8 +2297,7 @@
   #hero.zooming .hero-scroll,
   #hero.zooming .hero-rays,
   #hero.zooming .hero-line-v,
-  #hero.zooming .hero-floor,
-  #hero.zooming .hero-portrait {
+  #hero.zooming .hero-floor {
     opacity: 0;
     transition: opacity 0.25s ease;
   }
@@ -2383,8 +2347,10 @@
     /* ── Hero ── */
     #hero { height: 100svh; padding-top: 0; }
     .hero-spot-2 { height: 65%; }
-    .hero-portrait { display: none; }
-    .hero-ctas { gap: 1.5rem; flex-direction: column; align-items: center; }
+    .hero-tagline { font-size: 0.6rem; letter-spacing: 0.2em; }
+    .hero-origin  { font-size: 0.46rem; letter-spacing: 0.3em; }
+    .hero-enter   { padding: 1rem 2rem; }
+    .hero-ctas    { gap: 1.5rem; flex-direction: column; align-items: center; }
 
     /* ── Galerie ── */
     .gallery-grid { grid-template-columns: 1fr 1fr; }
@@ -2448,6 +2414,8 @@
     .bio-facts { grid-template-columns: 1fr; }
     #ad-img-panel { height: 38vh !important; top: 52px !important; }
     #ad-info-panel { top: calc(52px + 38vh) !important; }
+    .hero-name { font-size: clamp(2rem, 9vw, 2.8rem); }
+    .hero-label { font-size: 0.58rem; letter-spacing: 0.55em; }
   }
 
   /* ══ HERO SPOTLIGHTS ══ */
@@ -2708,10 +2676,6 @@
     </div>
   </div>
 
-  <div class="hero-portrait">
-    <img src="portrait-horst-schwab.png" alt="Horst Schwab">
-    <p class="hero-portrait-name">H. Schwab</p>
-  </div>
 
   <div class="hero-floor"></div>
 </section>
