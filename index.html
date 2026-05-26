@@ -2684,16 +2684,20 @@
     animation: sweep-fly-2 0.72s cubic-bezier(0.22, 0, 0.68, 1) 0.09s forwards;
   }
   @keyframes sweep-fly {
-    0%   { transform: translateX(-32vw) translateY(-50%); opacity: 0; }
+    0%   { transform: translateX(-32vw) translateY(calc(-50% + 38px)) rotate(-7deg); opacity: 0; }
     8%   { opacity: 1; }
-    88%  { opacity: 1; }
-    100% { transform: translateX(110vw) translateY(-50%); opacity: 0; }
+    35%  { transform: translateX(18vw)  translateY(calc(-50% + 8px))  rotate(-2deg); opacity: 1; }
+    70%  { transform: translateX(68vw)  translateY(calc(-50% - 18px)) rotate(4deg);  opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(115vw) translateY(calc(-50% - 42px)) rotate(9deg);  opacity: 0; }
   }
   @keyframes sweep-fly-2 {
-    0%   { transform: translateX(-22vw) translateY(-50%); opacity: 0; }
-    8%   { opacity: 0.55; }
-    88%  { opacity: 0.4; }
-    100% { transform: translateX(110vw) translateY(-50%); opacity: 0; }
+    0%   { transform: translateX(-22vw) translateY(calc(-50% + 50px)) rotate(-8deg); opacity: 0; }
+    8%   { opacity: 0.5; }
+    35%  { transform: translateX(18vw)  translateY(calc(-50% + 14px)) rotate(-2deg); opacity: 0.45; }
+    70%  { transform: translateX(68vw)  translateY(calc(-50% - 10px)) rotate(4deg);  opacity: 0.35; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateX(115vw) translateY(calc(-50% - 32px)) rotate(9deg);  opacity: 0; }
   }
 </style>
 </head>
