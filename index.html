@@ -127,7 +127,7 @@
     --cream: #F2ECDE;
   }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
 
   body {
     font-family: 'Montserrat', sans-serif;
@@ -231,7 +231,7 @@
   /* ── HERO – vollbild ── */
   #hero {
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     background: var(--black);
     display: flex;
     flex-direction: column;
@@ -2407,8 +2407,8 @@
 
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: #0a0908; }
-  ::-webkit-scrollbar-thumb { background: #2a2815; border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
 
   /* ── CAT-TILE SHINE ── */
@@ -2764,7 +2764,7 @@
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Vergänglichkeit')">
-        <div class="coll-card-img"><img src="artwork-linie.png" alt="Vergänglichkeit"></div>
+        <div class="coll-card-img"></div>
         <div class="coll-card-body"><p class="coll-card-title">Vergänglichkeit</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 60 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-price">€ 1.800 – 3.200</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Vergänglichkeit')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Morgenrot')">
@@ -3646,7 +3646,7 @@
     'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', price:'4.200 – 6.500', cat:'Öl', cat_en:'Oil', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
     'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', price:'2.800 – 4.200', cat:'Öl', cat_en:'Oil', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
     'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', price:'5.000 – 8.000', cat:'Öl', cat_en:'Oil', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Vergänglichkeit': { img:'artwork-linie.png', technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.800 – 3.200', cat:'Aquarell', cat_en:'Watercolour', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
+    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.800 – 3.200', cat:'Aquarell', cat_en:'Watercolour', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
     'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', price:'1.400 – 2.600', cat:'Aquarell', cat_en:'Watercolour', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', price:'2.100 – 3.600', cat:'Aquarell', cat_en:'Watercolour', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
     'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', price:'1.600 – 2.900', cat:'Aquarell', cat_en:'Watercolour', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
@@ -4640,18 +4640,28 @@
       g.add(paint);
 
       // Load real image onto a fresh canvas → CanvasTexture (same path as working gradient)
-      const artImg = {0:_LINIE_URL, 8:_LINIE_URL}[idx];
+      const artImg = {0:_LINIE_URL}[idx];
       if (artImg) {
         const img = document.createElement('img');
         img.onload = () => {
+          const W = 1024, H = 1280;
           const cv2 = document.createElement('canvas');
-          cv2.width = 500; cv2.height = 620;
+          cv2.width = W; cv2.height = H;
           const ctx2 = cv2.getContext('2d');
-          ctx2.fillStyle = '#f5f0e8';
-          ctx2.fillRect(0, 0, 500, 620);
+          ctx2.fillStyle = '#f0ebe0';
+          ctx2.fillRect(0, 0, W, H);
           const nw = img.naturalWidth || 500, nh = img.naturalHeight || 500;
-          const s = Math.min(460 / nw, 580 / nh);
-          ctx2.drawImage(img, (500 - nw*s) / 2, (620 - nh*s) / 2, nw*s, nh*s);
+          const s = Math.min((W - 80) / nw, (H - 100) / nh);
+          ctx2.drawImage(img, (W - nw*s) / 2, (H - nh*s) / 2, nw*s, nh*s);
+          // Pixel-level contrast: data URL never taints canvas so getImageData is safe
+          const id = ctx2.getImageData(0, 0, W, H);
+          const d = id.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const lum = (d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114) / 255;
+            const v = lum < 0.80 ? Math.round(lum * 0.15 * 255) : d[i];
+            d[i] = d[i+1] = d[i+2] = v;
+          }
+          ctx2.putImageData(id, 0, 0);
           const t = new T.CanvasTexture(cv2);
           t.encoding = T.sRGBEncoding;
           t.wrapS = T.RepeatWrapping;
@@ -4693,23 +4703,23 @@
     ];
 
     function makeTex(T,idx){
-      const cv=document.createElement('canvas'); cv.width=500; cv.height=620;
+      const cv=document.createElement('canvas'); cv.width=1024; cv.height=1280;
       const ctx=cv.getContext('2d');
       const [c1,c2]=TECH_PAL[idx]||PAL[idx%PAL.length];
-      const gr=ctx.createLinearGradient(0,0,500,620);
+      const gr=ctx.createLinearGradient(0,0,1024,1280);
       gr.addColorStop(0,c1); gr.addColorStop(1,c2);
-      ctx.fillStyle=gr; ctx.fillRect(0,0,500,620);
-      ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=1.5;
-      ctx.strokeRect(26,26,448,568); ctx.strokeRect(30,30,440,560);
+      ctx.fillStyle=gr; ctx.fillRect(0,0,1024,1280);
+      ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=3;
+      ctx.strokeRect(52,52,920,1176); ctx.strokeRect(60,60,904,1160);
       ctx.fillStyle='rgba(255,255,255,0.85)';
-      ctx.font='300 80px "Georgia","Times New Roman",serif';
+      ctx.font='300 160px "Georgia","Times New Roman",serif';
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(ROMAN[idx]||String(idx+1),250,255);
-      ctx.font='300 13px Arial,sans-serif'; ctx.fillStyle='rgba(255,255,255,0.70)';
-      ctx.fillText('HORST  SCHWAB',250,358);
-      ctx.fillText('KUNSTWERK  ·  PLATZHALTER',250,381);
-      ctx.strokeStyle='rgba(255,255,255,0.40)'; ctx.lineWidth=1;
-      ctx.beginPath(); ctx.moveTo(130,406); ctx.lineTo(370,406); ctx.stroke();
+      ctx.fillText(ROMAN[idx]||String(idx+1),512,528);
+      ctx.font='300 26px Arial,sans-serif'; ctx.fillStyle='rgba(255,255,255,0.70)';
+      ctx.fillText('HORST  SCHWAB',512,738);
+      ctx.fillText('KUNSTWERK  ·  PLATZHALTER',512,786);
+      ctx.strokeStyle='rgba(255,255,255,0.40)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(268,838); ctx.lineTo(756,838); ctx.stroke();
       const tex=new T.CanvasTexture(cv);
       tex.encoding=T.sRGBEncoding;
       tex.wrapS=T.RepeatWrapping;
@@ -5600,7 +5610,7 @@
     ['#28084a','#481578'],['#380848','#601570'],['#281040','#402060'],['#1e0838','#301058'],
   ];
   const _AW_ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI'];
-  const _AW_IMGS  = { 0:'artwork-linie.png', 8:'artwork-linie.png' };
+  const _AW_IMGS  = { 0:'artwork-linie.png' };
 
   function _makeArtworkCanvas(title, w, h) {
     w = w||400; h = h||300;
