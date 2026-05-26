@@ -1093,7 +1093,7 @@
     font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(120,115,100,0.55);
+    color: rgba(200,195,178,0.75);
     pointer-events: none;
     transition: top 0.22s ease, font-size 0.22s ease, letter-spacing 0.22s ease, color 0.22s ease;
   }
@@ -1110,18 +1110,21 @@
   .field textarea {
     width: 100%;
     border: none;
-    border-bottom: 0.5px solid rgba(201,168,76,0.25);
+    border-bottom: 1px solid rgba(201,168,76,0.5);
     padding: 0.6rem 0.85rem;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.75rem;
-    color: rgba(250,250,248,0.88);
-    background: transparent;
+    color: rgba(250,250,248,0.95);
+    background: rgba(255,255,255,0.04);
     outline: none;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, background 0.3s;
   }
   .field input:focus,
-  .field textarea:focus { border-color: var(--gold); }
-  .field textarea { resize: none; height: 80px; }
+  .field textarea:focus {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+  .field textarea { resize: none; height: 100px; }
 
   .offer-input-wrap {
     display: flex;
@@ -1834,14 +1837,16 @@
   }
   .contact-form-wrap .submit-btn {
     margin-top: 1.2rem;
-    border: 1px solid rgba(201,168,76,0.3);
+    border: 1.5px solid rgba(201,168,76,0.7);
     background: transparent;
     color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.22em;
     transition: background 0.3s, border-color 0.3s, color 0.3s;
   }
   .contact-form-wrap .submit-btn:hover {
-    background: rgba(201,168,76,0.1);
-    border-color: rgba(201,168,76,0.7);
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
     color: var(--gold);
   }
   #kon-success-msg { max-width: 520px; margin: 0 auto; }
@@ -2404,17 +2409,22 @@
   }
   #custom-cursor {
     position: fixed;
-    width: 24px; height: 24px;
+    width: 18px; height: 18px;
+    border: 1.5px solid rgba(201,168,76,0.75);
+    border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
-    transform: translate(-2px, -22px);
-    transform-origin: 2px 22px;
+    transform: translate(-50%, -50%);
     opacity: 0;
     will-change: left, top;
-    transition: opacity 0.3s, transform 0.18s ease;
+    transition: opacity 0.3s, width 0.18s ease, height 0.18s ease, background 0.18s ease, border-color 0.18s ease;
   }
   #custom-cursor.visible { opacity: 1; }
-  #custom-cursor.hovered { transform: translate(-2px, -22px) scale(1.45); }
+  #custom-cursor.hovered {
+    width: 28px; height: 28px;
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+  }
   @media (pointer: coarse) { #custom-cursor { display: none !important; } }
 
   /* ── SCROLL PROGRESS BAR ── */
@@ -2486,11 +2496,11 @@
     display: block;
     width: 100%;
     background: transparent;
-    border: 1px solid rgba(201,168,76,0.45);
+    border: 1.5px solid rgba(201,168,76,0.75);
     color: var(--gold);
     font-family: 'Montserrat', sans-serif;
     font-size: 0.52rem;
-    font-weight: 300;
+    font-weight: 500;
     letter-spacing: 0.28em;
     padding: 0.65rem 0;
     cursor: pointer;
@@ -2498,8 +2508,8 @@
     text-align: center;
   }
   #rundgang-hint .rh-btn:hover {
-    background: rgba(201,168,76,0.10);
-    border-color: rgba(201,168,76,0.75);
+    background: rgba(201,168,76,0.15);
+    border-color: var(--gold);
   }
   #rundgang-hint .rh-close {
     position: absolute;
@@ -2507,37 +2517,21 @@
     right: 0.8rem;
     background: none;
     border: none;
-    color: rgba(201,168,76,0.35);
-    font-size: 0.8rem;
+    color: rgba(201,168,76,0.75);
+    font-size: 1rem;
+    font-weight: 700;
     cursor: pointer;
     line-height: 1;
     transition: color 0.2s;
   }
-  #rundgang-hint .rh-close:hover { color: rgba(201,168,76,0.75); }
+  #rundgang-hint .rh-close:hover { color: var(--gold); }
   @media (max-width: 480px) {
     #rundgang-hint { right: 1rem; left: 1rem; max-width: none; bottom: 1.2rem; }
   }
 </style>
 </head>
 <body>
-<div id="custom-cursor">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 36 36">
-    <!-- Stiel (Griff) — oben rechts, dicker runder Stab -->
-    <line x1="34" y1="2" x2="14" y2="22" stroke="#1a1a18" stroke-width="5" stroke-linecap="round"/>
-    <!-- Glanzlicht auf Stiel -->
-    <line x1="33" y1="3" x2="15" y2="21" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-linecap="round"/>
-    <!-- Zwinge (Goldband) -->
-    <line x1="14" y1="22" x2="9" y2="27" stroke="#6b4c10" stroke-width="6.5" stroke-linecap="round"/>
-    <line x1="14" y1="22" x2="9" y2="27" stroke="#9a6e1e" stroke-width="4" stroke-linecap="round"/>
-    <!-- Pinselhaare — auslaufend zur Spitze bei (3,33) -->
-    <path d="M9 27 C7 28.5 4 30 3 33 C5 32 7.5 30.5 9.5 29 Z" fill="#2a2a26" opacity="0.95"/>
-    <path d="M9 27 C8 29 6.5 31 3 33 C5.5 31.5 8 29.5 10 28 Z" fill="#1a1a18" opacity="0.6"/>
-    <!-- Haarspitzen (einzelne feine Linien) -->
-    <line x1="9" y1="27" x2="3" y2="33" stroke="#2a2a26" stroke-width="0.8" stroke-linecap="round" opacity="0.9"/>
-    <line x1="9.5" y1="27.5" x2="5" y2="33" stroke="#2a2a26" stroke-width="0.6" stroke-linecap="round" opacity="0.7"/>
-    <line x1="8.5" y1="27" x2="2" y2="32" stroke="#2a2a26" stroke-width="0.5" stroke-linecap="round" opacity="0.5"/>
-  </svg>
-</div>
+<div id="custom-cursor"></div>
 <div id="scroll-progress"></div>
 
 <!-- Raumübergang-Overlay -->
@@ -5504,7 +5498,8 @@
 
   // ── Rundgang-Hinweis-Popup ────────────────────────────────────
   (function() {
-    if (localStorage.getItem('rundgang-hint-seen')) return;
+    const h = location.hash;
+    if (h !== '' && !h.startsWith('#col=')) return;
     const isEN = localStorage.getItem('lang') === 'en';
     const hint = document.createElement('div');
     hint.id = 'rundgang-hint';
@@ -5530,7 +5525,6 @@
 
     function dismiss() {
       hint.classList.remove('visible');
-      localStorage.setItem('rundgang-hint-seen', '1');
       setTimeout(() => hint.remove(), 500);
     }
   })();
