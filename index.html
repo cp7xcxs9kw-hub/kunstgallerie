@@ -410,6 +410,76 @@
     text-shadow: none;
   }
 
+  .hero-origin {
+    margin-top: 0.9rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.55em;
+    color: rgba(201,168,76,0.40);
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+
+  .hero-ctas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 2.2rem;
+    flex-wrap: wrap;
+  }
+  .hero-ctas .hero-enter { margin-top: 0; }
+
+  .hero-enter-ghost {
+    font-size: 0.58rem;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.45);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    cursor: pointer;
+    font-weight: 300;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .hero-enter-ghost:hover { color: var(--gold); }
+
+  .hero-portrait {
+    position: absolute;
+    bottom: 3.5rem;
+    right: 4rem;
+    width: 150px;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeIn 2.5s ease forwards 3.5s;
+    pointer-events: none;
+  }
+  .hero-portrait img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: brightness(0.78) grayscale(0.15) sepia(0.05);
+    border: 1px solid rgba(201,168,76,0.35);
+  }
+  .hero-portrait::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border: 0.5px solid rgba(201,168,76,0.20);
+    pointer-events: none;
+  }
+  .hero-portrait-name {
+    margin-top: 0.65rem;
+    text-align: center;
+    font-size: 0.44rem;
+    letter-spacing: 0.45em;
+    color: rgba(201,168,76,0.38);
+    text-transform: uppercase;
+  }
+
   .hero-scroll {
     position: absolute;
     bottom: 1.8rem;
@@ -2262,7 +2332,8 @@
   #hero.zooming .hero-scroll,
   #hero.zooming .hero-rays,
   #hero.zooming .hero-line-v,
-  #hero.zooming .hero-floor {
+  #hero.zooming .hero-floor,
+  #hero.zooming .hero-portrait {
     opacity: 0;
     transition: opacity 0.25s ease;
   }
@@ -2312,6 +2383,8 @@
     /* ── Hero ── */
     #hero { height: 100svh; padding-top: 0; }
     .hero-spot-2 { height: 65%; }
+    .hero-portrait { display: none; }
+    .hero-ctas { gap: 1.5rem; flex-direction: column; align-items: center; }
 
     /* ── Galerie ── */
     .gallery-grid { grid-template-columns: 1fr 1fr; }
@@ -2628,9 +2701,17 @@
     <p class="hero-label">Galerie</p>
     <h1 class="hero-name">Horst Schwab</h1>
     <p class="hero-tagline" id="hero-tagline">Kunst &nbsp;|&nbsp; Leidenschaft &nbsp;|&nbsp; Zeitlos</p>
-    <a href="#galerie" class="hero-enter" id="hero-enter">Galerie betreten</a>
+    <p class="hero-origin" id="hero-origin">Kusel &nbsp;·&nbsp; Atelier &nbsp;·&nbsp; 1934</p>
+    <div class="hero-ctas">
+      <a href="#galerie" class="hero-enter" id="hero-enter">Galerie betreten</a>
+      <button class="hero-enter-ghost" id="hero-enter-ghost" onclick="document.getElementById('nav-rundgang').click()">&#8594;&nbsp; Rundgang starten</button>
+    </div>
   </div>
 
+  <div class="hero-portrait">
+    <img src="portrait-horst-schwab.png" alt="Horst Schwab">
+    <p class="hero-portrait-name">H. Schwab</p>
+  </div>
 
   <div class="hero-floor"></div>
 </section>
@@ -3663,7 +3744,7 @@
     de: {
       'nav-galerie':'Galerie','nav-werke':'Werke','nav-bio':'Biographie','nav-rundgang':'Rundgang',
       'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste','nav-acc-label':'Anmelden',
-      'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-scroll':'Entdecken',
+      'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten','hero-origin':'Kusel · Atelier · 1934','hero-scroll':'Entdecken',
       'intro-label':'Willkommen',
       'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
       'cat-acryl':'Acryl','cat-oel':'Öl','cat-aquarell':'Aquarell',
@@ -3690,7 +3771,7 @@
     en: {
       'nav-galerie':'Gallery','nav-werke':'Works','nav-bio':'Biography','nav-rundgang':'Tour',
       'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist','nav-acc-label':'Sign in',
-      'hero-tagline':'Art  |  Passion  |  Timeless','hero-enter':'Enter Gallery','hero-scroll':'Discover',
+      'hero-tagline':'Art  |  Passion  |  Timeless','hero-enter':'Enter Gallery','hero-enter-ghost':'→ Enter Tour','hero-origin':'Kusel · Studio · 1934','hero-scroll':'Discover',
       'intro-label':'Welcome',
       'gal-label':'Current Works','gal-heading':'Selected Collection',
       'cat-acryl':'Acrylic','cat-oel':'Oil','cat-aquarell':'Watercolour',
