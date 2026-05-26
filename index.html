@@ -4021,7 +4021,7 @@
         mouse.x =  (clientX / innerWidth)  * 2 - 1;
         mouse.y = -(clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
-        const hits = raycaster.intersectObjects(scene.children, true);
+        const hits = raycaster.intersectObjects(_paintMeshes, false);
         for (const hit of hits) {
           const title = hit.object.userData.artworkTitle;
           if (title) { openArtwork(title, false, true); break; }
@@ -4041,8 +4041,8 @@
         mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
         mouse.y = -(e.clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
-        const hits = raycaster.intersectObjects(scene.children, true);
-        const hitObj = hits.find(h => h.object.userData.artworkTitle);
+        const hits = raycaster.intersectObjects(_paintMeshes, false);
+        const hitObj = hits[0];
         if (hitObj) {
           cv.style.cursor = 'pointer';
           const d = ARTWORKS[hitObj.object.userData.artworkTitle];
@@ -4445,6 +4445,8 @@
     }
 
     // ── Paintings ────────────────────────────────────────────────
+    const _paintMeshes = []; // nur Gemälde-Planes – für schnellen Raycaster
+
     function buildPaintings(T) {
       PICS.forEach((p,i) => addPainting(T, i, p.x, p.y, p.z, p.rotY));
     }
@@ -4456,6 +4458,7 @@
         new T.MeshStandardMaterial({map:tex, roughness:0.88, metalness:0.0, side:T.DoubleSide}));
       paint.position.z=0.025;
       if (PAINTING_TITLES[idx]) paint.userData.artworkTitle = PAINTING_TITLES[idx];
+      _paintMeshes.push(paint);
       g.add(paint);
 
       // Thin minimal dark frame (like reference photo)
