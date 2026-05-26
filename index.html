@@ -1308,6 +1308,22 @@
     color: var(--gold);
     border-color: rgba(201,168,76,0.55);
   }
+  #gallery-tooltip {
+    position: absolute;
+    display: none;
+    pointer-events: none;
+    background: rgba(8,7,6,0.88);
+    color: #e8d5b0;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+    letter-spacing: 0.10em;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid rgba(201,168,76,0.28);
+    white-space: nowrap;
+    z-index: 962;
+    backdrop-filter: blur(4px);
+  }
 
   /* ── GALLERY LOADER ── */
   #gallery-loader {
@@ -2413,6 +2429,7 @@
 <div id="gallery-vr">
   <canvas id="gallery-canvas"></canvas>
   <button id="gallery-vr-close">&#x2715;&nbsp;&nbsp;BEENDEN</button>
+  <div id="gallery-tooltip"></div>
   <div id="gallery-loader">
     <div class="gl-inner">
       <div class="gl-script">Horst Schwab</div>
@@ -3656,13 +3673,15 @@
   /* ══ ARTWORK DETAIL ══ */
   let _adCurrentTitle = '';
   let _adParentCol = null;
+  let _adFromRundgang = false;
 
-  function openArtwork(title, rerender) {
+  function openArtwork(title, rerender, fromRundgang) {
     const d = ARTWORKS[title]; if (!d) return;
     _adCurrentTitle = title;
     if (!rerender) {
       const activeCol = document.querySelector('.coll-overlay.active:not(#fav-overlay)');
       _adParentCol = activeCol ? activeCol.id.replace('coll-', '') : null;
+      _adFromRundgang = !!fromRundgang;
     }
     history.replaceState(null, '', '#artwork=' + encodeURIComponent(title));
     const isEN = _lang === 'en';
@@ -3678,7 +3697,7 @@
     document.getElementById('ad-story').textContent = story;
     if (document.getElementById('ad-story-head')) document.getElementById('ad-story-head').textContent = t['ad-story-head'];
     if (document.getElementById('ad-offer-btn')) document.getElementById('ad-offer-btn').textContent = t['ad-offer-btn'];
-    if (document.getElementById('ad-back-text')) document.getElementById('ad-back-text').textContent = t['ad-back-text'];
+    if (document.getElementById('ad-back-text')) document.getElementById('ad-back-text').textContent = _adFromRundgang ? (_lang==='en' ? 'Back to Tour' : 'Zurück zum Rundgang') : t['ad-back-text'];
     const subTxt = t['ad-sub-text'];
     document.getElementById('ad-img-el').innerHTML = d.img
       ? '<img src="' + d.img + '" alt="' + title + '">'
@@ -3711,7 +3730,11 @@
   function closeArtwork() {
     document.getElementById('artwork-detail').classList.remove('active');
     document.body.style.overflow = '';
-    if (_adParentCol) {
+    if (_adFromRundgang) {
+      _adFromRundgang = false;
+      history.replaceState(null, '', location.pathname);
+      // gallery-vr bleibt sichtbar — kein weiterer Eingriff nötig
+    } else if (_adParentCol) {
       history.replaceState(null, '', '#col=' + encodeURIComponent(_adParentCol));
       openCollection(_adParentCol, true);
     } else {
@@ -3989,26 +4012,48 @@
       buildSeq(T);
       window.addEventListener('resize', onResize);
 
-      // ── Raycaster: Klick auf Gemälde öffnet Artwork-Detail ──────
+      // ── Raycaster: Klick/Touch auf Gemälde öffnet Artwork-Detail ──
       const raycaster = new T.Raycaster();
       const mouse = new T.Vector2();
-      cv.addEventListener('click', e => {
-        mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
-        mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+      const tooltip = document.getElementById('gallery-tooltip');
+
+      function castAndOpen(clientX, clientY) {
+        mouse.x =  (clientX / innerWidth)  * 2 - 1;
+        mouse.y = -(clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
         const hits = raycaster.intersectObjects(scene.children, true);
         for (const hit of hits) {
           const title = hit.object.userData.artworkTitle;
-          if (title) { openArtwork(title); break; }
+          if (title) { openArtwork(title, false, true); break; }
         }
-      });
+      }
+
+      cv.addEventListener('click', e => castAndOpen(e.clientX, e.clientY));
+
+      cv.addEventListener('touchend', e => {
+        if (e.changedTouches.length !== 1) return;
+        e.preventDefault();
+        const t = e.changedTouches[0];
+        castAndOpen(t.clientX, t.clientY);
+      }, {passive: false});
+
       cv.addEventListener('mousemove', e => {
         mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
         mouse.y = -(e.clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
         const hits = raycaster.intersectObjects(scene.children, true);
-        const hover = hits.some(h => h.object.userData.artworkTitle);
-        cv.style.cursor = hover ? 'pointer' : 'default';
+        const hitObj = hits.find(h => h.object.userData.artworkTitle);
+        if (hitObj) {
+          cv.style.cursor = 'pointer';
+          const d = ARTWORKS[hitObj.object.userData.artworkTitle];
+          tooltip.textContent = d ? hitObj.object.userData.artworkTitle + '  ·  ' + d.year : hitObj.object.userData.artworkTitle;
+          tooltip.style.display = 'block';
+          tooltip.style.left = (e.clientX + 18) + 'px';
+          tooltip.style.top  = (e.clientY - 14) + 'px';
+        } else {
+          cv.style.cursor = 'default';
+          tooltip.style.display = 'none';
+        }
       });
       // Ladescreen ausblenden sobald erste Frames gerendert sind
       let loaderGone = false;
@@ -4433,13 +4478,20 @@
     }
 
     const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII'];
+    // Farben nach Technik: idx 0-3 Acryl, 4-7 Öl, 8-11 Aquarell, 12-15 Mixed, 16-17 Fallback
     const PAL=[['#5a3520','#8c5a34'],['#1a3a6a','#2e5e96'],['#1a5535','#2a7a50'],
                ['#5a1a1a','#8c2e2e'],['#3a2060','#5a3a8c'],['#3a3a10','#5a5a22']];
+    const TECH_PAL=[
+      ['#2a4020','#456830'],['#1e3828','#2e5840'],['#384a20','#5a7030'],['#203830','#305848'], // Acryl
+      ['#4a2a08','#7a4a18'],['#3a1e0a','#6a3418'],['#4a3808','#786818'],['#3a2808','#604818'], // Öl
+      ['#082048','#183878'],['#082038','#103560'],['#082838','#105860'],['#081838','#102858'], // Aquarell
+      ['#28084a','#481578'],['#380848','#601570'],['#281040','#402060'],['#1e0838','#301058'], // Mixed
+    ];
 
     function makeTex(T,idx){
       const cv=document.createElement('canvas'); cv.width=500; cv.height=620;
       const ctx=cv.getContext('2d');
-      const [c1,c2]=PAL[idx%PAL.length];
+      const [c1,c2]=TECH_PAL[idx]||PAL[idx%PAL.length];
       const gr=ctx.createLinearGradient(0,0,500,620);
       gr.addColorStop(0,c1); gr.addColorStop(1,c2);
       ctx.fillStyle=gr; ctx.fillRect(0,0,500,620);
