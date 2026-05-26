@@ -1458,6 +1458,23 @@
     color: var(--gold);
     border-color: rgba(201,168,76,0.55);
   }
+  #vr-skip {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    background: transparent;
+    color: rgba(201,168,76,0.55);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 0.5rem 1.3rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.32em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: color 0.25s ease, border-color 0.25s ease;
+    z-index: 961;
+    text-transform: uppercase;
+  }
+  #vr-skip:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); }
   #gallery-tooltip {
     position: absolute;
     display: none;
@@ -2735,6 +2752,7 @@
 <div id="gallery-vr">
   <canvas id="gallery-canvas"></canvas>
   <button id="gallery-vr-close">&#x2715;&nbsp;&nbsp;BEENDEN</button>
+  <button id="vr-skip">&#x276F;&#x276F;&nbsp;&nbsp;WEITER</button>
   <div id="gallery-tooltip"></div>
   <div id="gallery-loader">
     <div class="gl-inner">
@@ -4257,6 +4275,23 @@
       document.head.appendChild(s);
     }
     openBtn.addEventListener('click', e => { e.preventDefault(); vrEl.style.display='block'; loadThree(initGallery); });
+    // Skip-Button: zur nächsten Kameraposition springen
+    document.getElementById('vr-skip').addEventListener('click', () => skipStep());
+    document.addEventListener('keydown', function(e) {
+      if (!vrEl || vrEl.style.display === 'none') return;
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); skipStep(); }
+    });
+    function skipStep() {
+      if (!seq) return;
+      const s = seq[seqIdx];
+      cam.position.copy(s.pos);
+      cam.quaternion.copy(s.quat);
+      fromPos.copy(s.pos); fromQuat.copy(s.quat);
+      seqIdx++;
+      if (seqIdx >= seq.length) { doLoop(performance.now()); return; }
+      phase = 'trans'; t0 = performance.now();
+    }
+
     closeBtn.addEventListener('click', () => {
       vrEl.style.display='none';
       teardown();
