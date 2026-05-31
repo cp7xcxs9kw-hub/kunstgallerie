@@ -1471,13 +1471,44 @@
     position: fixed;
     inset: 0;
     z-index: 960;
-    background: #050404;
+    background: #000000;
   }
   #gallery-canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
+    background: #000000;
   }
+  @keyframes vr-border-travel {
+    0%   { stroke-dashoffset: 105; opacity: 0; }
+    10%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { stroke-dashoffset: -32; opacity: 0; }
+  }
+  @keyframes vr-text-brighten {
+    0%, 8%, 90%, 100% { color: rgba(201,168,76,0.6); }
+    48%               { color: rgba(255,228,120,1);  }
+  }
+  .vr-btn-border {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; overflow: visible;
+  }
+  .vr-btn-line {
+    fill: none;
+    stroke: rgba(255,225,120,1);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 32 75;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: vr-border-travel 3.2s ease-in-out infinite;
+    filter: drop-shadow(0 0 3px rgba(201,168,76,0.85));
+  }
+  #gallery-vr-close .vr-btn-line { animation-delay: 4s; }
+  #vr-skip .vr-btn-line          { animation-delay: 5.5s; }
+  #gallery-vr-close { animation: vr-text-brighten 3.2s ease-in-out 4s infinite; }
+  #vr-skip          { animation: vr-text-brighten 3.2s ease-in-out 5.5s infinite; }
   #gallery-vr-close {
     position: absolute;
     top: 1.8rem;
@@ -1497,6 +1528,108 @@
     color: var(--gold);
     border-color: rgba(201,168,76,0.55);
   }
+
+  /* ── VR Info Button & Panel ── */
+  #vr-info-btn {
+    position: absolute; bottom: 2rem; left: 2rem;
+    background: transparent;
+    color: rgba(201,168,76,0.55);
+    border: 1px solid rgba(201,168,76,0.2);
+    width: 2.4rem; height: 2.4rem;
+    font-size: 0.85rem; font-family: 'Cormorant Garamond', serif;
+    cursor: pointer; z-index: 961;
+    transition: color 0.25s, border-color 0.25s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #vr-info-btn:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+
+  #vr-info-panel {
+    position: absolute; inset: 0;
+    background: rgba(6,5,4,0.82);
+    backdrop-filter: blur(8px);
+    z-index: 970;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  #vr-info-panel.visible { opacity: 1; pointer-events: all; }
+  #vr-info-panel.visible .vr-info-box {
+    transform: translateY(0); opacity: 1;
+  }
+
+  .vr-info-box {
+    border: 1px solid rgba(201,168,76,0.28);
+    padding: 3.8rem 4rem;
+    max-width: 420px; width: 88%;
+    text-align: center; position: relative;
+    transform: translateY(18px); opacity: 0;
+    transition: transform 0.55s ease 0.15s, opacity 0.55s ease 0.15s;
+  }
+  .vr-info-box::before {
+    content: ''; position: absolute;
+    top: -1px; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.55), transparent);
+  }
+  .vr-info-box::after {
+    content: ''; position: absolute;
+    bottom: -1px; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.55), transparent);
+  }
+
+  .vr-info-label {
+    font-size: 0.44rem; letter-spacing: 0.58em; text-transform: uppercase;
+    color: rgba(201,168,76,0.55); margin-bottom: 1.2rem;
+    font-family: 'Montserrat', sans-serif; font-weight: 300;
+  }
+  .vr-info-title {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 2.1rem; font-weight: 300;
+    color: var(--gold-light); letter-spacing: 0.1em;
+    margin-bottom: 0.9rem; line-height: 1.2;
+  }
+  .vr-info-ornament {
+    color: rgba(201,168,76,0.45); font-size: 0.5rem;
+    margin-bottom: 1.6rem; letter-spacing: 0.15em;
+  }
+  .vr-info-text {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 1rem; color: rgba(255,255,255,0.72);
+    line-height: 1.85; letter-spacing: 0.04em;
+    margin-bottom: 1.6rem;
+  }
+  .vr-info-steps {
+    display: flex; flex-direction: column; gap: 0.9rem;
+    margin-bottom: 2.4rem;
+    border-top: 1px solid rgba(201,168,76,0.18);
+    padding-top: 1.5rem; margin-top: 0.4rem;
+    text-align: left;
+  }
+  .vr-info-step { display: flex; align-items: flex-start; gap: 1rem; }
+  .vr-info-step-icon {
+    color: rgba(201,168,76,0.8); font-size: 0.62rem;
+    flex-shrink: 0; padding-top: 0.1rem; min-width: 1.1rem; text-align: center;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .vr-info-step-text {
+    font-size: 0.43rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.62); font-family: 'Montserrat', sans-serif; line-height: 1.7;
+  }
+  .vr-info-step-text em { color: rgba(201,168,76,0.9); font-style: normal; }
+  .vr-info-close {
+    font-size: 0.54rem; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--gold); background: transparent;
+    border: 1px solid rgba(201,168,76,0.55);
+    padding: 0.9rem 2.6rem; cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.35s ease;
+    box-shadow: 0 0 22px rgba(201,168,76,0.07), inset 0 0 14px rgba(201,168,76,0.04);
+    text-shadow: 0 0 10px rgba(201,168,76,0.35);
+  }
+  .vr-info-close:hover {
+    background: var(--gold); color: #0A0A0A;
+    box-shadow: 0 0 40px rgba(201,168,76,0.3); text-shadow: none;
+  }
+
   #vr-skip {
     position: absolute;
     bottom: 2rem;
@@ -1535,7 +1668,7 @@
   #gallery-loader {
     position: absolute;
     inset: 0;
-    background: #141210;
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2785,8 +2918,32 @@
 </div>
 <div id="gallery-vr">
   <canvas id="gallery-canvas"></canvas>
-  <button id="gallery-vr-close">&#x2715;&nbsp;&nbsp;BEENDEN</button>
-  <button id="vr-skip">&#x276F;&#x276F;&nbsp;&nbsp;WEITER</button>
+  <button id="gallery-vr-close"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x2715;&nbsp;&nbsp;BEENDEN</button>
+  <button id="vr-info-btn" title="Rundgang-Hilfe">?</button>
+  <div id="vr-info-panel">
+    <div class="vr-info-box">
+      <p class="vr-info-label">Galerie Horst Schwab</p>
+      <h2 class="vr-info-title">Virtueller Rundgang</h2>
+      <p class="vr-info-ornament">◆</p>
+      <p class="vr-info-text">Erleben Sie ausgewählte Werke aus den Räumen der Galerie – eine geführte Tour durch das Schaffen von Horst Schwab.</p>
+      <div class="vr-info-steps">
+        <div class="vr-info-step">
+          <span class="vr-info-step-icon">↗</span>
+          <span class="vr-info-step-text">Gemälde anklicken — Details zum jeweiligen Werk öffnen</span>
+        </div>
+        <div class="vr-info-step">
+          <span class="vr-info-step-icon">→</span>
+          <span class="vr-info-step-text">Nächste Station — <em>Leertaste</em> oder <em>Pfeil rechts</em> oder Button »Weiter«</span>
+        </div>
+        <div class="vr-info-step">
+          <span class="vr-info-step-icon">✕</span>
+          <span class="vr-info-step-text">Rundgang beenden — Button »Beenden« oben rechts</span>
+        </div>
+      </div>
+      <button class="vr-info-close">Rundgang betreten</button>
+    </div>
+  </div>
+  <button id="vr-skip"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x276F;&#x276F;&nbsp;&nbsp;WEITER</button>
   <div id="gallery-tooltip"></div>
   <div id="gallery-loader">
     <div class="gl-inner">
@@ -4311,13 +4468,38 @@
       s.onload = cb;
       document.head.appendChild(s);
     }
-    openBtn.addEventListener('click', e => { e.preventDefault(); vrEl.style.display='block'; loadThree(initGallery); });
+    openBtn.addEventListener('click', e => {
+      e.preventDefault();
+      vrEl.style.display='block';
+      vrPaused = true;
+      setTimeout(function(){
+        var p = document.getElementById('vr-info-panel');
+        if(p) p.classList.add('visible');
+      }, 120);
+      loadThree(initGallery);
+    });
     // Skip-Button: zur nächsten Kameraposition springen
     document.getElementById('vr-skip').addEventListener('click', () => skipStep());
+
+    // Info-Panel: ? Button, close button, backdrop click
+    var infoPanel = document.getElementById('vr-info-panel');
+    document.getElementById('vr-info-btn').addEventListener('click', function() {
+      vrPaused = true;
+      infoPanel.classList.add('visible');
+    });
+    infoPanel.addEventListener('click', function(e) {
+      if (e.target === infoPanel) { window.closeVrInfo(); }
+    });
+    infoPanel.querySelector('.vr-info-close').addEventListener('click', function(){ window.closeVrInfo(); });
     document.addEventListener('keydown', function(e) {
       if (!vrEl || vrEl.style.display === 'none') return;
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); skipStep(); }
     });
+    window.closeVrInfo = function() {
+      var p = document.getElementById('vr-info-panel');
+      if(p) p.classList.remove('visible');
+      vrPaused = false;
+    };
     function skipStep() {
       if (!seq) return;
       const s = seq[seqIdx];
@@ -4339,6 +4521,7 @@
     let renderer, scene, cam, rafId, fadeDiv;
     let seq, seqIdx, phase, t0;
     let fromPos=null, fromQuat=null;
+    let vrPaused = false;
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -4393,12 +4576,13 @@
       renderer = new T.WebGLRenderer({canvas:cv, antialias:true});
       renderer.setSize(innerWidth, innerHeight);
       renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+      renderer.setClearColor(0x000000, 1);
       renderer.outputEncoding = T.sRGBEncoding;
       renderer.toneMapping = T.LinearToneMapping;
       renderer.toneMappingExposure = 0.92;
       scene = new T.Scene();
-      scene.background = new T.Color(0xf0ece4);
-      scene.fog = new T.Fog(0xf0ece4, 32, 65);
+      scene.background = new T.Color(0x000000);
+      scene.fog = new T.Fog(0x000000, 32, 65);
       cam = new T.PerspectiveCamera(72, innerWidth/innerHeight, 0.05, 80);
       fromPos  = new T.Vector3();
       fromQuat = new T.Quaternion();
@@ -5320,6 +5504,7 @@
     // ── Tick ─────────────────────────────────────────────────────
     function tick(T,now){
       if(!seq) return;
+      if(vrPaused) return;
       const s=seq[seqIdx], dt=now-t0;
       if(phase==='trans'){
         const raw=Math.min(dt/Math.max(s.trans,1),1), et=ease(raw);
