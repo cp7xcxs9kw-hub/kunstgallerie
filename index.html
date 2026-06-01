@@ -5154,25 +5154,13 @@
         'C-F-2005-6entzerrt.JPG',
       ][idx];
       if (artImg) {
-        const img = document.createElement('img');
-        img.onload = () => {
-          const W = 1024, H = 1280;
-          const cv2 = document.createElement('canvas');
-          cv2.width = W; cv2.height = H;
-          const ctx2 = cv2.getContext('2d');
-          ctx2.fillStyle = '#0e0d0b';
-          ctx2.fillRect(0, 0, W, H);
-          const nw = img.naturalWidth || 500, nh = img.naturalHeight || 500;
-          const s = Math.min((W - 80) / nw, (H - 100) / nh);
-          ctx2.drawImage(img, (W - nw*s) / 2, (H - nh*s) / 2, nw*s, nh*s);
-          const t = new T.CanvasTexture(cv2);
+        new T.TextureLoader().load(artImg, (t) => {
           t.encoding = T.sRGBEncoding;
           t.wrapS = T.RepeatWrapping;
           t.repeat.x = -1; t.offset.x = 1;
           mat.map = t;
           mat.needsUpdate = true;
-        };
-        img.src = artImg;
+        });
       }
 
       // Thin minimal dark frame (like reference photo)
