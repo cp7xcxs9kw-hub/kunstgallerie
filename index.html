@@ -5154,17 +5154,13 @@
         'C-F-2005-6entzerrt.JPG',
       ][idx];
       if (artImg) {
-        const _img = new Image();
-        _img.onload = () => {
-          const t = new T.Texture(_img);
+        new T.TextureLoader().load(artImg, (t) => {
           t.encoding = T.sRGBEncoding;
           t.wrapS = T.RepeatWrapping;
           t.repeat.x = -1; t.offset.x = 1;
-          t.needsUpdate = true;
           mat.map = t;
           mat.needsUpdate = true;
-        };
-        _img.src = artImg;
+        });
       }
 
       // Thin minimal dark frame (like reference photo)
