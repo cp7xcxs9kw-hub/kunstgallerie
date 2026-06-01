@@ -700,6 +700,16 @@
     position: relative;
     overflow: hidden;
   }
+  .cat-tile-bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    opacity: 0.22;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+  }
+  .cat-tile:hover .cat-tile-bg { opacity: 0.38; }
+  .cat-tile > *:not(.cat-tile-bg) { position: relative; z-index: 1; }
   .cat-tile:hover { border-color: rgba(201,168,76,0.55); background: #111009; }
   .cat-tile-rule {
     width: 40px; height: 1px;
@@ -785,16 +795,23 @@
   }
   .coll-card:hover { border-color: rgba(201,168,76,0.38); }
   .coll-card-img {
-    width: 100%; aspect-ratio: 4/3;
+    width: 100%;
     background: #1a1a18;
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    padding: 1rem; box-sizing: border-box;
+    min-height: 160px;
   }
   .coll-card-img svg { opacity: 0.18; }
-  .coll-card-img img, .coll-card-img canvas {
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center top;
+  .coll-card-img img {
+    max-width: 100%; max-height: 300px;
+    width: auto; height: auto;
     display: block;
+  }
+  .coll-card-img--landscape img {
+    width: 100%; height: auto; max-height: none;
+  }
+  .coll-card-img canvas {
+    max-width: 100%; height: auto; display: block;
   }
   .coll-card-body { padding: 1.4rem 1.6rem 1.8rem; }
   .coll-card-title {
@@ -961,6 +978,8 @@
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
     cursor: zoom-in;
+    padding: 3rem;
+    box-sizing: border-box;
   }
   .ad-img-inner.zoomed { cursor: grab; }
   .ad-img-inner.zoomed.dragging { cursor: grabbing; }
@@ -1013,15 +1032,17 @@
     text-transform: uppercase;
   }
   /* Zoom wrapper (placeholder or real image inside) */
-  .ad-img-el {
+  #ad-img-el {
     transform-origin: center center;
     transition: transform 0.08s ease;
     pointer-events: none;
     display: flex; align-items: center; justify-content: center;
   }
   /* Real image once added */
-  .ad-img-el img, .ad-placeholder-canvas {
-    max-width: 68%; max-height: 72%;
+  #ad-img-el img, .ad-placeholder-canvas {
+    max-width: 48vw;
+    max-height: 72vh;
+    width: auto; height: auto;
     object-fit: contain; display: block;
     box-shadow:
       0 2px 6px rgba(0,0,0,0.10),
@@ -3025,29 +3046,33 @@
   <div class="cat-grid fade-in-section">
 
     <div class="cat-tile" onclick="openCollection('acryl')">
+      <img class="cat-tile-bg" src="artwork-linie.png" alt="">
       <div class="cat-tile-rule"></div>
-      <p class="cat-tile-name" id="cat-acryl">Acryl</p>
+      <p class="cat-tile-name" id="cat-acryl">Malerei</p>
       <p class="cat-tile-count" id="cat-view-1">Kollektion ansehen</p>
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
     <div class="cat-tile" onclick="openCollection('oel')">
+      <img class="cat-tile-bg" src="C-F-2004-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
-      <p class="cat-tile-name" id="cat-oel">Öl</p>
+      <p class="cat-tile-name" id="cat-oel">Collage &amp; Zeichnungen</p>
       <p class="cat-tile-count" id="cat-view-2">Kollektion ansehen</p>
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
     <div class="cat-tile" onclick="openCollection('aquarell')">
+      <img class="cat-tile-bg" src="C-F-2003-1entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
-      <p class="cat-tile-name" id="cat-aquarell">Aquarell</p>
+      <p class="cat-tile-name" id="cat-aquarell">Grafik</p>
       <p class="cat-tile-count" id="cat-view-3">Kollektion ansehen</p>
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
     <div class="cat-tile" onclick="openCollection('mixed')">
+      <img class="cat-tile-bg" src="C-F-2005-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
-      <p class="cat-tile-name" id="cat-mixed">Mixed Media</p>
+      <p class="cat-tile-name" id="cat-mixed">Plastik</p>
       <p class="cat-tile-count" id="cat-view-4">Kollektion ansehen</p>
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
@@ -3062,7 +3087,7 @@
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('acryl')" id="coll-back-acryl">&#x2190; &nbsp;<span id="coll-back-acryl-t">Zurück</span></button>
-      <h2 class="coll-heading" id="coll-head-acryl">A C R Y L</h2>
+      <h2 class="coll-heading" id="coll-head-acryl">M A L E R E I</h2>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Komposition I')">
@@ -3090,24 +3115,72 @@
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('oel')" id="coll-back-oel">&#x2190; &nbsp;<span id="coll-back-oel-t">Zurück</span></button>
-      <h2 class="coll-heading" id="coll-head-oel">Ö L</h2>
+      <h2 class="coll-heading" id="coll-head-oel">C O L L A G E &amp; Z E I C H N U N G E N</h2>
     </div>
     <div class="coll-grid">
-      <div class="coll-card" onclick="openArtwork('Tiefe')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Tiefe</p><p class="coll-card-meta">Öl auf Leinwand &nbsp;·&nbsp; 100 × 75 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-price">€ 3.500 – 5.500</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Tiefe')">Angebot abgeben</button></div>
+      <div class="coll-card" onclick="openArtwork('Zwei Figuren I')">
+        <div class="coll-card-img"><img src="C-F-2001-1entzerrt.jpg" alt="Zwei Figuren I"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren I</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 28 × 40 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren I')">Angebot abgeben</button></div>
       </div>
-      <div class="coll-card" onclick="openArtwork('Stille I')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.5"/><rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Stille I</p><p class="coll-card-meta">Öl auf Leinwand &nbsp;·&nbsp; 120 × 90 cm &nbsp;·&nbsp; 2022</p><p class="coll-card-price">€ 4.200 – 6.500</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Stille I')">Angebot abgeben</button></div>
+      <div class="coll-card" onclick="openArtwork('Badende')">
+        <div class="coll-card-img"><img src="C-F-2001-2entzerrt.JPG" alt="Badende"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Badende</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 500 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende')">Angebot abgeben</button></div>
       </div>
-      <div class="coll-card" onclick="openArtwork('Dämmerung')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.3"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Dämmerung</p><p class="coll-card-meta">Öl auf Leinwand &nbsp;·&nbsp; 90 × 70 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-price">€ 2.800 – 4.200</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Dämmerung')">Angebot abgeben</button></div>
+      <div class="coll-card" onclick="openArtwork('Zwei Badende')">
+        <div class="coll-card-img"><img src="C-F-2002-1entzerrt.JPG" alt="Zwei Badende"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Badende</p><p class="coll-card-meta">Mischtechnik auf Papier &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 550 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Badende')">Angebot abgeben</button></div>
       </div>
-      <div class="coll-card" onclick="openArtwork('Landschaft I')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Landschaft I</p><p class="coll-card-meta">Öl auf Leinwand &nbsp;·&nbsp; 140 × 100 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-price">€ 5.000 – 8.000</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Landschaft I')">Angebot abgeben</button></div>
+      <div class="coll-card" onclick="openArtwork('Figur und Torsi')">
+        <div class="coll-card-img coll-card-img--landscape"><img src="C-F-2002-2entzerrt.JPG" alt="Figur und Torsi"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Figur und Torsi</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Figur und Torsi')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Langgezogene Figurengruppe')">
+        <div class="coll-card-img"><img src="C-F-2002-3entzerrt.JPG" alt="Langgezogene Figurengruppe"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Langgezogene Figurengruppe</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 550 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Langgezogene Figurengruppe')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Totenkult')">
+        <div class="coll-card-img"><img src="C-F-2003-1entzerrt.JPG" alt="Totenkult"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Totenkult</p><p class="coll-card-meta">Acrylcollage &nbsp;·&nbsp; 45 × 72 cm &nbsp;·&nbsp; 2003</p><p class="coll-card-price">€ 500 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Totenkult')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Bunte Figur')">
+        <div class="coll-card-img"><img src="C-F-2004-1entzerrt.JPG" alt="Bunte Figur"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Bunte Figur</p><p class="coll-card-meta">Acrylcollage auf Pressspahn &nbsp;·&nbsp; 48 × 60 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 450 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Bunte Figur')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Goldene Figur')">
+        <div class="coll-card-img"><img src="C-F-2004-2entzerrt.JPG" alt="Goldene Figur"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Goldene Figur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 48 × 68 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 550 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Goldene Figur')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Kopf im Profil')">
+        <div class="coll-card-img"><img src="C-F-2004-3entzerrt.JPG" alt="Kopf im Profil"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kopf im Profil</p><p class="coll-card-meta">Deckfarben auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 400 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kopf im Profil')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Hockende Figur')">
+        <div class="coll-card-img"><img src="C-F-2004-4entzerrt.JPG" alt="Hockende Figur"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Hockende Figur</p><p class="coll-card-meta">Pastell auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 400 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Hockende Figur')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Zwei Figuren II')">
+        <div class="coll-card-img"><img src="C-F-2005-1entzerrt.JPG" alt="Zwei Figuren II"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren II</p><p class="coll-card-meta">Collage aus Drucken &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 500 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren II')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Kuss')">
+        <div class="coll-card-img"><img src="C-F-2005-2entzerrt.JPG" alt="Kuss"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kuss</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 550 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kuss')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Badende in blau')">
+        <div class="coll-card-img"><img src="C-F-2005-3entzerrt.JPG" alt="Badende in blau"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Badende in blau</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 24 × 34 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 400 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende in blau')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Paar')">
+        <div class="coll-card-img"><img src="C-F-2005-4.JPG" alt="Paar"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Paar</p><p class="coll-card-meta">Collage aus Graphik &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Paar')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Zwei Frauen')">
+        <div class="coll-card-img"><img src="C-F-2005-5.JPG" alt="Zwei Frauen"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Frauen</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 65 × 50 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 500 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Frauen')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Meer')">
+        <div class="coll-card-img"><img src="C-F-2005-6entzerrt.JPG" alt="Meer"></div>
+        <div class="coll-card-body"><p class="coll-card-title">Meer</p><p class="coll-card-meta">Grafikkollage &nbsp;·&nbsp; 33 × 24 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 400 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Meer')">Angebot abgeben</button></div>
       </div>
     </div>
   </div>
@@ -3118,7 +3191,7 @@
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('aquarell')" id="coll-back-aquarell">&#x2190; &nbsp;<span id="coll-back-aquarell-t">Zurück</span></button>
-      <h2 class="coll-heading" id="coll-head-aquarell">A Q U A R E L L</h2>
+      <h2 class="coll-heading" id="coll-head-aquarell">G R A F I K</h2>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Vergänglichkeit')">
@@ -3146,7 +3219,7 @@
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('mixed')" id="coll-back-mixed">&#x2190; &nbsp;<span id="coll-back-mixed-t">Zurück</span></button>
-      <h2 class="coll-heading">M I X E D &nbsp; M E D I A</h2>
+      <h2 class="coll-heading" id="coll-head-mixed">P L A S T I K</h2>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Licht &amp; Schatten')">
@@ -3817,7 +3890,7 @@
 
   <!-- Left: dark image panel -->
   <div id="ad-img-panel" style="position:absolute;top:64px;left:0;width:60%;bottom:0;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-    <div id="ad-img-inner" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:zoom-in;overflow:hidden;">
+    <div id="ad-img-inner" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:zoom-in;overflow:hidden;padding:3rem;box-sizing:border-box;">
       <div id="ad-img-el" style="transform-origin:center center;transition:transform 0.08s ease;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1.8rem;"></div>
     </div>
     <button id="ad-rundgang-btn" onclick="closeArtwork();document.getElementById('nav-rundgang').click();">
@@ -4001,22 +4074,38 @@
 
   /* ══ ARTWORK DATA ══ */
   const ARTWORKS = {
-    'Komposition I':   { img:'artwork-linie.png', technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', price:'4.800 – 7.200', cat:'Acryl', cat_en:'Acrylic', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Stille II':       { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'80 × 60 cm', year:'2023', price:'2.200 – 3.800', cat:'Acryl', cat_en:'Acrylic', story:'Stille II ist das zweite Werk einer Reihe, die sich dem Thema innerer Ruhe widmet. Schwab arbeitete hier mit ausgesprochen reduzierter Farbpalette — fast ausschließlich Weiß- und Grautöne, unterbrochen von einem einzigen warmen Akzent. Das Kreisformat innerhalb des rechteckigen Trägers erzeugt eine meditative Wirkung, die Betrachtende zum Innehalten einlädt.', story_en:'Stille II is the second work in a series dedicated to inner stillness. Schwab worked here with an exceptionally reduced palette — almost exclusively whites and greys, broken by a single warm accent. The circular form within the rectangular support creates a meditative effect, inviting the viewer to pause.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Aufbruch':        { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'100 × 80 cm', year:'2024', price:'3.200 – 4.800', cat:'Acryl', cat_en:'Acrylic', story:'Aufbruch entstand in einer Phase intensiver Veränderung. Die nach oben strebende Dreiecksform ist bewusst gewählt — sie symbolisiert Bewegung, Entscheidung und den Mut zur Veränderung. Warme Ockertöne treffen auf kühle Blaugrau-Flächen; diese Spannung macht das Bild zu einem emotionalen Dokument seiner Entstehungszeit.', story_en:'Aufbruch (Departure) was created during a period of intense change. The upward-pointing triangular form is deliberate — it symbolises movement, decision and the courage to change. Warm ochres meet cool blue-grey fields; this tension makes the painting an emotional document of the time in which it was made.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Horizont':        { technique:'Acryl auf Papier', technique_en:'Acrylic on paper', size:'70 × 50 cm', year:'2023', price:'1.900 – 3.100', cat:'Acryl', cat_en:'Acrylic', story:'Eine schlichte, fast minimalistische Arbeit — und doch eine der persönlichsten. Die horizontale Linie, die das Bild in zwei nahezu gleiche Hälften teilt, steht für den Moment kurz vor dem Sonnenuntergang. Schwab malte diese Serie während eines längeren Aufenthalts im ländlichen Raum, täglich zur gleichen Stunde, mit dem Blick auf denselben Horizont.', story_en:'A simple, almost minimalist work — yet one of the most personal. The horizontal line dividing the canvas into two near-equal halves represents the moment just before sunset. Schwab painted this series during an extended stay in the countryside, at the same hour each day, looking out at the same horizon.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
-    'Tiefe':           { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'100 × 75 cm', year:'2024', price:'3.500 – 5.500', cat:'Öl', cat_en:'Oil', story:'Tiefe ist eines der technisch anspruchsvollsten Werke Schwabs. Die charakteristische Kurve wurde mit Ölfarbe in einem einzigen langen Pinselstrich gesetzt — ein Akt, der monatelange Vorbereitung und Konzentration erforderte. Die Schichten darunter, in Lasurtechnik aufgebaut, verleihen dem Werk eine Leuchtkraft, die erst beim längeren Betrachten vollständig sichtbar wird.', story_en:'Tiefe (Depth) is one of Schwab\'s most technically demanding works. The characteristic curve was set with oil paint in a single long brushstroke — an act requiring months of preparation and concentration. The layers beneath, built up in glazing technique, lend the work a luminosity that only becomes fully visible on prolonged viewing.', svg:'<path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', price:'4.200 – 6.500', cat:'Öl', cat_en:'Oil', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
-    'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', price:'2.800 – 4.200', cat:'Öl', cat_en:'Oil', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
-    'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', price:'5.000 – 8.000', cat:'Öl', cat_en:'Oil', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.800 – 3.200', cat:'Aquarell', cat_en:'Watercolour', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
-    'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', price:'1.400 – 2.600', cat:'Aquarell', cat_en:'Watercolour', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', price:'2.100 – 3.600', cat:'Aquarell', cat_en:'Watercolour', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
-    'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', price:'1.600 – 2.900', cat:'Aquarell', cat_en:'Watercolour', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Licht & Schatten':{ technique:'Mischtechnik', technique_en:'Mixed media', size:'90 × 70 cm', year:'2024', price:'2.900 – 4.500', cat:'Mixed Media', cat_en:'Mixed Media', story:'Das Kreuz aus horizontaler und vertikaler Linie teilt die Fläche in vier Felder, die trotz ihrer scheinbaren Gleichheit völlig unterschiedlich wirken — je nachdem, von wo aus das Licht auf das Bild fällt. Schwab arbeitete hier mit Acryl, Kreide und Sandpigment, um eine Oberfläche zu schaffen, die Licht buchstäblich anders reflektiert als ihre Umgebung.', story_en:'The cross of horizontal and vertical lines divides the surface into four fields that, despite their apparent equality, read completely differently depending on the angle of light. Schwab worked here with acrylic, chalk and sand pigment to create a surface that literally reflects light differently from its surroundings.', svg:'<line x1="32" y1="4" x2="32" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="32" x2="60" y2="32" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Struktur':        { technique:'Mischtechnik auf Leinwand', technique_en:'Mixed media on canvas', size:'100 × 80 cm', year:'2024', price:'3.100 – 4.800', cat:'Mixed Media', cat_en:'Mixed Media', story:'Struktur ist eine Auseinandersetzung mit dem Raster als Ordnungsprinzip. Vier gleich große Felder — und doch ist jedes einzigartig. Schwab kombinierte Acrylfarbe mit aufgeklebten Materialien aus dem Alltag: Zeitungsfetzen, Sandpapier, Stoff. Erst aus der Distanz fügt sich alles zu einem kohärenten Bild zusammen.', story_en:'Struktur (Structure) is an engagement with the grid as an ordering principle. Four equal fields — yet each one unique. Schwab combined acrylic paint with everyday materials: scraps of newspaper, sandpaper, cloth. Only from a distance does everything come together into a coherent whole.', svg:'<rect x="8" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="36" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="8" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="36" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/>' },
-    'Fragment':        { technique:'Kohle & Acryl', technique_en:'Charcoal & Acrylic', size:'80 × 60 cm', year:'2023', price:'2.400 – 3.900', cat:'Mixed Media', cat_en:'Mixed Media', story:'Fragment ist das einzige Werk in dieser Kollektion, das bewusst unvollendet gelassen wurde. Die zwei Winkelformen, die sich annähern ohne sich zu berühren, stehen für Gespräche, die nie zu Ende geführt wurden. Kohle auf grundierter Leinwand, partiell mit Acryl fixiert — die Oberfläche ist rau, fast verletzlich.', story_en:'Fragment is the only work in this collection deliberately left unfinished. The two angular forms approaching without touching stand for conversations never brought to a conclusion. Charcoal on primed canvas, partially fixed with acrylic — the surface is rough, almost vulnerable.', svg:'<path d="M4 4 L30 32 L4 60" stroke="#C9A84C" stroke-width="0.7" fill="none"/><path d="M34 4 L60 32 L34 60" stroke="#C9A84C" stroke-width="0.5" fill="none" opacity="0.5"/>' },
-    'Übergang':        { technique:'Mischtechnik', technique_en:'Mixed media', size:'110 × 85 cm', year:'2024', price:'3.500 – 5.200', cat:'Mixed Media', cat_en:'Mixed Media', story:'Die Ellipsenform, die Übergang strukturiert, wurde von einem alten Handwerkswerkzeug abgeleitet — einer Schablone aus dem Nachlass von Schwabs Vater. Das Persönliche und das Formale verbinden sich hier auf ungewöhnliche Weise. Mehrere Schichten Öl und Acryl wurden mit einem Spachtel aufgetragen und wieder abgetragen, bis die heutige Textur entstanden war.', story_en:'The elliptical form structuring Übergang (Transition) was derived from an old craftsman\'s tool — a stencil from the estate of Schwab\'s father. The personal and the formal come together here in an unusual way. Several layers of oil and acrylic were applied with a palette knife and removed again, until the present texture emerged.', svg:'<path d="M4 32 Q32 4 60 32 Q32 60 4 32Z" stroke="#C9A84C" stroke-width="0.7" fill="none"/>' },
+    'Komposition I':   { img:'artwork-linie.png', technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', price:'4.800 – 7.200', cat:'Malerei', cat_en:'Painting', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Stille II':       { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'80 × 60 cm', year:'2023', price:'2.200 – 3.800', cat:'Malerei', cat_en:'Painting', story:'Stille II ist das zweite Werk einer Reihe, die sich dem Thema innerer Ruhe widmet. Schwab arbeitete hier mit ausgesprochen reduzierter Farbpalette — fast ausschließlich Weiß- und Grautöne, unterbrochen von einem einzigen warmen Akzent. Das Kreisformat innerhalb des rechteckigen Trägers erzeugt eine meditative Wirkung, die Betrachtende zum Innehalten einlädt.', story_en:'Stille II is the second work in a series dedicated to inner stillness. Schwab worked here with an exceptionally reduced palette — almost exclusively whites and greys, broken by a single warm accent. The circular form within the rectangular support creates a meditative effect, inviting the viewer to pause.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Aufbruch':        { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'100 × 80 cm', year:'2024', price:'3.200 – 4.800', cat:'Malerei', cat_en:'Painting', story:'Aufbruch entstand in einer Phase intensiver Veränderung. Die nach oben strebende Dreiecksform ist bewusst gewählt — sie symbolisiert Bewegung, Entscheidung und den Mut zur Veränderung. Warme Ockertöne treffen auf kühle Blaugrau-Flächen; diese Spannung macht das Bild zu einem emotionalen Dokument seiner Entstehungszeit.', story_en:'Aufbruch (Departure) was created during a period of intense change. The upward-pointing triangular form is deliberate — it symbolises movement, decision and the courage to change. Warm ochres meet cool blue-grey fields; this tension makes the painting an emotional document of the time in which it was made.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Horizont':        { technique:'Acryl auf Papier', technique_en:'Acrylic on paper', size:'70 × 50 cm', year:'2023', price:'1.900 – 3.100', cat:'Malerei', cat_en:'Painting', story:'Eine schlichte, fast minimalistische Arbeit — und doch eine der persönlichsten. Die horizontale Linie, die das Bild in zwei nahezu gleiche Hälften teilt, steht für den Moment kurz vor dem Sonnenuntergang. Schwab malte diese Serie während eines längeren Aufenthalts im ländlichen Raum, täglich zur gleichen Stunde, mit dem Blick auf denselben Horizont.', story_en:'A simple, almost minimalist work — yet one of the most personal. The horizontal line dividing the canvas into two near-equal halves represents the moment just before sunset. Schwab painted this series during an extended stay in the countryside, at the same hour each day, looking out at the same horizon.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
+    'Tiefe':           { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'100 × 75 cm', year:'2024', price:'3.500 – 5.500', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Tiefe ist eines der technisch anspruchsvollsten Werke Schwabs. Die charakteristische Kurve wurde mit Ölfarbe in einem einzigen langen Pinselstrich gesetzt — ein Akt, der monatelange Vorbereitung und Konzentration erforderte. Die Schichten darunter, in Lasurtechnik aufgebaut, verleihen dem Werk eine Leuchtkraft, die erst beim längeren Betrachten vollständig sichtbar wird.', story_en:'Tiefe (Depth) is one of Schwab\'s most technically demanding works. The characteristic curve was set with oil paint in a single long brushstroke — an act requiring months of preparation and concentration. The layers beneath, built up in glazing technique, lend the work a luminosity that only becomes fully visible on prolonged viewing.', svg:'<path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', price:'4.200 – 6.500', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', price:'2.800 – 4.200', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
+    'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', price:'5.000 – 8.000', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.800 – 3.200', cat:'Grafik', cat_en:'Graphics', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
+    'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', price:'1.400 – 2.600', cat:'Grafik', cat_en:'Graphics', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', price:'2.100 – 3.600', cat:'Grafik', cat_en:'Graphics', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
+    'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', price:'1.600 – 2.900', cat:'Grafik', cat_en:'Graphics', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Licht & Schatten':{ technique:'Mischtechnik', technique_en:'Mixed media', size:'90 × 70 cm', year:'2024', price:'2.900 – 4.500', cat:'Plastik', cat_en:'Sculpture', story:'Das Kreuz aus horizontaler und vertikaler Linie teilt die Fläche in vier Felder, die trotz ihrer scheinbaren Gleichheit völlig unterschiedlich wirken — je nachdem, von wo aus das Licht auf das Bild fällt. Schwab arbeitete hier mit Acryl, Kreide und Sandpigment, um eine Oberfläche zu schaffen, die Licht buchstäblich anders reflektiert als ihre Umgebung.', story_en:'The cross of horizontal and vertical lines divides the surface into four fields that, despite their apparent equality, read completely differently depending on the angle of light. Schwab worked here with acrylic, chalk and sand pigment to create a surface that literally reflects light differently from its surroundings.', svg:'<line x1="32" y1="4" x2="32" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="32" x2="60" y2="32" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Struktur':        { technique:'Mischtechnik auf Leinwand', technique_en:'Mixed media on canvas', size:'100 × 80 cm', year:'2024', price:'3.100 – 4.800', cat:'Plastik', cat_en:'Sculpture', story:'Struktur ist eine Auseinandersetzung mit dem Raster als Ordnungsprinzip. Vier gleich große Felder — und doch ist jedes einzigartig. Schwab kombinierte Acrylfarbe mit aufgeklebten Materialien aus dem Alltag: Zeitungsfetzen, Sandpapier, Stoff. Erst aus der Distanz fügt sich alles zu einem kohärenten Bild zusammen.', story_en:'Struktur (Structure) is an engagement with the grid as an ordering principle. Four equal fields — yet each one unique. Schwab combined acrylic paint with everyday materials: scraps of newspaper, sandpaper, cloth. Only from a distance does everything come together into a coherent whole.', svg:'<rect x="8" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="36" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="8" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="36" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/>' },
+    'Fragment':        { technique:'Kohle & Acryl', technique_en:'Charcoal & Acrylic', size:'80 × 60 cm', year:'2023', price:'2.400 – 3.900', cat:'Plastik', cat_en:'Sculpture', story:'Fragment ist das einzige Werk in dieser Kollektion, das bewusst unvollendet gelassen wurde. Die zwei Winkelformen, die sich annähern ohne sich zu berühren, stehen für Gespräche, die nie zu Ende geführt wurden. Kohle auf grundierter Leinwand, partiell mit Acryl fixiert — die Oberfläche ist rau, fast verletzlich.', story_en:'Fragment is the only work in this collection deliberately left unfinished. The two angular forms approaching without touching stand for conversations never brought to a conclusion. Charcoal on primed canvas, partially fixed with acrylic — the surface is rough, almost vulnerable.', svg:'<path d="M4 4 L30 32 L4 60" stroke="#C9A84C" stroke-width="0.7" fill="none"/><path d="M34 4 L60 32 L34 60" stroke="#C9A84C" stroke-width="0.5" fill="none" opacity="0.5"/>' },
+    'Zwei Figuren I':           { img:'C-F-2001-1entzerrt.jpg', technique:'Mischtechnik', technique_en:'Mixed media', size:'28 × 40 cm', year:'2001', price:'450 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Figuren treten in einen stummen Dialog. Die hintere dem Betrachter abgewandt, im Rückenakt, während die vordere zu ahnen bleibt. Lila und Orange brechen die Dunkelheit auf — Farbe als Sprache des Unausgesprochenen. Signiert unten rechts.', story_en:'Two figures in silent dialogue. One turned away, seen from behind; the other only suggested. Lilac and orange pierce the darkness — colour as the language of the unspoken. Signed lower right.', svg:'<line x1="20" y1="8" x2="20" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="44" y1="8" x2="44" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Badende':                  { img:'C-F-2001-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2001', price:'500 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Eine lichte Figur in Weiß, Grau und Gelb hebt sich von zwei dunklen Torsi ab. Die Collagetechnik schichtet Körper übereinander — ein Fragment menschlicher Präsenz, das aus der Dunkelheit heraustritt. Signiert unten mittig.', story_en:'A luminous figure in white, grey and yellow emerges against two dark torsos. The collage technique layers bodies one over another — a fragment of human presence stepping out of the dark. Signed lower centre.', svg:'<ellipse cx="32" cy="32" rx="14" ry="22" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Zwei Badende':             { img:'C-F-2002-1entzerrt.JPG', technique:'Mischtechnik auf Papier', technique_en:'Mixed media on paper', size:'60 × 80 cm', year:'2002', price:'550 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Violett durchzieht das Bild wie ein Stimmungston. Die Figuren sind gestreckt, fast gelöst von ihrer Form — begrenzt nur durch schwarze Konturen, die sie aus dem Farbstrom heraustreten lassen. Signiert unten rechts.', story_en:'Violet runs through the painting like an undertone. The figures are elongated, almost dissolved — held in place only by black contours that lift them out of the current of colour. Signed lower right.', svg:'<line x1="22" y1="8" x2="22" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="42" y1="8" x2="42" y2="56" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>' },
+    'Figur und Torsi':          { img:'C-F-2002-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'70 × 50 cm', year:'2002', price:'500 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Grau als Farbe der Körper, dahinter die volle Palette: Violett, Rot, Ocker. Die Torsi scheinen in einer anderen Zeitebene zu existieren als der Hintergrund — Schwabs Schichttechnik erzeugt Tiefe als zeitlichen Abstand. Signiert unten rechts.', story_en:'Grey as the colour of bodies, behind it the full palette: violet, red, ochre. The torsos seem to inhabit a different temporal layer from the background — Schwab\ Signed lower right.'s layering technique creates depth as temporal distance.', svg:'<circle cx="24" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8" fill="none"/><circle cx="44" cy="32" r="8" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.6"/>' },
+    'Langgezogene Figurengruppe':{ img:'C-F-2002-3entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'60 × 80 cm', year:'2002', price:'550 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Sind es Tanzende oder Skelette? Schwab lässt die Frage offen. Schwarze Umrisse bewegen sich gegen leuchtende Farben — ein Bild, das Energie und Vergänglichkeit in einem einzigen Atem vereint. Signiert unten rechts.', story_en:'Dancers, or skeletons? Schwab leaves the question open. Black outlines move against vivid colours — a single image holding energy and transience in the same breath. Signed lower right.', svg:'<path d="M16 56 L32 8 L48 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Totenkult':                { img:'C-F-2003-1entzerrt.JPG', technique:'Acrylcollage', technique_en:'Acrylic collage', size:'45 × 72 cm', year:'2003', price:'500 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Der Titel deutet auf Ritual und Übergang. Zwei Frauenfiguren — eine dem Betrachter zugewandt, eine abgewandt — verbunden durch das Violett, das die Komposition durchpulst. Blau, Rot und Schwarz grundieren das Bild wie ein uraltes Zeremoniell. Signiert unten links.', story_en:'The title speaks of ritual and passage. Two female figures — one facing the viewer, one turned away — connected by the violet that pulses through the composition. Blue, red and black underpin the image like an ancient ceremony. Signed lower left.', svg:'<rect x="8" y="8" width="48" height="48" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="8" y1="32" x2="56" y2="32" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Bunte Figur':              { img:'C-F-2004-1entzerrt.JPG', technique:'Acrylcollage auf Pressspahn', technique_en:'Acrylic collage on hardboard', size:'48 × 60 cm', year:'2004', price:'450 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Gegen das Dunkel setzt Schwab die Figur als reines Farbereignis. Die Acrylcollage auf Pressspahn — ein grobes, unprätentiöses Trägermaterial — gibt dem Werk eine erdige Energie. Eine Figur, die sich aus dem Untergrund herausarbeitet. Signiert unten rechts.', story_en:'Against the dark, Schwab sets the figure as a pure event of colour. The acrylic collage on hardboard — a rough, unassuming support — gives the work an earthy energy. A figure working its way up from the ground. Signed lower right.', svg:'<circle cx="32" cy="24" r="10" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="34" x2="32" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Goldene Figur':            { img:'C-F-2004-2entzerrt.JPG', technique:'Mischtechnik auf Leinwand', technique_en:'Mixed media on canvas', size:'48 × 68 cm', year:'2004', price:'550 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Gold krönt den Kopf — ob als Aureole, als Maske oder als Zeichen bleibt unentschieden. Die Figur steht aufrecht, von schwarzen und blauen Streifen gerahmt und zugleich fragmentiert. Schwab verleiht dem Körper eine sakrale Präsenz. Signiert unten rechts.', story_en:'Gold crowns the head — whether as aureole, mask or sign remains undecided. The figure stands upright, framed and at the same time fragmented by black and blue stripes. Schwab gives the body a sacral presence. Signed lower right.', svg:'<circle cx="32" cy="16" r="8" stroke="#C9A84C" stroke-width="0.9" fill="none"/><line x1="32" y1="24" x2="32" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="20" y1="36" x2="44" y2="36" stroke="#C9A84C" stroke-width="0.6"/>' },
+    'Kopf im Profil':           { img:'C-F-2004-3entzerrt.JPG', technique:'Deckfarben auf Papier', technique_en:'Gouache on paper', size:'25 × 33 cm', year:'2004', price:'400 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das Profil — älteste Form des Porträts. Schwab kehrt zu ihr zurück und entzieht ihr das Individuelle: kein Name, keine Erkennung. Nur die Silhouette eines Kopfes gegen das Dunkel. Reduktion als Würde. Signiert unten rechts.', story_en:'The profile — oldest form of portraiture. Schwab returns to it and strips away the individual: no name, no recognition. Only the silhouette of a head against the dark. Reduction as dignity. Signed lower right.', svg:'<path d="M20 12 Q40 12 40 32 Q40 52 20 52 Q20 32 20 12Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Hockende Figur':           { img:'C-F-2004-4entzerrt.JPG', technique:'Pastell auf Papier', technique_en:'Pastel on paper', size:'25 × 33 cm', year:'2004', price:'400 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Hocke — eine archaische Körperhaltung, die Schutz und Konzentration zugleich bedeutet. Farbe trifft auf Farbe: die Figur droht im Hintergrund aufzugehen, nur die Kontur trennt noch Innen von Außen. Signiert unten rechts.', story_en:'The crouch — an archaic posture, signifying shelter and concentration alike. Colour meets colour: the figure threatens to dissolve into the background; only the contour still separates inside from outside. Signed lower right.', svg:'<path d="M20 20 Q32 8 44 20 Q48 36 32 52 Q16 36 20 20Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Zwei Figuren II':          { img:'C-F-2005-1entzerrt.JPG', technique:'Collage aus Drucken', technique_en:'Collage from prints', size:'50 × 70 cm', year:'2005', price:'500 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Umrisse, frontal, sich berührend — in einem bootsähnlichen Gefäß vereint. Schwab collagiert Drucke zu einem Bild der Nähe und des gemeinsamen Getragenseins. Zwei Körper, die gemeinsam einem Ziel entgegentreiben. Signiert unten rechts.', story_en:'Two outlines, frontal, touching — united within a boat-like vessel. Schwab assembles prints into an image of closeness and shared passage. Two bodies drifting together towards a common destination. Signed lower right.', svg:'<ellipse cx="24" cy="32" rx="10" ry="18" stroke="#C9A84C" stroke-width="0.8" fill="none"/><ellipse cx="40" cy="32" rx="10" ry="18" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.6"/>' },
+    'Kuss':                     { img:'C-F-2005-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2005', price:'550 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Rot — die Farbe von Blut und Begehren. Zwei Figuren finden sich im Kuss und verschmelzen fast zur Einheit. Die Mischtechnik löst die Grenzen zwischen den Körpern auf: wo endet einer, wo beginnt der andere? Signiert unten rechts.', story_en:'Red — the colour of blood and desire. Two figures meet in a kiss and nearly merge into one. The mixed media dissolves the boundaries between the bodies: where does one end, where does the other begin? Signed lower right.', svg:'<path d="M8 32 Q32 4 56 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><path d="M8 32 Q32 60 56 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Badende in blau':          { img:'C-F-2005-3entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'24 × 34 cm', year:'2005', price:'400 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Rückenakte — Körper, die sich entziehen. In Blau getaucht, zeigen die Figuren dem Betrachter das Schweigen ihrer Rücken. Eine Intimität, die nicht preisgibt. Das Blaue ist keine Farbe — es ist Atmosphäre. Signiert unten rechts.', story_en:'Figures seen from behind — bodies that withhold themselves. Steeped in blue, they show the viewer the silence of their backs. An intimacy that reveals nothing. The blue is not a colour — it is an atmosphere. Signed lower right.', svg:'<path d="M16 12 Q24 8 32 12 Q40 8 48 12" stroke="#C9A84C" stroke-width="0.8" fill="none"/><path d="M12 40 Q32 28 52 40" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.7"/>' },
+    'Paar':                     { img:'C-F-2005-4.JPG', technique:'Collage aus Graphik', technique_en:'Collage from graphic prints', size:'–', year:'2005', price:'450 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Ein Paar — hintereinander, nicht nebeneinander. Die Brauntöne und das graphische Ausgangsmaterial verleihen den Figuren etwas Archaisches, fast Monumentales. Zweiheit als Einheit: der eine Körper als Schatten des anderen. Signiert unten rechts.', story_en:'A couple — one behind the other, not side by side. The brown tones and the graphic source material give the figures an archaic, almost monumental quality. Twoness as oneness: one body as the shadow of the other. Signed lower right.', svg:'<line x1="28" y1="8" x2="28" y2="56" stroke="#C9A84C" stroke-width="0.9"/><line x1="36" y1="8" x2="36" y2="56" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
+    'Zwei Frauen':              { img:'C-F-2005-5.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'65 × 50 cm', year:'2005', price:'500 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das schwarze Quadrat im Hintergrund ist kein Zufall — eine bewusste Setzung. Zwei Frauenfiguren davor: eine vollständig, eine als Hüftfigur. Das Quadrat als Folie, als Spiegel, als Leerstelle, vor der der menschliche Körper umso mehr spricht. Signiert unten rechts.', story_en:'The black square in the background is no accident — a deliberate gesture. Two female figures before it: one complete, one cropped at the waist. The square as backdrop, as mirror, as void — against which the human body speaks all the more strongly. Signed lower right.', svg:'<rect x="16" y="16" width="32" height="32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="8" x2="32" y2="16" stroke="#C9A84C" stroke-width="0.6"/>' },
+    'Meer':                     { img:'C-F-2005-6entzerrt.JPG', technique:'Grafikkollage', technique_en:'Graphic collage', size:'33 × 24 cm', year:'2005', price:'400 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das einzige Landschaftsbild der Serie und zugleich eines der stillsten. Die Grafikkollage übersetzt das Meer in Schichten und Streifen — Wasser als Struktur, nicht als Abbild. Dahinter: ein schmaler Streifen Land, kaum mehr als eine Ahnung. Signiert unten rechts.', story_en:'The only landscape in the series, and one of its quietest works. The graphic collage translates the sea into layers and strips — water as structure, not as image. Beyond it: a narrow strip of land, little more than a suggestion. Signed lower right.', svg:'<path d="M4 36 Q16 28 28 36 Q40 44 52 36 Q60 32 60 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="4" y1="24" x2="60" y2="24" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Übergang':        { technique:'Mischtechnik', technique_en:'Mixed media', size:'110 × 85 cm', year:'2024', price:'3.500 – 5.200', cat:'Plastik', cat_en:'Sculpture', story:'Die Ellipsenform, die Übergang strukturiert, wurde von einem alten Handwerkswerkzeug abgeleitet — einer Schablone aus dem Nachlass von Schwabs Vater. Das Persönliche und das Formale verbinden sich hier auf ungewöhnliche Weise. Mehrere Schichten Öl und Acryl wurden mit einem Spachtel aufgetragen und wieder abgetragen, bis die heutige Textur entstanden war.', story_en:'The elliptical form structuring Übergang (Transition) was derived from an old craftsman\'s tool — a stencil from the estate of Schwab\'s father. The personal and the formal come together here in an unusual way. Several layers of oil and acrylic were applied with a palette knife and removed again, until the present texture emerged.', svg:'<path d="M4 32 Q32 4 60 32 Q32 60 4 32Z" stroke="#C9A84C" stroke-width="0.7" fill="none"/>' },
   };
 
   /* ══ LANGUAGE ══ */
@@ -4029,10 +4118,10 @@
       'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten','hero-origin':'Kusel · Atelier · 1934','hero-scroll':'Entdecken',
       'intro-label':'Willkommen',
       'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
-      'cat-acryl':'Acryl','cat-oel':'Öl','cat-aquarell':'Aquarell',
+      'cat-acryl':'Malerei','cat-oel':'Collage \u0026 Zeichnungen','cat-aquarell':'Grafik',
       'cat-view-1':'Kollektion ansehen','cat-view-2':'Kollektion ansehen','cat-view-3':'Kollektion ansehen','cat-view-4':'Kollektion ansehen',
       'coll-back-acryl-t':'Zurück','coll-back-oel-t':'Zurück','coll-back-aquarell-t':'Zurück','coll-back-mixed-t':'Zurück',
-      'coll-head-acryl':'A C R Y L','coll-head-oel':'Ö L','coll-head-aquarell':'A Q U A R E L L',
+      'coll-head-acryl':'M A L E R E I','coll-head-oel':'C O L L A G E  &  Z E I C H N U N G E N','coll-head-aquarell':'G R A F I K','coll-head-mixed':'P L A S T I K',
       'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.',
       'soc-cal-label':'Termin buchen','soc-cal-sub':'Besichtigung vereinbaren',
       'cal-success-text':'Anfrage gesendet.','cal-success-sub':'Wir bestätigen Ihren Termin per E-Mail.',
@@ -4048,7 +4137,7 @@
       'bio-label':'Biographie',
       'bio-fl-1':'Geburtsjahr','bio-fl-2':'Ausbildung','bio-fl-3':'Tätig in','bio-fl-4':'Auszeichnung','bio-fl-5':'Techniken','bio-fl-6':'Publikation',
       'bio-fv-3':'Kusel · Pfalz','bio-fv-4':'Pfalzpreis für Malerei','bio-fv-5':'Malerei · Grafik · Plastik','bio-fv-6':'Gedichtband 2015',
-      'cat-mixed':'Mixed Media',
+      'cat-mixed':'Plastik',
     },
     en: {
       'nav-galerie':'Gallery','nav-werke':'Works','nav-bio':'Biography','nav-rundgang':'Tour',
@@ -4056,10 +4145,10 @@
       'hero-tagline':'Art  |  Passion  |  Timeless','hero-enter':'Enter Gallery','hero-enter-ghost':'→ Enter Tour','hero-origin':'Kusel · Studio · 1934','hero-scroll':'Discover',
       'intro-label':'Welcome',
       'gal-label':'Current Works','gal-heading':'Selected Collection',
-      'cat-acryl':'Acrylic','cat-oel':'Oil','cat-aquarell':'Watercolour',
+      'cat-acryl':'Painting','cat-oel':'Collage \u0026 Drawings','cat-aquarell':'Graphics',
       'cat-view-1':'View Collection','cat-view-2':'View Collection','cat-view-3':'View Collection','cat-view-4':'View Collection',
       'coll-back-acryl-t':'Back','coll-back-oel-t':'Back','coll-back-aquarell-t':'Back','coll-back-mixed-t':'Back',
-      'coll-head-acryl':'A C R Y L I C','coll-head-oel':'O I L','coll-head-aquarell':'W A T E R C O L O U R',
+      'coll-head-acryl':'P A I N T I N G','coll-head-oel':'C O L L A G E  &  D R A W I N G S','coll-head-aquarell':'G R A P H I C S','coll-head-mixed':'S C U L P T U R E',
       'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'Discover new works, exhibitions and behind-the-scenes insights.',
       'soc-cal-label':'Book appointment','soc-cal-sub':'Schedule a viewing',
       'cal-success-text':'Request sent.','cal-success-sub':'We will confirm your appointment by e-mail.',
@@ -4075,7 +4164,7 @@
       'bio-label':'Biography',
       'bio-fl-1':'Born','bio-fl-2':'Education','bio-fl-3':'Based in','bio-fl-4':'Award','bio-fl-5':'Techniques','bio-fl-6':'Publication',
       'bio-fv-3':'Kusel · Palatinate','bio-fv-4':'Pfalz Prize for Painting','bio-fv-5':'Painting · Graphics · Sculpture','bio-fv-6':'Poetry Collection 2015',
-      'cat-mixed':'Mixed Media',
+      'cat-mixed':'Sculpture',
     }
   };
 
@@ -4229,7 +4318,7 @@
     document.getElementById('ad-eyebrow').textContent = cat;
     document.getElementById('ad-title').textContent = title;
     document.getElementById('ad-meta-line').textContent = tech + '  ·  ' + d.size + '  ·  ' + d.year;
-    document.getElementById('ad-price').textContent = '€ ' + d.price;
+    document.getElementById('ad-price').textContent = d.price ? '€ ' + d.price : 'Preis auf Anfrage';
     document.getElementById('ad-story').textContent = story;
     if (document.getElementById('ad-story-head')) document.getElementById('ad-story-head').textContent = t['ad-story-head'];
     if (document.getElementById('ad-offer-btn')) document.getElementById('ad-offer-btn').textContent = t['ad-offer-btn'];
@@ -4319,7 +4408,7 @@
   document.getElementById('ad-back-btn')?.addEventListener('click', closeArtwork);
 
   // Overlay-Zustand per URL-Hash wiederherstellen (z.B. nach Refresh)
-  const _CAT_TO_COL = { 'Acryl':'acryl', 'Öl':'oel', 'Aquarell':'aquarell', 'Gemischte Technik':'mixed' };
+  const _CAT_TO_COL = { 'Malerei':'acryl', 'Collage & Zeichnungen':'oel', 'Grafik':'aquarell', 'Plastik':'mixed' };
   (function() {
     const h = location.hash;
     if (h.startsWith('#artwork=')) {
@@ -6058,8 +6147,9 @@
     return cv;
   }
 
-  // Kollektion-Karten befüllen
+  // Kollektion-Karten befüllen (nur wenn noch kein echtes Bild vorhanden)
   document.querySelectorAll('.coll-card-img').forEach(el => {
+    if (el.querySelector('img')) return;
     const title = el.nextElementSibling?.querySelector('.coll-card-title')?.textContent?.trim();
     if (!title) return;
     el.innerHTML = '';
