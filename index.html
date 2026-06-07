@@ -2583,6 +2583,14 @@
     .fade-in-section.reveal-right { transform: translateY(22px); }
   }
 
+  /* ── SECTION CARD SLIDE ── */
+  #intro, #galerie, #ueber-uns, #socials, #kontakt {
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    will-change: transform;
+    box-shadow: 0 -6px 50px rgba(0,0,0,0.55);
+  }
+
   #room-overlay {
     position: fixed;
     inset: 0;
@@ -4901,6 +4909,33 @@
         ticking = true;
       }
     }, { passive: true });
+  })();
+
+  /* ── SECTION CARD SLIDE ── */
+  (function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const panels = Array.from(document.querySelectorAll('#intro, #galerie, #ueber-uns, #socials, #kontakt'));
+    let rafId = null;
+
+    function tick() {
+      const vh = window.innerHeight;
+      panels.forEach(function(panel) {
+        const top = panel.getBoundingClientRect().top;
+        if (top >= 0) {
+          const offset = Math.min(90, Math.round((top / vh) * 90));
+          panel.style.transform = offset > 0 ? 'translateY(' + offset + 'px)' : '';
+        } else {
+          panel.style.transform = '';
+        }
+      });
+      rafId = null;
+    }
+
+    window.addEventListener('scroll', function() {
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    }, { passive: true });
+
+    tick();
   })();
 
   /* ══ NAV – einblenden & aktiver Abschnitt ══ */
