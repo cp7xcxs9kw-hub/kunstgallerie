@@ -128,13 +128,14 @@
     --cream: #F2ECDE;
   }
 
-  html { scroll-behavior: auto; overflow-x: hidden; }
+  html { scroll-behavior: auto; overflow-x: hidden; overscroll-behavior: none; }
 
   body {
     font-family: 'Montserrat', sans-serif;
     background: var(--white);
     color: var(--text-dark);
     overflow-x: hidden;
+    overscroll-behavior: none;
   }
 
   /* ── NAVIGATION – zentriert ── */
@@ -6108,10 +6109,17 @@
     const img = document.querySelector('.hero-scene img');
     const hero = document.getElementById('hero');
     if (!img || !hero) return;
+    let heroH = hero.offsetHeight;
+    let rafId = null;
+    window.addEventListener('resize', () => { heroH = hero.offsetHeight; }, { passive: true });
     window.addEventListener('scroll', () => {
-      if (window.scrollY < hero.offsetHeight) {
-        img.style.transform = 'translateY(' + (window.scrollY * 0.38) + 'px)';
-      }
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        if (window.scrollY < heroH) {
+          img.style.transform = 'translateY(' + (window.scrollY * 0.38) + 'px)';
+        }
+        rafId = null;
+      });
     }, { passive: true });
   })();
 
