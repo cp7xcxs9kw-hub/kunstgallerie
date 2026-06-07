@@ -2573,23 +2573,6 @@
     transform: none;
   }
 
-  /* ── DIREKTIONALE REVEAL-VARIANTEN ── */
-  .fade-in-section.reveal-left  { transform: translateX(-65px); }
-  .fade-in-section.reveal-right { transform: translateX(65px); }
-  .fade-in-section.reveal-scale { transform: scale(0.94) translateY(12px); }
-
-  @media (max-width: 768px) {
-    .fade-in-section.reveal-left,
-    .fade-in-section.reveal-right { transform: translateY(22px); }
-  }
-
-  /* ── SECTION CARD SLIDE ── */
-  #intro, #galerie, #ueber-uns, #socials, #kontakt {
-    border-radius: 20px 20px 0 0;
-    position: relative;
-    will-change: transform;
-    box-shadow: 0 -6px 50px rgba(0,0,0,0.55);
-  }
 
   #room-overlay {
     position: fixed;
@@ -3243,14 +3226,14 @@
      GALERIE
 ══════════════════════════════════════ -->
 <section id="galerie">
-  <div class="gallery-header fade-in-section reveal-scale">
+  <div class="gallery-header fade-in-section">
     <p class="section-label" id="gal-label">Aktuelle Werke</p>
     <h2 id="gal-heading">Ausgewählte Kollektion</h2>
   </div>
 
-  <div class="cat-grid">
+  <div class="cat-grid fade-in-section">
 
-    <div class="cat-tile fade-in-section" style="transition-delay:0s" onclick="openCollection('oel')">
+    <div class="cat-tile" onclick="openCollection('oel')">
       <img class="cat-tile-bg" src="C-F-2004-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-oel">Collage &amp; Zeichnungen</p>
@@ -3258,7 +3241,7 @@
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
-    <div class="cat-tile fade-in-section" style="transition-delay:0.12s" onclick="openCollection('acryl')">
+    <div class="cat-tile" onclick="openCollection('acryl')">
       <img class="cat-tile-bg" src="C-F-2002-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-acryl">Malerei</p>
@@ -3266,7 +3249,7 @@
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
-    <div class="cat-tile fade-in-section" style="transition-delay:0.24s" onclick="openCollection('aquarell')">
+    <div class="cat-tile" onclick="openCollection('aquarell')">
       <img class="cat-tile-bg" src="C-F-2003-1entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-aquarell">Grafik</p>
@@ -3274,7 +3257,7 @@
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
-    <div class="cat-tile fade-in-section" style="transition-delay:0.36s" onclick="openCollection('mixed')">
+    <div class="cat-tile" onclick="openCollection('mixed')">
       <img class="cat-tile-bg" src="C-F-2005-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-mixed">Plastik</p>
@@ -3520,56 +3503,56 @@
     <p style="font-size:0.6rem; letter-spacing:0.2em; color: var(--gold);" id="bio-roles">MALER &nbsp;|&nbsp; GRAFIKER &nbsp;|&nbsp; BILDHAUER &nbsp;|&nbsp; LYRIKER</p>
   </div>
 
-  <div class="bio-timeline">
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0s">
+  <div class="bio-timeline fade-in-section">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1935</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Geburt in Kirchheimbolanden (Donnersbergkreis)</p>
       <p class="bio-tl-text lang-en" style="display:none">Born in Kirchheimbolanden, Donnersbergkreis</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.07s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1956–1960</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Studium Kunst und Germanistik, Mainz</p>
       <p class="bio-tl-text lang-en" style="display:none">Art &amp; German Studies, Mainz</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.14s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1960–2015</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Lehrtätigkeit Gymnasien Kirchheimbolanden und Kusel</p>
       <p class="bio-tl-text lang-en" style="display:none">Art Teacher, Grammar Schools Kirchheimbolanden &amp; Kusel</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.21s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1965–2017</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Künstlerisches Schaffen und viele Ausstellungen</p>
       <p class="bio-tl-text lang-en" style="display:none">Artistic Work and Many Exhibitions</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.28s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1973</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Pfalzpreis für Malerei</p>
       <p class="bio-tl-text lang-en" style="display:none">Pfalz Prize for Painting</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.35s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1980</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">1. Preis, Gestaltungswettbewerb Peter-Altmeier-Gedenkstätte Koblenz</p>
       <p class="bio-tl-text lang-en" style="display:none">1st Prize, Peter Altmeier Memorial Design Competition, Koblenz</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.42s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">1995</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Preis der Vereinigung Pfälzer Kunstfreunde (Picasso-Medaille)</p>
       <p class="bio-tl-text lang-en" style="display:none">Prize of the Association of Palatinate Art Friends (Picasso Medal)</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.49s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">2015</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Gedichtband »Ich unn moi Fraa und andere Gedichte«</p>
       <p class="bio-tl-text lang-en" style="display:none">Poetry Collection »Ich unn moi Fraa und andere Gedichte«</p>
     </div>
-    <div class="bio-tl-item fade-in-section" style="transition-delay:0.56s">
+    <div class="bio-tl-item">
       <span class="bio-tl-year">2017</span>
       <div class="bio-tl-dot"></div>
       <p class="bio-tl-text lang-de">Tod in Kusel</p>
@@ -3577,7 +3560,7 @@
     </div>
   </div>
 
-  <div class="bio-facts fade-in-section reveal-scale">
+  <div class="bio-facts fade-in-section">
     <div class="bio-fact">
       <span class="bio-fact-label" id="bio-fl-1">Geburtsjahr</span>
       <span class="bio-fact-value">1935</span>
@@ -4890,68 +4873,6 @@
   document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
   document.querySelectorAll('.gold-divider').forEach(el => observer.observe(el));
 
-  /* ── HERO PARALLAX ── */
-  (function() {
-    const heroScene = document.querySelector('.hero-scene');
-    if (!heroScene || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let ticking = false;
-    window.addEventListener('scroll', function() {
-      if (!ticking) {
-        requestAnimationFrame(function() {
-          const y = window.scrollY;
-          if (y < window.innerHeight * 1.2) {
-            heroScene.style.transform = 'translateY(' + (y * 0.25) + 'px)';
-          } else {
-            heroScene.style.transform = '';
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }, { passive: true });
-  })();
-
-  /* ── SECTION CARD SLIDE ── */
-  (function() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const panels = Array.from(document.querySelectorAll('#intro, #galerie, #ueber-uns, #socials, #kontakt'));
-
-    function getDocTop(el) {
-      let t = 0, e = el;
-      while (e) { t += e.offsetTop; e = e.offsetParent; }
-      return t;
-    }
-
-    // offsetTop ist nicht von CSS transforms beeinflusst — kein Feedback-Loop
-    const docTops = panels.map(getDocTop);
-    let rafId = null;
-
-    function tick() {
-      const vh = window.innerHeight;
-      const scrollY = window.scrollY;
-      panels.forEach(function(panel, i) {
-        const top = docTops[i] - scrollY;
-        if (top >= 0) {
-          const offset = Math.min(90, Math.round((top / vh) * 90));
-          panel.style.transform = offset > 0 ? 'translateY(' + offset + 'px)' : '';
-        } else {
-          panel.style.transform = '';
-        }
-      });
-      rafId = null;
-    }
-
-    window.addEventListener('scroll', function() {
-      if (!rafId) rafId = requestAnimationFrame(tick);
-    }, { passive: true });
-
-    window.addEventListener('load', function() {
-      panels.forEach(function(p, i) { docTops[i] = getDocTop(p); });
-      tick();
-    });
-
-    tick();
-  })();
 
   /* ══ NAV – einblenden & aktiver Abschnitt ══ */
   const heroEl  = document.getElementById('hero');
