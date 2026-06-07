@@ -4915,12 +4915,22 @@
   (function() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const panels = Array.from(document.querySelectorAll('#intro, #galerie, #ueber-uns, #socials, #kontakt'));
+
+    function getDocTop(el) {
+      let t = 0, e = el;
+      while (e) { t += e.offsetTop; e = e.offsetParent; }
+      return t;
+    }
+
+    // offsetTop ist nicht von CSS transforms beeinflusst — kein Feedback-Loop
+    const docTops = panels.map(getDocTop);
     let rafId = null;
 
     function tick() {
       const vh = window.innerHeight;
-      panels.forEach(function(panel) {
-        const top = panel.getBoundingClientRect().top;
+      const scrollY = window.scrollY;
+      panels.forEach(function(panel, i) {
+        const top = docTops[i] - scrollY;
         if (top >= 0) {
           const offset = Math.min(90, Math.round((top / vh) * 90));
           panel.style.transform = offset > 0 ? 'translateY(' + offset + 'px)' : '';
@@ -4934,6 +4944,11 @@
     window.addEventListener('scroll', function() {
       if (!rafId) rafId = requestAnimationFrame(tick);
     }, { passive: true });
+
+    window.addEventListener('load', function() {
+      panels.forEach(function(p, i) { docTops[i] = getDocTop(p); });
+      tick();
+    });
 
     tick();
   })();
