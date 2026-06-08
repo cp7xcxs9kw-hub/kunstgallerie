@@ -550,8 +550,8 @@
 
   /* ── GALLERY ── */
   #galerie {
-    padding: 4rem 3rem 8rem;
-    background: var(--off-white);
+    padding: 6rem 3rem 8rem;
+    background: #0a0a08;
   }
 
   .gallery-header {
@@ -563,8 +563,15 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 2.5rem;
     font-weight: 300;
-    color: var(--text-dark);
+    color: var(--cream);
     letter-spacing: 0.05em;
+  }
+
+  .gallery-frame {
+    max-width: 980px;
+    margin: 2rem auto 0;
+    border: 1px solid rgba(201,168,76,0.18);
+    padding: 16px;
   }
 
   .gallery-grid {
@@ -683,38 +690,51 @@
   .cat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    max-width: 900px;
-    margin: 0 auto;
+    gap: 12px;
   }
   .cat-tile {
     background: #0e0d0b;
-    border: 1px solid rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.12);
     padding: 3.5rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.35s ease, background 0.35s ease;
+    transition: border-color 0.45s ease, transform 0.45s ease, box-shadow 0.45s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.9rem;
     position: relative;
     overflow: hidden;
+    min-height: 300px;
   }
   .cat-tile-bg {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: cover; object-position: center;
-    opacity: 0.22;
-    transition: opacity 0.4s ease;
+    opacity: 0.28;
+    transition: opacity 0.55s ease, transform 0.55s ease;
+    transform: scale(1);
     z-index: 0;
   }
-  .cat-tile:hover .cat-tile-bg { opacity: 0.38; }
-  .cat-tile > *:not(.cat-tile-bg) { position: relative; z-index: 1; }
-  .cat-tile:hover { border-color: rgba(201,168,76,0.55); background: #111009; }
+  /* Gradient overlay — immer sichtbar, Text bleibt lesbar */
+  .cat-tile::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(6,5,4,0.82) 0%, rgba(6,5,4,0.18) 55%, transparent 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .cat-tile > *:not(.cat-tile-bg) { position: relative; z-index: 2; }
+  .cat-tile:hover .cat-tile-bg { opacity: 0.52; transform: scale(1.07); }
+  .cat-tile:hover {
+    border-color: rgba(201,168,76,0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 45px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.2);
+  }
   .cat-tile-rule {
     width: 40px; height: 1px;
-    background: linear-gradient(to right, transparent, rgba(201,168,76,0.45), transparent);
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.55), transparent);
   }
   .cat-tile-name {
     font-family: 'Cormorant Garamond', serif;
@@ -725,15 +745,16 @@
   .cat-tile-count {
     font-family: 'Montserrat', sans-serif;
     font-size: 0.58rem; letter-spacing: 0.28em;
-    color: rgba(201,168,76,0.55);
+    color: rgba(201,168,76,0.65);
     text-transform: uppercase;
   }
   .cat-tile-arrow {
-    font-size: 0.7rem; color: rgba(201,168,76,0.35);
+    font-size: 0.7rem; color: rgba(201,168,76,0.4);
     letter-spacing: 0.15em; font-family: 'Montserrat', sans-serif;
-    transition: color 0.3s;
+    transition: color 0.35s, transform 0.35s;
+    display: inline-block;
   }
-  .cat-tile:hover .cat-tile-arrow { color: rgba(201,168,76,0.75); }
+  .cat-tile:hover .cat-tile-arrow { color: var(--gold); transform: translateX(5px); }
 
   /* ── COLLECTION OVERLAY ── */
   .coll-overlay {
@@ -2738,10 +2759,12 @@
     /* ── Galerie ── */
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .artwork-card.large { grid-column: span 2; }
-    #galerie { padding: 3rem 1.5rem 5rem; }
+    #galerie { padding: 3rem 1rem 5rem; }
+    .gallery-frame { padding: 2px; }
 
     /* ── Kategorien ── */
-    .cat-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .cat-grid { grid-template-columns: 1fr 1fr; gap: 3px; }
+    .cat-tile { min-height: 220px; transform: none !important; box-shadow: none !important; }
 
     /* ── Collection Overlay ── */
     .coll-inner { padding: 2rem 1.5rem 3rem; }
@@ -3231,7 +3254,8 @@
     <h2 id="gal-heading">Ausgewählte Kollektion</h2>
   </div>
 
-  <div class="cat-grid fade-in-section">
+  <div class="gallery-frame fade-in-section">
+  <div class="cat-grid">
 
     <div class="cat-tile" onclick="openCollection('oel')">
       <img class="cat-tile-bg" src="C-F-2004-2entzerrt.JPG" alt="">
@@ -3265,6 +3289,7 @@
       <span class="cat-tile-arrow">&#x2192;</span>
     </div>
 
+  </div>
   </div>
 </section>
 
