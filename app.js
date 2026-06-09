@@ -1,5 +1,4 @@
   const overlay = document.getElementById('room-overlay');
-  const dissolve = document.getElementById('dissolve-overlay');
   const heroSection = document.getElementById('hero');
   const zoomOverlay = document.getElementById('zoom-hero-overlay');
 
@@ -208,7 +207,7 @@
     de: {
       'nav-galerie':'Galerie','nav-werke':'Werke','nav-bio':'Biographie','nav-rundgang':'Rundgang',
       'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste','nav-acc-label':'Anmelden',
-      'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten','hero-origin':'Kusel · Atelier · 1934','hero-scroll':'Entdecken',
+      'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten','hero-origin':'Kusel · Atelier · 1935','hero-scroll':'Entdecken',
       'intro-label':'Willkommen',
       'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
       'cat-acryl':'Malerei','cat-oel':'Collage \u0026 Zeichnungen','cat-aquarell':'Grafik',
