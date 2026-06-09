@@ -1655,6 +1655,64 @@
     border: 0.5px solid rgba(201,168,76,0.06);
     pointer-events: none;
   }
+  .bio-slide {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+    opacity: 0;
+    transition: opacity 0.55s ease;
+    display: block;
+  }
+  .bio-slide.active { opacity: 1; }
+  .bio-nav {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    background: rgba(10,9,8,0.55);
+    border: 0.5px solid rgba(201,168,76,0.35);
+    color: var(--gold);
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 6;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.25s;
+    padding: 0;
+  }
+  .bio-nav-prev { left: 0.9rem; }
+  .bio-nav-next { right: 0.9rem; }
+  .about-visual:hover .bio-nav { opacity: 1; }
+  .bio-nav:hover { background: rgba(201,168,76,0.18); }
+  .bio-dots {
+    position: absolute;
+    bottom: 0.9rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 6px;
+    z-index: 6;
+  }
+  .bio-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.25);
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .bio-dot.active { background: var(--gold); }
+  .bio-caption {
+    position: absolute;
+    bottom: 2rem; left: 0; right: 0;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.48rem;
+    letter-spacing: 0.3em;
+    color: rgba(201,168,76,0.6);
+    text-transform: uppercase;
+    z-index: 6;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .about-visual:hover .bio-caption { opacity: 1; }
   .about-monogram {
     font-family: 'Cormorant Garamond', serif;
     font-size: 7.5rem;
@@ -3614,8 +3672,24 @@
      ÜBER UNS
 ══════════════════════════════════════ -->
 <section id="ueber-uns">
-  <div class="about-visual">
-    <img src="portrait.jpg" alt="Horst Schwab" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
+  <div class="about-visual" id="bio-carousel">
+    <img class="bio-slide active" src="portrait.jpg"
+         alt="Horst Schwab">
+    <img class="bio-slide" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10588&sec=742b843864981929eb30f77c4ec85e5e"
+         alt="80. Geburtstag, 2015" style="object-position: right center;">
+    <img class="bio-slide" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=5352&sec=ec5c47c5ba500d4238093c750ff4fc3b"
+         alt="Porträt">
+    <img class="bio-slide" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10815&sec=ef001e31245f248f1fb09ad97de6797f"
+         alt="Selbstbildnis, 1982">
+    <button class="bio-nav bio-nav-prev" aria-label="Vorheriges Bild">&#8592;</button>
+    <button class="bio-nav bio-nav-next" aria-label="Nächstes Bild">&#8594;</button>
+    <div class="bio-dots">
+      <span class="bio-dot active"></span>
+      <span class="bio-dot"></span>
+      <span class="bio-dot"></span>
+      <span class="bio-dot"></span>
+    </div>
+    <p class="bio-caption" id="bio-cap">Portrait</p>
   </div>
   <div class="about-text">
     <p class="section-label" id="bio-label">Biographie</p>
@@ -4523,28 +4597,49 @@
   }
 
   // Scroll-Sperren: runter vom Hero + zurück zum Hero
-  // _galleryEntered=false → Runterscrollen vom Hero blockieren
-  // _galleryEntered=true  → Hochscrollen zurück zum Hero blockieren
-  var _galleryEntered = false;
-  function _enterGallery() { _galleryEntered = true; }
+  // sessionStorage hält den Zustand über Refreshes
+  var _galleryEntered = sessionStorage.getItem('galleryEntered') === '1';
+  var _touchStartY = 0;
+  var _snapReady = _galleryEntered; // sofort aktiv wenn aus sessionStorage
+  function _enterGallery() {
+    _galleryEntered = true;
+    _snapReady = true;
+    sessionStorage.setItem('galleryEntered', '1');
+  }
+  // Snap-Fallback erst nach Scroll-Restaurierung des Browsers aktivieren
+  if (!_snapReady) setTimeout(function() { _snapReady = true; }, 600);
 
+  // Puffer: 250px über der Grenze abfangen (schnelle Trackpad-Gesten)
   window.addEventListener('wheel', function(e) {
     if (!_galleryEntered && window.scrollY <= 5 && e.deltaY > 0) { e.preventDefault(); return; }
-    if (_galleryEntered && window.scrollY <= window.innerHeight && e.deltaY < 0) e.preventDefault();
+    if (_galleryEntered && e.deltaY < 0 && window.scrollY <= window.innerHeight + 250) {
+      e.preventDefault();
+      if (window.scrollY < window.innerHeight) {
+        window.scrollTo({ top: window.innerHeight, behavior: 'instant' });
+      }
+    }
   }, { passive: false });
 
+  // Touch: Startposition merken, Richtung prüfen
+  window.addEventListener('touchstart', function(e) {
+    _touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
   window.addEventListener('touchmove', function(e) {
-    if (!_galleryEntered && window.scrollY <= 5) e.preventDefault();
+    if (!_galleryEntered && window.scrollY <= 5) { e.preventDefault(); return; }
+    if (_galleryEntered && e.touches[0].clientY > _touchStartY && window.scrollY <= window.innerHeight + 250) {
+      e.preventDefault();
+    }
   }, { passive: false });
 
   window.addEventListener('keydown', function(e) {
     if (!_galleryEntered && window.scrollY <= 5 && ['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); return; }
-    if (_galleryEntered && window.scrollY <= window.innerHeight && ['ArrowUp', 'PageUp'].includes(e.key)) e.preventDefault();
+    if (_galleryEntered && window.scrollY <= window.innerHeight + 250 && ['ArrowUp', 'PageUp'].includes(e.key)) e.preventDefault();
   });
 
-  // Snap-Fallback für Touch/Momentum
+  // Letzter Fallback: falls doch durchgescrollt wurde, sofort zurückschnappen
   window.addEventListener('scroll', function() {
-    if (_galleryEntered && window.scrollY < window.innerHeight - 2) {
+    if (_snapReady && _galleryEntered && window.scrollY < window.innerHeight) {
       window.scrollTo({ top: window.innerHeight, behavior: 'instant' });
     }
   }, { passive: true });
@@ -4569,6 +4664,7 @@
   document.querySelectorAll('.nav-reload').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
+      sessionStorage.removeItem('galleryEntered');
       window.location.href = window.location.pathname;
     });
   });
@@ -6931,6 +7027,63 @@
       setTimeout(() => hint.remove(), 500);
     }
   }
+
+  // ── Bio Carousel ──────────────────────────────
+  (function() {
+    const slides   = document.querySelectorAll('#bio-carousel .bio-slide');
+    const dots     = document.querySelectorAll('#bio-carousel .bio-dot');
+    const cap      = document.getElementById('bio-cap');
+    const captions = ['Portrait', '80. Geburtstag, 2015', 'Porträt', 'Selbstbildnis, 1982'];
+    let idx = 0;
+
+    function goTo(n) {
+      slides[idx].classList.remove('active');
+      dots[idx].classList.remove('active');
+      idx = (n + slides.length) % slides.length;
+      slides[idx].classList.add('active');
+      dots[idx].classList.add('active');
+      if (cap) cap.textContent = captions[idx];
+    }
+
+    const prev = document.querySelector('#bio-carousel .bio-nav-prev');
+    const next = document.querySelector('#bio-carousel .bio-nav-next');
+    if (prev) prev.addEventListener('click', () => { goTo(idx - 1); restartTimer(); });
+    if (next) next.addEventListener('click', () => { goTo(idx + 1); restartTimer(); });
+    dots.forEach((d, i) => d.addEventListener('click', () => { goTo(i); restartTimer(); }));
+
+    // Auto-play: erstes Bild 5s, danach je 4s
+    let timer = null;
+    let firstShown = true;
+
+    function scheduleNext() {
+      clearTimeout(timer);
+      const delay = firstShown ? 5000 : 4000;
+      timer = setTimeout(() => {
+        firstShown = false;
+        goTo(idx + 1);
+        scheduleNext();
+      }, delay);
+    }
+
+    function restartTimer() {
+      firstShown = false;
+      scheduleNext();
+    }
+
+    // Nur starten wenn Bio-Bereich im Viewport sichtbar wird
+    const carousel = document.getElementById('bio-carousel');
+    if (carousel && 'IntersectionObserver' in window) {
+      let started = false;
+      new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          scheduleNext();
+        }
+      }, { threshold: 0.4 }).observe(carousel);
+    } else {
+      scheduleNext();
+    }
+  })();
 
 </script>
 
