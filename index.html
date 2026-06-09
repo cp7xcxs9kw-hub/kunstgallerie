@@ -548,29 +548,105 @@
   }
   .gold-divider.visible { width: 60px; }
 
+  /* Zitat-Rahmen */
+  .intro-frame {
+    position: relative;
+    border: 0.5px solid rgba(201,168,76,0.45);
+    padding: 2.8rem 3.5rem;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .intro-frame .section-label {
+    position: absolute;
+    top: -0.75em;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    padding: 0 1.2rem;
+    margin: 0;
+    white-space: nowrap;
+  }
+  .intro-scroll-hint {
+    margin-top: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold);
+    font-size: 0.54rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    animation: introHintPulse 2.8s ease-in-out infinite;
+  }
+  .intro-scroll-arrow {
+    font-size: 1rem;
+    animation: introArrowBounce 2s ease-in-out infinite;
+    display: block;
+  }
+  @keyframes introArrowBounce {
+    0%, 100% { transform: translateY(-3px); }
+    50%       { transform: translateY(4px);  }
+  }
+  @keyframes introHintPulse {
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 1;    }
+  }
+
+  /* ── SCENE: intro → galerie → bio (320 vh) ── */
+  #intro-scene { position: relative; height: 320vh; }
+  .intro-scene-pin {
+    position: sticky; top: 0;
+    height: 100vh; overflow: hidden;
+    background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;                          /* stacks above #ueber-uns */
+  }
+  .intro-scene-pin::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 108px;
+    background: var(--white);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .intro-scene-pin #intro {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; padding: 0 3rem; margin: 0;
+  }
+  .intro-scene-pin #galerie {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 1rem 3rem; background: transparent;
+  }
+  .intro-scene-pin .gallery-header { opacity: 0; }
+
+
   /* ── GALLERY ── */
   #galerie {
     padding: 6rem 3rem 8rem;
-    background: #0a0a08;
+    background: var(--white);
   }
 
   .gallery-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
   }
 
   .gallery-header h2 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2.5rem;
     font-weight: 300;
-    color: var(--cream);
+    color: var(--text-dark);
     letter-spacing: 0.05em;
   }
 
   .gallery-frame {
     max-width: 980px;
-    margin: 2rem auto 0;
-    border: 1px solid rgba(201,168,76,0.18);
+    width: 100%;
+    margin: 0 auto;
     padding: 16px;
   }
 
@@ -698,7 +774,6 @@
     padding: 3.5rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.45s ease, transform 0.45s ease, box-shadow 0.45s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -707,6 +782,19 @@
     position: relative;
     overflow: hidden;
     min-height: 300px;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .cat-grid.tiles-settled .cat-tile {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: border-color 0.45s ease, box-shadow 0.45s ease !important;
+  }
+  .cat-grid.tiles-settled .cat-tile:hover {
+    transform: translateY(-4px) !important;
+    transition: border-color 0.45s ease, transform 0.45s ease, box-shadow 0.45s ease !important;
+    border-color: rgba(201,168,76,0.6);
+    box-shadow: 0 14px 45px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,168,76,0.2);
   }
   .cat-tile-bg {
     position: absolute; inset: 0;
@@ -1517,13 +1605,15 @@
 
   /* ── ABOUT ── */
   #ueber-uns {
-    padding: 8rem 3rem;
+    padding: 3rem 3rem 8rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6rem;
     max-width: 1100px;
-    margin: 0 auto;
+    margin: -100vh auto 0;
     align-items: center;
+    position: relative; z-index: 1;
+    background: var(--white);
   }
 
   .about-text h2 {
@@ -1861,6 +1951,25 @@
     text-transform: uppercase;
   }
   #vr-skip:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+  #vr-free-btn {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8,7,6,0.72);
+    border: 1px solid rgba(201,168,76,0.28);
+    color: rgba(201,168,76,0.65);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.52rem;
+    letter-spacing: 0.28em;
+    padding: 0.5rem 1.4rem;
+    cursor: pointer;
+    transition: color 0.25s, border-color 0.25s, background 0.25s;
+    z-index: 961;
+    text-transform: uppercase;
+  }
+  #vr-free-btn:hover { color: var(--gold); border-color: rgba(201,168,76,0.6); }
+  #vr-free-btn.active { color: var(--gold); border-color: rgba(201,168,76,0.7); background: rgba(201,168,76,0.08); }
   #gallery-tooltip {
     position: absolute;
     display: none;
@@ -2759,12 +2868,13 @@
     /* ── Galerie ── */
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .artwork-card.large { grid-column: span 2; }
-    #galerie { padding: 3rem 1rem 5rem; }
-    .gallery-frame { padding: 2px; }
+    .intro-scene-pin #galerie { padding: 0.5rem 1rem; }
+    .gallery-frame { padding: 4px; }
 
     /* ── Kategorien ── */
     .cat-grid { grid-template-columns: 1fr 1fr; gap: 3px; }
-    .cat-tile { min-height: 220px; transform: none !important; box-shadow: none !important; }
+    .cat-tile { min-height: 200px; }
+    .cat-tile.settled:hover { transform: none; box-shadow: none; }
 
     /* ── Collection Overlay ── */
     .coll-inner { padding: 2rem 1.5rem 3rem; }
@@ -3216,7 +3326,7 @@
     <p class="hero-tagline" id="hero-tagline">Kunst &nbsp;|&nbsp; Leidenschaft &nbsp;|&nbsp; Zeitlos</p>
     <p class="hero-origin" id="hero-origin">Pfalz &nbsp;·&nbsp; Atelier &nbsp;·&nbsp; 1935</p>
     <div class="hero-ctas">
-      <a href="#galerie" class="hero-enter" id="hero-enter">Galerie betreten</a>
+      <a href="#intro-scene" class="hero-enter" id="hero-enter">Galerie betreten</a>
       <button class="hero-enter-ghost" id="hero-enter-ghost" onclick="document.getElementById('nav-rundgang').click()">&#8594;&nbsp; Rundgang starten</button>
     </div>
   </div>
@@ -3227,34 +3337,39 @@
 
 
 <!-- ══════════════════════════════════════
-     INTRO
+     INTRO + GALERIE SCENE
 ══════════════════════════════════════ -->
-<section id="intro" class="fade-in-section">
-  <p class="section-label" id="intro-label">Willkommen</p>
-  <p class="intro-text lang-de">
-    Jedes Werk erzählt eine Geschichte.<br>
-    Jeder Blick öffnet eine neue Welt.<br>
-    Willkommen in einem Ort, wo Kunst atmet.
+<div id="intro-scene">
+  <div class="intro-scene-pin">
+
+<section id="intro">
+  <div class="intro-frame">
+    <p class="section-label" id="intro-label">Willkommen</p>
+    <p class="intro-text lang-de">
+      Jedes Werk erzählt eine Geschichte.<br>
+      Jeder Blick öffnet eine neue Welt.<br>
+      Willkommen in einem Ort, wo Kunst atmet.
+    </p>
+    <p class="intro-text lang-en" style="display:none">
+      Every work tells a story.<br>
+      Every glance opens a new world.<br>
+      Welcome to a place where art breathes.
+    </p>
+  </div>
+  <p class="intro-scroll-hint">
+    <span class="intro-scroll-arrow">&#8595;</span>
+    <span class="lang-de">Entdecken Sie die Sammlung</span>
+    <span class="lang-en" style="display:none">Explore the Collection</span>
   </p>
-  <p class="intro-text lang-en" style="display:none">
-    Every work tells a story.<br>
-    Every glance opens a new world.<br>
-    Welcome to a place where art breathes.
-  </p>
-  <div class="gold-divider"></div>
 </section>
 
-
-<!-- ══════════════════════════════════════
-     GALERIE
-══════════════════════════════════════ -->
 <section id="galerie">
-  <div class="gallery-header fade-in-section">
+  <div class="gallery-header">
     <p class="section-label" id="gal-label">Aktuelle Werke</p>
     <h2 id="gal-heading">Ausgewählte Kollektion</h2>
   </div>
 
-  <div class="gallery-frame fade-in-section">
+  <div class="gallery-frame">
   <div class="cat-grid">
 
     <div class="cat-tile" onclick="openCollection('oel')">
@@ -3292,6 +3407,9 @@
   </div>
   </div>
 </section>
+
+  </div><!-- /.intro-scene-pin -->
+</div><!-- /#intro-scene -->
 
 <!-- ══ COLLECTION OVERLAYS ══════════════════════════════════════════ -->
 
@@ -3496,10 +3614,10 @@
      ÜBER UNS
 ══════════════════════════════════════ -->
 <section id="ueber-uns">
-  <div class="about-visual fade-in-section">
+  <div class="about-visual">
     <img src="portrait.jpg" alt="Horst Schwab" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">
   </div>
-  <div class="about-text fade-in-section">
+  <div class="about-text">
     <p class="section-label" id="bio-label">Biographie</p>
     <h2>Horst Schwab<br>1935 – 2017</h2>
     <div class="lang-de">
@@ -4404,16 +4522,48 @@
     }, 730);
   }
 
-  // Hero-Button: Zoom-In Effekt
+  // Scroll-Sperren: runter vom Hero + zurück zum Hero
+  // _galleryEntered=false → Runterscrollen vom Hero blockieren
+  // _galleryEntered=true  → Hochscrollen zurück zum Hero blockieren
+  var _galleryEntered = false;
+  function _enterGallery() { _galleryEntered = true; }
+
+  window.addEventListener('wheel', function(e) {
+    if (!_galleryEntered && window.scrollY <= 5 && e.deltaY > 0) { e.preventDefault(); return; }
+    if (_galleryEntered && window.scrollY <= window.innerHeight && e.deltaY < 0) e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchmove', function(e) {
+    if (!_galleryEntered && window.scrollY <= 5) e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('keydown', function(e) {
+    if (!_galleryEntered && window.scrollY <= 5 && ['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); return; }
+    if (_galleryEntered && window.scrollY <= window.innerHeight && ['ArrowUp', 'PageUp'].includes(e.key)) e.preventDefault();
+  });
+
+  // Snap-Fallback für Touch/Momentum
+  window.addEventListener('scroll', function() {
+    if (_galleryEntered && window.scrollY < window.innerHeight - 2) {
+      window.scrollTo({ top: window.innerHeight, behavior: 'instant' });
+    }
+  }, { passive: true });
+
+  // Hero-Button: Zoom-In Effekt → scrollt zuerst zum Zitat
   const heroEnterBtn = document.querySelector('.hero-enter');
   if (heroEnterBtn) {
     heroEnterBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      _enterGallery();
       const targetId = heroEnterBtn.getAttribute('href').slice(1);
       zoomIntoGallery(targetId);
       _showRundgangHint();
     });
   }
+
+  // Rundgang-Button
+  const heroGhostBtn = document.getElementById('hero-enter-ghost');
+  if (heroGhostBtn) heroGhostBtn.addEventListener('click', _enterGallery);
 
   // Galerie-Link: zur Startseite navigieren (Hero, frisch geladen)
   document.querySelectorAll('.nav-reload').forEach(link => {
@@ -4496,7 +4646,7 @@
       'fav-empty-label':'Noch keine Werke gespeichert.',
       'ad-tech-label':'Technik','ad-size-label':'Format','ad-year-label':'Jahr','ad-cat-label':'Kategorie','ad-sign-label':'Signatur',
       'ad-sub-text':'Originalwerk  ·  Bild folgt in Kürze',
-      'bio-label':'Biographie',
+      'bio-label':'Biographie','bio-teaser-label':'Biographie',
       'bio-fl-1':'Geburtsjahr','bio-fl-2':'Ausbildung','bio-fl-3':'Tätig in','bio-fl-4':'Auszeichnung','bio-fl-5':'Techniken','bio-fl-6':'Publikation',
       'bio-fv-3':'Kusel · Pfalz','bio-fv-4':'Pfalzpreis für Malerei','bio-fv-5':'Malerei · Grafik · Plastik','bio-fv-6':'Gedichtband 2015',
       'cat-mixed':'Plastik',
@@ -4523,7 +4673,7 @@
       'fav-empty-label':'No works saved yet.',
       'ad-tech-label':'Technique','ad-size-label':'Format','ad-year-label':'Year','ad-cat-label':'Category','ad-sign-label':'Signature',
       'ad-sub-text':'Original work  ·  Image coming soon',
-      'bio-label':'Biography',
+      'bio-label':'Biography','bio-teaser-label':'Biography',
       'bio-fl-1':'Born','bio-fl-2':'Education','bio-fl-3':'Based in','bio-fl-4':'Award','bio-fl-5':'Techniques','bio-fl-6':'Publication',
       'bio-fv-3':'Kusel · Palatinate','bio-fv-4':'Pfalz Prize for Painting','bio-fv-5':'Painting · Graphics · Sculpture','bio-fv-6':'Poetry Collection 2015',
       'cat-mixed':'Sculpture',
@@ -4980,8 +5130,10 @@
     infoPanel.querySelector('.vr-info-close').addEventListener('click', function(){ window.closeVrInfo(); });
     document.addEventListener('keydown', function(e) {
       if (!vrEl || vrEl.style.display === 'none') return;
+      if (freeNav) { navKeys.add(e.code); return; }
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); skipStep(); }
     });
+    document.addEventListener('keyup', function(e) { navKeys.delete(e.code); });
     window.closeVrInfo = function() {
       var p = document.getElementById('vr-info-panel');
       if(p) p.classList.remove('visible');
@@ -5009,6 +5161,10 @@
     let seq, seqIdx, phase, t0;
     let fromPos=null, fromQuat=null;
     let vrPaused = false;
+    let freeNav = false;
+    const navKeys = new Set();
+    let navYaw=0, navPitch=0;
+    let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -5092,6 +5248,9 @@
       fromPos  = new T.Vector3();
       fromQuat = new T.Quaternion();
       buildRooms(T);
+      buildWainscoting(T);
+      buildMoldings(T, 14, -7);
+      buildMoldings(T, 22, -29);
       buildPaintings(T);
       buildLights(T);
       buildPictureLights(T);
@@ -5100,6 +5259,57 @@
       buildWallSigns(T);
       buildSeq(T);
       window.addEventListener('resize', onResize);
+
+      // ── Freie-Navigation-Button ───────────────────────────────────
+      const freeBtn = document.createElement('button');
+      freeBtn.id = 'vr-free-btn';
+      freeBtn.textContent = '↖ FREI ERKUNDEN';
+      vrEl.appendChild(freeBtn);
+      freeBtn.addEventListener('click', () => {
+        freeNav = !freeNav;
+        if (freeNav) {
+          vrPaused = true;
+          const euler = new T.Euler().setFromQuaternion(cam.quaternion, 'YXZ');
+          navYaw = euler.y; navPitch = euler.x;
+          freeBtn.textContent = '▶ TOUR FORTSETZEN';
+          freeBtn.classList.add('active');
+        } else {
+          vrPaused = false;
+          freeBtn.textContent = '↖ FREI ERKUNDEN';
+          freeBtn.classList.remove('active');
+          navKeys.clear();
+        }
+      });
+
+      // ── Maus-Drag für freie Navigation ───────────────────────────
+      cv.addEventListener('mousedown', e => {
+        if (!freeNav) return;
+        navDrag=true; navDragX=e.clientX; navDragY=e.clientY; navWasDragged=false;
+      });
+      cv.addEventListener('mousemove', e => {
+        if (!freeNav || !navDrag) return;
+        const dx=e.clientX-navDragX, dy=e.clientY-navDragY;
+        navYaw   -= dx*0.0025; navPitch -= dy*0.0025;
+        navPitch  = Math.max(-1.1, Math.min(0.9, navPitch));
+        navDragX=e.clientX; navDragY=e.clientY;
+        if (Math.abs(dx)+Math.abs(dy) > 3) navWasDragged=true;
+      });
+      document.addEventListener('mouseup', () => { navDrag=false; });
+
+      // ── Touch-Drag für freie Navigation ──────────────────────────
+      cv.addEventListener('touchstart', e => {
+        if (!freeNav || e.touches.length!==1) return;
+        navDrag=true; navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY; navWasDragged=false;
+      }, {passive:true});
+      cv.addEventListener('touchmove', e => {
+        if (!freeNav || !navDrag || e.touches.length!==1) return;
+        const dx=e.touches[0].clientX-navDragX, dy=e.touches[0].clientY-navDragY;
+        navYaw -= dx*0.0025; navPitch -= dy*0.0025;
+        navPitch = Math.max(-1.1, Math.min(0.9, navPitch));
+        navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
+        if (Math.abs(dx)+Math.abs(dy) > 3) navWasDragged=true;
+      }, {passive:true});
+      cv.addEventListener('touchend', () => { navDrag=false; });
 
       // ── Raycaster: Klick/Touch auf Gemälde öffnet Artwork-Detail ──
       const raycaster = new T.Raycaster();
@@ -5117,7 +5327,7 @@
         }
       }
 
-      cv.addEventListener('click', e => castAndOpen(e.clientX, e.clientY));
+      cv.addEventListener('click', e => { if (navWasDragged) { navWasDragged=false; return; } castAndOpen(e.clientX, e.clientY); });
 
       cv.addEventListener('touchend', e => {
         if (e.changedTouches.length !== 1) return;
@@ -5211,10 +5421,12 @@
       addBox(T, aw,  RH-ah,    0.18, wTrans, [0, ah+(RH-ah)/2, -14]);
 
       // ── Connector ───────────────────────────────────────────────
+      const marbleTex = makeMarbleTex(T);
+      const wMar = new T.MeshStandardMaterial({map:marbleTex, roughness:0.28, metalness:0.10});
       addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-16],[0, Math.PI/2,0]);
       addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-16],[0,-Math.PI/2,0]);
       addPlane(T, aw, RH, wF,  [0, RH,-16],      [ Math.PI/2,0,0]);
-      addPlane(T, aw,  4, wFl, [0,  0,-16],      [-Math.PI/2,0,0]);
+      addPlane(T, aw,  4, wMar, [0,  0,-16],      [-Math.PI/2,0,0]);
 
       // ── Room 2 ──────────────────────────────────────────────────
       const r2d=22, r2cz=-29;
@@ -5289,11 +5501,38 @@
     }
 
     function buildMoldings(T, depth, cz) {
-      // Minimal: thin dark shadow-line trim where wall meets ceiling
-      const trimMat = new T.MeshStandardMaterial({color:0xc8c8c8, roughness:0.82});
-      [[-RW/2+0.01],[RW/2-0.01]].forEach(([x])=>{
-        addBox(T, 0.02, 0.04, depth, trimMat, [x, RH-0.02, cz]);
-        addBox(T, 0.02, 0.04, depth, trimMat, [x, 0.02,    cz]);
+      const moldMat = new T.MeshStandardMaterial({color:0xdedad3, roughness:0.84});
+      [[-RW/2+0.022],[RW/2-0.022]].forEach(([x])=>{
+        // Kranzleiste oben: horizontale + vertikale Platte
+        addBox(T, 0.10, 0.022, depth+0.01, moldMat, [x, RH-0.011, cz]);
+        addBox(T, 0.022, 0.10, depth+0.01, moldMat, [x, RH-0.062, cz]);
+        // Sockelleiste unten
+        addBox(T, 0.055, 0.11, depth+0.01, moldMat, [x, 0.055, cz]);
+        addBox(T, 0.022, 0.04, depth+0.01, moldMat, [x, 0.13,  cz]);
+      });
+    }
+
+    // ── Wainscoting (Wandverkleidung) ─────────────────────────────
+    function buildWainscoting(T) {
+      const wH = 1.12;
+      const panMat = new T.MeshStandardMaterial({color:0x272421, roughness:0.82, metalness:0.01});
+      const railMat= new T.MeshStandardMaterial({color:0xb08828, roughness:0.38, metalness:0.72});
+      const OFF = 0.013;
+
+      [[14,-7],[22,-29]].forEach(([depth,cz])=>{
+        [-RW/2+OFF, RW/2-OFF].forEach(x=>{
+          const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
+          addPlane(T, depth, wH, panMat, [x, wH/2, cz], [0, sign, 0]);
+          addBox(T, 0.024, 0.036, depth+0.01, railMat, [x, wH+0.018, cz]);
+        });
+      });
+
+      // Connector Wände
+      const aw2=3.6;
+      [-aw2/2+OFF, aw2/2-OFF].forEach(x=>{
+        const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
+        addPlane(T, 4, 1.12, panMat, [x, 0.56, -16], [0, sign, 0]);
+        addBox(T, 0.024, 0.036, 4.01, railMat, [x, 1.138, -16]);
       });
     }
 
@@ -5985,9 +6224,27 @@
       seqIdx=0; phase='hold'; t0=performance.now();
     }
 
+    // ── Freie Navigation Tick ─────────────────────────────────────
+    function tickFreeNav(T) {
+      cam.quaternion.setFromEuler(new T.Euler(navPitch, navYaw, 0, 'YXZ'));
+      const spd = 0.055;
+      const fwd = new T.Vector3(-Math.sin(navYaw), 0, -Math.cos(navYaw));
+      const rgt = new T.Vector3( Math.cos(navYaw), 0, -Math.sin(navYaw));
+      const p = cam.position.clone();
+      if (navKeys.has('KeyW')||navKeys.has('ArrowUp'))    p.addScaledVector(fwd,  spd);
+      if (navKeys.has('KeyS')||navKeys.has('ArrowDown'))  p.addScaledVector(fwd, -spd);
+      if (navKeys.has('KeyA')||navKeys.has('ArrowLeft'))  p.addScaledVector(rgt, -spd);
+      if (navKeys.has('KeyD')||navKeys.has('ArrowRight')) p.addScaledVector(rgt,  spd);
+      p.x = Math.max(-RW/2+0.45, Math.min(RW/2-0.45, p.x));
+      p.z = Math.max(-39.6, Math.min(0.9, p.z));
+      p.y = CAM_Y;
+      cam.position.copy(p);
+    }
+
     // ── Tick ─────────────────────────────────────────────────────
     function tick(T,now){
       if(!seq) return;
+      if(freeNav) { tickFreeNav(T); return; }
       if(vrPaused) return;
       const s=seq[seqIdx], dt=now-t0;
       if(phase==='trans'){
@@ -6025,6 +6282,9 @@
       if(rafId) cancelAnimationFrame(rafId);
       if(renderer){renderer.dispose();renderer=null;}
       scene=null;cam=null;seq=null;fadeDiv=null;
+      freeNav=false; navKeys.clear();
+      const fb=document.getElementById('vr-free-btn');
+      if(fb) fb.remove();
       window.removeEventListener('resize',onResize);
     }
     function onResize(){
@@ -6145,6 +6405,89 @@
         rafId = null;
       });
     }, { passive: true });
+  })();
+
+  /* ══ SCENE: intro → galerie → bio ══ */
+  (function() {
+    var scene      = document.getElementById('intro-scene');
+    var intro      = document.getElementById('intro');
+    var header     = document.querySelector('.gallery-header');
+    var grid       = document.querySelector('.cat-grid');
+    var tiles      = document.querySelectorAll('.cat-tile');
+    var pinEl      = document.querySelector('.intro-scene-pin');
+    if (!scene || !tiles.length) return;
+
+    var OX = [-160,  160, -160,  160];
+    var OY = [-110, -110,  110,  110];
+
+    /* Startzustand: Tiles unsichtbar in Ecken */
+    for (var i = 0; i < tiles.length; i++) {
+      tiles[i].style.transition = 'none';
+      tiles[i].style.opacity    = '0';
+      tiles[i].style.transform  = 'translate('+OX[i]+'px,'+OY[i]+'px)';
+    }
+
+    var cur = 0, tgt = 0, rafId = null;
+
+    function scrollP() {
+      var r = scene.getBoundingClientRect();
+      return Math.max(0, Math.min(1, -r.top / (scene.offsetHeight - window.innerHeight)));
+    }
+    function ss(t) { t = Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
+    function band(p,a,b) { return ss(Math.max(0,Math.min(1,(p-a)/(b-a)))); }
+
+    function render(p) {
+      /* Phase 1 – Intro blendet aus (p 0→0.18) */
+      var iOp = p < 0.1 ? 1 : p > 0.2 ? 0 : 1-(p-0.1)/0.1;
+      intro.style.opacity   = iOp;
+      intro.style.transform = 'translate(-50%,'+(-50-(1-iOp)*3)+'%)';
+
+      /* Tiles: rein (p 0→0.32), stabil (0.32→0.6), raus (0.6→0.92) */
+      var tileT;
+      if      (p < 0.32) tileT = band(p, 0, 0.32);
+      else if (p < 0.60) tileT = 1;
+      else               tileT = 1 - band(p, 0.60, 0.92);
+
+      var stable = tileT >= 0.995;
+      grid.classList.toggle('tiles-settled', stable);
+      for (var i = 0; i < tiles.length; i++) {
+        if (!stable) tiles[i].style.transition = 'none';
+        tiles[i].style.transform = 'translate('+(OX[i]*(1-tileT))+'px,'+(OY[i]*(1-tileT))+'px)';
+        tiles[i].style.opacity   = tileT;
+      }
+
+      /* Galerie-Header: ein (p 0.18→0.36), aus (p 0.56→0.70) */
+      if (header) {
+        var hOp = p<0.18?0 : p<0.36?band(p,0.18,0.36) : p<0.56?1 : p<0.70?1-band(p,0.56,0.70) : 0;
+        header.style.opacity   = hOp;
+        header.style.transform = 'translateY('+(1-hOp)*10+'px)';
+      }
+
+      /* Pin-Transparenz: sobald Tiles weg sind → Biographie durchscheinen lassen */
+      if (pinEl) {
+        var pAlpha = p < 0.78 ? 1 : 1 - band(p, 0.78, 1.0);
+        pinEl.style.opacity       = pAlpha;
+        pinEl.style.pointerEvents = pAlpha < 0.05 ? 'none' : '';
+      }
+    }
+
+    function tick() {
+      var d = tgt - cur;
+      if (Math.abs(d) < 0.0002) {
+        cur = tgt; render(cur);
+        for (var i = 0; i < tiles.length; i++) tiles[i].style.transition = '';
+        rafId = null;
+      } else {
+        cur += d * 0.09; render(cur);
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    window.addEventListener('scroll', function() {
+      tgt = scrollP();
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    }, { passive: true });
+    render(0);
   })();
 
   /* ══ KONTAKTFORMULAR ══ */
