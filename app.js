@@ -754,6 +754,7 @@
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
     let navMovedDist=0;       // Gesamt-Zeigerbewegung seit Drücken (Klick vs. Ziehen)
     let navMoveTarget=null;   // Klick-zum-Gehen Ziel (Street-View-Stil)
+    let navFov=72;            // aktuelles Sichtfeld (Trackpad-/Mausrad-Zoom)
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -789,9 +790,8 @@
       {x: WALLX, y:PY, z:-29, rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-33, rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-37, rotY: Math.PI/2},
-      // Room 2 – end wall (faces +z from room side = rotY Math.PI)
-      {x:-2.2,   y:PY, z:-43.98, rotY:Math.PI},
-      {x: 2.2,   y:PY, z:-43.98, rotY:Math.PI},
+      // (Die zwei leeren Platzhalter-Rahmen an der Rückwand wurden entfernt –
+      //  sie rahmten unschön den „Horst Schwab"-Schriftzug ein.)
     ];
 
     // Artwork titles mapped to painting index (idx 0–15 = 16 artworks, 16–17 = leere Rückwand)
@@ -842,7 +842,7 @@
       buildRooms(T);
       buildWainscoting(T);
       buildMoldings(T, 18, -9);
-      buildMoldings(T, 22, -33);
+      buildMoldings(T, 19, -31.5);
       buildPaintings(T);
       buildLights(T);
       buildPictureLights(T);
@@ -991,6 +991,14 @@
         handleTap(t.clientX, t.clientY);
       }, {passive: false});
 
+      // ── Zoom per Trackpad-Pinch / Mausrad (verändert das Sichtfeld) ──
+      cv.addEventListener('wheel', e => {
+        e.preventDefault();
+        navFov = Math.max(26, Math.min(75, navFov + e.deltaY * 0.04));
+        cam.fov = navFov;
+        cam.updateProjectionMatrix();
+      }, {passive:false});
+
       cv.addEventListener('mousemove', e => {
         mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
         mouse.y = -(e.clientY / innerHeight) * 2 + 1;
@@ -1079,13 +1087,13 @@
       addPlane(T, aw, RH, wFc, [0, RH,-20],      [ Math.PI/2,0,0]);
       addPlane(T, aw,  4, wMar, [0,  0,-20],      [-Math.PI/2,0,0]);
 
-      // ── Room 2 ──────────────────────────────────────────────────
-      const r2d=22, r2cz=-33;
+      // ── Room 2 ────────────────────────────────────────────────── (gekürzt: Rückwand z=-41)
+      const r2d=19, r2cz=-31.5;
       addPlane(T, RW, r2d, wFl, [0,0,r2cz],        [-Math.PI/2,0,0]);
       addPlane(T, RW, r2d, wF,  [0,RH,r2cz],       [ Math.PI/2,0,0]);
       addPlane(T, r2d, RH, wW,  [-RW/2,RH/2,r2cz], [0, Math.PI/2,0]);
       addPlane(T, r2d, RH, wW,  [ RW/2,RH/2,r2cz], [0,-Math.PI/2,0]);
-      addPlane(T, RW,  RH, wTrans, [0,RH/2,-44],      [0,0,0]);
+      addPlane(T, RW,  RH, wTrans, [0,RH/2,-41],      [0,0,0]);
 
       // Room 2 entry wall (anthracite transition) — jetzt bei z=-22
       addBox(T, lw,    RH,   0.18, wTrans, [-(RW/2-lw/2), RH/2, -22]);
@@ -1160,7 +1168,7 @@
       const railMat= new T.MeshStandardMaterial({color:0xb08828, roughness:0.38, metalness:0.72});
       const OFF = 0.013;
 
-      [[18,-9],[22,-33]].forEach(([depth,cz])=>{
+      [[18,-9],[19,-31.5]].forEach(([depth,cz])=>{
         [-RW/2+OFF, RW/2-OFF].forEach(x=>{
           const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
           addPlane(T, depth, wH, panMat, [x, wH/2, cz], [0, sign, 0]);
@@ -1806,7 +1814,7 @@
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
-       [0,RH-0.2,-24],[0,RH-0.2,-30],[0,RH-0.2,-36],[0,RH-0.2,-42]
+       [0,RH-0.2,-24],[0,RH-0.2,-30],[0,RH-0.2,-36],[0,RH-0.2,-39]
       ].forEach(([x,y,z])=>{
         const pl=new T.PointLight(0xffffff, 0.60, 18, 1.1);
         pl.position.set(x,y,z); scene.add(pl);
@@ -1817,7 +1825,7 @@
         const pl=new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
-      [-18,-22,-44].forEach(z=>{
+      [-18,-22,-41].forEach(z=>{
         const pl=new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
@@ -1901,8 +1909,8 @@
         }).catch(()=>{});
       }
 
-      // Rückwand Raum 2 z=-44 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
-      sign(3.20, 2.00,  0,   2.10, -43.90, 0,        true);
+      // Rückwand Raum 2 z=-41 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
+      sign(3.20, 2.00,  0,   2.10, -40.90, 0,        true);
       // Horst-Schwab-Schild am Torbogen-Pfeiler (Bogen jetzt bei z=-18)
       sign(1.30, 0.82,  3.4, 2.50, -17.90, 0,        false);   // aus Raum 1 sichtbar
       sign(1.30, 0.82,  3.4, 2.50, -22.10, Math.PI,  false);   // aus Raum 2 sichtbar
@@ -1948,7 +1956,7 @@
       const sw=0.44;
       const matL=new T.MeshBasicMaterial({map:aoTex(true),  transparent:true, depthWrite:false});
       const matR=new T.MeshBasicMaterial({map:aoTex(false), transparent:true, depthWrite:false});
-      [[18,-9],[22,-33]].forEach(([depth,cz])=>{
+      [[18,-9],[19,-31.5]].forEach(([depth,cz])=>{
         const pL=new T.Mesh(new T.PlaneGeometry(sw,depth),matL);
         pL.rotation.x=-Math.PI/2; pL.position.set(-RW/2+sw/2,0.005,cz); scene.add(pL);
         const pR=new T.Mesh(new T.PlaneGeometry(sw,depth),matR);
@@ -2032,11 +2040,11 @@
       add(0,CAM_Y,-37, -WALLX+0.05, PY,-37, 1300,3800);
       add(0,CAM_Y,-37,  WALLX-0.05, PY,-37, 1700,3800);
       // End wall
-      add(0,CAM_Y,-40, 0, LY_W,-44,  2200,600);
+      add(0,CAM_Y,-38, 0, LY_W,-41,  2200,600);
 
       // Abschluss: direkt berechneter Quaternion — frontal auf hintere graue Wand, kein Object3D-Flip
       {
-        const fPos = new T.Vector3(0, CAM_Y, -40.5);
+        const fPos = new T.Vector3(0, CAM_Y, -37.5);
         // Pitch: leicht nach oben zum Schild (y=2.10, Kamera y=1.70, z-Abstand=3.5m)
         const pitch = Math.atan2(2.10 - CAM_Y, 3.5);
         const fQuat = new T.Quaternion().setFromEuler(new T.Euler(pitch, 0, 0, 'YXZ'));
@@ -2051,7 +2059,7 @@
 
     // Hält eine Position innerhalb der begehbaren Räume (Torbogen ist schmaler).
     function clampToRoom(p) {
-      p.z = Math.max(-43.6, Math.min(0.9, p.z));
+      p.z = Math.max(-40.6, Math.min(0.9, p.z));
       if (p.z < -17.6 && p.z > -22.4) { p.x = Math.max(-1.5, Math.min(1.5, p.x)); }
       else { p.x = Math.max(-RW/2+0.45, Math.min(RW/2-0.45, p.x)); }
       return p;
@@ -2122,7 +2130,7 @@
       if(rafId) cancelAnimationFrame(rafId);
       if(renderer){renderer.dispose();renderer=null;}
       scene=null;cam=null;seq=null;fadeDiv=null;
-      freeNav=false; navKeys.clear(); navMoveTarget=null;
+      freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=72;
       _imgsLoaded=0; _loaderHidden=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
