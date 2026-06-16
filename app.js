@@ -830,13 +830,12 @@
       renderer.setPixelRatio(_dpr);
       renderer.setClearColor(0x000000, 1);
       renderer.outputEncoding = T.sRGBEncoding;
-      // Filmisches Tonemapping für realistischere Lichter/Schatten (Kino-Look)
-      renderer.toneMapping = T.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.18;
+      // Lineares Tonemapping — kräftige, gesättigte Farben (kein ACES-Washout)
+      renderer.toneMapping = T.LinearToneMapping;
+      renderer.toneMappingExposure = 0.92;
       scene = new T.Scene();
       scene.background = new T.Color(0x000000);
-      // Etwas wärmere, dichtere Tiefenluft für Galerie-Atmosphäre
-      scene.fog = new T.Fog(0x0b0a08, 30, 64);
+      scene.fog = new T.Fog(0x000000, 32, 65);
       cam = new T.PerspectiveCamera(72, innerWidth/innerHeight, 0.05, 80);
       fromPos  = new T.Vector3();
       fromQuat = new T.Quaternion();
@@ -1026,7 +1025,7 @@
       const wF  = new T.MeshBasicMaterial({map: makeCeilingTex(T)});
       const wFc = new T.MeshBasicMaterial({color:0xf0efe9});
       const flTex = makeFloorTex(T);
-      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.16, metalness:0.08});
+      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.55, metalness:0.03});
       const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
       const wTrans = new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide});
 
@@ -1802,24 +1801,24 @@
 
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
-      // Gedimmtes, warmes Grundlicht für mehr Kontrast/Drama (Museums-Stimmung)
-      scene.add(new T.AmbientLight(0xfff1e0, 0.62));
+      // Diffuses neutrales Deckenlicht (wie im bevorzugten Original)
+      scene.add(new T.AmbientLight(0xffffff, 0.95));
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
        [0,RH-0.2,-24],[0,RH-0.2,-30],[0,RH-0.2,-36],[0,RH-0.2,-42]
       ].forEach(([x,y,z])=>{
-        const pl=new T.PointLight(0xffffff, 0.72, 18, 1.1);
+        const pl=new T.PointLight(0xffffff, 0.60, 18, 1.1);
         pl.position.set(x,y,z); scene.add(pl);
       });
 
-      // Hellere Lichtkegel auf den Bildern (deutliche Pools, mehr Plastizität)
+      // Ein PointLight pro Gemälde-Reihe (beide Wände)
       [-3,-7,-11,-15,-25,-29,-33,-37].forEach(z=>{
-        const pl=new T.PointLight(0xfff8f0, 2.3, 5.8, 1.25);
+        const pl=new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
       [-18,-22,-44].forEach(z=>{
-        const pl=new T.PointLight(0xfff8f0, 2.0, 5.2, 1.25);
+        const pl=new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
     }
