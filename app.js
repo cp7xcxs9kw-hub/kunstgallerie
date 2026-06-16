@@ -1412,18 +1412,30 @@
         // Schild (A5) – leicht zum Betrachter gekippt, auf dunklem Träger
         const LPLH=0.18, LPLW=LPLH*LW/LH;
         const signG=new T.Group();
-        signG.position.set(0, FLOOR+POSTH+0.11, SZ);
+        signG.position.set(0, FLOOR+POSTH+0.10, SZ);
         signG.rotation.x=0.34;
-        const back=new T.Mesh(new T.BoxGeometry(LPLW+0.024, LPLH+0.024, 0.012), new T.MeshBasicMaterial({color:0x1c1c1c}));
-        back.position.z=0.008; signG.add(back);
+        // Schwarzer Snap-Frame-Halter, ringsum etwas größer als das Schild
+        const FB=0.026;                                   // Rahmenbreite
+        const holder=new T.Mesh(new T.BoxGeometry(LPLW+2*FB, LPLH+2*FB, 0.022), metal);
+        holder.position.z=0.012; signG.add(holder);
+        // Vordere Rahmenlippe (4 Leisten) – wie ein echter Klapprahmen
+        const HW=LPLW/2+FB/2, HH=LPLH/2+FB/2;
+        [[LPLW+2*FB, FB, 0,  HH],[LPLW+2*FB, FB, 0, -HH],
+         [FB, LPLH,  HW, 0],[FB, LPLH, -HW, 0]
+        ].forEach(([w,h,px,py])=>{
+          const bar=new T.Mesh(new T.BoxGeometry(w,h,0.012), metal);
+          bar.position.set(px,py,0.002); signG.add(bar);
+        });
         const lb=new T.Mesh(new T.PlaneGeometry(LPLW,LPLH), new T.MeshBasicMaterial({map:lTex, side:T.DoubleSide}));
-        signG.add(lb);
+        lb.position.z=-0.002; signG.add(lb);
         g.add(signG);
-        // Pfosten + Fuß (dunkles Metall)
-        const post=new T.Mesh(new T.CylinderGeometry(0.018,0.018,POSTH,12), metal);
+        // Gerader Pfosten + flacher rechteckiger Standfuß (dunkles Metall)
+        const post=new T.Mesh(new T.CylinderGeometry(0.017,0.017,POSTH,12), metal);
         post.position.set(0, FLOOR+POSTH/2, SZ); g.add(post);
-        const foot=new T.Mesh(new T.CylinderGeometry(0.105,0.13,0.03,18), metal);
-        foot.position.set(0, FLOOR+0.015, SZ); g.add(foot);
+        const base=new T.Mesh(new T.BoxGeometry(0.36,0.022,0.27), metal);
+        base.position.set(0, FLOOR+0.011, SZ); g.add(base);
+        const base2=new T.Mesh(new T.BoxGeometry(0.30,0.020,0.22), metal); // leichte Stufe
+        base2.position.set(0, FLOOR+0.031, SZ); g.add(base2);
       }
 
       // Legt Bildfläche, Rahmen und Schild auf eine gegebene Größe (pw×ph) aus.
