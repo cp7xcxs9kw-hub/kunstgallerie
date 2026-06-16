@@ -1360,11 +1360,50 @@
       const g = new T.Group();
       const tex = makeTex(T,idx);
       const mat = new T.MeshStandardMaterial({map:tex, roughness:0.88, metalness:0.0, side:T.DoubleSide});
-      const paint = new T.Mesh(new T.PlaneGeometry(PW,PH), mat);
+      const paint = new T.Mesh(new T.PlaneGeometry(1,1), mat); // Einheitsfläche, per scale dimensioniert
       paint.position.z=0.025;
       if (PAINTING_TITLES[idx]) paint.userData.artworkTitle = PAINTING_TITLES[idx];
       _paintMeshes.push(paint);
       g.add(paint);
+
+      // Rahmen-Untergruppe (wird bei Bildladung an das echte Seitenverhältnis angepasst)
+      const fm=new T.MeshStandardMaterial({color:0x1c1c1c, roughness:0.90, metalness:0.02});
+      const frameG=new T.Group(); g.add(frameG);
+
+      // Canvas-Beschriftungsschild als Sprite (immer zur Kamera gewandt).
+      const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
+      const LW=1200, LH=384;
+      const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
+      const lCtx=lCv.getContext('2d');
+      lCtx.fillStyle='#f2ecdf'; lCtx.fillRect(0,0,LW,LH);
+      lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,LW,9);
+      lCtx.strokeStyle='rgba(0,0,0,0.22)'; lCtx.lineWidth=5; lCtx.strokeRect(3,3,LW-6,LH-6);
+      lCtx.textAlign='left';
+      lCtx.fillStyle='#8a7050'; lCtx.font='italic 600 50px "Times New Roman",Georgia,serif';
+      lCtx.fillText('Horst Schwab',46,92);
+      if(_t){lCtx.fillStyle='#0d0d0c';lCtx.font='700 78px "Times New Roman",Georgia,serif';lCtx.fillText(_t,46,196);}
+      if(_a){lCtx.fillStyle='#5c574e';lCtx.font='500 50px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,46,288);}
+      const lTex=new T.CanvasTexture(lCv);
+      lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
+      if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+      const lb=new T.Sprite(new T.SpriteMaterial({map:lTex, depthWrite:false}));
+      const LSW=0.92; lb.scale.set(LSW, LSW*LH/LW, 1); // Seitenverhältnis des Canvas wahren
+      g.add(lb);
+
+      // Legt Bildfläche, Rahmen und Schild auf eine gegebene Größe (pw×ph) aus.
+      function layout(pw, ph){
+        paint.scale.set(pw, ph, 1);
+        while(frameG.children.length) frameG.remove(frameG.children[0]);
+        const fw=pw+0.05, fh=ph+0.05, fd=0.022, fb=0.028;
+        [[fw,fb,fd, 0, fh/2,0],[fw,fb,fd, 0,-fh/2,0],
+         [fb,fh,fd,-fw/2,0,0],[fb,fh,fd, fw/2,0,0]
+        ].forEach(([w,h,d,px,py,pz])=>{
+          const b=new T.Mesh(new T.BoxGeometry(w,h,d),fm);
+          b.position.set(px,py,pz); frameG.add(b);
+        });
+        lb.position.set(0, -(fh/2 + lb.scale.y/2 + 0.10), -0.04);
+      }
+      layout(PW, PH); // Startgröße bis das Foto geladen ist
 
       const artImg = [IMG_0,IMG_1,IMG_2,IMG_3,IMG_4,IMG_5,IMG_6,IMG_7,
         IMG_8,IMG_9,IMG_10,IMG_11,IMG_12,IMG_13,IMG_14,IMG_15][idx];
@@ -1376,6 +1415,15 @@
           t.needsUpdate = true;
           mat.map = t;
           mat.needsUpdate = true;
+          // Rahmen/Fläche an das echte Bild-Seitenverhältnis anpassen
+          const iw=(t.image&&(t.image.naturalWidth||t.image.width))||0;
+          const ih=(t.image&&(t.image.naturalHeight||t.image.height))||0;
+          if (iw && ih){
+            const a=iw/ih, MAXW=1.95, MAXH=2.30;
+            let ph=MAXH, pw=MAXH*a;
+            if (pw>MAXW){ pw=MAXW; ph=MAXW/a; }
+            layout(pw, ph);
+          }
           _imgsLoaded++;
           if (_imgsLoaded >= 16) _maybeHideLoader();
         }, undefined, () => {
@@ -1383,37 +1431,6 @@
           if (_imgsLoaded >= 16) _maybeHideLoader();
         });
       }
-
-      // Thin minimal dark frame (like reference photo)
-      const fm=new T.MeshStandardMaterial({color:0x1c1c1c, roughness:0.90, metalness:0.02});
-      const fw=PW+0.05, fh=PH+0.05, fd=0.022, fb=0.028;
-      [[fw,fb,fd, 0, fh/2,0],[fw,fb,fd, 0,-fh/2,0],
-       [fb,fh,fd,-fw/2,0,0],[fb,fh,fd, fw/2,0,0]
-      ].forEach(([w,h,d,px,py,pz])=>{
-        const b=new T.Mesh(new T.BoxGeometry(w,h,d),fm);
-        b.position.set(px,py,pz); g.add(b);
-      });
-
-      // Canvas-Beschriftungsschild als Sprite (immer zur Kamera gewandt,
-      // dadurch nie weggecullt und nie gespiegelt – unabhängig von rotY).
-      const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
-      const LW=1024, LH=308;
-      const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
-      const lCtx=lCv.getContext('2d');
-      lCtx.fillStyle='#f0ece2'; lCtx.fillRect(0,0,LW,LH);
-      lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,LW,7);
-      lCtx.strokeStyle='rgba(0,0,0,0.18)'; lCtx.lineWidth=4; lCtx.strokeRect(2,2,LW-4,LH-4);
-      lCtx.textAlign='left';
-      lCtx.fillStyle='#8a7050'; lCtx.font='italic 500 42px "Times New Roman",Georgia,serif';
-      lCtx.fillText('Horst Schwab',36,78);
-      if(_t){lCtx.fillStyle='#111110';lCtx.font='600 60px "Times New Roman",Georgia,serif';lCtx.fillText(_t,36,162);}
-      if(_a){lCtx.fillStyle='#666058';lCtx.font='400 40px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,36,232);}
-      const lTex=new T.CanvasTexture(lCv);
-      lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
-      if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
-      const lb=new T.Sprite(new T.SpriteMaterial({map:lTex, depthWrite:false}));
-      lb.scale.set(0.64,0.193,1);
-      lb.position.set(0,-(fh/2+0.17),-0.04); g.add(lb);
 
       g.position.set(x,y,z); g.rotation.y=rotY;
       scene.add(g);
