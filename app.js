@@ -1370,24 +1370,41 @@
       const fm=new T.MeshStandardMaterial({color:0x1c1c1c, roughness:0.90, metalness:0.02});
       const frameG=new T.Group(); g.add(frameG);
 
-      // Canvas-Beschriftungsschild als Sprite (immer zur Kamera gewandt).
+      // Edles Beschriftungsschild – flach an der Wand montiert (dreht NICHT mit
+      // der Kamera mit) und an die Textbreite angepasst, mit Goldrahmen-Optik.
+      // Das Schild wird vom Besucher von der Rückseite der Plane betrachtet,
+      // daher wird das Canvas horizontal gespiegelt gezeichnet (wie die Gemälde).
       const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
-      const LW=1200, LH=384;
+      const _tech=_a ? (_a.technique+'  ·  '+_a.year) : '';
+      const F_ARTIST='italic 600 46px "Times New Roman",Georgia,serif';
+      const F_TITLE ='700 70px "Times New Roman",Georgia,serif';
+      const F_TECH  ='500 44px "Times New Roman",Georgia,serif';
+      const _m=document.createElement('canvas').getContext('2d');
+      _m.font=F_ARTIST; const _wA=_m.measureText('Horst Schwab').width;
+      _m.font=F_TITLE;  const _wT=_t   ? _m.measureText(_t).width   : 0;
+      _m.font=F_TECH;   const _wC=_tech? _m.measureText(_tech).width : 0;
+      const LH=360, padX=96;
+      const LW=Math.ceil(Math.max(_wA,_wT,_wC)+padX*2);
       const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
       const lCtx=lCv.getContext('2d');
-      lCtx.fillStyle='#f2ecdf'; lCtx.fillRect(0,0,LW,LH);
-      lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,LW,9);
-      lCtx.strokeStyle='rgba(0,0,0,0.22)'; lCtx.lineWidth=5; lCtx.strokeRect(3,3,LW-6,LH-6);
-      lCtx.textAlign='left';
-      lCtx.fillStyle='#8a7050'; lCtx.font='italic 600 50px "Times New Roman",Georgia,serif';
-      lCtx.fillText('Horst Schwab',46,92);
-      if(_t){lCtx.fillStyle='#0d0d0c';lCtx.font='700 78px "Times New Roman",Georgia,serif';lCtx.fillText(_t,46,196);}
-      if(_a){lCtx.fillStyle='#5c574e';lCtx.font='500 50px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,46,288);}
+      lCtx.translate(LW,0); lCtx.scale(-1,1); // Rückseiten-Spiegelung
+      const _bg=lCtx.createLinearGradient(0,0,0,LH);
+      _bg.addColorStop(0,'#f8f2e6'); _bg.addColorStop(1,'#ebe1cd');
+      lCtx.fillStyle=_bg; lCtx.fillRect(0,0,LW,LH);
+      // Goldrahmen: kräftige Außenleiste + feine Innenlinie (Passepartout-Optik)
+      lCtx.strokeStyle='#a87f2a'; lCtx.lineWidth=11; lCtx.strokeRect(15,15,LW-30,LH-30);
+      lCtx.strokeStyle='#dcbb5e'; lCtx.lineWidth=3;  lCtx.strokeRect(28,28,LW-56,LH-56);
+      lCtx.textAlign='center'; const _cx=LW/2;
+      lCtx.fillStyle='#8a6a28'; lCtx.font=F_ARTIST; lCtx.fillText('Horst Schwab',_cx,96);
+      lCtx.strokeStyle='#c9a84c'; lCtx.lineWidth=2;
+      lCtx.beginPath(); lCtx.moveTo(_cx-78,122); lCtx.lineTo(_cx+78,122); lCtx.stroke();
+      if(_t){   lCtx.fillStyle='#161410'; lCtx.font=F_TITLE; lCtx.fillText(_t,_cx,204); }
+      if(_tech){lCtx.fillStyle='#5c564a'; lCtx.font=F_TECH;  lCtx.fillText(_tech,_cx,288); }
       const lTex=new T.CanvasTexture(lCv);
       lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
       if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
-      const lb=new T.Sprite(new T.SpriteMaterial({map:lTex, depthWrite:false}));
-      const LSW=0.92; lb.scale.set(LSW, LSW*LH/LW, 1); // Seitenverhältnis des Canvas wahren
+      const LPLH=0.27, LPLW=LPLH*LW/LH; // Schildgröße in Metern, Seitenverhältnis gewahrt
+      const lb=new T.Mesh(new T.PlaneGeometry(LPLW,LPLH), new T.MeshBasicMaterial({map:lTex, side:T.DoubleSide}));
       g.add(lb);
 
       // Legt Bildfläche, Rahmen und Schild auf eine gegebene Größe (pw×ph) aus.
@@ -1401,7 +1418,7 @@
           const b=new T.Mesh(new T.BoxGeometry(w,h,d),fm);
           b.position.set(px,py,pz); frameG.add(b);
         });
-        lb.position.set(0, -(fh/2 + lb.scale.y/2 + 0.10), -0.04);
+        lb.position.set(0, -(fh/2 + LPLH/2 + 0.085), -0.05);
       }
       layout(PW, PH); // Startgröße bis das Foto geladen ist
 
