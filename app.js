@@ -1398,18 +1398,23 @@
       // Alle Gemälde werden vom Besucher von der Rückseite der Plane gesehen (DoubleSide-Trick).
       // Das Canvas muss daher horizontal gespiegelt gezeichnet werden, damit der Text korrekt lesbar ist.
       const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
-      const lCv=document.createElement('canvas'); lCv.width=640; lCv.height=192;
+      const LW=1024, LH=308;
+      const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
       const lCtx=lCv.getContext('2d');
       lCtx.save();
-      lCtx.translate(640,0); lCtx.scale(-1,1); // Horizontalspiegelung für Rückseiten-Sichtbarkeit
-      lCtx.fillStyle='#f0ece2'; lCtx.fillRect(0,0,640,192);
-      lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,640,4);
-      lCtx.fillStyle='#8a7050'; lCtx.font='italic 500 26px "Times New Roman",Georgia,serif'; lCtx.textAlign='left';
-      lCtx.fillText('Horst Schwab',22,46);
-      if(_t){lCtx.fillStyle='#111110';lCtx.font='600 38px "Times New Roman",Georgia,serif';lCtx.fillText(_t,22,100);}
-      if(_a){lCtx.fillStyle='#666058';lCtx.font='400 26px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,22,142);}
+      lCtx.translate(LW,0); lCtx.scale(-1,1); // Horizontalspiegelung für Rückseiten-Sichtbarkeit
+      lCtx.fillStyle='#f0ece2'; lCtx.fillRect(0,0,LW,LH);
+      lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,LW,7);
+      lCtx.textAlign='left';
+      lCtx.fillStyle='#8a7050'; lCtx.font='italic 500 42px "Times New Roman",Georgia,serif';
+      lCtx.fillText('Horst Schwab',36,78);
+      if(_t){lCtx.fillStyle='#111110';lCtx.font='600 60px "Times New Roman",Georgia,serif';lCtx.fillText(_t,36,162);}
+      if(_a){lCtx.fillStyle='#666058';lCtx.font='400 40px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,36,232);}
       lCtx.restore();
-      const lb=new T.Mesh(new T.PlaneGeometry(0.62,0.185),new T.MeshBasicMaterial({map:new T.CanvasTexture(lCv),side:T.DoubleSide}));
+      const lTex=new T.CanvasTexture(lCv);
+      lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
+      if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+      const lb=new T.Mesh(new T.PlaneGeometry(0.62,0.187),new T.MeshBasicMaterial({map:lTex,side:T.DoubleSide}));
       lb.position.set(0,-(fh/2+0.105),0.012); g.add(lb);
       // Sockelträger unter dem Rahmen
       const sh=new T.Mesh(new T.BoxGeometry(PW+0.06,0.018,0.055),new T.MeshBasicMaterial({color:0x1c1c1c}));
