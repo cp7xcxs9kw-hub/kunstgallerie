@@ -851,7 +851,7 @@
       buildWallSigns(T);
       buildAOStrips(T);
       buildArchFrames(T);
-      buildFloorReflection(T);
+      // buildFloorReflection(T);  // entfernt: erzeugte den weißen Lichtstreifen in der Bodenmitte
       buildSeq(T);
       window.addEventListener('resize', onResize);
 
