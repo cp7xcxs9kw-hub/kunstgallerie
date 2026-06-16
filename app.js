@@ -943,8 +943,23 @@
         mouse.x =  (clientX / innerWidth)  * 2 - 1;
         mouse.y = -(clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
-        if (!raycaster.ray.intersectPlane(_floorPlane, _floorHit)) return;
+        const dir = raycaster.ray.direction;
+        // Schnittpunkt mit dem Boden (y=0). Bei Klick Richtung Horizont liefert
+        // intersectPlane null oder einen sehr fernen Punkt – dann stattdessen
+        // einfach in die horizontale Blickrichtung vorwärts projizieren.
+        const hit = raycaster.ray.intersectPlane(_floorPlane, _floorHit);
+        if (!hit) {
+          const horiz = new T.Vector3(dir.x, 0, dir.z);
+          if (horiz.lengthSq() < 1e-5) return;
+          horiz.normalize();
+          _floorHit.copy(cam.position).addScaledVector(horiz, 6);
+        }
         const tgt = _floorHit.clone(); tgt.y = CAM_Y;
+        // Pro Klick maximal ~10 m gleiten (sanftes Gehen statt Teleport quer
+        // durch die ganze Galerie / durch Wände zwischen den Räumen).
+        const dx = tgt.x - cam.position.x, dz = tgt.z - cam.position.z;
+        const dist = Math.hypot(dx, dz);
+        if (dist > 10) { tgt.x = cam.position.x + dx/dist*10; tgt.z = cam.position.z + dz/dist*10; }
         clampToRoom(tgt);
         navMoveTarget = tgt;
       }
