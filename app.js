@@ -1396,14 +1396,16 @@
 
       // Canvas-Beschriftungsschild
       const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
-      const lCv=document.createElement('canvas'); lCv.width=512; lCv.height=112;
+      const lCv=document.createElement('canvas'); lCv.width=512; lCv.height=138;
       const lCtx=lCv.getContext('2d');
-      lCtx.fillStyle='#f2ece2'; lCtx.fillRect(0,0,512,112);
+      lCtx.fillStyle='#f2ece2'; lCtx.fillRect(0,0,512,138);
       lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,512,3);
-      if(_t){lCtx.fillStyle='#1a1a18';lCtx.font='400 30px Georgia,serif';lCtx.textAlign='left';lCtx.fillText(_t,18,46);}
-      if(_a){lCtx.fillStyle='#7a7468';lCtx.font='300 20px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,18,80);}
-      const lb=new T.Mesh(new T.PlaneGeometry(0.50,0.11),new T.MeshBasicMaterial({map:new T.CanvasTexture(lCv)}));
-      lb.position.set(0,-(fh/2+0.072),0.012); g.add(lb);
+      lCtx.fillStyle='#9a8060'; lCtx.font='italic 300 19px Georgia,serif'; lCtx.textAlign='left';
+      lCtx.fillText('Horst Schwab',18,30);
+      if(_t){lCtx.fillStyle='#1a1a18';lCtx.font='400 28px Georgia,serif';lCtx.fillText(_t,18,62);}
+      if(_a){lCtx.fillStyle='#7a7468';lCtx.font='300 19px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,18,95);}
+      const lb=new T.Mesh(new T.PlaneGeometry(0.50,0.135),new T.MeshBasicMaterial({map:new T.CanvasTexture(lCv)}));
+      lb.position.set(0,-(fh/2+0.082),0.012); g.add(lb);
       // Sockelträger unter dem Rahmen
       const sh=new T.Mesh(new T.BoxGeometry(PW+0.06,0.018,0.055),new T.MeshBasicMaterial({color:0x1c1c1c}));
       sh.position.set(0,-(fh/2+0.009),0.028); g.add(sh);
