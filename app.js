@@ -1465,7 +1465,7 @@
 
     function buildChair(T, cx, cz, rotY) {
       // LC2-inspirierter Sessel: sichtbarer Chromrahmen + helle Polster
-      const chromeMat = new T.MeshStandardMaterial({color:0xd8d8d8, roughness:0.12, metalness:0.96});
+      const chromeMat = new T.MeshBasicMaterial({color:0xc0c0c0});
       const cushMat   = new T.MeshStandardMaterial({color:0x8b4513, roughness:0.65, metalness:0.04});
       const g = new T.Group();
 
@@ -1576,14 +1576,14 @@
       const stemMat = new T.MeshStandardMaterial({color:0x2e5a1e, roughness:0.92});
       const leafTex = makeLeafTex(T);
       const leafMat = new T.MeshStandardMaterial({
-        map: leafTex, transparent: true, alphaTest: 0.4,
+        map: leafTex, alphaTest: 0.4,
         roughness: 0.72, side: T.DoubleSide
       });
 
       // Betonkübel
-      const pot = new T.Mesh(new T.CylinderGeometry(0.25, 0.23, 0.52, 32), potMat);
+      const pot = new T.Mesh(new T.CylinderGeometry(0.25, 0.23, 0.52, 12), potMat);
       pot.position.set(cx, 0.26, cz); scene.add(pot);
-      const soil = new T.Mesh(new T.CylinderGeometry(0.238, 0.238, 0.03, 32), soilMat);
+      const soil = new T.Mesh(new T.CylinderGeometry(0.238, 0.238, 0.03, 12), soilMat);
       soil.position.set(cx, 0.54, cz); scene.add(soil);
 
       // Strelitzia-Fächer: Stiele in einem Bogen, Blätter als ovale Canvas-Texturen
@@ -1650,7 +1650,7 @@
 
     // ── Picture Lights (decorative brass lamps above each frame) ─
     function buildPictureLights(T) {
-      const bMat = new T.MeshStandardMaterial({color:0xb89520, roughness:0.35, metalness:0.82});
+      const bMat = new T.MeshBasicMaterial({color:0xb08828});
       const armLen = 0.22;
       const lampY = PY + PH/2 + 0.12;  // just above top of frame
 
