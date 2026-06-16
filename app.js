@@ -752,6 +752,7 @@
     const navKeys = new Set();
     let navYaw=0, navPitch=0;
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
+    let navMoveTarget=null;   // Klick-zum-Gehen Ziel (Street-View-Stil)
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -856,6 +857,18 @@
       freeBtn.id = 'vr-free-btn';
       freeBtn.textContent = '↖ FREI ERKUNDEN';
       vrEl.appendChild(freeBtn);
+
+      // Bedien-Hinweis, nur im Frei-Modus sichtbar
+      const navHint = document.createElement('div');
+      navHint.id = 'vr-nav-hint';
+      navHint.style.cssText = 'position:absolute;left:50%;bottom:18px;transform:translateX(-50%);'
+        + 'background:rgba(8,7,6,0.72);color:#e9e2d2;font:500 12px/1.3 Montserrat,sans-serif;'
+        + 'letter-spacing:0.04em;padding:8px 16px;border:1px solid rgba(201,168,76,0.35);'
+        + 'border-radius:999px;pointer-events:none;opacity:0;transition:opacity 0.4s ease;'
+        + 'z-index:6;white-space:nowrap;backdrop-filter:blur(4px);';
+      navHint.textContent = 'Ziehen zum Umschauen · auf den Boden klicken zum Gehen · WASD';
+      vrEl.appendChild(navHint);
+
       freeBtn.addEventListener('click', () => {
         freeNav = !freeNav;
         if (freeNav) {
@@ -864,11 +877,14 @@
           navYaw = euler.y; navPitch = euler.x;
           freeBtn.textContent = '▶ TOUR FORTSETZEN';
           freeBtn.classList.add('active');
+          navHint.style.opacity = '1';
         } else {
           vrPaused = false;
           freeBtn.textContent = '↖ FREI ERKUNDEN';
           freeBtn.classList.remove('active');
           navKeys.clear();
+          navMoveTarget = null;
+          navHint.style.opacity = '0';
         }
       });
 
@@ -914,17 +930,38 @@
         const hits = raycaster.intersectObjects(_paintMeshes, false);
         for (const hit of hits) {
           const title = hit.object.userData.artworkTitle;
-          if (title) { openArtwork(title, false, true); break; }
+          if (title) { openArtwork(title, false, true); return true; }
         }
+        return false;
       }
 
-      cv.addEventListener('click', e => { if (navWasDragged) { navWasDragged=false; return; } castAndOpen(e.clientX, e.clientY); });
+      // ── Klick-zum-Gehen (Street-View-Stil) ───────────────────────
+      // Strahl auf die Bodenebene (y=0) schneiden – sehr günstig, keine Geometrie nötig.
+      const _floorPlane = new T.Plane(new T.Vector3(0,1,0), 0);
+      const _floorHit = new T.Vector3();
+      function moveToFloor(clientX, clientY) {
+        mouse.x =  (clientX / innerWidth)  * 2 - 1;
+        mouse.y = -(clientY / innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, cam);
+        if (!raycaster.ray.intersectPlane(_floorPlane, _floorHit)) return;
+        const tgt = _floorHit.clone(); tgt.y = CAM_Y;
+        clampToRoom(tgt);
+        navMoveTarget = tgt;
+      }
+
+      cv.addEventListener('click', e => {
+        if (navWasDragged) { navWasDragged=false; return; }
+        const opened = castAndOpen(e.clientX, e.clientY);
+        if (!opened && freeNav) moveToFloor(e.clientX, e.clientY);
+      });
 
       cv.addEventListener('touchend', e => {
         if (e.changedTouches.length !== 1) return;
+        if (navWasDragged) { navWasDragged=false; return; }
         e.preventDefault();
         const t = e.changedTouches[0];
-        castAndOpen(t.clientX, t.clientY);
+        const opened = castAndOpen(t.clientX, t.clientY);
+        if (!opened && freeNav) moveToFloor(t.clientX, t.clientY);
       }, {passive: false});
 
       cv.addEventListener('mousemove', e => {
@@ -1958,6 +1995,14 @@
       seqIdx=0; phase='hold'; t0=performance.now();
     }
 
+    // Hält eine Position innerhalb der begehbaren Räume (Torbogen ist schmaler).
+    function clampToRoom(p) {
+      p.z = Math.max(-39.6, Math.min(0.9, p.z));
+      if (p.z < -13.6 && p.z > -18.4) { p.x = Math.max(-1.5, Math.min(1.5, p.x)); }
+      else { p.x = Math.max(-RW/2+0.45, Math.min(RW/2-0.45, p.x)); }
+      return p;
+    }
+
     // ── Freie Navigation Tick ─────────────────────────────────────
     function tickFreeNav(T) {
       cam.quaternion.setFromEuler(new T.Euler(navPitch, navYaw, 0, 'YXZ'));
@@ -1965,12 +2010,19 @@
       const fwd = new T.Vector3(-Math.sin(navYaw), 0, -Math.cos(navYaw));
       const rgt = new T.Vector3( Math.cos(navYaw), 0, -Math.sin(navYaw));
       const p = cam.position.clone();
-      if (navKeys.has('KeyW')||navKeys.has('ArrowUp'))    p.addScaledVector(fwd,  spd);
-      if (navKeys.has('KeyS')||navKeys.has('ArrowDown'))  p.addScaledVector(fwd, -spd);
-      if (navKeys.has('KeyA')||navKeys.has('ArrowLeft'))  p.addScaledVector(rgt, -spd);
-      if (navKeys.has('KeyD')||navKeys.has('ArrowRight')) p.addScaledVector(rgt,  spd);
-      p.x = Math.max(-RW/2+0.45, Math.min(RW/2-0.45, p.x));
-      p.z = Math.max(-39.6, Math.min(0.9, p.z));
+      let manual = false;
+      if (navKeys.has('KeyW')||navKeys.has('ArrowUp'))    { p.addScaledVector(fwd,  spd); manual=true; }
+      if (navKeys.has('KeyS')||navKeys.has('ArrowDown'))  { p.addScaledVector(fwd, -spd); manual=true; }
+      if (navKeys.has('KeyA')||navKeys.has('ArrowLeft'))  { p.addScaledVector(rgt, -spd); manual=true; }
+      if (navKeys.has('KeyD')||navKeys.has('ArrowRight')) { p.addScaledVector(rgt,  spd); manual=true; }
+      if (manual) {
+        navMoveTarget = null;                 // Tastatur unterbricht das Klick-Gleiten
+      } else if (navMoveTarget) {
+        p.x += (navMoveTarget.x - p.x) * 0.08; // sanftes Gleiten zum Klickziel
+        p.z += (navMoveTarget.z - p.z) * 0.08;
+        if (Math.hypot(navMoveTarget.x - p.x, navMoveTarget.z - p.z) < 0.05) navMoveTarget = null;
+      }
+      clampToRoom(p);
       p.y = CAM_Y;
       cam.position.copy(p);
     }
@@ -2016,10 +2068,12 @@
       if(rafId) cancelAnimationFrame(rafId);
       if(renderer){renderer.dispose();renderer=null;}
       scene=null;cam=null;seq=null;fadeDiv=null;
-      freeNav=false; navKeys.clear();
+      freeNav=false; navKeys.clear(); navMoveTarget=null;
       _imgsLoaded=0; _loaderHidden=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
+      const nh=document.getElementById('vr-nav-hint');
+      if(nh) nh.remove();
       window.removeEventListener('resize',onResize);
     }
     function onResize(){
