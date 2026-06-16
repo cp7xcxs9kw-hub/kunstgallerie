@@ -832,7 +832,7 @@
       renderer.outputEncoding = T.sRGBEncoding;
       // Filmisches Tonemapping für realistischere Lichter/Schatten (Kino-Look)
       renderer.toneMapping = T.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.12;
+      renderer.toneMappingExposure = 1.18;
       scene = new T.Scene();
       scene.background = new T.Color(0x000000);
       // Etwas wärmere, dichtere Tiefenluft für Galerie-Atmosphäre
@@ -1026,7 +1026,7 @@
       const wF  = new T.MeshBasicMaterial({map: makeCeilingTex(T)});
       const wFc = new T.MeshBasicMaterial({color:0xf0efe9});
       const flTex = makeFloorTex(T);
-      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.34, metalness:0.06});
+      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.16, metalness:0.08});
       const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
       const wTrans = new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide});
 
@@ -1802,24 +1802,24 @@
 
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
-      // Diffuses Deckenlicht — leicht warm + etwas gedimmt für mehr Kontrast/Stimmung
-      scene.add(new T.AmbientLight(0xfff3e6, 0.92));
+      // Gedimmtes, warmes Grundlicht für mehr Kontrast/Drama (Museums-Stimmung)
+      scene.add(new T.AmbientLight(0xfff1e0, 0.62));
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
        [0,RH-0.2,-24],[0,RH-0.2,-30],[0,RH-0.2,-36],[0,RH-0.2,-42]
       ].forEach(([x,y,z])=>{
-        const pl=new T.PointLight(0xffffff, 0.60, 18, 1.1);
+        const pl=new T.PointLight(0xffffff, 0.72, 18, 1.1);
         pl.position.set(x,y,z); scene.add(pl);
       });
 
-      // Ein PointLight pro Gemälde-Reihe (beide Wände) statt 18 SpotLights — deutlich schnellerer Shader
+      // Hellere Lichtkegel auf den Bildern (deutliche Pools, mehr Plastizität)
       [-3,-7,-11,-15,-25,-29,-33,-37].forEach(z=>{
-        const pl=new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3);
+        const pl=new T.PointLight(0xfff8f0, 2.3, 5.8, 1.25);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
       [-18,-22,-44].forEach(z=>{
-        const pl=new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3);
+        const pl=new T.PointLight(0xfff8f0, 2.0, 5.2, 1.25);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
     }
