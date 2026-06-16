@@ -1394,31 +1394,26 @@
         b.position.set(px,py,pz); g.add(b);
       });
 
-      // Canvas-Beschriftungsschild
-      // Alle Gemälde werden vom Besucher von der Rückseite der Plane gesehen (DoubleSide-Trick).
-      // Das Canvas muss daher horizontal gespiegelt gezeichnet werden, damit der Text korrekt lesbar ist.
+      // Canvas-Beschriftungsschild als Sprite (immer zur Kamera gewandt,
+      // dadurch nie weggecullt und nie gespiegelt – unabhängig von rotY).
       const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
       const LW=1024, LH=308;
       const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
       const lCtx=lCv.getContext('2d');
-      lCtx.save();
-      lCtx.translate(LW,0); lCtx.scale(-1,1); // Horizontalspiegelung für Rückseiten-Sichtbarkeit
       lCtx.fillStyle='#f0ece2'; lCtx.fillRect(0,0,LW,LH);
       lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,LW,7);
+      lCtx.strokeStyle='rgba(0,0,0,0.18)'; lCtx.lineWidth=4; lCtx.strokeRect(2,2,LW-4,LH-4);
       lCtx.textAlign='left';
       lCtx.fillStyle='#8a7050'; lCtx.font='italic 500 42px "Times New Roman",Georgia,serif';
       lCtx.fillText('Horst Schwab',36,78);
       if(_t){lCtx.fillStyle='#111110';lCtx.font='600 60px "Times New Roman",Georgia,serif';lCtx.fillText(_t,36,162);}
       if(_a){lCtx.fillStyle='#666058';lCtx.font='400 40px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,36,232);}
-      lCtx.restore();
       const lTex=new T.CanvasTexture(lCv);
       lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
       if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
-      const lb=new T.Mesh(new T.PlaneGeometry(0.62,0.187),new T.MeshBasicMaterial({map:lTex,side:T.DoubleSide}));
-      lb.position.set(0,-(fh/2+0.105),0.012); g.add(lb);
-      // Sockelträger unter dem Rahmen
-      const sh=new T.Mesh(new T.BoxGeometry(PW+0.06,0.018,0.055),new T.MeshBasicMaterial({color:0x1c1c1c}));
-      sh.position.set(0,-(fh/2+0.009),0.028); g.add(sh);
+      const lb=new T.Sprite(new T.SpriteMaterial({map:lTex, depthWrite:false}));
+      lb.scale.set(0.64,0.193,1);
+      lb.position.set(0,-(fh/2+0.17),-0.04); g.add(lb);
 
       g.position.set(x,y,z); g.rotation.y=rotY;
       scene.add(g);
