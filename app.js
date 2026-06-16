@@ -767,31 +767,31 @@
     // Painting definitions: {x, y, z, rotY}
     // rotY: 0=faces+z, π=faces-z, -π/2=faces+x, π/2=faces-x
     const PICS = [
-      // Room 1 – left wall (faces +x = rotY -π/2)
+      // Room 1 – left wall (faces +x = rotY -π/2) — jetzt 4 Bilder
       {x:-WALLX, y:PY, z:-3,  rotY:-Math.PI/2},
       {x:-WALLX, y:PY, z:-7,  rotY:-Math.PI/2},
       {x:-WALLX, y:PY, z:-11, rotY:-Math.PI/2},
-      // Room 1 – right wall (faces -x = rotY +π/2)
+      // Room 1 – right wall (faces -x = rotY +π/2) — jetzt 4 Bilder
       {x: WALLX, y:PY, z:-3,  rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-7,  rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-11, rotY: Math.PI/2},
-      // Room 1 – end wall, flanking archway (faces +z = rotY 0, but from Room1 side)
-      // z vor der Wandvorderkante (-13.91), sonst stecken die Bilder in der Wand
-      {x:-3.2,   y:PY, z:-13.80, rotY:Math.PI},
-      {x: 3.2,   y:PY, z:-13.80, rotY:Math.PI},
-      // Room 2 – left wall
-      {x:-WALLX, y:PY, z:-21, rotY:-Math.PI/2},
+      // idx 6/7 (Bunte/Goldene Figur): von der Endwand auf die Seitenwände
+      // verschoben (4. Bild je Seite), Raum 1 dafür verlängert
+      {x:-WALLX, y:PY, z:-15, rotY:-Math.PI/2},
+      {x: WALLX, y:PY, z:-15, rotY: Math.PI/2},
+      // Room 2 – left wall (um 4 nach hinten verschoben)
       {x:-WALLX, y:PY, z:-25, rotY:-Math.PI/2},
       {x:-WALLX, y:PY, z:-29, rotY:-Math.PI/2},
       {x:-WALLX, y:PY, z:-33, rotY:-Math.PI/2},
+      {x:-WALLX, y:PY, z:-37, rotY:-Math.PI/2},
       // Room 2 – right wall
-      {x: WALLX, y:PY, z:-21, rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-25, rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-29, rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-33, rotY: Math.PI/2},
+      {x: WALLX, y:PY, z:-37, rotY: Math.PI/2},
       // Room 2 – end wall (faces +z from room side = rotY Math.PI)
-      {x:-2.2,   y:PY, z:-39.98, rotY:Math.PI},
-      {x: 2.2,   y:PY, z:-39.98, rotY:Math.PI},
+      {x:-2.2,   y:PY, z:-43.98, rotY:Math.PI},
+      {x: 2.2,   y:PY, z:-43.98, rotY:Math.PI},
     ];
 
     // Artwork titles mapped to painting index (idx 0–15 = 16 artworks, 16–17 = leere Rückwand)
@@ -840,8 +840,8 @@
       fromQuat = new T.Quaternion();
       buildRooms(T);
       buildWainscoting(T);
-      buildMoldings(T, 14, -7);
-      buildMoldings(T, 22, -29);
+      buildMoldings(T, 18, -9);
+      buildMoldings(T, 22, -33);
       buildPaintings(T);
       buildLights(T);
       buildPictureLights(T);
@@ -1030,11 +1030,11 @@
 
       const aw=3.6, ah=3.2, lw=(RW-aw)/2, rw=lw;
 
-      // ── Room 1 ──────────────────────────────────────────────────
-      addPlane(T, RW, 14, wFl, [0,0,-7],        [-Math.PI/2,0,0]);
-      addPlane(T, RW, 14, wF,  [0,RH,-7],       [ Math.PI/2,0,0]);
-      addPlane(T, 14, RH, wW,  [-RW/2,RH/2,-7], [0, Math.PI/2,0]);
-      addPlane(T, 14, RH, wW,  [ RW/2,RH/2,-7], [0,-Math.PI/2,0]);
+      // ── Room 1 (verlängert: Tiefe 18, Mitte -9, damit je 4 Bilder passen) ──
+      addPlane(T, RW, 18, wFl, [0,0,-9],        [-Math.PI/2,0,0]);
+      addPlane(T, RW, 18, wF,  [0,RH,-9],       [ Math.PI/2,0,0]);
+      addPlane(T, 18, RH, wW,  [-RW/2,RH/2,-9], [0, Math.PI/2,0]);
+      addPlane(T, 18, RH, wW,  [ RW/2,RH/2,-9], [0,-Math.PI/2,0]);
       // Eingangswand mit Wandpaneelen als Canvas-Textur
       {
         const W=2048, H=896;
@@ -1065,36 +1065,36 @@
         addPlane(T, RW, RH, entranceMat, [0,RH/2, 0.05], [0, Math.PI,0]);
       }
 
-      // Room 1 end wall + archway (anthracite transition)
-      addBox(T, lw,     RH,    0.18, wTrans, [-(RW/2-lw/2), RH/2, -14]);
-      addBox(T, rw,     RH,    0.18, wTrans, [ (RW/2-rw/2), RH/2, -14]);
-      addBox(T, aw,  RH-ah,    0.18, wTrans, [0, ah+(RH-ah)/2, -14]);
+      // Room 1 end wall + archway (anthracite transition) — jetzt bei z=-18
+      addBox(T, lw,     RH,    0.18, wTrans, [-(RW/2-lw/2), RH/2, -18]);
+      addBox(T, rw,     RH,    0.18, wTrans, [ (RW/2-rw/2), RH/2, -18]);
+      addBox(T, aw,  RH-ah,    0.18, wTrans, [0, ah+(RH-ah)/2, -18]);
 
-      // ── Connector ───────────────────────────────────────────────
+      // ── Connector ─────────────────────────────────────────────── (Mitte z=-20)
       const marbleTex = makeMarbleTex(T);
       const wMar = new T.MeshStandardMaterial({map:marbleTex, roughness:0.28, metalness:0.10});
-      addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-16],[0, Math.PI/2,0]);
-      addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-16],[0,-Math.PI/2,0]);
-      addPlane(T, aw, RH, wFc, [0, RH,-16],      [ Math.PI/2,0,0]);
-      addPlane(T, aw,  4, wMar, [0,  0,-16],      [-Math.PI/2,0,0]);
+      addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-20],[0, Math.PI/2,0]);
+      addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-20],[0,-Math.PI/2,0]);
+      addPlane(T, aw, RH, wFc, [0, RH,-20],      [ Math.PI/2,0,0]);
+      addPlane(T, aw,  4, wMar, [0,  0,-20],      [-Math.PI/2,0,0]);
 
       // ── Room 2 ──────────────────────────────────────────────────
-      const r2d=22, r2cz=-29;
+      const r2d=22, r2cz=-33;
       addPlane(T, RW, r2d, wFl, [0,0,r2cz],        [-Math.PI/2,0,0]);
       addPlane(T, RW, r2d, wF,  [0,RH,r2cz],       [ Math.PI/2,0,0]);
       addPlane(T, r2d, RH, wW,  [-RW/2,RH/2,r2cz], [0, Math.PI/2,0]);
       addPlane(T, r2d, RH, wW,  [ RW/2,RH/2,r2cz], [0,-Math.PI/2,0]);
-      addPlane(T, RW,  RH, wTrans, [0,RH/2,-40],      [0,0,0]);
+      addPlane(T, RW,  RH, wTrans, [0,RH/2,-44],      [0,0,0]);
 
-      // Room 2 entry wall (anthracite transition)
-      addBox(T, lw,    RH,   0.18, wTrans, [-(RW/2-lw/2), RH/2, -18]);
-      addBox(T, rw,    RH,   0.18, wTrans, [ (RW/2-rw/2), RH/2, -18]);
-      addBox(T, aw, RH-ah,   0.18, wTrans, [0, ah+(RH-ah)/2, -18]);
+      // Room 2 entry wall (anthracite transition) — jetzt bei z=-22
+      addBox(T, lw,    RH,   0.18, wTrans, [-(RW/2-lw/2), RH/2, -22]);
+      addBox(T, rw,    RH,   0.18, wTrans, [ (RW/2-rw/2), RH/2, -22]);
+      addBox(T, aw, RH-ah,   0.18, wTrans, [0, ah+(RH-ah)/2, -22]);
 
       // ── Skylight grid + Track lighting (both rooms) ─────────────
-      buildSkylightGrid(T, 14, -7);
+      buildSkylightGrid(T, 18, -9);
       buildSkylightGrid(T, r2d, r2cz);
-      buildTrackRails(T, 14, -7);
+      buildTrackRails(T, 18, -9);
       buildTrackRails(T, r2d, r2cz);
     }
 
@@ -1159,7 +1159,7 @@
       const railMat= new T.MeshStandardMaterial({color:0xb08828, roughness:0.38, metalness:0.72});
       const OFF = 0.013;
 
-      [[14,-7],[22,-29]].forEach(([depth,cz])=>{
+      [[18,-9],[22,-33]].forEach(([depth,cz])=>{
         [-RW/2+OFF, RW/2-OFF].forEach(x=>{
           const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
           addPlane(T, depth, wH, panMat, [x, wH/2, cz], [0, sign, 0]);
@@ -1167,12 +1167,12 @@
         });
       });
 
-      // Connector Wände
+      // Connector Wände (Mitte z=-20)
       const aw2=3.6;
       [-aw2/2+OFF, aw2/2-OFF].forEach(x=>{
         const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
-        addPlane(T, 4, 1.12, panMat, [x, 0.56, -16], [0, sign, 0]);
-        addBox(T, 0.024, 0.036, 4.01, railMat, [x, 1.138, -16]);
+        addPlane(T, 4, 1.12, panMat, [x, 0.56, -20], [0, sign, 0]);
+        addBox(T, 0.024, 0.036, 4.01, railMat, [x, 1.138, -20]);
       });
     }
 
@@ -1589,7 +1589,7 @@
       const sideMat= new T.MeshStandardMaterial({color:0xc8c0ab, roughness:0.90, metalness:0.0});
       const legMat = new T.MeshStandardMaterial({color:0xaaaaaa, roughness:0.42, metalness:0.65});
 
-      [[-7],[-29]].forEach(([bz])=>{
+      [[-9],[-33]].forEach(([bz])=>{
         [[-0.95],[0.95]].forEach(([bx])=>{
           // Cushion body
           const body=new T.Mesh(new T.BoxGeometry(1.50, 0.36, 0.58), topMat);
@@ -1664,8 +1664,8 @@
     // ── Plants ───────────────────────────────────────────────────
     function buildPlants(T) {
       buildPlant(T,  4.0, -1.5);
-      buildPlant(T,  4.0, -13.2);
-      buildPlant(T, -4.0, -19.5);
+      buildPlant(T,  4.0, -16.5);
+      buildPlant(T, -4.0, -23.5);
     }
 
     function makeLeafTex(T) {
@@ -1777,19 +1777,19 @@
       scene.add(new T.AmbientLight(0xffffff, 0.95));
 
       // Overhead fill lights
-      [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],
-       [0,RH-0.2,-20],[0,RH-0.2,-26],[0,RH-0.2,-32],[0,RH-0.2,-38]
+      [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
+       [0,RH-0.2,-24],[0,RH-0.2,-30],[0,RH-0.2,-36],[0,RH-0.2,-42]
       ].forEach(([x,y,z])=>{
         const pl=new T.PointLight(0xffffff, 0.60, 18, 1.1);
         pl.position.set(x,y,z); scene.add(pl);
       });
 
       // Ein PointLight pro Gemälde-Reihe (beide Wände) statt 18 SpotLights — deutlich schnellerer Shader
-      [-3,-7,-11,-21,-25,-29,-33].forEach(z=>{
+      [-3,-7,-11,-15,-25,-29,-33,-37].forEach(z=>{
         const pl=new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
-      [-14,-18,-40].forEach(z=>{
+      [-18,-22,-44].forEach(z=>{
         const pl=new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3);
         pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
@@ -1873,8 +1873,8 @@
         }).catch(()=>{});
       }
 
-      // Rückwand Raum 2 z=-40 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
-      sign(3.20, 2.00,  0,   2.10, -39.90, 0,        true);
+      // Rückwand Raum 2 z=-44 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
+      sign(3.20, 2.00,  0,   2.10, -43.90, 0,        true);
       // Die kleinen Pfeilerschilder am Torbogen wurden entfernt – sie standen
       // direkt neben „Goldene Figur" und wirkten redundant.
     }
@@ -1919,7 +1919,7 @@
       const sw=0.44;
       const matL=new T.MeshBasicMaterial({map:aoTex(true),  transparent:true, depthWrite:false});
       const matR=new T.MeshBasicMaterial({map:aoTex(false), transparent:true, depthWrite:false});
-      [[14,-7],[22,-29]].forEach(([depth,cz])=>{
+      [[18,-9],[22,-33]].forEach(([depth,cz])=>{
         const pL=new T.Mesh(new T.PlaneGeometry(sw,depth),matL);
         pL.rotation.x=-Math.PI/2; pL.position.set(-RW/2+sw/2,0.005,cz); scene.add(pL);
         const pR=new T.Mesh(new T.PlaneGeometry(sw,depth),matR);
@@ -1931,7 +1931,7 @@
     function buildArchFrames(T) {
       const gMat=new T.MeshBasicMaterial({color:0xb08828});
       const aw=3.6,ah=3.2,fw=0.055;
-      [-14,-18].forEach(z=>{
+      [-18,-22].forEach(z=>{
         addBox(T, aw+2*fw, fw,      fw,  gMat, [0, ah+fw/2, z]);
         addBox(T, fw,      ah+fw,   fw,  gMat, [-aw/2-fw/2, (ah+fw)/2, z]);
         addBox(T, fw,      ah+fw,   fw,  gMat, [ aw/2+fw/2, (ah+fw)/2, z]);
@@ -1945,7 +1945,7 @@
     // ── Boden-Schimmer unter Oberlicht ───────────────────────────
     function buildFloorReflection(T) {
       const mat=new T.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.055, depthWrite:false});
-      [[14,-7],[22,-29]].forEach(([depth,cz])=>{
+      [[18,-9],[22,-33]].forEach(([depth,cz])=>{
         const p=new T.Mesh(new T.PlaneGeometry(7.0,depth),mat);
         p.rotation.x=-Math.PI/2; p.position.set(0,0.004,cz); scene.add(p);
       });
@@ -1978,19 +1978,16 @@
       add(0,CAM_Y,-11, 0, LY_W, -13,  2000,400);
       add(0,CAM_Y,-11, -WALLX+0.05, PY,-11,  1300,3800);
       add(0,CAM_Y,-11,  WALLX-0.05, PY,-11,  1700,3800);
-      // End wall paintings
-      add(0,CAM_Y,-11,  -3.2, PY,-14,  1400,3200);
-      add(0,CAM_Y,-11,   3.2, PY,-14,  1600,3200);
+      // Pair z=-15 (Bunte/Goldene Figur, jetzt an den Seitenwänden)
+      add(0,CAM_Y,-15, 0, LY_W, -17,  2000,400);
+      add(0,CAM_Y,-15, -WALLX+0.05, PY,-15,  1300,3800);
+      add(0,CAM_Y,-15,  WALLX-0.05, PY,-15,  1700,3800);
 
-      // ── Walk through archway into Room 2 ─────────────────────────
-      add(0,CAM_Y,-16,  0, LY_W,-21, 2200,600);
+      // ── Walk through archway into Room 2 ───────────────────────── (Bogen z=-20)
+      add(0,CAM_Y,-20,  0, LY_W,-25, 2200,600);
 
       // ── Room 2 ──────────────────────────────────────────────────
-      // Pair z=-21
-      add(0,CAM_Y,-21, -WALLX+0.05, PY,-21, 1300,3800);
-      add(0,CAM_Y,-21,  WALLX-0.05, PY,-21, 1700,3800);
       // Pair z=-25
-      add(0,CAM_Y,-25, 0, LY_W,-28,  2000,400);
       add(0,CAM_Y,-25, -WALLX+0.05, PY,-25, 1300,3800);
       add(0,CAM_Y,-25,  WALLX-0.05, PY,-25, 1700,3800);
       // Pair z=-29
@@ -2001,12 +1998,16 @@
       add(0,CAM_Y,-33, 0, LY_W,-36,  2000,400);
       add(0,CAM_Y,-33, -WALLX+0.05, PY,-33, 1300,3800);
       add(0,CAM_Y,-33,  WALLX-0.05, PY,-33, 1700,3800);
+      // Pair z=-37
+      add(0,CAM_Y,-37, 0, LY_W,-40,  2000,400);
+      add(0,CAM_Y,-37, -WALLX+0.05, PY,-37, 1300,3800);
+      add(0,CAM_Y,-37,  WALLX-0.05, PY,-37, 1700,3800);
       // End wall
-      add(0,CAM_Y,-36, 0, LY_W,-40,  2200,600);
+      add(0,CAM_Y,-40, 0, LY_W,-44,  2200,600);
 
       // Abschluss: direkt berechneter Quaternion — frontal auf hintere graue Wand, kein Object3D-Flip
       {
-        const fPos = new T.Vector3(0, CAM_Y, -36.5);
+        const fPos = new T.Vector3(0, CAM_Y, -40.5);
         // Pitch: leicht nach oben zum Schild (y=2.10, Kamera y=1.70, z-Abstand=3.5m)
         const pitch = Math.atan2(2.10 - CAM_Y, 3.5);
         const fQuat = new T.Quaternion().setFromEuler(new T.Euler(pitch, 0, 0, 'YXZ'));
@@ -2021,8 +2022,8 @@
 
     // Hält eine Position innerhalb der begehbaren Räume (Torbogen ist schmaler).
     function clampToRoom(p) {
-      p.z = Math.max(-39.6, Math.min(0.9, p.z));
-      if (p.z < -13.6 && p.z > -18.4) { p.x = Math.max(-1.5, Math.min(1.5, p.x)); }
+      p.z = Math.max(-43.6, Math.min(0.9, p.z));
+      if (p.z < -17.6 && p.z > -22.4) { p.x = Math.max(-1.5, Math.min(1.5, p.x)); }
       else { p.x = Math.max(-RW/2+0.45, Math.min(RW/2-0.45, p.x)); }
       return p;
     }
