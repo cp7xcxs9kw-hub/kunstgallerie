@@ -848,6 +848,7 @@
       buildPictureLights(T);
       buildFurniture(T);
       buildPlants(T);
+      buildColumns(T);
       buildWallSigns(T);
       buildAOStrips(T);
       buildArchFrames(T);
@@ -1702,6 +1703,53 @@
       buildPlant(T,  4.0, -1.5);
       buildPlant(T,  4.0, -16.5);
       buildPlant(T, -4.0, -23.5);
+    }
+
+    // ── Klassische Marmorsäulen ──────────────────────────────────
+    // Kannelierter Schaft via Canvas-Textur (günstig statt aufwändiger Geometrie).
+    function makeColumnTex(T) {
+      const W=512, H=512;
+      const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+      const ctx=cv.getContext('2d');
+      const flutes=22;
+      for(let x=0;x<W;x++){
+        const shade=0.5+0.5*Math.cos((x/W)*flutes*Math.PI*2); // 1=Grat, 0=Rille
+        const v=198+Math.round(shade*50);
+        ctx.fillStyle='rgb('+v+','+(v-7)+','+(v-18)+')';
+        ctx.fillRect(x,0,1,H);
+      }
+      ctx.globalAlpha=0.05; ctx.strokeStyle='#8c7f64'; ctx.lineWidth=1;
+      for(let i=0;i<10;i++){ const y=Math.random()*H; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W, y+(Math.random()*24-12)); ctx.stroke(); }
+      ctx.globalAlpha=1;
+      const tex=new T.CanvasTexture(cv);
+      tex.wrapS=tex.wrapT=T.RepeatWrapping; tex.repeat.set(1,3);
+      return tex;
+    }
+
+    function buildColumn(T, x, z, shaftMat, stoneMat) {
+      const g=new T.Group();
+      const R=0.21, Rt=0.175, baseTop=0.34;
+      const shaftH=RH-baseTop-0.28;            // reicht bis knapp unter die Decke
+      // Plinthe (quadratischer Sockel)
+      const pl=new T.Mesh(new T.BoxGeometry(0.62,0.16,0.62), stoneMat); pl.position.y=0.08; g.add(pl);
+      // Basis-Ringe (Torus-Andeutung)
+      const b1=new T.Mesh(new T.CylinderGeometry(0.30,0.33,0.10,24), stoneMat); b1.position.y=0.21;  g.add(b1);
+      const b2=new T.Mesh(new T.CylinderGeometry(R+0.04,0.30,0.07,24), stoneMat); b2.position.y=0.295; g.add(b2);
+      // Schaft (verjüngt, kanneliert)
+      const sh=new T.Mesh(new T.CylinderGeometry(Rt,R,shaftH,28), shaftMat); sh.position.y=baseTop+shaftH/2; g.add(sh);
+      const shaftTop=baseTop+shaftH;
+      // Kapitell: Echinus (Wulst) + Abakus (Deckplatte)
+      const ech=new T.Mesh(new T.CylinderGeometry(0.30,Rt,0.15,28), stoneMat); ech.position.y=shaftTop+0.075; g.add(ech);
+      const ab=new T.Mesh(new T.BoxGeometry(0.60,0.13,0.60), stoneMat); ab.position.y=shaftTop+0.15+0.065; g.add(ab);
+      g.position.set(x,0,z); scene.add(g);
+    }
+
+    function buildColumns(T) {
+      const shaftMat=new T.MeshStandardMaterial({map:makeColumnTex(T), color:0xf2ede2, roughness:0.60, metalness:0.03});
+      const stoneMat=new T.MeshStandardMaterial({color:0xeee8da, roughness:0.62, metalness:0.02});
+      // Paarweise flankierend: am Torbogen (beide Seiten) und an der Rückwand
+      [[-2.6,-17.6],[2.6,-17.6], [-2.6,-22.4],[2.6,-22.4], [-2.5,-40.6],[2.5,-40.6]]
+        .forEach(([x,z])=>buildColumn(T,x,z,shaftMat,stoneMat));
     }
 
     function makeLeafTex(T) {
