@@ -741,6 +741,13 @@
     let seq, seqIdx, phase, t0;
     let fromPos=null, fromQuat=null;
     let vrPaused = false;
+    let _imgsLoaded = 0, _loaderHidden = false;
+    function _maybeHideLoader() {
+      if (_loaderHidden) return;
+      _loaderHidden = true;
+      const loader = document.getElementById('gallery-loader');
+      if (loader) { setTimeout(() => { loader.classList.add('fade-out'); setTimeout(() => loader.style.display='none', 1200); }, 300); }
+    }
     let freeNav = false;
     const navKeys = new Set();
     let navYaw=0, navPitch=0;
@@ -814,9 +821,10 @@
     function initGallery() {
       const T = window.THREE;
       const cv = document.getElementById('gallery-canvas');
-      renderer = new T.WebGLRenderer({canvas:cv, antialias:true});
+      const _dpr = Math.min(devicePixelRatio, 1.5);
+      renderer = new T.WebGLRenderer({canvas:cv, antialias: _dpr <= 1, powerPreference:'high-performance'});
       renderer.setSize(innerWidth, innerHeight);
-      renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+      renderer.setPixelRatio(_dpr);
       renderer.setClearColor(0x000000, 1);
       renderer.outputEncoding = T.sRGBEncoding;
       renderer.toneMapping = T.LinearToneMapping;
@@ -934,17 +942,12 @@
           tooltip.style.display = 'none';
         }
       });
-      // Ladescreen ausblenden sobald erste Frames gerendert sind
-      let loaderGone = false;
+      // Ladescreen erst ausblenden wenn alle Bilder geladen sind (max. 8 Sek. Fallback)
+      setTimeout(_maybeHideLoader, 8000);
       function frame(ts){
         rafId=requestAnimationFrame(frame);
         tick(T,ts);
         renderer.render(scene,cam);
-        if(!loaderGone){
-          loaderGone=true;
-          const loader=document.getElementById('gallery-loader');
-          if(loader){ setTimeout(()=>{ loader.classList.add('fade-out'); setTimeout(()=>loader.style.display='none',1200); }, 2200); }
-        }
       }
       requestAnimationFrame(frame);
     }
@@ -1379,6 +1382,11 @@
           t.needsUpdate = true;
           mat.map = t;
           mat.needsUpdate = true;
+          _imgsLoaded++;
+          if (_imgsLoaded >= 16) _maybeHideLoader();
+        }, undefined, () => {
+          _imgsLoaded++;
+          if (_imgsLoaded >= 16) _maybeHideLoader();
         });
       }
 
@@ -1639,14 +1647,14 @@
         pl.position.set(x,y,z); scene.add(pl);
       });
 
-      // Track spotlights per painting
-      PICS.forEach(p=>{
-        const lx=p.x+Math.sin(p.rotY)*(-1.25);
-        const lz=p.z+Math.cos(p.rotY)*(-1.25);
-        const sl=new T.SpotLight(0xfff8f0, 1.4, 5.0, Math.PI/5.5, 0.55, 1.2);
-        sl.position.set(lx, RH-0.10, lz);
-        sl.target.position.set(p.x, p.y, p.z);
-        scene.add(sl); scene.add(sl.target);
+      // Ein PointLight pro Gemälde-Reihe (beide Wände) statt 18 SpotLights — deutlich schnellerer Shader
+      [-3,-7,-11,-21,-25,-29,-33].forEach(z=>{
+        const pl=new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3);
+        pl.position.set(0, RH-0.15, z); scene.add(pl);
+      });
+      [-14,-18,-40].forEach(z=>{
+        const pl=new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3);
+        pl.position.set(0, RH-0.15, z); scene.add(pl);
       });
     }
 
@@ -1863,6 +1871,7 @@
       if(renderer){renderer.dispose();renderer=null;}
       scene=null;cam=null;seq=null;fadeDiv=null;
       freeNav=false; navKeys.clear();
+      _imgsLoaded=0; _loaderHidden=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
       window.removeEventListener('resize',onResize);
