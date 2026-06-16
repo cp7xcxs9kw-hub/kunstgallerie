@@ -1038,8 +1038,8 @@
       const gW=7.2, gD=depth*0.72;
       addPlane(T, gW, gD, glassMat, [0, RH-0.012, cz], [Math.PI/2,0,0]);
 
-      // Dark metal structural frame grid
-      const fMat = new T.MeshStandardMaterial({color:0x5c5c5c, roughness:0.55, metalness:0.75});
+      // Deckenbalken als BasicMaterial – kein PBR nötig, spart viele Shader-Berechnungen
+      const fMat = new T.MeshBasicMaterial({color:0x484848});
       const bw=0.055, bh=0.10;
       // Longitudinal beams (along z axis)
       const cols=6, colStep=gW/(cols);
@@ -1063,22 +1063,12 @@
 
     // ── Track lighting rails ──────────────────────────────────────
     function buildTrackRails(T, depth, cz) {
-      const rMat = new T.MeshStandardMaterial({color:0x4a4a4a, roughness:0.45, metalness:0.85});
-      const hMat = new T.MeshStandardMaterial({color:0x333333, roughness:0.40, metalness:0.90});
+      // Nur Schienen, keine Spot-Köpfe – spart ~200 Mesh-Objekte pro Aufruf
+      const rMat = new T.MeshBasicMaterial({color:0x3a3a3a});
       const trackY = RH-0.07;
-
-      // Two rails each side (parallel, 35cm apart)
       [[-2.2,-2.6],[2.2,2.6]].forEach(([xa,xb])=>{
         [xa,xb].forEach(rx=>{
           addBox(T, 0.038, 0.045, depth, rMat, [rx, trackY, cz]);
-          // Spot heads every ~1.35m
-          const startZ = cz-depth/2+0.7;
-          const count  = Math.floor(depth/1.35);
-          for(let i=0;i<count;i++){
-            const sz=startZ+i*1.35;
-            addBox(T, 0.075, 0.115, 0.075, hMat, [rx, trackY-0.09, sz]);
-            addBox(T, 0.022, 0.065, 0.022, rMat, [rx, trackY-0.04, sz]);
-          }
         });
       });
     }
