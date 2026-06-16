@@ -821,8 +821,8 @@
     function initGallery() {
       const T = window.THREE;
       const cv = document.getElementById('gallery-canvas');
-      const _dpr = Math.min(devicePixelRatio, 1.5);
-      renderer = new T.WebGLRenderer({canvas:cv, antialias: _dpr <= 1, powerPreference:'high-performance'});
+      const _dpr = Math.min(devicePixelRatio, 2);
+      renderer = new T.WebGLRenderer({canvas:cv, antialias: true, powerPreference:'high-performance'});
       renderer.setSize(innerWidth, innerHeight);
       renderer.setPixelRatio(_dpr);
       renderer.setClearColor(0x000000, 1);
