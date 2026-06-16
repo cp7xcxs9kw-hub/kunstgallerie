@@ -2141,6 +2141,8 @@
     color: var(--white);
     transition: transform 0.3s ease, color 0.3s ease;
   }
+  /* hidden-Attribut muss display:flex überschreiben (sonst bleibt die Kachel sichtbar) */
+  .social-item[hidden] { display: none !important; }
 
   .social-item:hover {
     transform: translateY(-6px);
