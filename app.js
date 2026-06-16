@@ -752,6 +752,7 @@
     const navKeys = new Set();
     let navYaw=0, navPitch=0;
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
+    let navMovedDist=0;       // Gesamt-Zeigerbewegung seit Drücken (Klick vs. Ziehen)
     let navMoveTarget=null;   // Klick-zum-Gehen Ziel (Street-View-Stil)
 
     // ── Layout ────────────────────────────────────────────────────
@@ -890,8 +891,9 @@
 
       // ── Maus-Drag für freie Navigation ───────────────────────────
       cv.addEventListener('mousedown', e => {
+        navMovedDist = 0;
         if (!freeNav) return;
-        navDrag=true; navDragX=e.clientX; navDragY=e.clientY; navWasDragged=false;
+        navDrag=true; navDragX=e.clientX; navDragY=e.clientY;
       });
       cv.addEventListener('mousemove', e => {
         if (!freeNav || !navDrag) return;
@@ -899,14 +901,15 @@
         navYaw   -= dx*0.0025; navPitch -= dy*0.0025;
         navPitch  = Math.max(-1.1, Math.min(0.9, navPitch));
         navDragX=e.clientX; navDragY=e.clientY;
-        if (Math.abs(dx)+Math.abs(dy) > 3) navWasDragged=true;
+        navMovedDist += Math.abs(dx)+Math.abs(dy);
       });
       document.addEventListener('mouseup', () => { navDrag=false; });
 
       // ── Touch-Drag für freie Navigation ──────────────────────────
       cv.addEventListener('touchstart', e => {
+        navMovedDist = 0;
         if (!freeNav || e.touches.length!==1) return;
-        navDrag=true; navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY; navWasDragged=false;
+        navDrag=true; navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
       }, {passive:true});
       cv.addEventListener('touchmove', e => {
         if (!freeNav || !navDrag || e.touches.length!==1) return;
@@ -914,9 +917,8 @@
         navYaw -= dx*0.0025; navPitch -= dy*0.0025;
         navPitch = Math.max(-1.1, Math.min(0.9, navPitch));
         navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
-        if (Math.abs(dx)+Math.abs(dy) > 3) navWasDragged=true;
+        navMovedDist += Math.abs(dx)+Math.abs(dy);
       }, {passive:true});
-      cv.addEventListener('touchend', () => { navDrag=false; });
 
       // ── Raycaster: Klick/Touch auf Gemälde öffnet Artwork-Detail ──
       const raycaster = new T.Raycaster();
@@ -964,19 +966,27 @@
         navMoveTarget = tgt;
       }
 
-      cv.addEventListener('click', e => {
-        if (navWasDragged) { navWasDragged=false; return; }
-        const opened = castAndOpen(e.clientX, e.clientY);
-        if (!opened && freeNav) moveToFloor(e.clientX, e.clientY);
+      // Einheitliche Tap-Behandlung: Bild öffnen – oder im Frei-Modus hingehen.
+      function handleTap(x, y) {
+        const opened = castAndOpen(x, y);
+        if (!opened && freeNav) moveToFloor(x, y);
+      }
+
+      // Klick/Tap wird über die Gesamt-Bewegung erkannt (zuverlässiger als das
+      // click-Event und unempfindlich gegen leichtes Zittern beim Drücken).
+      cv.addEventListener('mouseup', e => {
+        if (e.button !== 0) return;
+        if (navMovedDist > 8) return;          // war Umschauen (Ziehen)
+        handleTap(e.clientX, e.clientY);
       });
 
       cv.addEventListener('touchend', e => {
+        navDrag = false;
         if (e.changedTouches.length !== 1) return;
-        if (navWasDragged) { navWasDragged=false; return; }
+        if (navMovedDist > 12) return;         // war ein Wisch (Umschauen)
         e.preventDefault();
         const t = e.changedTouches[0];
-        const opened = castAndOpen(t.clientX, t.clientY);
-        if (!opened && freeNav) moveToFloor(t.clientX, t.clientY);
+        handleTap(t.clientX, t.clientY);
       }, {passive: false});
 
       cv.addEventListener('mousemove', e => {
