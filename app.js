@@ -1025,7 +1025,7 @@
       const wF  = new T.MeshBasicMaterial({map: makeCeilingTex(T)});
       const wFc = new T.MeshBasicMaterial({color:0xf0efe9});
       const flTex = makeFloorTex(T);
-      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.55, metalness:0.03});
+      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.72, metalness:0.03});
       const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
       const wTrans = new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide});
 
@@ -1903,8 +1903,9 @@
 
       // Rückwand Raum 2 z=-44 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
       sign(3.20, 2.00,  0,   2.10, -43.90, 0,        true);
-      // Die kleinen Pfeilerschilder am Torbogen wurden entfernt – sie standen
-      // direkt neben „Goldene Figur" und wirkten redundant.
+      // Horst-Schwab-Schild am Torbogen-Pfeiler (Bogen jetzt bei z=-18)
+      sign(1.30, 0.82,  3.4, 2.50, -17.90, 0,        false);   // aus Raum 1 sichtbar
+      sign(1.30, 0.82,  3.4, 2.50, -22.10, Math.PI,  false);   // aus Raum 2 sichtbar
     }
 
     // ── Kassetten-Decke ──────────────────────────────────────────
