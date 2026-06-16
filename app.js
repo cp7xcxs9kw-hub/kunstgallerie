@@ -776,8 +776,9 @@
       {x: WALLX, y:PY, z:-7,  rotY: Math.PI/2},
       {x: WALLX, y:PY, z:-11, rotY: Math.PI/2},
       // Room 1 – end wall, flanking archway (faces +z = rotY 0, but from Room1 side)
-      {x:-3.2,   y:PY, z:-13.98, rotY:Math.PI},
-      {x: 3.2,   y:PY, z:-13.98, rotY:Math.PI},
+      // z vor der Wandvorderkante (-13.91), sonst stecken die Bilder in der Wand
+      {x:-3.2,   y:PY, z:-13.80, rotY:Math.PI},
+      {x: 3.2,   y:PY, z:-13.80, rotY:Math.PI},
       // Room 2 – left wall
       {x:-WALLX, y:PY, z:-21, rotY:-Math.PI/2},
       {x:-WALLX, y:PY, z:-25, rotY:-Math.PI/2},
@@ -1872,12 +1873,10 @@
         }).catch(()=>{});
       }
 
-      // Rückwand Raum 2 z=-40 — groß, mittig, aus Raum 2 sichtbar
+      // Rückwand Raum 2 z=-40 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
       sign(3.20, 2.00,  0,   2.10, -39.90, 0,        true);
-      // Bogen z=-14 rechter Pfeiler — aus Raum 1 sichtbar
-      sign(1.30, 0.82,  3.4, 2.50, -13.90, 0,        false);
-      // Bogen z=-18 rechter Pfeiler — aus Raum 2 sichtbar
-      sign(1.30, 0.82,  3.4, 2.50, -18.10, Math.PI,  false);
+      // Die kleinen Pfeilerschilder am Torbogen wurden entfernt – sie standen
+      // direkt neben „Goldene Figur" und wirkten redundant.
     }
 
     // ── Kassetten-Decke ──────────────────────────────────────────
