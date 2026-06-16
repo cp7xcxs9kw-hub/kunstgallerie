@@ -3205,3 +3205,15 @@
     87%  { opacity: 1; }
     to   { stroke-dashoffset: -380; opacity: 0; }
   }
+
+  /* ══ Barrierefreiheit: Bewegung reduzieren ══
+     Respektiert die System-Einstellung „Bewegung reduzieren" und schaltet
+     Animationen/Übergänge weitgehend ab (für bewegungsempfindliche Nutzer). */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }

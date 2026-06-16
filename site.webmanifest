@@ -1,0 +1,19 @@
+{
+  "name": "Galerie Horst Schwab",
+  "short_name": "H. Schwab",
+  "description": "Werke des Pfälzer Malers, Grafikers und Bildhauers Horst Schwab.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080706",
+  "theme_color": "#080706",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ]
+}
