@@ -845,6 +845,9 @@
       buildFurniture(T);
       buildPlants(T);
       buildWallSigns(T);
+      buildAOStrips(T);
+      buildArchFrames(T);
+      buildFloorReflection(T);
       buildSeq(T);
       window.addEventListener('resize', onResize);
 
@@ -955,7 +958,8 @@
     // ── Rooms ─────────────────────────────────────────────────────
     function buildRooms(T) {
       const wW  = new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.FrontSide});
-      const wF  = new T.MeshBasicMaterial({color:0xfafafa});
+      const wF  = new T.MeshBasicMaterial({map: makeCeilingTex(T)});
+      const wFc = new T.MeshBasicMaterial({color:0xf0efe9});
       const flTex = makeFloorTex(T);
       const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.72, metalness:0.03});
       const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
@@ -1008,7 +1012,7 @@
       const wMar = new T.MeshStandardMaterial({map:marbleTex, roughness:0.28, metalness:0.10});
       addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-16],[0, Math.PI/2,0]);
       addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-16],[0,-Math.PI/2,0]);
-      addPlane(T, aw, RH, wF,  [0, RH,-16],      [ Math.PI/2,0,0]);
+      addPlane(T, aw, RH, wFc, [0, RH,-16],      [ Math.PI/2,0,0]);
       addPlane(T, aw,  4, wMar, [0,  0,-16],      [-Math.PI/2,0,0]);
 
       // ── Room 2 ──────────────────────────────────────────────────
@@ -1390,10 +1394,19 @@
         b.position.set(px,py,pz); g.add(b);
       });
 
-      // Small label card below painting
-      const lm=new T.MeshStandardMaterial({color:0xfafafa, roughness:0.95});
-      const lb=new T.Mesh(new T.BoxGeometry(0.32,0.055,0.003),lm);
-      lb.position.set(0,-(fh/2+0.07),0.01); g.add(lb);
+      // Canvas-Beschriftungsschild
+      const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
+      const lCv=document.createElement('canvas'); lCv.width=512; lCv.height=112;
+      const lCtx=lCv.getContext('2d');
+      lCtx.fillStyle='#f2ece2'; lCtx.fillRect(0,0,512,112);
+      lCtx.fillStyle='#C9A84C'; lCtx.fillRect(0,0,512,3);
+      if(_t){lCtx.fillStyle='#1a1a18';lCtx.font='400 30px Georgia,serif';lCtx.textAlign='left';lCtx.fillText(_t,18,46);}
+      if(_a){lCtx.fillStyle='#7a7468';lCtx.font='300 20px Arial,sans-serif';lCtx.fillText(_a.technique+'  ·  '+_a.year,18,80);}
+      const lb=new T.Mesh(new T.PlaneGeometry(0.50,0.11),new T.MeshBasicMaterial({map:new T.CanvasTexture(lCv)}));
+      lb.position.set(0,-(fh/2+0.072),0.012); g.add(lb);
+      // Sockelträger unter dem Rahmen
+      const sh=new T.Mesh(new T.BoxGeometry(PW+0.06,0.018,0.055),new T.MeshBasicMaterial({color:0x1c1c1c}));
+      sh.position.set(0,-(fh/2+0.009),0.028); g.add(sh);
 
       g.position.set(x,y,z); g.rotation.y=rotY;
       scene.add(g);
@@ -1732,6 +1745,78 @@
       sign(1.30, 0.82,  3.4, 2.50, -13.90, 0,        false);
       // Bogen z=-18 rechter Pfeiler — aus Raum 2 sichtbar
       sign(1.30, 0.82,  3.4, 2.50, -18.10, Math.PI,  false);
+    }
+
+    // ── Kassetten-Decke ──────────────────────────────────────────
+    function makeCeilingTex(T) {
+      const S=1024;
+      const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
+      const ctx=cv.getContext('2d');
+      ctx.fillStyle='#f4f1ea'; ctx.fillRect(0,0,S,S);
+      const cols=3,rows=3,cw=S/cols,ch=S/rows,f1=S*0.032,f2=S*0.058;
+      ctx.strokeStyle='rgba(128,120,105,0.48)'; ctx.lineWidth=7;
+      for(let i=0;i<=cols;i++){ctx.beginPath();ctx.moveTo(i*cw,0);ctx.lineTo(i*cw,S);ctx.stroke();}
+      for(let i=0;i<=rows;i++){ctx.beginPath();ctx.moveTo(0,i*ch);ctx.lineTo(S,i*ch);ctx.stroke();}
+      ctx.strokeStyle='rgba(148,138,118,0.28)'; ctx.lineWidth=3.5;
+      for(let c=0;c<cols;c++) for(let r=0;r<rows;r++) ctx.strokeRect(c*cw+f1,r*ch+f1,cw-2*f1,ch-2*f1);
+      ctx.strokeStyle='rgba(155,145,125,0.16)'; ctx.lineWidth=2;
+      for(let c=0;c<cols;c++) for(let r=0;r<rows;r++) ctx.strokeRect(c*cw+f2,r*ch+f2,cw-2*f2,ch-2*f2);
+      for(let c=0;c<cols;c++) for(let r=0;r<rows;r++){
+        const cx=c*cw+cw/2,cy=r*ch+ch/2,ro=S*0.024;
+        ctx.fillStyle='rgba(182,152,62,0.20)'; ctx.beginPath(); ctx.arc(cx,cy,ro,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='rgba(182,152,62,0.32)'; ctx.beginPath(); ctx.arc(cx,cy,ro*0.5,0,Math.PI*2); ctx.fill();
+      }
+      ctx.fillStyle='rgba(178,148,55,0.28)'; const ds=S*0.022;
+      for(let i=0;i<=cols;i++) for(let j=0;j<=rows;j++) ctx.fillRect(i*cw-ds/2,j*ch-ds/2,ds,ds);
+      const tex=new T.CanvasTexture(cv);
+      tex.wrapS=tex.wrapT=T.RepeatWrapping; tex.repeat.set(3,4);
+      return tex;
+    }
+
+    // ── Ambient-Occlusion-Streifen an Wandfüßen ──────────────────
+    function buildAOStrips(T) {
+      function aoTex(darkOnLeft) {
+        const cv=document.createElement('canvas'); cv.width=128; cv.height=4;
+        const ctx=cv.getContext('2d');
+        const gr=ctx.createLinearGradient(0,0,128,0);
+        if(darkOnLeft){gr.addColorStop(0,'rgba(0,0,0,0.54)');gr.addColorStop(0.5,'rgba(0,0,0,0.10)');gr.addColorStop(1,'rgba(0,0,0,0)');}
+        else           {gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(0.5,'rgba(0,0,0,0.10)');gr.addColorStop(1,'rgba(0,0,0,0.54)');}
+        ctx.fillStyle=gr; ctx.fillRect(0,0,128,4);
+        return new T.CanvasTexture(cv);
+      }
+      const sw=0.44;
+      const matL=new T.MeshBasicMaterial({map:aoTex(true),  transparent:true, depthWrite:false});
+      const matR=new T.MeshBasicMaterial({map:aoTex(false), transparent:true, depthWrite:false});
+      [[14,-7],[22,-29]].forEach(([depth,cz])=>{
+        const pL=new T.Mesh(new T.PlaneGeometry(sw,depth),matL);
+        pL.rotation.x=-Math.PI/2; pL.position.set(-RW/2+sw/2,0.005,cz); scene.add(pL);
+        const pR=new T.Mesh(new T.PlaneGeometry(sw,depth),matR);
+        pR.rotation.x=-Math.PI/2; pR.position.set(RW/2-sw/2,0.005,cz); scene.add(pR);
+      });
+    }
+
+    // ── Goldener Dekorrahmen an Torbögen ─────────────────────────
+    function buildArchFrames(T) {
+      const gMat=new T.MeshBasicMaterial({color:0xb08828});
+      const aw=3.6,ah=3.2,fw=0.055;
+      [-14,-18].forEach(z=>{
+        addBox(T, aw+2*fw, fw,      fw,  gMat, [0, ah+fw/2, z]);
+        addBox(T, fw,      ah+fw,   fw,  gMat, [-aw/2-fw/2, (ah+fw)/2, z]);
+        addBox(T, fw,      ah+fw,   fw,  gMat, [ aw/2+fw/2, (ah+fw)/2, z]);
+        const od=fw*1.9;
+        [[-aw/2-fw/2,ah+fw],[aw/2+fw/2,ah+fw],[-aw/2-fw/2,0],[aw/2+fw/2,0]].forEach(([x,y])=>{
+          addBox(T,od,od,fw*1.4,gMat,[x,y,z]);
+        });
+      });
+    }
+
+    // ── Boden-Schimmer unter Oberlicht ───────────────────────────
+    function buildFloorReflection(T) {
+      const mat=new T.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.055, depthWrite:false});
+      [[14,-7],[22,-29]].forEach(([depth,cz])=>{
+        const p=new T.Mesh(new T.PlaneGeometry(7.0,depth),mat);
+        p.rotation.x=-Math.PI/2; p.position.set(0,0.004,cz); scene.add(p);
+      });
     }
 
     // ── Camera Sequence ──────────────────────────────────────────
