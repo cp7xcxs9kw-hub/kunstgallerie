@@ -1370,42 +1370,61 @@
       const fm=new T.MeshStandardMaterial({color:0x1c1c1c, roughness:0.90, metalness:0.02});
       const frameG=new T.Group(); g.add(frameG);
 
-      // Edles Beschriftungsschild – flach an der Wand montiert (dreht NICHT mit
-      // der Kamera mit) und an die Textbreite angepasst, mit Goldrahmen-Optik.
+      // Freistehender Schilderständer vor dem Bild (wie im echten Museum):
+      // schlanker Pfosten mit Fuß und ein angewinkeltes Goldrahmen-Schild oben.
       // Das Schild wird vom Besucher von der Rückseite der Plane betrachtet,
       // daher wird das Canvas horizontal gespiegelt gezeichnet (wie die Gemälde).
       const _t=PAINTING_TITLES[idx]||''; const _a=ARTWORKS[_t];
-      const _tech=_a ? (_a.technique+'  ·  '+_a.year) : '';
-      const F_ARTIST='italic 600 46px "Times New Roman",Georgia,serif';
-      const F_TITLE ='700 70px "Times New Roman",Georgia,serif';
-      const F_TECH  ='500 44px "Times New Roman",Georgia,serif';
-      const _m=document.createElement('canvas').getContext('2d');
-      _m.font=F_ARTIST; const _wA=_m.measureText('Horst Schwab').width;
-      _m.font=F_TITLE;  const _wT=_t   ? _m.measureText(_t).width   : 0;
-      _m.font=F_TECH;   const _wC=_tech? _m.measureText(_tech).width : 0;
-      const LH=360, padX=96;
-      const LW=Math.ceil(Math.max(_wA,_wT,_wC)+padX*2);
-      const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
-      const lCtx=lCv.getContext('2d');
-      lCtx.translate(LW,0); lCtx.scale(-1,1); // Rückseiten-Spiegelung
-      const _bg=lCtx.createLinearGradient(0,0,0,LH);
-      _bg.addColorStop(0,'#f8f2e6'); _bg.addColorStop(1,'#ebe1cd');
-      lCtx.fillStyle=_bg; lCtx.fillRect(0,0,LW,LH);
-      // Goldrahmen: kräftige Außenleiste + feine Innenlinie (Passepartout-Optik)
-      lCtx.strokeStyle='#a87f2a'; lCtx.lineWidth=11; lCtx.strokeRect(15,15,LW-30,LH-30);
-      lCtx.strokeStyle='#dcbb5e'; lCtx.lineWidth=3;  lCtx.strokeRect(28,28,LW-56,LH-56);
-      lCtx.textAlign='center'; const _cx=LW/2;
-      lCtx.fillStyle='#8a6a28'; lCtx.font=F_ARTIST; lCtx.fillText('Horst Schwab',_cx,96);
-      lCtx.strokeStyle='#c9a84c'; lCtx.lineWidth=2;
-      lCtx.beginPath(); lCtx.moveTo(_cx-78,122); lCtx.lineTo(_cx+78,122); lCtx.stroke();
-      if(_t){   lCtx.fillStyle='#161410'; lCtx.font=F_TITLE; lCtx.fillText(_t,_cx,204); }
-      if(_tech){lCtx.fillStyle='#5c564a'; lCtx.font=F_TECH;  lCtx.fillText(_tech,_cx,288); }
-      const lTex=new T.CanvasTexture(lCv);
-      lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
-      if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
-      const LPLH=0.27, LPLW=LPLH*LW/LH; // Schildgröße in Metern, Seitenverhältnis gewahrt
-      const lb=new T.Mesh(new T.PlaneGeometry(LPLW,LPLH), new T.MeshBasicMaterial({map:lTex, side:T.DoubleSide}));
-      g.add(lb);
+      if (_t) {
+        const _tech=_a ? (_a.technique+'  ·  '+_a.year) : '';
+        const F_ARTIST='italic 600 46px "Times New Roman",Georgia,serif';
+        const F_TITLE ='700 70px "Times New Roman",Georgia,serif';
+        const F_TECH  ='500 44px "Times New Roman",Georgia,serif';
+        const _m=document.createElement('canvas').getContext('2d');
+        _m.font=F_ARTIST; const _wA=_m.measureText('Horst Schwab').width;
+        _m.font=F_TITLE;  const _wT=_m.measureText(_t).width;
+        _m.font=F_TECH;   const _wC=_tech? _m.measureText(_tech).width : 0;
+        const LH=360, padX=96;
+        const LW=Math.ceil(Math.max(_wA,_wT,_wC)+padX*2);
+        const lCv=document.createElement('canvas'); lCv.width=LW; lCv.height=LH;
+        const lCtx=lCv.getContext('2d');
+        lCtx.translate(LW,0); lCtx.scale(-1,1); // Rückseiten-Spiegelung
+        const _bg=lCtx.createLinearGradient(0,0,0,LH);
+        _bg.addColorStop(0,'#f8f2e6'); _bg.addColorStop(1,'#ebe1cd');
+        lCtx.fillStyle=_bg; lCtx.fillRect(0,0,LW,LH);
+        // Goldrahmen: kräftige Außenleiste + feine Innenlinie (Passepartout-Optik)
+        lCtx.strokeStyle='#a87f2a'; lCtx.lineWidth=11; lCtx.strokeRect(15,15,LW-30,LH-30);
+        lCtx.strokeStyle='#dcbb5e'; lCtx.lineWidth=3;  lCtx.strokeRect(28,28,LW-56,LH-56);
+        lCtx.textAlign='center'; const _cx=LW/2;
+        lCtx.fillStyle='#8a6a28'; lCtx.font=F_ARTIST; lCtx.fillText('Horst Schwab',_cx,96);
+        lCtx.strokeStyle='#c9a84c'; lCtx.lineWidth=2;
+        lCtx.beginPath(); lCtx.moveTo(_cx-78,122); lCtx.lineTo(_cx+78,122); lCtx.stroke();
+        lCtx.fillStyle='#161410'; lCtx.font=F_TITLE; lCtx.fillText(_t,_cx,204);
+        if(_tech){lCtx.fillStyle='#5c564a'; lCtx.font=F_TECH; lCtx.fillText(_tech,_cx,288);}
+        const lTex=new T.CanvasTexture(lCv);
+        lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
+        if (renderer) lTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+
+        const SZ=-0.52;             // Abstand vor der Wand (zum Raum hin)
+        const FLOOR=-PY;            // Bodenhöhe in lokalen Koordinaten
+        const POSTH=0.97;           // Pfostenhöhe
+        const metal=new T.MeshBasicMaterial({color:0x2b2b2b});
+        // Schild (A5) – leicht zum Betrachter gekippt, auf dunklem Träger
+        const LPLH=0.18, LPLW=LPLH*LW/LH;
+        const signG=new T.Group();
+        signG.position.set(0, FLOOR+POSTH+0.11, SZ);
+        signG.rotation.x=0.34;
+        const back=new T.Mesh(new T.BoxGeometry(LPLW+0.024, LPLH+0.024, 0.012), new T.MeshBasicMaterial({color:0x1c1c1c}));
+        back.position.z=0.008; signG.add(back);
+        const lb=new T.Mesh(new T.PlaneGeometry(LPLW,LPLH), new T.MeshBasicMaterial({map:lTex, side:T.DoubleSide}));
+        signG.add(lb);
+        g.add(signG);
+        // Pfosten + Fuß (dunkles Metall)
+        const post=new T.Mesh(new T.CylinderGeometry(0.018,0.018,POSTH,12), metal);
+        post.position.set(0, FLOOR+POSTH/2, SZ); g.add(post);
+        const foot=new T.Mesh(new T.CylinderGeometry(0.105,0.13,0.03,18), metal);
+        foot.position.set(0, FLOOR+0.015, SZ); g.add(foot);
+      }
 
       // Legt Bildfläche, Rahmen und Schild auf eine gegebene Größe (pw×ph) aus.
       function layout(pw, ph){
@@ -1418,7 +1437,6 @@
           const b=new T.Mesh(new T.BoxGeometry(w,h,d),fm);
           b.position.set(px,py,pz); frameG.add(b);
         });
-        lb.position.set(0, -(fh/2 + LPLH/2 + 0.085), -0.05);
       }
       layout(PW, PH); // Startgröße bis das Foto geladen ist
 
