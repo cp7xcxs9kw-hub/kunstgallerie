@@ -1523,9 +1523,6 @@
         base.position.set(0, FLOOR+0.011, SZ); g.add(base);
         const base2=new T.Mesh(new T.BoxGeometry(0.30,0.020,0.22), metal); // leichte Stufe
         base2.position.set(0, FLOOR+0.031, SZ); g.add(base2);
-        // Weicher Kontaktschatten unter dem Standfuß
-        const stSh=new T.Mesh(new T.PlaneGeometry(0.60,0.50), new T.MeshBasicMaterial({map:getShadowTex(T), transparent:true, opacity:0.65, depthWrite:false}));
-        stSh.rotation.x=-Math.PI/2; stSh.position.set(0, FLOOR+0.004, SZ); g.add(stSh);
       }
 
       // Legt Bildfläche, Rahmen und Schild auf eine gegebene Größe (pw×ph) aus.
@@ -1637,8 +1634,8 @@
       // Two gallery chairs — one in each back corner
       addGroundShadow(T, -3.8, -16.6, 0.95, 0.95, 0.7);
       addGroundShadow(T,  3.8, -42.5, 0.95, 0.95, 0.7);
-      buildChair(T, -3.8, -16.6, -0.55);   // Room 1, back-left corner
-      buildChair(T,  3.8, -42.5,  Math.PI+0.55); // Room 2, back-right corner
+      buildChair(T, -3.8, -16.6,  0.55);   // Room 1, back-left corner – blickt zur Raummitte/Eingang
+      buildChair(T,  3.8, -42.5, -0.55);   // Room 2, back-right corner – blickt zur Raummitte/Eingang
     }
 
     function buildChair(T, cx, cz, rotY) {
@@ -1806,9 +1803,7 @@
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
       // Diffuses Deckenlicht — leicht warm + etwas gedimmt für mehr Kontrast/Stimmung
-      scene.add(new T.AmbientLight(0xfff3e6, 0.82));
-      // Sanftes gerichtetes Oberlicht (Hemisphäre) – realistischerer Lichtabfall
-      scene.add(new T.HemisphereLight(0xfff6ec, 0x2a2620, 0.45));
+      scene.add(new T.AmbientLight(0xfff3e6, 0.92));
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
