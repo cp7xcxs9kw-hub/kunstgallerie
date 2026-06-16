@@ -830,11 +830,13 @@
       renderer.setPixelRatio(_dpr);
       renderer.setClearColor(0x000000, 1);
       renderer.outputEncoding = T.sRGBEncoding;
-      renderer.toneMapping = T.LinearToneMapping;
-      renderer.toneMappingExposure = 0.92;
+      // Filmisches Tonemapping für realistischere Lichter/Schatten (Kino-Look)
+      renderer.toneMapping = T.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.12;
       scene = new T.Scene();
       scene.background = new T.Color(0x000000);
-      scene.fog = new T.Fog(0x000000, 32, 65);
+      // Etwas wärmere, dichtere Tiefenluft für Galerie-Atmosphäre
+      scene.fog = new T.Fog(0x0b0a08, 30, 64);
       cam = new T.PerspectiveCamera(72, innerWidth/innerHeight, 0.05, 80);
       fromPos  = new T.Vector3();
       fromQuat = new T.Quaternion();
@@ -1024,7 +1026,7 @@
       const wF  = new T.MeshBasicMaterial({map: makeCeilingTex(T)});
       const wFc = new T.MeshBasicMaterial({color:0xf0efe9});
       const flTex = makeFloorTex(T);
-      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.72, metalness:0.03});
+      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.34, metalness:0.06});
       const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
       const wTrans = new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide});
 
@@ -1184,6 +1186,28 @@
     function addBox(T, w, h, d, mat, pos) {
       const m = new T.Mesh(new T.BoxGeometry(w,h,d), mat);
       m.position.set(...pos);
+      scene.add(m); return m;
+    }
+
+    // ── Weiche Kontaktschatten (gefälschte Bodenschatten, sehr günstig) ──
+    let _shadowTex = null;
+    function getShadowTex(T) {
+      if (_shadowTex) return _shadowTex;
+      const s = 128;
+      const cv = document.createElement('canvas'); cv.width = cv.height = s;
+      const ctx = cv.getContext('2d');
+      const g = ctx.createRadialGradient(s/2, s/2, 0, s/2, s/2, s/2);
+      g.addColorStop(0,   'rgba(0,0,0,0.55)');
+      g.addColorStop(0.55,'rgba(0,0,0,0.22)');
+      g.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, s, s);
+      _shadowTex = new T.CanvasTexture(cv);
+      return _shadowTex;
+    }
+    function addGroundShadow(T, x, z, sx, sz, op) {
+      const mat = new T.MeshBasicMaterial({map:getShadowTex(T), transparent:true, opacity:op==null?0.8:op, depthWrite:false});
+      const m = new T.Mesh(new T.PlaneGeometry(sx, sz), mat);
+      m.rotation.x = -Math.PI/2; m.position.set(x, 0.006, z);
       scene.add(m); return m;
     }
 
@@ -1499,6 +1523,9 @@
         base.position.set(0, FLOOR+0.011, SZ); g.add(base);
         const base2=new T.Mesh(new T.BoxGeometry(0.30,0.020,0.22), metal); // leichte Stufe
         base2.position.set(0, FLOOR+0.031, SZ); g.add(base2);
+        // Weicher Kontaktschatten unter dem Standfuß
+        const stSh=new T.Mesh(new T.PlaneGeometry(0.60,0.50), new T.MeshBasicMaterial({map:getShadowTex(T), transparent:true, opacity:0.65, depthWrite:false}));
+        stSh.rotation.x=-Math.PI/2; stSh.position.set(0, FLOOR+0.004, SZ); g.add(stSh);
       }
 
       // Legt Bildfläche, Rahmen und Schild auf eine gegebene Größe (pw×ph) aus.
@@ -1591,6 +1618,8 @@
 
       [[-9],[-33]].forEach(([bz])=>{
         [[-0.95],[0.95]].forEach(([bx])=>{
+          // Weicher Kontaktschatten unter der Bank
+          addGroundShadow(T, bx, bz, 1.95, 1.02, 0.82);
           // Cushion body
           const body=new T.Mesh(new T.BoxGeometry(1.50, 0.36, 0.58), topMat);
           body.position.set(bx, 0.27, bz); scene.add(body);
@@ -1606,8 +1635,10 @@
       });
 
       // Two gallery chairs — one in each back corner
-      buildChair(T, -3.8, -12.8, -0.55);   // Room 1, back-left corner
-      buildChair(T,  3.8, -38.5,  Math.PI+0.55); // Room 2, back-right corner
+      addGroundShadow(T, -3.8, -16.6, 0.95, 0.95, 0.7);
+      addGroundShadow(T,  3.8, -42.5, 0.95, 0.95, 0.7);
+      buildChair(T, -3.8, -16.6, -0.55);   // Room 1, back-left corner
+      buildChair(T,  3.8, -42.5,  Math.PI+0.55); // Room 2, back-right corner
     }
 
     function buildChair(T, cx, cz, rotY) {
@@ -1663,6 +1694,7 @@
 
     // ── Plants ───────────────────────────────────────────────────
     function buildPlants(T) {
+      [[4.0,-1.5],[4.0,-16.5],[-4.0,-23.5]].forEach(([px,pz])=>addGroundShadow(T, px, pz, 0.95, 0.95, 0.75));
       buildPlant(T,  4.0, -1.5);
       buildPlant(T,  4.0, -16.5);
       buildPlant(T, -4.0, -23.5);
@@ -1773,8 +1805,10 @@
 
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
-      // Diffuses Deckenlicht — niedrig genug damit Wandfarbe + Schatten sichtbar werden
-      scene.add(new T.AmbientLight(0xffffff, 0.95));
+      // Diffuses Deckenlicht — leicht warm + etwas gedimmt für mehr Kontrast/Stimmung
+      scene.add(new T.AmbientLight(0xfff3e6, 0.82));
+      // Sanftes gerichtetes Oberlicht (Hemisphäre) – realistischerer Lichtabfall
+      scene.add(new T.HemisphereLight(0xfff6ec, 0x2a2620, 0.45));
 
       // Overhead fill lights
       [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
