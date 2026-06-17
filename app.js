@@ -1163,7 +1163,7 @@
 
       // ── Connector ─────────────────────────────────────────────── (Mitte z=-20)
       const marbleTex = makeMarbleTex(T);
-      const wMar = new T.MeshStandardMaterial({map:marbleTex, roughness:0.28, metalness:0.10});
+      const wMar = new T.MeshStandardMaterial({map:marbleTex, roughness:0.20, metalness:0.14});
       addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-20],[0, Math.PI/2,0]);
       addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-20],[0,-Math.PI/2,0]);
       addPlane(T, aw, RH, wFc, [0, RH,-20],      [ Math.PI/2,0,0]);
@@ -1407,121 +1407,122 @@
     }
 
     function makeMarbleTex(T) {
-      const cv=document.createElement('canvas'); cv.width=1024; cv.height=1024;
+      // Nero Portoro: tiefschwarzer Stein mit gedämpft-goldenen UND kühlen
+      // weißen Calcit-Adern, kristallinem Korn und großformatigen Plattenfugen.
+      const S=2048;  // POT für RepeatWrapping in WebGL1
+      const cv=document.createElement('canvas'); cv.width=S; cv.height=S;
       const ctx=cv.getContext('2d');
-
-      // ── Basis: tiefes Anthrazit-Schwarz ──────────────────────
-      ctx.fillStyle='#0e0e0e';
-      ctx.fillRect(0,0,1024,1024);
-
-      // Dunkelgraue Wolken-/Steinstruktur (wie im Referenzbild)
-      const cloudSeeds=[
-        [180,160,320,0.22],[450,80,400,0.18],[750,300,360,0.20],
-        [120,520,280,0.16],[600,680,440,0.19],[300,820,300,0.15],
-        [820,150,250,0.17],[50,700,350,0.14]
-      ];
-      cloudSeeds.forEach(([cx,cy,r,a])=>{
-        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
-        g.addColorStop(0,`rgba(52,48,44,${a})`);
-        g.addColorStop(0.5,`rgba(32,30,28,${a*0.5})`);
-        g.addColorStop(1,'rgba(0,0,0,0)');
-        ctx.fillStyle=g; ctx.fillRect(0,0,1024,1024);
-      });
-
-      // Noch dunklere Einschlüsse für Tiefe
-      [[260,400,120,0.35],[600,250,90,0.28],[780,720,110,0.30],[100,900,80,0.25]].forEach(([cx,cy,r,a])=>{
-        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
-        g.addColorStop(0,`rgba(5,5,5,${a})`);
-        g.addColorStop(1,'rgba(0,0,0,0)');
-        ctx.fillStyle=g; ctx.fillRect(0,0,1024,1024);
-      });
-
-      // ── Pseudo-random deterministic ───────────────────────────
       function pr(s){ return ((s*9301+49297)%233280)/233280; }
 
-      // Ader mit mehreren Passes: weiter Glow + mittlerer Halo + scharfe Kern
-      function vein(x0,y0,x1,y1,w,alpha,c1,c2,seed){
-        const pts=[], steps=70;
+      // ── Basis: tiefes, leicht warmes Schwarz mit Tonverlauf ──────
+      const base=ctx.createLinearGradient(0,0,S,S);
+      base.addColorStop(0,'#0c0b0a');
+      base.addColorStop(0.5,'#100f0d');
+      base.addColorStop(1,'#0a0908');
+      ctx.fillStyle=base; ctx.fillRect(0,0,S,S);
+
+      // weiche Graphit-Wolken → unregelmäßige Steinmasse
+      [[360,320,640,0.16],[900,160,800,0.12],[1500,600,720,0.14],
+       [240,1040,560,0.11],[1200,1360,880,0.13],[600,1640,600,0.10],
+       [1640,300,500,0.12],[100,1400,700,0.10],[1750,1500,650,0.11]
+      ].forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(46,43,39,${a})`);
+        g.addColorStop(0.55,`rgba(26,24,22,${a*0.5})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,S,S);
+      });
+      // dunklere Einschlüsse für Tiefe
+      [[520,800,240,0.34],[1200,500,180,0.26],[1560,1440,220,0.30],
+       [200,1800,160,0.24],[1400,1000,150,0.22]].forEach(([cx,cy,r,a])=>{
+        const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+        g.addColorStop(0,`rgba(4,4,4,${a})`);
+        g.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=g; ctx.fillRect(0,0,S,S);
+      });
+
+      // ── Kristalliner Korn-/Sprenkel-Noise (fein, dunkel + hell) ──
+      for(let i=0;i<14000;i++){
+        const x=pr(i*3.17)*S, y=pr(i*5.71+1)*S, b=pr(i*2.39+2);
+        if(b<0.55){ ctx.fillStyle=`rgba(0,0,0,${0.05+b*0.06})`; }
+        else      { ctx.fillStyle=`rgba(190,180,165,${(b-0.55)*0.10})`; }
+        const s=0.8+pr(i*1.7)*1.4;
+        ctx.fillRect(x,y,s,s);
+      }
+
+      // ── Ader-Generator: Glow → Halo → Kern (weiche, runde Strokes) ─
+      function vein(x0,y0,x1,y1,w,alpha,core,glow,seed,wobble){
+        const pts=[], steps=80, amp=(wobble||1);
         for(let i=0;i<=steps;i++){
           const t=i/steps, s=seed+i*3;
-          const disp=(pr(s)-0.5)*48*(Math.sin(Math.PI*t)*2.0+0.3);
-          const disp2=(pr(s+200)-0.5)*16;
+          const disp =(pr(s)-0.5)*96*amp*(Math.sin(Math.PI*t)*1.8+0.3);
+          const disp2=(pr(s+200)-0.5)*32*amp;
           pts.push([x0+(x1-x0)*t+disp, y0+(y1-y0)*t+disp2]);
         }
-        function drawPath(){
-          ctx.beginPath();
-          ctx.moveTo(pts[0][0],pts[0][1]);
+        function path(){
+          ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
           for(let i=1;i<pts.length-2;i++){
             ctx.quadraticCurveTo(pts[i][0],pts[i][1],
               (pts[i][0]+pts[i+1][0])/2,(pts[i][1]+pts[i+1][1])/2);
           }
         }
-        // Äußerer Glow (sehr breit, orange-warm)
-        drawPath();
-        ctx.strokeStyle=`rgba(${c2},${alpha*0.12})`; ctx.lineWidth=w*14; ctx.stroke();
-        // Mittlerer Halo
-        drawPath();
-        ctx.strokeStyle=`rgba(${c2},${alpha*0.30})`; ctx.lineWidth=w*6; ctx.stroke();
-        // Innerer Halo
-        drawPath();
-        ctx.strokeStyle=`rgba(${c1},${alpha*0.60})`; ctx.lineWidth=w*2.5; ctx.stroke();
-        // Kern — helles Gold
-        drawPath();
-        ctx.strokeStyle=`rgba(${c1},${alpha})`; ctx.lineWidth=w; ctx.stroke();
-        // Zentraler Highlight
-        drawPath();
-        ctx.strokeStyle=`rgba(255,230,120,${alpha*0.45})`; ctx.lineWidth=w*0.4; ctx.stroke();
+        ctx.lineCap='round'; ctx.lineJoin='round';
+        path(); ctx.strokeStyle=`rgba(${glow},${alpha*0.10})`; ctx.lineWidth=w*16;  ctx.stroke();
+        path(); ctx.strokeStyle=`rgba(${glow},${alpha*0.24})`; ctx.lineWidth=w*7;   ctx.stroke();
+        path(); ctx.strokeStyle=`rgba(${core},${alpha*0.55})`; ctx.lineWidth=w*2.6; ctx.stroke();
+        path(); ctx.strokeStyle=`rgba(${core},${alpha})`;      ctx.lineWidth=w;     ctx.stroke();
       }
 
-      // Farben wie im Referenzbild: orange-gold Kern, warmer Glow
-      const gCore  = '245,185,55';   // helles gelb-gold
-      const gGlow  = '200,110,10';   // tiefes orange (Glow-Halo)
-      const gDeep  = '220,155,35';   // mittleres Gold
+      const gCore='224,170,66', gGlow='150,92,18';   // gedämpftes Messing-Gold
+      const wCore='225,222,212', wGlow='120,118,110'; // kühles Calcit-Weiß
 
-      // ── Haupt-Adern (dick, wie im Bild) ──────────────────────
-      vein(  0, 180, 1024,  520, 9.0, 0.95, gCore, gGlow,  11);
-      vein( 60,   0,  480, 1024, 7.5, 0.90, gCore, gGlow,  23);
-      vein(350,   0,  900,  800, 6.0, 0.88, gDeep, gGlow,  37);
-      vein(  0, 680,  650, 1024, 5.5, 0.85, gCore, gGlow,  47);
-      vein(700,  40, 1024,  700, 5.0, 0.82, gDeep, gGlow,  59);
-
-      // ── Mittlere Adern ────────────────────────────────────────
-      vein(150,   0,  620,  700, 4.0, 0.80, gCore, gGlow,  71);
-      vein(  0, 420,  480,  750, 3.5, 0.78, gDeep, gGlow,  83);
-      vein(550, 300, 1024,  900, 3.8, 0.76, gCore, gGlow,  97);
-      vein(250, 800,  800, 1024, 3.2, 0.74, gDeep, gGlow, 107);
-      vein(820, 200, 1024,  580, 3.0, 0.72, gCore, gGlow, 117);
-
-      // ── Feine Verzweigungen ───────────────────────────────────
-      vein( 80, 300,  350,  580, 2.0, 0.68, gDeep, gGlow, 131);
-      vein(400, 150,  700,  420, 1.8, 0.65, gCore, gGlow, 143);
-      vein(600, 550,  950,  850, 2.2, 0.70, gDeep, gGlow, 157);
-      vein(100, 750,  450,  950, 1.6, 0.62, gCore, gGlow, 169);
-      vein(300, 450,  600,  650, 1.4, 0.58, gDeep, gGlow, 181);
-
-      // ── Haarfeine Linien ──────────────────────────────────────
-      for(let i=0;i<12;i++){
-        const sx=pr(i*19)*1024, ex=pr(i*19+7)*1024;
-        const sy=pr(i*13)*200, ey=pr(i*13+3)*1024;
-        vein(sx,sy,ex,ey, 0.8, 0.50, gCore, gGlow, i*43+200);
+      // ── Gold-Hauptadern (breit, diagonal) ────────────────────────
+      vein(   0, 360, 2048,1040, 7.5,0.92, gCore,gGlow, 11,1.0);
+      vein( 120,   0,  960,2048, 6.0,0.86, gCore,gGlow, 23,1.1);
+      vein( 700,   0, 1800,1600, 5.0,0.82, gCore,gGlow, 37,0.9);
+      vein(   0,1360, 1300,2048, 4.6,0.80, gCore,gGlow, 47,1.0);
+      // ── Weiße Calcit-Adern (Kontrast, dünner, krummer) ───────────
+      vein( 300,   0, 1500,1700, 3.0,0.55, wCore,wGlow, 53,1.3);
+      vein(   0, 820, 1700, 300, 2.4,0.50, wCore,wGlow, 67,1.4);
+      vein( 900,1900, 2048, 600, 2.2,0.46, wCore,wGlow, 79,1.2);
+      // ── Mittlere Gold-Verzweigungen ──────────────────────────────
+      vein( 300,   0, 1240,1400, 3.2,0.74, gCore,gGlow, 71,1.0);
+      vein(1100, 600, 2048,1800, 3.0,0.70, gCore,gGlow, 97,1.1);
+      vein( 500,1600, 1600,2048, 2.6,0.66, gCore,gGlow,107,0.9);
+      vein(1640, 400, 2048,1160, 2.4,0.64, gCore,gGlow,117,1.0);
+      // ── Haarfeine Adern (gold + weiß gemischt) ───────────────────
+      for(let i=0;i<16;i++){
+        const sx=pr(i*19)*S, ex=pr(i*19+7)*S;
+        const sy=pr(i*13)*S*0.3, ey=pr(i*13+3)*S;
+        const white=(i%3===0);
+        vein(sx,sy,ex,ey, 0.9, white?0.34:0.46, white?wCore:gCore, white?wGlow:gGlow, i*43+200, 1.5);
       }
 
-      // ── Fliesennetz ───────────────────────────────────────────
-      const tile=256;
-      ctx.strokeStyle='rgba(200,155,35,0.75)';
-      ctx.lineWidth=2.5;
-      for(let x=0;x<=1024;x+=tile){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1024);ctx.stroke();}
-      for(let y=0;y<=1024;y+=tile){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(1024,y);ctx.stroke();}
-      // Innere Fliesenrahmung
-      ctx.strokeStyle='rgba(210,165,45,0.25)';
-      ctx.lineWidth=1.0;
-      for(let tx=0;tx<4;tx++) for(let ty=0;ty<4;ty++){
-        ctx.strokeRect(tx*tile+8, ty*tile+8, tile-16, tile-16);
-      }
+      // ── Großformat-Plattenfugen (2×2, dezent & dunkel statt Gold) ─
+      const half=S/2;
+      ctx.lineCap='butt';
+      ctx.strokeStyle='rgba(0,0,0,0.42)'; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(half,0); ctx.lineTo(half,S); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,half); ctx.lineTo(S,half); ctx.stroke();
+      ctx.strokeStyle='rgba(170,160,140,0.10)'; ctx.lineWidth=1.5; // hauchfeiner Fasen-Glanz
+      [half-3,half+3].forEach(p=>{
+        ctx.beginPath(); ctx.moveTo(p,0); ctx.lineTo(p,S); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0,p); ctx.lineTo(S,p); ctx.stroke();
+      });
+
+      // ── Polierter Sheen: weicher diagonaler Lichtgradient ────────
+      const sheen=ctx.createLinearGradient(0,0,S,S*0.6);
+      sheen.addColorStop(0,   'rgba(255,250,240,0.05)');
+      sheen.addColorStop(0.4, 'rgba(255,250,240,0)');
+      sheen.addColorStop(0.7, 'rgba(255,250,240,0.03)');
+      sheen.addColorStop(1,   'rgba(255,250,240,0)');
+      ctx.fillStyle=sheen; ctx.fillRect(0,0,S,S);
 
       const tex=new T.CanvasTexture(cv);
       tex.wrapS=tex.wrapT=T.RepeatWrapping;
-      tex.repeat.set(3,5);
+      tex.repeat.set(1.5,1.6);   // große Platten, kaum sichtbare Wiederholung
+      if (renderer) tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+      tex.needsUpdate=true;
       return tex;
     }
 
