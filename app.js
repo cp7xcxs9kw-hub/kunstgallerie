@@ -763,10 +763,39 @@
     let seq, seqIdx, phase, t0;
     let fromPos=null, fromQuat=null;
     let vrPaused = false;
-    let _imgsLoaded = 0, _loaderHidden = false;
+    let _imgsLoaded = 0, _loaderHidden = false, _warmedUp = false;
+    // GPU-Warmup: kompiliert alle Shader und lädt Texturen/Geometrie einmal hoch,
+    // SOLANGE der Ladescreen noch alles verdeckt. Sonst passiert das erst beim
+    // ersten Sichtbarwerden jedes Objekts → Ruckeln bei den ersten Drehungen.
+    function _warmupGPU() {
+      if (_warmedUp || !renderer || !scene || !cam) return;
+      _warmedUp = true;
+      const T = window.THREE; if (!T) return;
+      // 1) Alle Shader-Programme vorab kompilieren (auch nicht-sichtbare)
+      try { renderer.compile(scene, cam); } catch (e) {}
+      // 2) Szene aus mehreren Blickwinkeln rendern → erzwingt Textur- und
+      //    Geometrie-Upload für praktisch jedes Objekt beider Räume.
+      try {
+        const sp = cam.position.clone(), sq = cam.quaternion.clone(), sf = cam.fov;
+        cam.fov = 100; cam.updateProjectionMatrix();   // weites FOV erfasst mehr pro Frame
+        const pts  = [[0,CAM_Y,-3],[0,CAM_Y,-15],[0,CAM_Y,-30]];
+        const yaws = [0, Math.PI/2, Math.PI, -Math.PI/2];
+        for (const p of pts) {
+          cam.position.set(p[0], p[1], p[2]);
+          for (const y of yaws) {
+            cam.quaternion.setFromEuler(new T.Euler(0, y, 0, 'YXZ'));
+            cam.updateMatrixWorld();
+            renderer.render(scene, cam);
+          }
+        }
+        cam.fov = sf; cam.updateProjectionMatrix();
+        cam.position.copy(sp); cam.quaternion.copy(sq); cam.updateMatrixWorld();
+      } catch (e) {}
+    }
     function _maybeHideLoader() {
       if (_loaderHidden) return;
       _loaderHidden = true;
+      _warmupGPU();   // läuft synchron, noch unter dem opaken Ladescreen versteckt
       const loader = document.getElementById('gallery-loader');
       if (loader) { setTimeout(() => { loader.classList.add('fade-out'); setTimeout(() => loader.style.display='none', 1200); }, 300); }
     }
@@ -2244,7 +2273,7 @@
       if(renderer){renderer.dispose();renderer=null;}
       scene=null;cam=null;seq=null;fadeDiv=null;
       freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=72; navPinch=false;
-      _imgsLoaded=0; _loaderHidden=false;
+      _imgsLoaded=0; _loaderHidden=false; _warmedUp=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
       const nh=document.getElementById('vr-nav-hint');
