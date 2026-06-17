@@ -754,7 +754,8 @@
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
     let navMovedDist=0;       // Gesamt-Zeigerbewegung seit Drücken (Klick vs. Ziehen)
     let navMoveTarget=null;   // Klick-zum-Gehen Ziel (Street-View-Stil)
-    let navFov=72;            // aktuelles Sichtfeld (Trackpad-/Mausrad-Zoom)
+    let navFov=72;            // aktuelles Sichtfeld (Trackpad-/Mausrad-/Pinch-Zoom)
+    let navPinch=false, navPinchDist=0, navPinchFov=72;  // Zwei-Finger-Pinch (Mobile)
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -863,14 +864,18 @@
       vrEl.appendChild(freeBtn);
 
       // Bedien-Hinweis, nur im Frei-Modus sichtbar
+      const _touchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
       const navHint = document.createElement('div');
       navHint.id = 'vr-nav-hint';
-      navHint.style.cssText = 'position:absolute;left:50%;bottom:18px;transform:translateX(-50%);'
-        + 'background:rgba(8,7,6,0.72);color:#e9e2d2;font:500 12px/1.3 Montserrat,sans-serif;'
-        + 'letter-spacing:0.04em;padding:8px 16px;border:1px solid rgba(201,168,76,0.35);'
-        + 'border-radius:999px;pointer-events:none;opacity:0;transition:opacity 0.4s ease;'
-        + 'z-index:6;white-space:nowrap;backdrop-filter:blur(4px);';
-      navHint.textContent = 'Ziehen zum Umschauen · auf den Boden klicken zum Gehen · WASD';
+      navHint.style.cssText = 'position:absolute;left:50%;bottom:16px;transform:translateX(-50%);'
+        + 'max-width:90vw;text-align:center;'
+        + 'background:rgba(8,7,6,0.72);color:#e9e2d2;font:500 12px/1.35 Montserrat,sans-serif;'
+        + 'letter-spacing:0.03em;padding:8px 16px;border:1px solid rgba(201,168,76,0.35);'
+        + 'border-radius:16px;pointer-events:none;opacity:0;transition:opacity 0.4s ease;'
+        + 'z-index:6;backdrop-filter:blur(4px);';
+      navHint.textContent = _touchDevice
+        ? 'Ziehen zum Umschauen · auf den Boden tippen zum Gehen · 2 Finger = Zoom'
+        : 'Ziehen zum Umschauen · auf den Boden klicken zum Gehen · WASD · Scrollen = Zoom';
       vrEl.appendChild(navHint);
 
       freeBtn.addEventListener('click', () => {
@@ -908,20 +913,41 @@
       });
       document.addEventListener('mouseup', () => { navDrag=false; });
 
-      // ── Touch-Drag für freie Navigation ──────────────────────────
+      // Abstand zwischen zwei Fingern (für Pinch-Zoom)
+      function _touchDist(e){
+        const a=e.touches[0], b=e.touches[1];
+        return Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY);
+      }
+
+      // ── Touch-Drag (Umschauen) + Zwei-Finger-Pinch (Zoom) ───────────
       cv.addEventListener('touchstart', e => {
+        if (e.touches.length === 2) {            // Pinch beginnt
+          navPinch=true; navDrag=false;
+          navPinchDist=_touchDist(e); navPinchFov=navFov;
+          return;
+        }
         navMovedDist = 0;
         if (!freeNav || e.touches.length!==1) return;
         navDrag=true; navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
       }, {passive:true});
       cv.addEventListener('touchmove', e => {
+        if (navPinch && e.touches.length === 2) {   // Pinch-Zoom (verändert FOV)
+          e.preventDefault();
+          const d=_touchDist(e);
+          if (d>0 && navPinchDist>0) {
+            navFov = Math.max(26, Math.min(75, navPinchFov * (navPinchDist / d)));
+            cam.fov = navFov; cam.updateProjectionMatrix();
+          }
+          return;
+        }
         if (!freeNav || !navDrag || e.touches.length!==1) return;
+        e.preventDefault();
         const dx=e.touches[0].clientX-navDragX, dy=e.touches[0].clientY-navDragY;
         navYaw -= dx*0.0025; navPitch -= dy*0.0025;
         navPitch = Math.max(-1.1, Math.min(0.9, navPitch));
         navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
         navMovedDist += Math.abs(dx)+Math.abs(dy);
-      }, {passive:true});
+      }, {passive:false});
 
       // ── Raycaster: Klick/Touch auf Gemälde öffnet Artwork-Detail ──
       const raycaster = new T.Raycaster();
@@ -985,6 +1011,10 @@
 
       cv.addEventListener('touchend', e => {
         navDrag = false;
+        if (navPinch) {                        // war ein Pinch/Zoom – kein Tap
+          if (e.touches.length === 0) navPinch = false;
+          return;
+        }
         if (e.changedTouches.length !== 1) return;
         if (navMovedDist > 12) return;         // war ein Wisch (Umschauen)
         e.preventDefault();
@@ -1711,15 +1741,17 @@
       const W=512, H=512;
       const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
       const ctx=cv.getContext('2d');
-      const flutes=22;
+      const flutes=24;
       for(let x=0;x<W;x++){
         const shade=0.5+0.5*Math.cos((x/W)*flutes*Math.PI*2); // 1=Grat, 0=Rille
-        const v=198+Math.round(shade*50);
-        ctx.fillStyle='rgb('+v+','+(v-7)+','+(v-18)+')';
+        const v=182+Math.round(shade*66);                     // kräftigerer Kontrast
+        ctx.fillStyle='rgb('+v+','+(v-8)+','+(v-20)+')';
         ctx.fillRect(x,0,1,H);
+        // dunkle Linie in der Rillenmitte für mehr Tiefe
+        if(shade<0.06){ ctx.fillStyle='rgba(70,60,44,0.30)'; ctx.fillRect(x,0,1,H); }
       }
-      ctx.globalAlpha=0.05; ctx.strokeStyle='#8c7f64'; ctx.lineWidth=1;
-      for(let i=0;i<10;i++){ const y=Math.random()*H; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W, y+(Math.random()*24-12)); ctx.stroke(); }
+      ctx.globalAlpha=0.06; ctx.strokeStyle='#8c7f64'; ctx.lineWidth=1;
+      for(let i=0;i<12;i++){ const y=Math.random()*H; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W, y+(Math.random()*24-12)); ctx.stroke(); }
       ctx.globalAlpha=1;
       const tex=new T.CanvasTexture(cv);
       tex.wrapS=tex.wrapT=T.RepeatWrapping; tex.repeat.set(1,3);
@@ -1728,27 +1760,38 @@
 
     function buildColumn(T, x, z, shaftMat, stoneMat) {
       const g=new T.Group();
-      const R=0.21, Rt=0.175, baseTop=0.34;
-      const shaftH=RH-baseTop-0.28;            // reicht bis knapp unter die Decke
+      const R=0.205, Rt=0.17;
+      const TOP=RH-0.15;                 // Kapitell endet knapp UNTER den Lichtschienen
+      let y=0;
+      function ring(rt,rb,h){ const m=new T.Mesh(new T.CylinderGeometry(rt,rb,h,24),stoneMat); m.position.y=y+h/2; g.add(m); y+=h; }
       // Plinthe (quadratischer Sockel)
-      const pl=new T.Mesh(new T.BoxGeometry(0.62,0.16,0.62), stoneMat); pl.position.y=0.08; g.add(pl);
-      // Basis-Ringe (Torus-Andeutung)
-      const b1=new T.Mesh(new T.CylinderGeometry(0.30,0.33,0.10,24), stoneMat); b1.position.y=0.21;  g.add(b1);
-      const b2=new T.Mesh(new T.CylinderGeometry(R+0.04,0.30,0.07,24), stoneMat); b2.position.y=0.295; g.add(b2);
+      const pl=new T.Mesh(new T.BoxGeometry(0.66,0.16,0.66),stoneMat); pl.position.y=0.08; g.add(pl); y=0.16;
+      // Basis: Wulst – Wulst – Hohlkehle – Wulst – Fillet (mehr Konturen)
+      ring(0.36,0.38,0.05);
+      ring(0.33,0.36,0.05);
+      ring(0.27,0.33,0.06);              // Hohlkehle (Scotia)
+      ring(0.31,0.27,0.05);              // oberer Wulst
+      ring(R+0.02,0.31,0.04);            // Fillet/Apophyge
+      const baseTop=y;
+      const capH=0.50;
+      const shaftH=TOP-baseTop-capH;
       // Schaft (verjüngt, kanneliert)
-      const sh=new T.Mesh(new T.CylinderGeometry(Rt,R,shaftH,28), shaftMat); sh.position.y=baseTop+shaftH/2; g.add(sh);
-      const shaftTop=baseTop+shaftH;
-      // Kapitell: Echinus (Wulst) + Abakus (Deckplatte)
-      const ech=new T.Mesh(new T.CylinderGeometry(0.30,Rt,0.15,28), stoneMat); ech.position.y=shaftTop+0.075; g.add(ech);
-      const ab=new T.Mesh(new T.BoxGeometry(0.60,0.13,0.60), stoneMat); ab.position.y=shaftTop+0.15+0.065; g.add(ab);
+      const sh=new T.Mesh(new T.CylinderGeometry(Rt,R,shaftH,30),shaftMat); sh.position.y=baseTop+shaftH/2; g.add(sh); y=baseTop+shaftH;
+      // Kapitell: Astragal – Hals – Ring – Echinus – Annulet – Abakus
+      ring(Rt+0.02,Rt,0.04);             // Astragal
+      ring(Rt+0.015,Rt+0.02,0.10);       // Hals (necking)
+      ring(0.25,Rt+0.015,0.05);          // Ring
+      ring(0.31,0.25,0.14);              // Echinus (Wulst)
+      ring(0.33,0.31,0.04);              // Annulet
+      const ab=new T.Mesh(new T.BoxGeometry(0.62,0.13,0.62),stoneMat); ab.position.y=y+0.065; g.add(ab);
       g.position.set(x,0,z); scene.add(g);
     }
 
     function buildColumns(T) {
-      const shaftMat=new T.MeshStandardMaterial({map:makeColumnTex(T), color:0xf2ede2, roughness:0.60, metalness:0.03});
-      const stoneMat=new T.MeshStandardMaterial({color:0xeee8da, roughness:0.62, metalness:0.02});
-      // Paarweise flankierend: am Torbogen (beide Seiten) und an der Rückwand
-      [[-2.6,-17.6],[2.6,-17.6], [-2.6,-22.4],[2.6,-22.4], [-2.5,-40.6],[2.5,-40.6]]
+      const shaftMat=new T.MeshStandardMaterial({map:makeColumnTex(T), color:0xf2ede2, roughness:0.58, metalness:0.03});
+      const stoneMat=new T.MeshStandardMaterial({color:0xece6d6, roughness:0.6, metalness:0.02});
+      // x=+/-2.5: Schaft bleibt frei vom Pfeilerschild; Höhe endet unter den Schienen
+      [[-2.5,-17.6],[2.5,-17.6], [-2.5,-22.4],[2.5,-22.4], [-2.5,-40.6],[2.5,-40.6]]
         .forEach(([x,z])=>buildColumn(T,x,z,shaftMat,stoneMat));
     }
 
@@ -2178,7 +2221,7 @@
       if(rafId) cancelAnimationFrame(rafId);
       if(renderer){renderer.dispose();renderer=null;}
       scene=null;cam=null;seq=null;fadeDiv=null;
-      freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=72;
+      freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=72; navPinch=false;
       _imgsLoaded=0; _loaderHidden=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
