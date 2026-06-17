@@ -374,15 +374,26 @@
       const card = document.createElement('div');
       card.className = 'coll-card';
       card.style.cursor = 'pointer';
-      card.onclick = function() { closeFavs(); openArtwork(title); };
+      // Merkliste offen lassen, damit man nach dem Zurück wieder hierher kommt
+      card.onclick = function() { openArtwork(title); };
       card.innerHTML =
-        '<div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none">' + d.svg + '</svg></div>' +
         '<div class="coll-card-body">' +
           '<p class="coll-card-title">' + title + '</p>' +
           '<p class="coll-card-meta">' + tech + '  ·  ' + d.size + '  ·  ' + d.year + '</p>' +
           '<p class="coll-card-price">€ ' + d.price + '</p>' +
         '</div>' +
         '<button class="fav-btn fav-active" data-title="' + title + '" onclick="event.stopPropagation();toggleFav(\'' + title + '\')">♥</button>';
+      // Echtes Bild verwenden (falls vorhanden), sonst Platzhalter-Canvas
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'coll-card-img';
+      if (d.img) {
+        const img = document.createElement('img');
+        img.loading = 'lazy'; img.decoding = 'async'; img.src = d.img; img.alt = title;
+        imgWrap.appendChild(img);
+      } else {
+        imgWrap.appendChild(_makeArtworkCanvas(title, 400, 300));
+      }
+      card.insertBefore(imgWrap, card.firstChild);
       grid.appendChild(card);
     });
   }
@@ -392,11 +403,14 @@
   let _adParentCol = null;
   let _adParentScrollTop = 0;
   let _adFromRundgang = false;
+  let _adFromFavs = false;
 
   function openArtwork(title, rerender, fromRundgang) {
     const d = ARTWORKS[title]; if (!d) return;
     _adCurrentTitle = title;
     if (!rerender) {
+      const favEl = document.getElementById('fav-overlay');
+      _adFromFavs = !!(favEl && favEl.classList.contains('active'));
       const activeCol = document.querySelector('.coll-overlay.active:not(#fav-overlay)');
       _adParentCol = activeCol ? activeCol.id.replace('coll-', '') : null;
       _adParentScrollTop = activeCol ? activeCol.scrollTop : 0;
@@ -453,6 +467,14 @@
       _adFromRundgang = false;
       history.replaceState(null, '', location.pathname);
       // gallery-vr bleibt sichtbar — kein weiterer Eingriff nötig
+    } else if (_adFromFavs) {
+      _adFromFavs = false;
+      history.replaceState(null, '', location.pathname);
+      // Merkliste liegt noch darunter — wieder aktiv halten + auffrischen
+      const favOv = document.getElementById('fav-overlay');
+      if (favOv) favOv.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      renderFavs();
     } else if (_adParentCol) {
       history.replaceState(null, '', '#col=' + encodeURIComponent(_adParentCol));
       openCollection(_adParentCol, true);
