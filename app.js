@@ -1639,7 +1639,12 @@
         new T.TextureLoader().load(artImg, t => {
           t.encoding = T.sRGBEncoding;
           t.wrapS = T.RepeatWrapping;
-          t.repeat.x = -1; t.offset.x = 1;
+          // Texturkante leicht einrücken: schneidet den hellen Papier-/Scanrand der
+          // Vorlagen weg, der sonst als weißer Streifen zwischen Bild und Rahmen sichtbar ist.
+          // (x bleibt zusätzlich gespiegelt – Bilder rendern von der Rückseite.)
+          const m = 0.03;
+          t.repeat.set(-(1 - 2*m), 1 - 2*m);
+          t.offset.set(1 - m, m);
           t.needsUpdate = true;
           mat.map = t;
           mat.needsUpdate = true;
@@ -1980,29 +1985,48 @@
 
     // ── Picture Lights (decorative brass lamps above each frame) ─
     function buildPictureLights(T) {
-      const bMat = new T.MeshBasicMaterial({color:0xb08828});
-      const armLen = 0.22;
+      // Gebürstetes Messing – reagiert auf das vorhandene Deckenlicht und zeigt so die
+      // Rundung der Röhre (kein zusätzliches Licht, nur realistischere Struktur).
+      const brass = new T.MeshStandardMaterial({color:0x9c7b2e, metalness:0.85, roughness:0.34});
       const lampY = PY + PH/2 + 0.12;  // just above top of frame
 
+      // Geometrien einmalig erstellen und über alle Leuchten teilen (Performance)
+      const gPlate = new T.BoxGeometry(0.10, 0.07, 0.014);          // Wandplatte
+      const gArm   = new T.BoxGeometry(0.022, 0.022, 0.12);         // Halterarm
+      const gTube  = new T.CylinderGeometry(0.035, 0.035, 0.70, 20); // Leuchtenröhre
+      const gCap   = new T.CylinderGeometry(0.030, 0.037, 0.018, 20);// gewölbte Endkappe
+
       PICS.forEach(p => {
-        const nx = -Math.sin(p.rotY);
-        const nz = -Math.cos(p.rotY);
+        const lamp = new T.Group();
+        lamp.position.set(p.x, lampY, p.z);
+        lamp.rotation.y = p.rotY + Math.PI;   // lokal: +z = in den Raum, +x = entlang der Wand
 
-        // Small back plate flush against wall
-        const plate = new T.Mesh(new T.BoxGeometry(0.08, 0.06, 0.012), bMat);
-        plate.position.set(p.x - nx*0.02, lampY, p.z - nz*0.02);
-        scene.add(plate);
+        // Wandplatte (flach an der Wand)
+        const plate = new T.Mesh(gPlate, brass);
+        plate.position.set(0, 0, 0.007);
+        lamp.add(plate);
 
-        // Horizontal arm projecting outward from wall
-        const arm = new T.Mesh(new T.BoxGeometry(armLen, 0.020, 0.020), bMat);
-        arm.position.set(p.x + nx*(armLen/2 - 0.02), lampY, p.z + nz*(armLen/2 - 0.02));
-        arm.rotation.y = -p.rotY - Math.PI/2;
-        scene.add(arm);
+        // Schräger Halterarm von der Platte nach oben/vorn zur Röhre
+        const arm = new T.Mesh(gArm, brass);
+        arm.position.set(0, 0.0525, 0.0635);
+        arm.rotation.x = -0.41;
+        lamp.add(arm);
 
-        // Lamp head at tip of arm
-        const head = new T.Mesh(new T.BoxGeometry(0.09, 0.028, 0.055), bMat);
-        head.position.set(p.x + nx*(armLen - 0.025), lampY - 0.013, p.z + nz*(armLen - 0.025));
-        scene.add(head);
+        // Horizontale Messingröhre (Schirm), Achse entlang der Wand, vor dem Bild
+        const tube = new T.Mesh(gTube, brass);
+        tube.rotation.z = Math.PI/2;
+        tube.position.set(0, 0.075, 0.15);
+        lamp.add(tube);
+
+        // Endkappen (gewölbt nach außen)
+        [-0.359, 0.359].forEach(ex => {
+          const cap = new T.Mesh(gCap, brass);
+          cap.rotation.z = ex < 0 ? Math.PI/2 : -Math.PI/2;
+          cap.position.set(ex, 0.075, 0.15);
+          lamp.add(cap);
+        });
+
+        scene.add(lamp);
       });
     }
 
