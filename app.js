@@ -1989,42 +1989,43 @@
     function buildPictureLights(T) {
       // Gebürstetes Messing – reagiert auf das vorhandene Deckenlicht und zeigt so die
       // Rundung der Röhre (kein zusätzliches Licht, nur realistischere Struktur).
-      const brass = new T.MeshStandardMaterial({color:0x9c7b2e, metalness:0.85, roughness:0.34});
+      const brass = new T.MeshStandardMaterial({color:0x9c7b2e, metalness:0.85, roughness:0.30});
       const lampY = PY + PH/2 + 0.12;  // just above top of frame
 
       // Geometrien einmalig erstellen und über alle Leuchten teilen (Performance)
-      const gPlate = new T.BoxGeometry(0.10, 0.07, 0.014);          // Wandplatte
-      const gArm   = new T.BoxGeometry(0.022, 0.022, 0.12);         // Halterarm
-      const gTube  = new T.CylinderGeometry(0.035, 0.035, 0.70, 20); // Leuchtenröhre
-      const gCap   = new T.CylinderGeometry(0.030, 0.037, 0.018, 20);// gewölbte Endkappe
+      const gPlate = new T.CylinderGeometry(0.024, 0.024, 0.012, 20); // runde Wand-Rosette
+      const gArm   = new T.CylinderGeometry(0.007, 0.007, 0.119, 12); // schlanker Haltestab
+      const gTube  = new T.CylinderGeometry(0.022, 0.022, 0.60, 24);  // schlanke Leuchtenröhre
+      const gCap   = new T.CylinderGeometry(0.016, 0.022, 0.012, 24); // gewölbte Endkappe
 
       PICS.forEach(p => {
         const lamp = new T.Group();
         lamp.position.set(p.x, lampY, p.z);
         lamp.rotation.y = p.rotY + Math.PI;   // lokal: +z = in den Raum, +x = entlang der Wand
 
-        // Wandplatte (flach an der Wand)
+        // Runde Rosette flach an der Wand
         const plate = new T.Mesh(gPlate, brass);
-        plate.position.set(0, 0, 0.007);
+        plate.rotation.x = Math.PI/2;
+        plate.position.set(0, 0, 0.006);
         lamp.add(plate);
 
-        // Schräger Halterarm von der Platte nach oben/vorn zur Röhre
+        // Schlanker, schräg nach oben/vorn laufender Haltestab zur Röhre
         const arm = new T.Mesh(gArm, brass);
-        arm.position.set(0, 0.0525, 0.0635);
-        arm.rotation.x = -0.41;
+        arm.rotation.x = 0.941;
+        arm.position.set(0, 0.035, 0.06);
         lamp.add(arm);
 
-        // Horizontale Messingröhre (Schirm), Achse entlang der Wand, vor dem Bild
+        // Schlanke horizontale Messingröhre vor dem Bild
         const tube = new T.Mesh(gTube, brass);
         tube.rotation.z = Math.PI/2;
-        tube.position.set(0, 0.075, 0.15);
+        tube.position.set(0, 0.07, 0.13);
         lamp.add(tube);
 
         // Endkappen (gewölbt nach außen)
-        [-0.359, 0.359].forEach(ex => {
+        [-0.30, 0.30].forEach(ex => {
           const cap = new T.Mesh(gCap, brass);
           cap.rotation.z = ex < 0 ? Math.PI/2 : -Math.PI/2;
-          cap.position.set(ex, 0.075, 0.15);
+          cap.position.set(ex, 0.07, 0.13);
           lamp.add(cap);
         });
 
