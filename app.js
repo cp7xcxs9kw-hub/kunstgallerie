@@ -1619,9 +1619,13 @@
       function layout(pw, ph){
         paint.scale.set(pw, ph, 1);
         while(frameG.children.length) frameG.remove(frameG.children[0]);
-        const fw=pw+0.05, fh=ph+0.05, fd=0.022, fb=0.028;
-        [[fw,fb,fd, 0, fh/2,0],[fw,fb,fd, 0,-fh/2,0],
-         [fb,fh,fd,-fw/2,0,0],[fb,fh,fd, fw/2,0,0]
+        const fb=0.030, fd=0.042;        // Rahmen-Leistenbreite & -tiefe
+        const overlap=0.008;             // Falz: Rahmen liegt direkt auf der Bildkante (kein Spalt)
+        const cx=pw/2-overlap+fb/2, cy=ph/2-overlap+fb/2; // Leisten-Mittelpunkte → Innenkante = Bildkante
+        const fw=2*cx+fb, fh=2*cy+fb;    // Außenmaße (Quer-/Längsleisten stoßen bündig)
+        const fz=0.022;                  // Rahmenfront ragt minimal vor die Bildfläche (z=0.025)
+        [[fw,fb,fd, 0, cy,fz],[fw,fb,fd, 0,-cy,fz],
+         [fb,fh,fd,-cx,0,fz],[fb,fh,fd, cx,0,fz]
         ].forEach(([w,h,d,px,py,pz])=>{
           const b=new T.Mesh(new T.BoxGeometry(w,h,d),fm);
           b.position.set(px,py,pz); frameG.add(b);
