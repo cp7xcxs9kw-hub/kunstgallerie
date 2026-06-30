@@ -1619,11 +1619,13 @@
       function layout(pw, ph){
         paint.scale.set(pw, ph, 1);
         while(frameG.children.length) frameG.remove(frameG.children[0]);
-        const fb=0.030, fd=0.042;        // Rahmen-Leistenbreite & -tiefe
-        const overlap=0.008;             // Falz: Rahmen liegt direkt auf der Bildkante (kein Spalt)
+        const fb=0.030, fd=0.030;        // Rahmen-Leistenbreite & -tiefe (flach)
+        const overlap=0.010;             // Falz: Rahmen liegt direkt auf der Bildkante (kein Spalt)
         const cx=pw/2-overlap+fb/2, cy=ph/2-overlap+fb/2; // Leisten-Mittelpunkte → Innenkante = Bildkante
         const fw=2*cx+fb, fh=2*cy+fb;    // Außenmaße (Quer-/Längsleisten stoßen bündig)
-        const fz=0.022;                  // Rahmenfront ragt minimal vor die Bildfläche (z=0.025)
+        // Rahmenfront fast bündig mit der Bildfläche (z=0.025); Tiefe läuft nach hinten
+        // zur Wand statt in den Raum → kein „schwebender" Rahmen vor dem Bild.
+        const fz=0.012;
         [[fw,fb,fd, 0, cy,fz],[fw,fb,fd, 0,-cy,fz],
          [fb,fh,fd,-cx,0,fz],[fb,fh,fd, cx,0,fz]
         ].forEach(([w,h,d,px,py,pz])=>{
