@@ -432,6 +432,10 @@
     if (document.getElementById('ad-offer-btn')) document.getElementById('ad-offer-btn').textContent = t['ad-offer-btn'];
     if (document.getElementById('ad-rundgang-btn-text')) document.getElementById('ad-rundgang-btn-text').textContent = (_lang==='en' ? '▶  ' : '▶  ') + t['ad-rundgang-btn'];
     if (document.getElementById('ad-back-text')) document.getElementById('ad-back-text').textContent = _adFromRundgang ? (_lang==='en' ? 'Back to Tour' : 'Zurück zum Rundgang') : t['ad-back-text'];
+    // "Im Rundgang entdecken"-Button ausblenden, wenn die Detailansicht aus dem
+    // Rundgang heraus geöffnet wurde (der obere "Zurück zum Rundgang"-Button bleibt).
+    const _rundgangBtn = document.getElementById('ad-rundgang-btn');
+    if (_rundgangBtn) _rundgangBtn.style.display = _adFromRundgang ? 'none' : '';
     const subTxt = t['ad-sub-text'];
     const adImgEl = document.getElementById('ad-img-el');
     adImgEl.innerHTML = '';
