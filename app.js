@@ -1989,43 +1989,47 @@
     function buildPictureLights(T) {
       // Gebürstetes Messing – reagiert auf das vorhandene Deckenlicht und zeigt so die
       // Rundung der Röhre (kein zusätzliches Licht, nur realistischere Struktur).
-      const brass = new T.MeshStandardMaterial({color:0x9c7b2e, metalness:0.85, roughness:0.30});
+      const brass = new T.MeshStandardMaterial({color:0xa9842f, metalness:0.9, roughness:0.26});
       const lampY = PY + PH/2 + 0.12;  // just above top of frame
 
+      // Geschwungener Schwanenhals-Arm als Bézier-Kurve (klassischer Bilderleuchten-Look)
+      const armCurve = new T.QuadraticBezierCurve3(
+        new T.Vector3(0, 0.0,   0.012),   // Ansatz an der Rosette
+        new T.Vector3(0, 0.085, 0.020),   // Bogen steigt nah an der Wand auf
+        new T.Vector3(0, 0.072, 0.108)    // mündet hinten in die Röhre
+      );
+
       // Geometrien einmalig erstellen und über alle Leuchten teilen (Performance)
-      const gPlate = new T.CylinderGeometry(0.024, 0.024, 0.012, 20); // runde Wand-Rosette
-      const gArm   = new T.CylinderGeometry(0.007, 0.007, 0.119, 12); // schlanker Haltestab
-      const gTube  = new T.CylinderGeometry(0.022, 0.022, 0.60, 24);  // schlanke Leuchtenröhre
-      const gCap   = new T.CylinderGeometry(0.016, 0.022, 0.012, 24); // gewölbte Endkappe
+      const gPlate = new T.CylinderGeometry(0.020, 0.020, 0.010, 20);   // kleine runde Rosette
+      const gArm   = new T.TubeGeometry(armCurve, 32, 0.0055, 8, false);// dünner Messingbogen
+      const gTube  = new T.CylinderGeometry(0.015, 0.015, 0.58, 24);    // sehr schlanke Röhre
+      const gCap   = new T.CylinderGeometry(0.009, 0.015, 0.016, 24);   // gewölbte Endkappe
 
       PICS.forEach(p => {
         const lamp = new T.Group();
         lamp.position.set(p.x, lampY, p.z);
         lamp.rotation.y = p.rotY + Math.PI;   // lokal: +z = in den Raum, +x = entlang der Wand
 
-        // Runde Rosette flach an der Wand
+        // Kleine runde Rosette flach an der Wand
         const plate = new T.Mesh(gPlate, brass);
         plate.rotation.x = Math.PI/2;
-        plate.position.set(0, 0, 0.006);
+        plate.position.set(0, 0, 0.005);
         lamp.add(plate);
 
-        // Schlanker, schräg nach oben/vorn laufender Haltestab zur Röhre
-        const arm = new T.Mesh(gArm, brass);
-        arm.rotation.x = 0.941;
-        arm.position.set(0, 0.035, 0.06);
-        lamp.add(arm);
+        // Geschwungener Haltearm (Kurve liegt bereits in lokalen Koordinaten)
+        lamp.add(new T.Mesh(gArm, brass));
 
-        // Schlanke horizontale Messingröhre vor dem Bild
+        // Sehr schlanke horizontale Messingröhre vor dem Bild
         const tube = new T.Mesh(gTube, brass);
         tube.rotation.z = Math.PI/2;
-        tube.position.set(0, 0.07, 0.13);
+        tube.position.set(0, 0.072, 0.125);
         lamp.add(tube);
 
         // Endkappen (gewölbt nach außen)
-        [-0.30, 0.30].forEach(ex => {
+        [-0.295, 0.295].forEach(ex => {
           const cap = new T.Mesh(gCap, brass);
           cap.rotation.z = ex < 0 ? Math.PI/2 : -Math.PI/2;
-          cap.position.set(ex, 0.07, 0.13);
+          cap.position.set(ex, 0.072, 0.125);
           lamp.add(cap);
         });
 
