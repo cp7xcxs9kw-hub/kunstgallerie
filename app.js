@@ -1627,9 +1627,10 @@
         const overlap=0.010;             // Falz: Rahmen liegt direkt auf der Bildkante (kein Spalt)
         const cx=pw/2-overlap+fb/2, cy=ph/2-overlap+fb/2; // Leisten-Mittelpunkte → Innenkante = Bildkante
         const fw=2*cx+fb, fh=2*cy+fb;    // Außenmaße (Quer-/Längsleisten stoßen bündig)
-        // Rahmenfront fast bündig mit der Bildfläche (z=0.025); Tiefe läuft nach hinten
-        // zur Wand statt in den Raum → kein „schwebender" Rahmen vor dem Bild.
-        const fz=0.012;
+        // Lokal zeigt +z zur Wand, −z zum Betrachter (Bild liegt bei z=0.025). Die Rahmenfront
+        // sitzt daher 3 mm vor der Bildfläche (z=0.022), die Tiefe läuft zur Wand hin (+z)
+        // → Rahmen schließt direkt ans Bild an und schwebt nicht davor.
+        const fz=0.022+fd/2;
         [[fw,fb,fd, 0, cy,fz],[fw,fb,fd, 0,-cy,fz],
          [fb,fh,fd,-cx,0,fz],[fb,fh,fd, cx,0,fz]
         ].forEach(([w,h,d,px,py,pz])=>{
