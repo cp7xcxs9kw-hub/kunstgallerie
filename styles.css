@@ -967,6 +967,71 @@
   .coll-card-img canvas {
     max-width: 100%; height: auto; display: block;
   }
+
+  /* ── Mehrere Ansichten (Plastiken): Slider ── */
+  .coll-card-views { position: relative; }
+  .coll-card-views img {
+    position: absolute; inset: 0.8rem;
+    width: calc(100% - 1.6rem); height: calc(100% - 1.6rem);
+    max-width: none; max-height: none;
+    object-fit: contain;
+    opacity: 0; transition: opacity 0.45s ease;
+  }
+  .coll-card-views img.active { opacity: 1; }
+  .views-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 2.4rem; height: 2.4rem;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(8,7,6,0.55); backdrop-filter: blur(4px);
+    border: 1px solid rgba(201,168,76,0.35); border-radius: 50%;
+    color: var(--gold); font-size: 1.4rem; line-height: 1; padding: 0 0 0.15rem;
+    cursor: pointer; z-index: 2;
+    opacity: 0.75; transition: opacity 0.25s, background 0.25s, border-color 0.25s;
+  }
+  .views-arrow:hover { opacity: 1; background: rgba(201,168,76,0.18); border-color: var(--gold); }
+  .views-prev { left: 0.8rem; }
+  .views-next { right: 0.8rem; }
+  .coll-card-views .views-arrow { opacity: 0; }
+  .coll-card:hover .coll-card-views .views-arrow { opacity: 0.85; }
+  @media (hover: none) { .coll-card-views .views-arrow { opacity: 0.75; } }
+  .views-dots {
+    display: flex; gap: 0.45rem; justify-content: center; align-items: center;
+  }
+  .coll-card-views .views-dots {
+    position: absolute; bottom: 0.9rem; left: 0; right: 0; z-index: 2;
+  }
+  .views-dot {
+    width: 7px; height: 7px; padding: 0; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.7); background: transparent;
+    cursor: pointer; transition: background 0.25s;
+  }
+  .views-dot.active { background: var(--gold); }
+
+  /* Detailansicht */
+  #ad-views-nav .views-bar {
+    position: absolute; top: 1.2rem; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 0.9rem; z-index: 3;
+    padding: 0.45rem 0.9rem;
+    background: rgba(8,7,6,0.55); backdrop-filter: blur(4px);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  #ad-views-nav .views-count {
+    font-family: 'Montserrat', sans-serif; font-size: 0.5rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+    white-space: nowrap;
+  }
+  #ad-views-nav .views-bar,
+  #ad-views-nav .views-arrow {
+    background: rgba(255,255,255,0.7);
+    border-color: rgba(139,110,46,0.45);
+  }
+  #ad-views-nav .views-arrow { z-index: 3; color: var(--gold-dim); opacity: 1; }
+  #ad-views-nav .views-arrow:hover { background: #fff; border-color: var(--gold-dim); }
+  #ad-views-nav .views-dot { border-color: var(--gold-dim); }
+  #ad-views-nav .views-dot.active { background: var(--gold-dim); }
+  #ad-views-nav .views-count { color: var(--gold-dim); }
+  #ad-views-nav .views-prev { left: 1.2rem; }
+  #ad-views-nav .views-next { right: 1.2rem; }
   .coll-card-body { padding: 1.4rem 1.6rem 1.8rem; }
   .coll-card-title {
     font-family: 'Cormorant Garamond', serif;

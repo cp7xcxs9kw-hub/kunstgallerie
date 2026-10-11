@@ -178,9 +178,6 @@
     'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', price:'1.350 – 2.600', cat:'Grafik', cat_en:'Graphics', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', price:'2.050 – 3.600', cat:'Grafik', cat_en:'Graphics', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
     'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', price:'1.550 – 2.900', cat:'Grafik', cat_en:'Graphics', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Licht & Schatten':{ technique:'Mischtechnik', technique_en:'Mixed media', size:'90 × 70 cm', year:'2024', price:'2.850 – 4.500', cat:'Plastik', cat_en:'Sculpture', story:'Das Kreuz aus horizontaler und vertikaler Linie teilt die Fläche in vier Felder, die trotz ihrer scheinbaren Gleichheit völlig unterschiedlich wirken — je nachdem, von wo aus das Licht auf das Bild fällt. Schwab arbeitete hier mit Acryl, Kreide und Sandpigment, um eine Oberfläche zu schaffen, die Licht buchstäblich anders reflektiert als ihre Umgebung.', story_en:'The cross of horizontal and vertical lines divides the surface into four fields that, despite their apparent equality, read completely differently depending on the angle of light. Schwab worked here with acrylic, chalk and sand pigment to create a surface that literally reflects light differently from its surroundings.', svg:'<line x1="32" y1="4" x2="32" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="32" x2="60" y2="32" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Struktur':        { technique:'Mischtechnik auf Leinwand', technique_en:'Mixed media on canvas', size:'100 × 80 cm', year:'2024', price:'3.050 – 4.800', cat:'Plastik', cat_en:'Sculpture', story:'Struktur ist eine Auseinandersetzung mit dem Raster als Ordnungsprinzip. Vier gleich große Felder — und doch ist jedes einzigartig. Schwab kombinierte Acrylfarbe mit aufgeklebten Materialien aus dem Alltag: Zeitungsfetzen, Sandpapier, Stoff. Erst aus der Distanz fügt sich alles zu einem kohärenten Bild zusammen.', story_en:'Struktur (Structure) is an engagement with the grid as an ordering principle. Four equal fields — yet each one unique. Schwab combined acrylic paint with everyday materials: scraps of newspaper, sandpaper, cloth. Only from a distance does everything come together into a coherent whole.', svg:'<rect x="8" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="36" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="8" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/><rect x="36" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.7"/>' },
-    'Fragment':        { technique:'Kohle & Acryl', technique_en:'Charcoal & Acrylic', size:'80 × 60 cm', year:'2023', price:'2.350 – 3.900', cat:'Plastik', cat_en:'Sculpture', story:'Fragment ist das einzige Werk in dieser Kollektion, das bewusst unvollendet gelassen wurde. Die zwei Winkelformen, die sich annähern ohne sich zu berühren, stehen für Gespräche, die nie zu Ende geführt wurden. Kohle auf grundierter Leinwand, partiell mit Acryl fixiert — die Oberfläche ist rau, fast verletzlich.', story_en:'Fragment is the only work in this collection deliberately left unfinished. The two angular forms approaching without touching stand for conversations never brought to a conclusion. Charcoal on primed canvas, partially fixed with acrylic — the surface is rough, almost vulnerable.', svg:'<path d="M4 4 L30 32 L4 60" stroke="#C9A84C" stroke-width="0.7" fill="none"/><path d="M34 4 L60 32 L34 60" stroke="#C9A84C" stroke-width="0.5" fill="none" opacity="0.5"/>' },
     'Zwei Figuren I':           { img:'Images/C-F-2001-1entzerrt.jpg', technique:'Mischtechnik', technique_en:'Mixed media', size:'28 × 40 cm', year:'2001', price:'400 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Figuren treten in einen stummen Dialog. Die hintere dem Betrachter abgewandt, im Rückenakt, während die vordere zu ahnen bleibt. Lila und Orange brechen die Dunkelheit auf — Farbe als Sprache des Unausgesprochenen. Signiert unten rechts.', story_en:'Two figures in silent dialogue. One turned away, seen from behind; the other only suggested. Lilac and orange pierce the darkness — colour as the language of the unspoken. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="20" y1="8" x2="20" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="44" y1="8" x2="44" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Badende':                  { img:'Images/C-F-2001-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2001', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Eine lichte Figur in Weiß, Grau und Gelb hebt sich von zwei dunklen Torsi ab. Die Collagetechnik schichtet Körper übereinander — ein Fragment menschlicher Präsenz, das aus der Dunkelheit heraustritt. Signiert unten mittig.', story_en:'A luminous figure in white, grey and yellow emerges against two dark torsos. The collage technique layers bodies one over another — a fragment of human presence stepping out of the dark. Signed lower centre.', signed:'unten mittig', signed_en:'lower centre', svg:'<ellipse cx="32" cy="32" rx="14" ry="22" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
     'Zwei Badende':             { img:'Images/C-F-2002-1entzerrt.JPG', technique:'Mischtechnik auf Papier', technique_en:'Mixed media on paper', size:'60 × 80 cm', year:'2002', price:'500 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Violett durchzieht das Bild wie ein Stimmungston. Die Figuren sind gestreckt, fast gelöst von ihrer Form — begrenzt nur durch schwarze Konturen, die sie aus dem Farbstrom heraustreten lassen. Signiert unten rechts.', story_en:'Violet runs through the painting like an undertone. The figures are elongated, almost dissolved — held in place only by black contours that lift them out of the current of colour. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="22" y1="8" x2="22" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="42" y1="8" x2="42" y2="56" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>' },
@@ -197,8 +194,21 @@
     'Paar':                     { img:'Images/C-F-2005-4.JPG', technique:'Collage aus Graphik', technique_en:'Collage from graphic prints', size:'–', year:'2005', price:'400 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Ein Paar — hintereinander, nicht nebeneinander. Die Brauntöne und das graphische Ausgangsmaterial verleihen den Figuren etwas Archaisches, fast Monumentales. Zweiheit als Einheit: der eine Körper als Schatten des anderen. Signiert unten rechts.', story_en:'A couple — one behind the other, not side by side. The brown tones and the graphic source material give the figures an archaic, almost monumental quality. Twoness as oneness: one body as the shadow of the other. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="28" y1="8" x2="28" y2="56" stroke="#C9A84C" stroke-width="0.9"/><line x1="36" y1="8" x2="36" y2="56" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
     'Zwei Frauen':              { img:'Images/C-F-2005-5.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'65 × 50 cm', year:'2005', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das schwarze Quadrat im Hintergrund ist kein Zufall — eine bewusste Setzung. Zwei Frauenfiguren davor: eine vollständig, eine als Hüftfigur. Das Quadrat als Folie, als Spiegel, als Leerstelle, vor der der menschliche Körper umso mehr spricht. Signiert unten rechts.', story_en:'The black square in the background is no accident — a deliberate gesture. Two female figures before it: one complete, one cropped at the waist. The square as backdrop, as mirror, as void — against which the human body speaks all the more strongly. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<rect x="16" y="16" width="32" height="32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="8" x2="32" y2="16" stroke="#C9A84C" stroke-width="0.6"/>' },
     'Meer':                     { img:'Images/C-F-2005-6entzerrt.JPG', technique:'Grafikkollage', technique_en:'Graphic collage', size:'33 × 24 cm', year:'2005', price:'350 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das einzige Landschaftsbild der Serie und zugleich eines der stillsten. Die Grafikkollage übersetzt das Meer in Schichten und Streifen — Wasser als Struktur, nicht als Abbild. Dahinter: ein schmaler Streifen Land, kaum mehr als eine Ahnung. Signiert unten rechts.', story_en:'The only landscape in the series, and one of its quietest works. The graphic collage translates the sea into layers and strips — water as structure, not as image. Beyond it: a narrow strip of land, little more than a suggestion. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M4 36 Q16 28 28 36 Q40 44 52 36 Q60 32 60 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="4" y1="24" x2="60" y2="24" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
-    'Übergang':        { technique:'Mischtechnik', technique_en:'Mixed media', size:'110 × 85 cm', year:'2024', price:'3.450 – 5.200', cat:'Plastik', cat_en:'Sculpture', story:'Die Ellipsenform, die Übergang strukturiert, wurde von einem alten Handwerkswerkzeug abgeleitet — einer Schablone aus dem Nachlass von Schwabs Vater. Das Persönliche und das Formale verbinden sich hier auf ungewöhnliche Weise. Mehrere Schichten Öl und Acryl wurden mit einem Spachtel aufgetragen und wieder abgetragen, bis die heutige Textur entstanden war.', story_en:'The elliptical form structuring Übergang (Transition) was derived from an old craftsman\'s tool — a stencil from the estate of Schwab\'s father. The personal and the formal come together here in an unusual way. Several layers of oil and acrylic were applied with a palette knife and removed again, until the present texture emerged.', svg:'<path d="M4 32 Q32 4 60 32 Q32 60 4 32Z" stroke="#C9A84C" stroke-width="0.7" fill="none"/>' },
+    'Kniende Figur':            { img:'Images/Plastik-1-a.jpg', views:['Images/Plastik-1-a.jpg','Images/Plastik-1-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine kniende Figur, auf das Wesentliche reduziert: Schenkel, Hüfte, ein aufstrebender Oberkörper, der in einer offenen Form endet. Feine, parallel gezogene Rillen folgen den Rundungen und lassen das Licht über die goldene Oberfläche wandern.', story_en:'A kneeling figure reduced to its essentials: thigh, hip and a rising torso that ends in an open form. Fine parallel grooves follow the curves and let the light travel across the golden surface.', svg:'' },
+    'Weiblicher Torso':         { img:'Images/Plastik-2-a.jpg', views:['Images/Plastik-2-a.jpg','Images/Plastik-2-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Von vorne fast ein Gefäß, von der Seite eine kniende Gestalt — der Torso verändert sich mit jedem Blickwinkel. Die dunkle Patina zwischen dem Gold betont die Spuren der Bearbeitung und gibt der Form Tiefe.', story_en:'From the front almost a vessel, from the side a kneeling figure — the torso changes with every viewpoint. The dark patina between the gold accentuates the traces of the working process and gives the form depth.', svg:'' },
+    'Verhüllte Figur':          { img:'Images/Plastik-3-a.jpg', views:['Images/Plastik-3-a.jpg','Images/Plastik-3-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine sitzende Gestalt, wie in einen weiten Umhang gehüllt. Der Stoff fällt in großen, geriefelten Flächen, aus denen sich Kopf und Schulter herausschieben. Risse und Unebenheiten in der Fassung sind Teil des Ausdrucks.', story_en:'A seated figure, as if wrapped in a wide cloak. The drapery falls in broad, ribbed planes from which head and shoulder emerge. Cracks and irregularities in the surface are part of its expression.', svg:'' },
+    'Torso mit Rillen':         { img:'Images/Plastik-4-a.jpg', views:['Images/Plastik-4-a.jpg','Images/Plastik-4-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Dichte, senkrecht und bogenförmig geführte Rillen überziehen den ganzen Körper wie eine zweite Haut. Von hinten ruhig und symmetrisch, von der Seite in Bewegung: Die Plastik lebt vom Wechsel der Ansichten.', story_en:'Dense grooves, running vertically and in arcs, cover the whole body like a second skin. Calm and symmetrical from behind, full of movement from the side: the sculpture lives from its changing views.', svg:'' },
+    'Stehender Torso':          { img:'Images/Plastik-5-a.jpg', views:['Images/Plastik-5-a.jpg','Images/Plastik-5-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Ein schlanker Torso, der auf einem schmalen Fuß balanciert. Die ausladende Rundung zur Seite und die feinen Kratzspuren im Gold geben der kleinen Form eine erstaunliche Spannung.', story_en:'A slender torso balancing on a narrow base. The swelling curve to one side and the fine scratch marks in the gold give the small form a remarkable tension.', svg:'' },
+    'Sitzende Figur':           { img:'Images/Plastik-6-a.jpg', views:['Images/Plastik-6-a.jpg','Images/Plastik-6-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine sitzende Figur, die Arme um die angezogenen Knie gelegt — in sich gekehrt, ohne Kopf, ganz Körperhaltung. Die durchbrochenen Zwischenräume und die tief eingeritzten Linien machen die Plastik von allen Seiten lesbar.', story_en:'A seated figure with arms wrapped around drawn-up knees — turned inward, headless, pure posture. The open spaces and deeply incised lines make the sculpture legible from every side.', svg:'' },
   };
+
+  // Meta-Zeile "Technik · Maße · Jahr" – leere Angaben (z.B. bei Plastiken) werden ausgelassen
+  function _artMeta(d, isEN) {
+    return [isEN ? d.technique_en : d.technique, d.size, d.year].filter(Boolean).join('  ·  ');
+  }
+  function _artPrice(d, isEN) {
+    return d.price ? '€ ' + d.price : (isEN ? 'Price on request' : 'Preis auf Anfrage');
+  }
 
   /* ══ LANGUAGE ══ */
   let _lang = localStorage.getItem('lang') || 'de';
@@ -288,7 +298,9 @@
       var d = ARTWORKS[titleEl.textContent.trim()];
       if (!d) return;
       var meta = card.querySelector('.coll-card-meta');
-      if (meta) meta.textContent = (lang === 'en' ? d.technique_en : d.technique) + '  ·  ' + d.size + '  ·  ' + d.year;
+      if (meta) meta.textContent = _artMeta(d, lang === 'en');
+      var priceEl = card.querySelector('.coll-card-price');
+      if (priceEl && !d.price) priceEl.textContent = _artPrice(d, lang === 'en');
     });
     // re-render open artwork if any
     var adEl = document.getElementById('artwork-detail');
@@ -379,8 +391,8 @@
       card.innerHTML =
         '<div class="coll-card-body">' +
           '<p class="coll-card-title">' + title + '</p>' +
-          '<p class="coll-card-meta">' + tech + '  ·  ' + d.size + '  ·  ' + d.year + '</p>' +
-          '<p class="coll-card-price">€ ' + d.price + '</p>' +
+          '<p class="coll-card-meta">' + _artMeta(d, _lang === 'en') + '</p>' +
+          '<p class="coll-card-price">' + _artPrice(d, _lang === 'en') + '</p>' +
         '</div>' +
         '<button class="fav-btn fav-active" data-title="' + title + '" onclick="event.stopPropagation();toggleFav(\'' + title + '\')">♥</button>';
       // Echtes Bild verwenden (falls vorhanden), sonst Platzhalter-Canvas
@@ -425,8 +437,8 @@
     document.getElementById('ad-topbar-title').textContent = cat + '  ·  ' + title;
     document.getElementById('ad-eyebrow').textContent = cat;
     document.getElementById('ad-title').textContent = title;
-    document.getElementById('ad-meta-line').textContent = tech + '  ·  ' + d.size + '  ·  ' + d.year;
-    document.getElementById('ad-price').textContent = d.price ? '€ ' + d.price : 'Preis auf Anfrage';
+    document.getElementById('ad-meta-line').textContent = _artMeta(d, isEN);
+    document.getElementById('ad-price').textContent = _artPrice(d, isEN);
     document.getElementById('ad-story').textContent = story;
     if (document.getElementById('ad-story-head')) document.getElementById('ad-story-head').textContent = t['ad-story-head'];
     if (document.getElementById('ad-offer-btn')) document.getElementById('ad-offer-btn').textContent = t['ad-offer-btn'];
@@ -439,10 +451,13 @@
     const subTxt = t['ad-sub-text'];
     const adImgEl = document.getElementById('ad-img-el');
     adImgEl.innerHTML = '';
+    _adViews = d.views || null; _adViewIdx = 0;
     if (d.img) {
       const img = document.createElement('img');
       img.src = d.img; img.alt = title;
       adImgEl.appendChild(img);
+      // Vorladen der weiteren Ansichten, damit der Wechsel ohne Flackern passiert
+      if (_adViews) _adViews.slice(1).forEach(src => { const p = new Image(); p.src = src; });
     } else {
       const cv = _makeArtworkCanvas(title, 500, 620);
       cv.className = 'ad-placeholder-canvas';
@@ -450,18 +465,83 @@
     }
     document.getElementById('ad-details-grid').innerHTML =
       '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-tech-label'] + '</span><span class="ad-detail-value">' + tech + '</span></div>' +
-      '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-size-label'] + '</span><span class="ad-detail-value">' + d.size + '</span></div>' +
-      '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-year-label'] + '</span><span class="ad-detail-value">' + d.year + '</span></div>' +
+      (d.size ? '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-size-label'] + '</span><span class="ad-detail-value">' + d.size + '</span></div>' : '') +
+      (d.year ? '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-year-label'] + '</span><span class="ad-detail-value">' + d.year + '</span></div>' : '') +
       '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-cat-label'] + '</span><span class="ad-detail-value">' + cat + '</span></div>' +
       (d.signed ? '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-sign-label'] + '</span><span class="ad-detail-value">' + (isEN ? d.signed_en : d.signed) + '</span></div>' : '');
     // fav heart
     const adBtn = document.getElementById('ad-fav-btn');
     if (adBtn) { adBtn.textContent = _favs.has(title) ? '♥' : '♡'; adBtn.classList.toggle('fav-active', _favs.has(title)); }
+    _adRenderViewsNav();
     // reset zoom
     _adScale = 1; _adTx = 0; _adTy = 0;
     _adApplyTransform();
     document.getElementById('artwork-detail').classList.add('active');
     document.body.style.overflow = 'hidden';
+  }
+
+  /* Mehrere Ansichten (Plastiken): Slider in der Detailansicht */
+  let _adViews = null;
+  let _adViewIdx = 0;
+  function _adRenderViewsNav() {
+    const nav = document.getElementById('ad-views-nav');
+    if (!nav) return;
+    const n = _adViews ? _adViews.length : 0;
+    nav.style.display = n > 1 ? '' : 'none';
+    document.getElementById('artwork-detail').classList.toggle('has-views', n > 1);
+    if (n < 2) return;
+    const lbl = _lang === 'en' ? 'View' : 'Ansicht';
+    nav.querySelector('.views-dots').innerHTML = _adViews.map((_, i) =>
+      '<button class="views-dot' + (i === _adViewIdx ? ' active' : '') + '" aria-label="' + lbl + ' ' + (i + 1) + '" onclick="adShowView(' + i + ')"></button>'
+    ).join('');
+    nav.querySelector('.views-count').textContent = lbl + ' ' + (_adViewIdx + 1) + ' / ' + n;
+  }
+  function adShowView(i) {
+    if (!_adViews) return;
+    const n = _adViews.length;
+    _adViewIdx = (i + n) % n;
+    const img = document.querySelector('#ad-img-el img');
+    if (img) img.src = _adViews[_adViewIdx];
+    _adScale = 1; _adTx = 0; _adTy = 0;
+    _adApplyTransform();
+    _adRenderViewsNav();
+  }
+  document.addEventListener('keydown', function(e) {
+    if (!_adViews || _adViews.length < 2) return;
+    if (!document.getElementById('artwork-detail').classList.contains('active')) return;
+    if (document.getElementById('modal')?.classList.contains('active')) return;
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); adShowView(_adViewIdx - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); adShowView(_adViewIdx + 1); }
+  });
+  // Wischen auf Touch-Geräten
+  (function() {
+    const panel = document.getElementById('ad-img-panel');
+    if (!panel) return;
+    let sx = null, sy = 0;
+    panel.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1 || _adScale > 1) { sx = null; return; }
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    }, { passive: true });
+    panel.addEventListener('touchend', e => {
+      if (sx === null || !_adViews || _adViews.length < 2) return;
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) adShowView(_adViewIdx + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  })();
+
+  /* Mehrere Ansichten: Slider auf den Kollektionskarten */
+  function cardSetView(btn, idx) {
+    const wrap = btn.closest('.coll-card-views');
+    const imgs = wrap.querySelectorAll('img');
+    const next = (idx + imgs.length) % imgs.length;
+    imgs.forEach((im, i) => im.classList.toggle('active', i === next));
+    wrap.querySelectorAll('.views-dot').forEach((d, i) => d.classList.toggle('active', i === next));
+  }
+  function cardShowView(btn, dir) {
+    const imgs = btn.closest('.coll-card-views').querySelectorAll('img');
+    const cur = [...imgs].findIndex(im => im.classList.contains('active'));
+    cardSetView(btn, cur + dir);
   }
 
   function closeArtwork() {
@@ -566,7 +646,7 @@
 
   function openModal(title, range) {
     document.getElementById('modal-title').textContent = title;
-    document.getElementById('modal-range').textContent = '€ ' + range;
+    document.getElementById('modal-range').textContent = range ? '€ ' + range : (_lang === 'en' ? 'Price on request' : 'Preis auf Anfrage');
     document.getElementById('form-wrap').style.display = 'flex';
     document.getElementById('form-wrap').style.flexDirection = 'column';
     document.getElementById('form-wrap').style.gap = '1rem';

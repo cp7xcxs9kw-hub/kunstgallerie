@@ -65,7 +65,7 @@
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="theme-color" content="#080706">
-<link rel="stylesheet" href="styles.css?v=20260617i">
+<link rel="stylesheet" href="styles.css?v=20261011a">
 </head>
 <body>
 <svg id="nav-sweep" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
@@ -260,7 +260,7 @@
     </div>
 
     <div class="cat-tile" onclick="openCollection('mixed')">
-      <img class="cat-tile-bg" loading="lazy" decoding="async" src="Images/C-F-2005-2entzerrt.JPG" alt="">
+      <img class="cat-tile-bg" loading="lazy" decoding="async" src="Images/Plastik-3-b.jpg" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-mixed">Plastik</p>
       <p class="cat-tile-count" id="cat-view-4">Kollektion ansehen</p>
@@ -439,34 +439,66 @@
       <button class="coll-back-btn" onclick="closeCollection('mixed')" id="coll-back-mixed">&#x2190; &nbsp;<span id="coll-back-mixed-t">Zurück</span></button>
       <h2 class="coll-heading" id="coll-head-mixed">Plastik</h2>
     </div>
-    <div class="wip-banner">
-      <p class="wip-banner-eyebrow">Im Aufbau</p>
-      <p class="wip-banner-title">Neue Werke folgen in Kürze</p>
-      <p class="wip-banner-sub">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
-      <div class="wip-banner-divider"></div>
-      <p class="wip-notify-label">Benachrichtigung erhalten</p>
-      <div class="wip-notify-row">
-        <input type="email" id="wip-email-mixed" placeholder="Ihre E-Mail-Adresse" />
-        <button class="wip-notify-btn" onclick="wipNotify('mixed')">Benachrichtigen</button>
-      </div>
-      <p class="wip-notify-thanks" id="wip-thanks-mixed">Vielen Dank — wir melden uns.</p>
-    </div>
     <div class="coll-grid">
-      <div class="coll-card" onclick="openArtwork('Licht &amp; Schatten')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><line x1="32" y1="4" x2="32" y2="60" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="32" x2="60" y2="32" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Licht &amp; Schatten</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 90 × 70 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+      <div class="coll-card" onclick="openArtwork('Kniende Figur')">
+        <div class="coll-card-img coll-card-views">
+          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-1-a.jpg" alt="Kniende Figur – Ansicht 1">
+          <img loading="lazy" decoding="async" src="Images/Plastik-1-b.jpg" alt="Kniende Figur – Ansicht 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+        </div>
+        <div class="coll-card-body"><p class="coll-card-title">Kniende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kniende Figur')">Angebot abgeben</button></div>
       </div>
-      <div class="coll-card" onclick="openArtwork('Struktur')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><rect x="8" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.5"/><rect x="36" y="8" width="20" height="20" stroke="#C9A84C" stroke-width="0.5"/><rect x="8" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.5"/><rect x="36" y="36" width="20" height="20" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Struktur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 100 × 80 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+      <div class="coll-card" onclick="openArtwork('Weiblicher Torso')">
+        <div class="coll-card-img coll-card-views">
+          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-2-a.jpg" alt="Weiblicher Torso – Ansicht 1">
+          <img loading="lazy" decoding="async" src="Images/Plastik-2-b.jpg" alt="Weiblicher Torso – Ansicht 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+        </div>
+        <div class="coll-card-body"><p class="coll-card-title">Weiblicher Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Weiblicher Torso')">Angebot abgeben</button></div>
       </div>
-      <div class="coll-card" onclick="openArtwork('Fragment')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 4 L30 32 L4 60" stroke="#C9A84C" stroke-width="0.5" fill="none"/><path d="M34 4 L60 32 L34 60" stroke="#C9A84C" stroke-width="0.4" fill="none" opacity="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Fragment</p><p class="coll-card-meta">Kohle &amp; Acryl &nbsp;·&nbsp; 80 × 60 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+      <div class="coll-card" onclick="openArtwork('Verhüllte Figur')">
+        <div class="coll-card-img coll-card-views">
+          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-3-a.jpg" alt="Verhüllte Figur – Ansicht 1">
+          <img loading="lazy" decoding="async" src="Images/Plastik-3-b.jpg" alt="Verhüllte Figur – Ansicht 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+        </div>
+        <div class="coll-card-body"><p class="coll-card-title">Verhüllte Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Verhüllte Figur')">Angebot abgeben</button></div>
       </div>
-      <div class="coll-card" onclick="openArtwork('Übergang')">
-        <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 32 Q32 4 60 32 Q32 60 4 32Z" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Übergang</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 110 × 85 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+      <div class="coll-card" onclick="openArtwork('Torso mit Rillen')">
+        <div class="coll-card-img coll-card-views">
+          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-4-a.jpg" alt="Torso mit Rillen – Ansicht 1">
+          <img loading="lazy" decoding="async" src="Images/Plastik-4-b.jpg" alt="Torso mit Rillen – Ansicht 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+        </div>
+        <div class="coll-card-body"><p class="coll-card-title">Torso mit Rillen</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Torso mit Rillen')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Stehender Torso')">
+        <div class="coll-card-img coll-card-views">
+          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-5-a.jpg" alt="Stehender Torso – Ansicht 1">
+          <img loading="lazy" decoding="async" src="Images/Plastik-5-b.jpg" alt="Stehender Torso – Ansicht 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+        </div>
+        <div class="coll-card-body"><p class="coll-card-title">Stehender Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Stehender Torso')">Angebot abgeben</button></div>
+      </div>
+      <div class="coll-card" onclick="openArtwork('Sitzende Figur')">
+        <div class="coll-card-img coll-card-views">
+          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-6-a.jpg" alt="Sitzende Figur – Ansicht 1">
+          <img loading="lazy" decoding="async" src="Images/Plastik-6-b.jpg" alt="Sitzende Figur – Ansicht 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+        </div>
+        <div class="coll-card-body"><p class="coll-card-title">Sitzende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Sitzende Figur')">Angebot abgeben</button></div>
       </div>
     </div>
   </div>
@@ -1246,6 +1278,11 @@
     <div id="ad-img-inner" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;cursor:zoom-in;overflow:hidden;padding:3rem;box-sizing:border-box;">
       <div id="ad-img-el" style="transform-origin:center center;transition:transform 0.08s ease;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1.8rem;"></div>
     </div>
+    <div id="ad-views-nav" style="display:none">
+      <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="adShowView(_adViewIdx-1)">&#x2039;</button>
+      <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="adShowView(_adViewIdx+1)">&#x203A;</button>
+      <div class="views-bar"><div class="views-dots"></div><span class="views-count"></span></div>
+    </div>
     <button id="ad-rundgang-btn" onclick="closeArtwork();document.getElementById('nav-rundgang').click();">
       <span id="ad-rundgang-btn-text">&#9654;&nbsp; Im Rundgang entdecken</span>
     </button>
@@ -1329,6 +1366,6 @@
 </div>
 
 
-<script src="app.js?v=20261005a"></script>
+<script src="app.js?v=20261011a"></script>
 </body>
 </html>
