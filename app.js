@@ -128,6 +128,82 @@
   var _hasEnteredOnce = sessionStorage.getItem('galleryEnteredOnce') === '1';
   var _touchStartY = 0;
   var _snapReady = _galleryEntered; // sofort aktiv wenn aus sessionStorage
+  /* ══ BROWSER-ZURÜCK: jede geöffnete Ebene ist ein Schritt im Browserverlauf ══
+     Jeder Verlaufseintrag speichert den kompletten Ebenen-Stapel (z. B. ['gallery','col:mixed','art:Meer']).
+     Bei Zurück/Vorwärts wird die Seite an den Stapel des Eintrags angeglichen. */
+  var _nav = { stack: [], applying: false, pending: false, queue: [] };
+  function _navUrl(stack) {
+    for (var i = stack.length - 1; i >= 0; i--) {
+      if (stack[i].indexOf('art:') === 0) return '#artwork=' + encodeURIComponent(stack[i].slice(4));
+      if (stack[i].indexOf('col:') === 0) return '#col=' + encodeURIComponent(stack[i].slice(4));
+    }
+    return location.pathname + location.search;
+  }
+  // Ebene wurde geöffnet → neuer Verlaufsschritt
+  function _navOpen(item) {
+    if (_nav.applying) return;
+    var push = function() {
+      if (_nav.stack.indexOf(item) !== -1) return;
+      _nav.stack = _nav.stack.concat(item);
+      history.pushState({ navStack: _nav.stack, pushed: true }, '', _navUrl(_nav.stack));
+    };
+    if (_nav.pending) _nav.queue.push(push); else push();
+  }
+  // Ebene wurde über die Website geschlossen → Verlauf mitziehen
+  function _navClosed(item) {
+    if (_nav.applying) return;
+    // läuft gerade noch ein Zurück-Schritt: erst danach verbuchen
+    if (_nav.pending) { _nav.queue.push(function() { _navClosed(item); }); return; }
+    var i = _nav.stack.lastIndexOf(item);
+    if (i === -1) return;
+    var wasTop = i === _nav.stack.length - 1;
+    // nur diese Ebene austragen – darüberliegende, noch offene Ebenen bleiben im Stapel
+    _nav.stack = _nav.stack.filter(function(x, k) { return k !== i; });
+    var st = history.state;
+    if (wasTop && st && st.pushed && st.navStack && st.navStack[st.navStack.length - 1] === item) {
+      // vorheriger Eintrag ist genau dieser Zustand → einen Schritt zurück statt Leereintrag
+      _nav.pending = true;
+      history.back();
+    } else {
+      history.replaceState({ navStack: _nav.stack, pushed: !!(st && st.pushed) }, '', _navUrl(_nav.stack));
+    }
+  }
+  function _navOpenItem(item) {
+    if (item === 'gallery') { _enterGallery(); roomTransition('intro-scene'); }
+    else if (item === 'vr') document.getElementById('nav-rundgang')?.click();
+    else if (item === 'favs') openFavs();
+    else if (item === 'cal') window.openCal && window.openCal();
+    else if (item === 'modal') { const d = ARTWORKS[_adCurrentTitle]; if (d) openModal(_adCurrentTitle, d.price); }
+    else if (item.indexOf('col:') === 0) openCollection(item.slice(4));
+    else if (item.indexOf('art:') === 0) openArtwork(item.slice(4));
+    else if (item.indexOf('legal:') === 0) openLegal(item.slice(6));
+  }
+  function _navCloseItem(item) {
+    if (item === 'gallery') _goToHero();
+    else if (item === 'vr') document.getElementById('gallery-vr-close')?.click();
+    else if (item === 'favs') closeFavs();
+    else if (item === 'cal') window.closeCal && window.closeCal();
+    else if (item === 'modal') closeModal();
+    else if (item.indexOf('col:') === 0) closeCollection(item.slice(4));
+    else if (item.indexOf('art:') === 0) closeArtwork();
+    else if (item.indexOf('legal:') === 0) closeLegal(item.slice(6));
+  }
+  window.addEventListener('popstate', function(e) {
+    var target = (e.state && e.state.navStack) || [];
+    var cur = _nav.stack;
+    _nav.applying = true;
+    try {
+      for (var i = cur.length - 1; i >= 0; i--) if (target.indexOf(cur[i]) === -1) _navCloseItem(cur[i]);
+      for (var j = 0; j < target.length; j++) if (cur.indexOf(target[j]) === -1) _navOpenItem(target[j]);
+    } finally {
+      _nav.applying = false;
+    }
+    _nav.stack = target.slice();
+    _nav.pending = false;
+    var q = _nav.queue; _nav.queue = [];
+    q.forEach(function(f) { f(); });
+  });
+
   function _enterGallery() {
     _galleryEntered = true;
     _hasEnteredOnce = true;
@@ -140,6 +216,7 @@
     _snapReady = false;
     sessionStorage.removeItem('galleryEntered');
     // _hasEnteredOnce bleibt true → Down-Sperre entfällt beim Zurückkehren
+    _navClosed('gallery');
     roomTransition('hero');
   }
   // Snap-Fallback erst nach Scroll-Restaurierung des Browsers aktivieren
@@ -187,6 +264,7 @@
       e.preventDefault();
       if (document.body.classList.contains('hero-zooming')) return;   // Doppelklick ignorieren
       _enterGallery();
+      _navOpen('gallery');
       const targetId = heroEnterBtn.getAttribute('href').slice(1);
       zoomIntoGallery(targetId);
       _showRundgangHint();
@@ -415,11 +493,13 @@
     renderFavs();
     document.getElementById('fav-overlay').classList.add('active');
     document.body.style.overflow = 'hidden';
+    _navOpen('favs');
   }
 
   function closeFavs() {
     document.getElementById('fav-overlay').classList.remove('active');
     document.body.style.overflow = '';
+    _navClosed('favs');
   }
 
   function renderFavs() {
@@ -482,7 +562,7 @@
       _adParentScrollTop = activeCol ? activeCol.scrollTop : 0;
       _adFromRundgang = !!fromRundgang;
     }
-    history.replaceState(null, '', '#artwork=' + encodeURIComponent(title));
+    if (!rerender) _navOpen('art:' + title);
     const isEN = _lang === 'en';
     const cat  = isEN ? d.cat_en : d.cat;
     const tech = isEN ? d.technique_en : d.technique;
@@ -599,27 +679,23 @@
   }
 
   function closeArtwork() {
+    _navClosed('art:' + _adCurrentTitle);
     document.getElementById('artwork-detail').classList.remove('active');
     document.body.style.overflow = '';
     if (_adFromRundgang) {
       _adFromRundgang = false;
-      history.replaceState(null, '', location.pathname);
       // gallery-vr bleibt sichtbar — kein weiterer Eingriff nötig
     } else if (_adFromFavs) {
       _adFromFavs = false;
-      history.replaceState(null, '', location.pathname);
       // Merkliste liegt noch darunter — wieder aktiv halten + auffrischen
       const favOv = document.getElementById('fav-overlay');
       if (favOv) favOv.classList.add('active');
       document.body.style.overflow = 'hidden';
       renderFavs();
     } else if (_adParentCol) {
-      history.replaceState(null, '', '#col=' + encodeURIComponent(_adParentCol));
       openCollection(_adParentCol, true);
       const colEl = document.getElementById('coll-' + _adParentCol);
       if (colEl) colEl.scrollTop = _adParentScrollTop;
-    } else {
-      history.replaceState(null, '', location.pathname);
     }
   }
 
@@ -667,6 +743,7 @@
   // Overlay-Zustand per URL-Hash wiederherstellen (z.B. nach Refresh)
   const _CAT_TO_COL = { 'Malerei':'acryl', 'Collage & Zeichnungen':'oel', 'Grafik':'aquarell', 'Plastik':'mixed' };
   (function() {
+    _nav.applying = true;
     const h = location.hash;
     if (h.startsWith('#artwork=')) {
       const title = decodeURIComponent(h.slice('#artwork='.length));
@@ -682,6 +759,31 @@
       }
     } else if (h === '#galerie') {
       _showRundgangHint();
+    }
+    _nav.applying = false;
+    // Aktuellen Zustand als Ausgangspunkt im Verlauf hinterlegen
+    const st = [];
+    if (_galleryEntered) st.push('gallery');
+    const col = document.querySelector('.coll-overlay.active:not(#fav-overlay)');
+    if (col) st.push('col:' + col.id.slice(5));
+    const artOpen = document.getElementById('artwork-detail').classList.contains('active');
+    // Werk per URL wiederhergestellt: die Kollektion, zu der „Zurück" führt, gehört mit in den Stapel
+    if (artOpen && !col && _adParentCol) st.push('col:' + _adParentCol);
+    if (artOpen) st.push('art:' + _adCurrentTitle);
+    _nav.stack = st;
+    // Nach einem Neuladen bleibt der Verlaufseintrag erhalten – stimmt er mit dem Zustand
+    // überein, darf „Zurück" weiterhin einen echten Schritt zurückgehen
+    const old = history.state;
+    const same = !!(old && old.navStack && old.navStack.join('|') === st.join('|'));
+    const lostTop = !!(old && old.pushed && old.navStack && old.navStack.length === st.length + 1 &&
+                       old.navStack.slice(0, st.length).join('|') === st.join('|'));
+    if (lostTop) {
+      // eine Ebene ohne eigene URL (Merkliste, Impressum …) war offen und ist nach dem Neuladen zu:
+      // still auf den passenden vorherigen Eintrag zurückgehen, sonst wäre der nächste Zurück-Klick wirkungslos
+      _nav.pending = true;
+      history.back();
+    } else {
+      history.replaceState({ navStack: st, pushed: same && !!old.pushed }, '', location.href);
     }
   })();
   document.getElementById('ad-offer-btn')?.addEventListener('click', () => {
@@ -719,12 +821,14 @@
     }
     document.getElementById('modal').classList.add('active');
     document.body.style.overflow = 'hidden';
+    _navOpen('modal');
   }
 
   function closeModal(e) {
     if (!e || e.target === document.getElementById('modal')) {
       document.getElementById('modal').classList.remove('active');
       document.body.style.overflow = '';
+      _navClosed('modal');
     }
   }
 
@@ -734,14 +838,14 @@
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
     el.scrollTop = 0;
-    if (!noHash) history.replaceState(null, '', '#col=' + encodeURIComponent(cat));
+    if (!noHash) _navOpen('col:' + cat);
   }
   function closeCollection(cat) {
     const el = document.getElementById('coll-' + cat);
     if (!el) return;
     el.classList.remove('active');
     document.body.style.overflow = '';
-    history.replaceState(null, '', location.pathname);
+    _navClosed('col:' + cat);
   }
 
   function wipNotify(cat) {
@@ -765,14 +869,14 @@
     }
     document.getElementById('form-wrap').style.display = 'none';
     document.getElementById('success-msg').classList.add('show');
-    setTimeout(() => {
-      document.getElementById('modal').classList.remove('active');
-      document.body.style.overflow = '';
-    }, 3000);
+    setTimeout(() => closeModal(), 3000);
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal({ target: document.getElementById('modal') });
+    if (e.key === 'Escape' && document.getElementById('modal').classList.contains('active')) {
+      e._escHandled = true;
+      closeModal();
+    }
   });
 
   /* ══ SCROLL FADE-IN ══ */
@@ -847,6 +951,7 @@
     }
     openBtn.addEventListener('click', e => {
       e.preventDefault();
+      _navOpen('vr');
       vrEl.style.display='block';
       vrPaused = true;
       setTimeout(function(){
@@ -891,6 +996,7 @@
     }
 
     closeBtn.addEventListener('click', () => {
+      _navClosed('vr');
       vrEl.style.display='none';
       teardown();
       const loader=document.getElementById('gallery-loader');
@@ -2470,18 +2576,26 @@
     el.scrollTop = 0;
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
+    _navOpen('legal:' + which);
   }
   function closeLegal(which) {
     const el = document.getElementById('overlay-' + which);
     if (!el) return;
     el.classList.remove('active');
     document.body.style.overflow = '';
+    _navClosed('legal:' + which);
   }
   // Close on Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      ['impressum','datenschutz','lieferbedingungen'].forEach(closeLegal);
-      closeFavs();
+      // nur die oberste Ebene schließen (Angebotsformular und Kalender haben eigene Handler)
+      if (e._escHandled) return;
+      if (document.getElementById('modal')?.classList.contains('active')) return;
+      if (document.getElementById('cal-overlay')?.classList.contains('active')) return;
+      const legal = ['impressum','datenschutz','lieferbedingungen'].filter(w => document.getElementById('overlay-' + w)?.classList.contains('active'));
+      if (legal.length) legal.forEach(closeLegal);
+      else if (document.getElementById('artwork-detail').classList.contains('active')) closeArtwork();
+      else if (document.getElementById('fav-overlay')?.classList.contains('active')) closeFavs();
     }
   });
 
@@ -2750,6 +2864,7 @@
         '<strong>' + session.name + '</strong>';
       document.getElementById('cal-overlay').classList.add('active');
       document.body.style.overflow = 'hidden';
+      _navOpen('cal');
     } else {
       openCal();
     }
@@ -2901,6 +3016,7 @@
       var session = calGetSession();
       document.getElementById('cal-overlay').classList.add('active');
       document.body.style.overflow = 'hidden';
+      _navOpen('cal');
       if (session) {
         showCalMain();
       } else {
@@ -2917,6 +3033,7 @@
     window.closeCal = function() {
       document.getElementById('cal-overlay').classList.remove('active');
       document.body.style.overflow = '';
+      _navClosed('cal');
     };
 
     window.confirmBooking = function() {
@@ -2938,7 +3055,10 @@
       if (e.target === this) closeCal();
     });
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeCal();
+      if (e.key === 'Escape' && document.getElementById('cal-overlay').classList.contains('active')) {
+        e._escHandled = true;
+        closeCal();
+      }
     });
   })();
 
