@@ -2049,6 +2049,31 @@
     text-transform: uppercase;
   }
   #vr-skip:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+  /* Zurück: gleiche Optik wie Weiter, links daneben */
+  #vr-back {
+    position: absolute;
+    bottom: 2rem;
+    right: calc(2rem + 9.2rem);
+    background: transparent;
+    color: rgba(201,168,76,0.55);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 0.5rem 1.3rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.32em;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: color 0.25s ease, border-color 0.25s ease;
+    z-index: 961;
+    text-transform: uppercase;
+  }
+  #vr-back:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+  /* Schmale Bildschirme: Weiter/Zurück unten rechts und links, Frei erkunden darüber */
+  @media (max-width: 760px) {
+    #gallery-vr #vr-back     { right: auto; left: calc(1rem + 2.4rem + 0.6rem); bottom: 1.2rem; padding: 0.5rem 0.9rem; letter-spacing: 0.22em; }
+    #gallery-vr #vr-skip     { right: 1rem; bottom: 1.2rem; padding: 0.5rem 0.9rem; letter-spacing: 0.22em; }
+    #gallery-vr #vr-info-btn { left: 1rem; bottom: 1.2rem; }
+    #gallery-vr #vr-free-btn { bottom: 4.4rem; }
+  }
   #vr-free-btn {
     position: absolute;
     bottom: 2rem;
