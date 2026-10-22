@@ -1174,7 +1174,7 @@
     // Gang: Gruppe um −90° gedreht; lokal z=0 liegt in der linken Wand von Raum 5, lokal −z zeigt nach +x.
     const GANG = (() => {
       const r = { ox: ROW2.ox + RW/2, oz: GANG_Z, w: CW };
-      r.depth = (CW/2 + 0.2) - r.ox;                      // endet knapp hinter der Startposition
+      r.depth = (CW/2 + 0.5) - r.ox;                      // endet einen halben Meter hinter dem Torbogen zu Raum 1
       r.r1Open = { side:-1, z0: r.ox + CW/2, z1: r.ox - CW/2, h:3.2 };   // Torbogen in Raum 1
       return r;
     })();
@@ -1576,7 +1576,11 @@
       const openings = o.openings || [];
       const OFF = 0.013, wH = 1.12, sw = Math.min(0.44, W * 0.18);
 
-      addPlane(T, W, depth, M.floor, [0, 0,  cz], [-Math.PI/2, 0, 0]);
+      // Bodenplatten nach Raumgröße: quadratisch (~0,85 m) und ganze Platten über die Breite –
+      // auch im schmalen Gang (eine feste Wiederholung pro Fläche würde sie dort zu Streifen ziehen)
+      const floor = addPlane(T, W, depth, M.floor, [0, 0,  cz], [-Math.PI/2, 0, 0]);
+      const tile = W / Math.max(1, Math.round(W / 0.85)), fuv = floor.geometry.attributes.uv;
+      for (let i = 0; i < fuv.count; i++) fuv.setXY(i, fuv.getX(i) * W / (4*tile), fuv.getY(i) * depth / (4*tile));   // Textur = 4×4 Platten
       addPlane(T, W, depth, M.ceil,  [0, RH, cz], [ Math.PI/2, 0, 0]);
 
       [-1, 1].forEach(side => {
@@ -1632,15 +1636,17 @@
       });
     }
 
-    // Goldener Dekorrahmen an einem Torbogen (Breite aw) bei z
-    function addArchFrame(T, z, aw) {
+    // Goldener Dekorrahmen an einem Torbogen (Breite aw) bei z; d = Tiefe (Standard fw),
+    // tiefer, wenn der Rahmen zwei hintereinanderliegende Wände überbrücken soll
+    function addArchFrame(T, z, aw, d) {
       const gMat = roomMats(T).gold, ah = 3.2, fw = 0.055;
-      addBox(T, aw + 2*fw, fw,    fw, gMat, [0, ah + fw/2, z]);
-      addBox(T, fw,        ah+fw, fw, gMat, [-aw/2 - fw/2, (ah + fw)/2, z]);
-      addBox(T, fw,        ah+fw, fw, gMat, [ aw/2 + fw/2, (ah + fw)/2, z]);
+      d = d || fw;
+      addBox(T, aw + 2*fw, fw,    d, gMat, [0, ah + fw/2, z]);
+      addBox(T, fw,        ah+fw, d, gMat, [-aw/2 - fw/2, (ah + fw)/2, z]);
+      addBox(T, fw,        ah+fw, d, gMat, [ aw/2 + fw/2, (ah + fw)/2, z]);
       const od = fw * 1.9;
       [[-aw/2 - fw/2, ah + fw], [aw/2 + fw/2, ah + fw], [-aw/2 - fw/2, 0], [aw/2 + fw/2, 0]].forEach(([x, y]) => {
-        addBox(T, od, od, fw * 1.4, gMat, [x, y, z]);
+        addBox(T, od, od, d + fw * 0.4, gMat, [x, y, z]);
       });
     }
 
@@ -1701,8 +1707,9 @@
       // ── Room 1 (Tiefe 18, Mitte -9, je 4 Bilder pro Wand) ──
       buildRoomShell(T, { depth:18, cz:-9, fillRows:[-3,-7,-11,-15], lightRows:[-3,-7,-11,-15], extraLights:[-18] });
       // Eingangswand mit Wandpaneelen – jetzt mit Torbogen zum Gang (Rundgang schließt sich)
-      addPanelWall(T, 0.05, Math.PI, CW);
-      addArchFrame(T, 0.05, CW);
+      // knapp innerhalb von Raum 1: Gangwand (z=0) und Paneelwand dürfen sich nicht durchdringen
+      addPanelWall(T, -0.03, Math.PI, CW);
+      addArchFrame(T, -0.015, CW, 0.085);   // überbrückt beide Wände: von Raum 1 und aus dem Gang sichtbar
       // Room 1 end wall + archway (anthracite transition) — bei z=-18
       buildArchWall(T, -18, aw);
 
@@ -1911,8 +1918,7 @@
       }
 
       const tex=new T.CanvasTexture(cv);
-      tex.wrapS=tex.wrapT=T.RepeatWrapping;
-      tex.repeat.set(3,5);
+      tex.wrapS=tex.wrapT=T.RepeatWrapping;   // Plattengröße kommt aus den UVs (buildRoomShell)
       return tex;
     }
 
@@ -2834,6 +2840,19 @@
       }
     }
 
+    // Stirnwand (Breite W, Blickseite +z) mit derselben Verkleidung wie die Seitenwände:
+    // Wandfläche, dunkles Paneel, Goldleiste, Sockel- und Kranzleiste
+    function addFinishedEndWall(T, z, W) {
+      const M = roomMats(T), wH = 1.12, L = W + 0.01;
+      _occ(addPlane(T, W, RH, M.wall, [0, RH/2, z], [0, 0, 0]));
+      addPlane(T, W, wH, M.panel, [0, wH/2, z + 0.013], [0, 0, 0]);
+      addBox(T, L, 0.036, 0.024, M.rail, [0, wH + 0.018, z + 0.013]);
+      addBox(T, L, 0.11,  0.055, M.mold, [0, 0.055, z + 0.022]);
+      addBox(T, L, 0.04,  0.022, M.mold, [0, 0.13,  z + 0.022]);
+      addBox(T, L, 0.022, 0.10,  M.mold, [0, RH - 0.011, z + 0.022]);
+      addBox(T, L, 0.10,  0.022, M.mold, [0, RH - 0.062, z + 0.022]);
+    }
+
     // ══ Linke kurze Seite: schmaler Verbindungsgang (Raum 5 → Raum 1) ═══
     // Gleicher Aufbau wie die Räume, nur schmaler; keine Werke.
     function buildGang(T) {
@@ -2846,7 +2865,7 @@
         const fills = []; for (let z = -4; z > -GANG.depth; z -= 7) fills.push(z);
         buildRoomShell(T, { width:GANG.w, depth:GANG.depth, cz:-GANG.depth/2, fillRows:fills, fillIntensity:0.22, extraLights:[],
           openings:[GANG.r1Open] });
-        _occ(addPlane(T, GANG.w, RH, M.trans, [0, RH/2, -GANG.depth], [0, 0, 0]));            // Stirnwand hinter Raum-1-Eingang
+        addFinishedEndWall(T, -GANG.depth, GANG.w);                                              // Stirnwand hinter Raum-1-Eingang
         addArchFrame(T, 0, GANG.w);                                                              // Durchgang in Raum 5
         _occ(addPlane(T, GANG.w + 0.02, RH - 3.2, M.trans, [0, 3.2 + (RH - 3.2)/2, -0.012], [0, Math.PI, 0]));  // Sturz-Rückseite
       } finally {
@@ -2902,7 +2921,7 @@
       R4:  { x0:-31,   x1:-21,  z0:-41.2,  z1:-22 },
       C45: { x0:-27.8, x1:-24.2,z0:-22,    z1:-18 },
       R5:  { x0:-31,   x1:-21,  z0:-18,    z1:2.9 },
-      G:   { x0:-21,   x1:1.6,  z0:-0.05,  z1:2.7 },
+      G:   { x0:-21,   x1:1.9,  z0:-0.05,  z1:2.7 },
     };
     const ZONE_ORDER = Object.keys(ZONES);
     // Von welchem Bereich aus ist welcher sichtbar (durch Torbögen und Durchgänge)
@@ -3095,7 +3114,7 @@
         { x0:x4 - xMax, x1:x4 + xMax, z0:-41 + g, z1:-22 - g },         // Raum 4
         { x0:x4 - 1.5,  x1:x4 + 1.5,  z0:-22 - g, z1:-18 + g },         // Durchgang Raum 4 ↔ 5
         { x0:x4 - xMax, x1:x4 + xMax, z0:-18 + g, z1:ROW2.oz - ROW2.r5End - g }, // Raum 5
-        { x0:x4 + xMax - 0.15, x1:CW/2 + 0.2 - 0.3, z0:GANG_Z - ch, z1:GANG_Z + ch },          // Gang
+        { x0:x4 + xMax - 0.15, x1:GANG.ox + GANG.depth - 0.3, z0:GANG_Z - ch, z1:GANG_Z + ch },   // Gang (bis 0,3 m vor die Stirnwand)
       ];
     })();
     const BENCHES = [-9, -33].map(z => ({ x0:-2.15, x1:2.15, z0:z-0.7, z1:z+0.7 }))         // inkl. Puffer
