@@ -1091,14 +1091,13 @@
     let resumeFov=null;       // „Tour fortsetzen": Sichtfeld beim Start der Rückkehr
 
     // ── Renderauflösung ──────────────────────────────────────────
-    // Retina-Bildschirme hätten bei voller Pixeldichte die 4-fache Pixelzahl – zu viel für
-    // 60 Bilder/s. Gerendert werden darum höchstens ~1,8 Mio. Bildpunkte (Kanten bleiben dank
-    // Antialiasing sauber). Schafft ein Gerät auch das nicht, regelt _watchFps weiter herunter.
-    const PX_BUDGET = 1.8e6;
+    // Volle Schärfe (Retina: Pixelfaktor 2) – möglich, weil der Licht-Pool klein gehalten ist.
+    // Nur als Sicherheitsnetz für schwache Geräte senkt _watchFps die Auflösung, höchstens
+    // auf 75 % (darunter wirken die Räume milchig und unscharf).
     let _resScale = 1, _resProbe = 0, _resLocked = false, _fpsSum = 0, _fpsN = 0, _fpsWarm = 0, _adEl = null, _infoEl = null;
     function _pixelRatio() {
-      const fit = Math.sqrt(PX_BUDGET / (innerWidth * innerHeight));
-      return Math.max(0.5, Math.min(devicePixelRatio || 1, 2, Math.max(1, fit)) * _resScale);
+      const full = Math.min(devicePixelRatio || 1, 2);
+      return Math.max(Math.min(full, 1), full * Math.max(0.75, _resScale));   // nie unter die echte Bildschirmauflösung
     }
     function _watchFps(raw) {
       if (!_loaderHidden || raw > 250 || document.hidden) return;   // Ladephase, Tab-Wechsel
@@ -1115,7 +1114,7 @@
         // zurück zur schärferen Stufe und nicht weiter senken.
         if (avg > _resProbe * 0.9) { _resScale /= 0.85; _resLocked = true; _applyRes(); }
         _resProbe = 0;
-      } else if (!_resLocked && avg > 19.5 && _resScale > 0.6) {   // unter ~50 Bilder/s: eine Stufe senken
+      } else if (!_resLocked && avg > 19.5 && _resScale > 0.76) {   // unter ~50 Bilder/s: eine Stufe senken
         _resProbe = avg; _resScale *= 0.85; _applyRes();
       }
     }
@@ -2986,7 +2985,9 @@
 
     // ── Licht-Pool: feste Anzahl echter Punktlichter, die jeweils die nächsten Raumlichter
     //    der sichtbaren Räume übernehmen; Wechsel werden weich überblendet (kein Aufpoppen).
-    const LIGHT_POOL = 22, LIGHT_NEAR = 18;
+    //    12 Lichter: nahezu wie 22 (ferne Raumenden etwas dunkler), aber bei voller Retina-Auflösung flüssig (jedes Licht kostet
+    //    pro Bildpunkt); 2 Plätze bleiben frei für Lichter, die gerade ausblenden.
+    const LIGHT_POOL = 12, LIGHT_NEAR = 10;
     const _pool = [], _lpCand = [], _lpActive = [];
     let _lpFirst = true;
     function buildLightPool(T) {
