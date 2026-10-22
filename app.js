@@ -4,26 +4,44 @@
 
   function zoomIntoGallery(targetId) {
     const title  = heroSection.querySelector('.hero-title');
-    const scroll = heroSection.querySelector('.hero-scroll');
-    const rays   = heroSection.querySelector('.hero-rays');
-    const lineV  = heroSection.querySelector('.hero-line-v');
+    const label  = heroSection.querySelector('.hero-art-label');
     const floor  = heroSection.querySelector('.hero-floor');
 
     // 0. Schrift sofort ausblenden
-    [title, scroll, rays, lineV, floor].forEach(el => {
+    [title, label, floor].forEach(el => {
       if (!el) return;
       el.style.animation = 'none';
       el.style.opacity   = window.getComputedStyle(el).opacity;
     });
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      [title, scroll, rays, lineV, floor].forEach(el => {
+      [title, label, floor].forEach(el => {
         if (!el) return;
         el.style.transition = 'opacity 0.5s ease';
         el.style.opacity    = '0';
       });
     }));
 
-    // 1. Zoom-Overlay anzeigen und Zoom starten
+    // 1. Overlay-Bild exakt auf das gezeigte Werk legen – von dort aus wird hineingezoomt
+    const oImg   = zoomOverlay.querySelector('img');
+    const artImg = document.getElementById('hero-art-img');
+    let zoomTo = '';
+    if (oImg && artImg) {
+      const r = artImg.getBoundingClientRect();
+      oImg.src = artImg.currentSrc || artImg.src;
+      Object.assign(oImg.style, {
+        position: 'absolute', left: r.left + 'px', top: r.top + 'px',
+        width: r.width + 'px', height: r.height + 'px',
+        objectFit: 'cover', transformOrigin: '50% 50%', filter: 'none', transform: 'none',
+        transition: 'transform 1.3s cubic-bezier(0.55, 0, 0.35, 1)'
+      });
+      zoomOverlay.style.background = '#0b0a09';
+      const sc = Math.max(innerWidth / r.width, innerHeight / r.height) * 2.2;
+      const tx = innerWidth / 2 - (r.left + r.width / 2);
+      const ty = innerHeight / 2 - (r.top + r.height / 2);
+      zoomTo = 'translate(' + tx + 'px,' + ty + 'px) scale(' + sc + ')';
+    }
+
+    // Zoom-Overlay anzeigen und Zoom starten
     zoomOverlay.style.opacity = '1';
     zoomOverlay.style.transition = 'opacity 0s';
     zoomOverlay.classList.remove('fade-out');
@@ -31,6 +49,7 @@
 
     requestAnimationFrame(() => requestAnimationFrame(() => {
       zoomOverlay.classList.add('zooming');
+      if (oImg && zoomTo) oImg.style.transform = zoomTo;
     }));
 
     // 2. Sofort zur neuen Seite scrollen (Overlay verdeckt alles)
@@ -45,8 +64,10 @@
         zoomOverlay.classList.remove('active', 'zooming', 'fade-out');
         zoomOverlay.style.transition = 'opacity 0s';
         zoomOverlay.style.opacity = '1';
+        zoomOverlay.style.background = '';
+        if (oImg) oImg.removeAttribute('style');
 
-        [title, scroll, rays, lineV, floor].forEach(el => {
+        [title, label, floor].forEach(el => {
           if (!el) return;
           el.style.animation = el.style.transition = el.style.opacity = '';
         });
@@ -217,7 +238,7 @@
     de: {
       'nav-galerie':'Galerie','nav-werke':'Werke','nav-bio':'Biographie','nav-rundgang':'Rundgang',
       'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste','nav-acc-label':'Anmelden',
-      'hero-tagline':'Kunst  |  Leidenschaft  |  Zeitlos','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten','hero-origin':'Kusel · Atelier · 1935','hero-scroll':'Entdecken',
+      'hero-label':'Galerie','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten',
       'intro-label':'Willkommen',
       'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
       'cat-acryl':'Malerei','cat-oel':'Collage \u0026 Zeichnungen','cat-aquarell':'Grafik',
@@ -244,7 +265,7 @@
     en: {
       'nav-galerie':'Gallery','nav-werke':'Works','nav-bio':'Biography','nav-rundgang':'Tour',
       'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist','nav-acc-label':'Sign in',
-      'hero-tagline':'Art  |  Passion  |  Timeless','hero-enter':'Enter Gallery','hero-enter-ghost':'→ Enter Tour','hero-origin':'Kusel · Studio · 1934','hero-scroll':'Discover',
+      'hero-label':'Gallery','hero-enter':'Enter Gallery','hero-enter-ghost':'→ Enter Tour',
       'intro-label':'Welcome',
       'gal-label':'Current Works','gal-heading':'Selected Collection',
       'cat-acryl':'Painting','cat-oel':'Collage \u0026 Drawings','cat-aquarell':'Graphics',
@@ -302,6 +323,7 @@
       var priceEl = card.querySelector('.coll-card-price');
       if (priceEl && !d.price) priceEl.textContent = _artPrice(d, lang === 'en');
     });
+    if (window._heroArtRelabel) window._heroArtRelabel();
     // re-render open artwork if any
     var adEl = document.getElementById('artwork-detail');
     if (_adCurrentTitle && adEl && adEl.classList.contains('active')) openArtwork(_adCurrentTitle, true);
@@ -2502,25 +2524,6 @@
     });
   })();
 
-  /* ══ HERO PARALLAX ══ */
-  (function() {
-    const img = document.querySelector('.hero-scene img');
-    const hero = document.getElementById('hero');
-    if (!img || !hero) return;
-    let heroH = hero.offsetHeight;
-    let rafId = null;
-    window.addEventListener('resize', () => { heroH = hero.offsetHeight; }, { passive: true });
-    window.addEventListener('scroll', () => {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        if (window.scrollY < heroH) {
-          img.style.transform = 'translateY(' + (window.scrollY * 0.38) + 'px)';
-        }
-        rafId = null;
-      });
-    }, { passive: true });
-  })();
-
   /* ══ SCENE: intro → galerie → bio ══ */
   (function() {
     var scene      = document.getElementById('intro-scene');
@@ -2919,37 +2922,65 @@
     });
   })();
 
-  // ── Hero Goldpartikel ────────────────────────────────────────
+  /* ══ HERO-WERK: Collagen im Licht, wechseln automatisch ══ */
   (function() {
-    const cv = document.getElementById('hero-particles');
-    if (!cv) return;
-    const hero = document.getElementById('hero');
-    const ctx = cv.getContext('2d');
-    let W, H, particles = [];
-    function resize() { W = cv.width = hero.offsetWidth; H = cv.height = hero.offsetHeight; }
-    resize();
-    window.addEventListener('resize', resize);
-    function mkP() {
-      return { x: Math.random()*W, y: H + Math.random()*40,
-        r: Math.random()*1.2+0.2, vy: Math.random()*0.35+0.1,
-        vx: (Math.random()-0.5)*0.25, o: Math.random()*0.4+0.08 };
+    const hero  = document.getElementById('hero');
+    const frame = document.getElementById('hero-art-frame');
+    const img   = document.getElementById('hero-art-img');
+    const label = document.getElementById('hero-art-label');
+    if (!hero || !frame || !img || !label) return;
+    const WORKS = [
+      { title: 'Meer',                       src: 'assets/hero/C-F-2005-6.jpg' },
+      { title: 'Langgezogene Figurengruppe', src: 'assets/hero/C-F-2002-3.jpg' },
+      { title: 'Goldene Figur',              src: 'assets/hero/C-F-2004-2.jpg' },
+      { title: 'Zwei Frauen',                src: 'assets/hero/C-F-2005-5.jpg' },
+      { title: 'Bunte Figur',                src: 'assets/hero/C-F-2004-1.jpg' },
+    ];
+    const INTERVAL = 8000, FADE = 900;
+    let idx = 0, timer = null, hovering = false, inView = true;
+
+    function setLabel(w) {
+      const d = ARTWORKS[w.title] || {};
+      label.querySelector('.hero-art-title').textContent = w.title;
+      label.querySelector('.hero-art-year').textContent = d.year || '';
+      img.alt = 'Horst Schwab – ' + w.title + (d.year ? ', ' + d.year : '');
+      frame.setAttribute('aria-label', (_lang === 'en' ? 'View work: ' : 'Werk ansehen: ') + w.title);
     }
-    for (let i=0; i<40; i++) { const p=mkP(); p.y=Math.random()*H; particles.push(p); }
-    function tick() {
-      ctx.clearRect(0,0,W,H);
-      particles.forEach(p => {
-        p.y -= p.vy; p.x += p.vx;
-        p.o += (Math.random()-0.5)*0.012;
-        p.o = Math.max(0.04, Math.min(0.55, p.o));
-        if (p.y < -8) Object.assign(p, mkP());
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(201,168,76,${p.o.toFixed(2)})`;
-        ctx.fill();
-      });
-      requestAnimationFrame(tick);
+
+    function next() {
+      timer = null;
+      if (hovering || !inView || document.hidden) { schedule(); return; }
+      const n = (idx + 1) % WORKS.length;
+      const pre = new Image();
+      pre.onload = () => {
+        frame.classList.add('is-changing');
+        label.classList.add('is-changing');
+        setTimeout(() => {
+          idx = n;
+          img.src = WORKS[n].src;
+          setLabel(WORKS[n]);
+          setTimeout(() => {
+            frame.classList.remove('is-changing');
+            label.classList.remove('is-changing');
+          }, 60);
+          schedule();
+        }, FADE);
+      };
+      pre.onerror = schedule;
+      pre.src = WORKS[n].src;
     }
-    tick();
+    function schedule() { if (!timer) timer = setTimeout(next, INTERVAL); }
+
+    frame.addEventListener('click', () => openArtwork(WORKS[idx].title));
+    frame.addEventListener('mouseenter', () => { hovering = true; });
+    frame.addEventListener('mouseleave', () => { hovering = false; });
+    new IntersectionObserver(es => { inView = es[0].isIntersecting; }, { threshold: 0.3 }).observe(hero);
+
+    setLabel(WORKS[0]);
+    // Sprachwechsel: Screenreader-Beschriftung des Werks sofort mitziehen
+    window._heroArtRelabel = function() { setLabel(WORKS[idx]); };
+    // Wechsel erst starten, wenn der Startbildschirm sichtbar ist (nach dem Ladebildschirm)
+    window._heroArtStart = function() { setTimeout(schedule, 2500); };
   })();
 
   // ── Artwork-Platzhalter (geteilt zwischen Karten + Einzelansicht) ──
@@ -3107,9 +3138,15 @@
   /* ── PRELOADER JS ── */
   (function(){
     var pl = document.getElementById('preloader');
-    if (!pl) return;
+    var heroReady = function(){
+      var h = document.getElementById('hero');
+      if (h) h.classList.add('hero-ready');
+      if (window._heroArtStart) window._heroArtStart();
+    };
+    if (!pl) { heroReady(); return; }
     var hide = function(){
       pl.classList.add('hidden');
+      heroReady();
       setTimeout(function(){ pl.remove(); }, 900);
     };
     if (document.readyState === 'complete') {

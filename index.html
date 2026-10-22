@@ -65,7 +65,7 @@
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="theme-color" content="#080706">
-<link rel="stylesheet" href="styles.css?v=20261011a">
+<link rel="stylesheet" href="styles.css?v=20261022a">
 </head>
 <body>
 <svg id="nav-sweep" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
@@ -99,7 +99,7 @@
 
 <!-- Raumübergang-Overlay -->
 <div id="room-overlay"></div>
-<div id="zoom-hero-overlay"><img src="assets/hero-bg.jpg" alt=""></div>
+<div id="zoom-hero-overlay"><img src="assets/hero/C-F-2005-6.jpg" alt=""></div>
 
 <!-- ══════════════════════════════════════
      NAVIGATION – zentriert
@@ -166,34 +166,33 @@
 ══════════════════════════════════════ -->
 <section id="hero">
 
-  <!-- ── Galeriekulisse – Bild im Hintergrund ── -->
-  <div class="hero-scene">
-    <img src="assets/hero-bg.jpg" alt="">
-  </div>
+  <!-- ── Dunkle Galeriewand mit Lichtkegel der Bilderleuchte ── -->
+  <div class="hero-wall"></div>
 
-  <canvas id="hero-particles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
-  <svg id="hero-frame" viewBox="0 0 1000 600" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;">
-    <rect class="hero-frame-rect" x="18" y="17" width="964" height="549" fill="none"/>
-  </svg>
-  <div class="hero-rays"></div>
-  <div class="hero-line-v"></div>
-  <div class="hero-spot hero-spot-2"></div>
-
-  <div class="hero-title">
-    <p class="hero-label">Galerie</p>
-    <div class="hero-name-wrap">
+  <div class="hero-stage">
+    <div class="hero-title">
+      <p class="hero-label" id="hero-label">Galerie</p>
+      <h1 class="hero-name">Horst <br>Schwab</h1>
       <span class="hero-name-line"></span>
-      <h1 class="hero-name">Horst Schwab</h1>
-      <span class="hero-name-line"></span>
+      <p class="hero-dates">1935 &ndash; 2017</p>
+      <div class="hero-ctas">
+        <a href="#intro-scene" class="hero-enter" id="hero-enter">Galerie betreten</a>
+        <button class="hero-enter-ghost" id="hero-enter-ghost" onclick="document.getElementById('nav-rundgang').click()">&#8594;&nbsp; Rundgang starten</button>
+      </div>
     </div>
-    <p class="hero-tagline" id="hero-tagline">Kunst &nbsp;|&nbsp; Leidenschaft &nbsp;|&nbsp; Zeitlos</p>
-    <p class="hero-origin" id="hero-origin">Pfalz &nbsp;·&nbsp; Atelier &nbsp;·&nbsp; 1935</p>
-    <div class="hero-ctas">
-      <a href="#intro-scene" class="hero-enter" id="hero-enter">Galerie betreten</a>
-      <button class="hero-enter-ghost" id="hero-enter-ghost" onclick="document.getElementById('nav-rundgang').click()">&#8594;&nbsp; Rundgang starten</button>
-    </div>
-  </div>
 
+    <!-- Werk im Licht: wechselt automatisch (siehe HERO-WERK in app.js) -->
+    <figure class="hero-art" id="hero-art">
+      <button class="hero-art-frame" id="hero-art-frame" type="button" aria-label="Werk ansehen: Meer">
+        <span class="hero-lamp" aria-hidden="true"><span class="hero-lamp-arm"></span><span class="hero-lamp-tube"></span></span>
+        <span class="hero-art-glow" aria-hidden="true"></span>
+        <img id="hero-art-img" src="assets/hero/C-F-2005-6.jpg" alt="Horst Schwab – Meer, 2005" fetchpriority="high">
+      </button>
+      <figcaption class="hero-art-label" id="hero-art-label">
+        <span class="hero-art-title">Meer</span><span class="hero-art-year">2005</span>
+      </figcaption>
+    </figure>
+  </div>
 
   <div class="hero-floor"></div>
 </section>
@@ -1366,6 +1365,6 @@
 </div>
 
 
-<script src="app.js?v=20261011a"></script>
+<script src="app.js?v=20261022a"></script>
 </body>
 </html>
