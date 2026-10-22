@@ -1011,6 +1011,7 @@
     });
 
     let renderer, scene, cam, rafId, fadeDiv;
+    let _vrSession = 0;   // wird beim Schließen erhöht – verspätete Timer erkennen daran, dass sie veraltet sind
     let seq, seqIdx, phase, t0;
     let fromPos=null, fromQuat=null;
     let vrPaused = false;
@@ -1216,11 +1217,26 @@
           navKeys.clear();
           navMoveTarget = null;
           navHint.style.opacity = '0';
-          // Weich zurück zur aktuellen Tour-Station gleiten, Zoom dabei auf 1× zurücksetzen
-          if (seq) {
-            fromPos.copy(cam.position); fromQuat.copy(cam.quaternion);
-            resumeFov = cam.fov; navFov = FOV_BASE;
-            phase = 'resume'; t0 = performance.now();
+          // Zurück zur aktuellen Tour-Station, Zoom dabei auf 1×. Im selben (oder direkt
+          // angrenzenden) Raum weich gleiten; liegt die Station in einem anderen Raum,
+          // überblenden – sonst ginge die gerade Linie durch Wände.
+          const st = seq && seq[seqIdx];
+          if (st) {
+            const za = _zoneOf(cam.position), zb = _zoneOf(st.pos);
+            const glide = za === zb || ((za === 12 || zb === 12) && za !== 3 && zb !== 3);
+            navFov = FOV_BASE;
+            if (glide && !_reducedMotion()) {
+              fromPos.copy(cam.position); fromQuat.copy(cam.quaternion);
+              resumeFov = cam.fov;
+              phase = 'resume'; t0 = performance.now();
+            } else {
+              fadeJump(() => {
+                cam.position.copy(st.pos); cam.quaternion.copy(st.quat);
+                fromPos.copy(st.pos); fromQuat.copy(st.quat);
+                cam.fov = FOV_BASE; cam.updateProjectionMatrix(); resumeFov = null;
+                phase = 'hold'; t0 = performance.now();
+              });
+            }
           }
         }
       });
@@ -1287,7 +1303,7 @@
         mouse.x =  (clientX / innerWidth)  * 2 - 1;
         mouse.y = -(clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
-        const hits = raycaster.intersectObjects(_paintMeshes, false);
+        const hits = raycaster.intersectObjects(_paintMeshes, false).filter(h => _hitAllowed(h.object));
         for (const hit of hits) {
           const title = hit.object.userData.artworkTitle;
           if (title) { openArtwork(title, false, true); return true; }
@@ -1364,7 +1380,7 @@
         mouse.x =  (e.clientX / innerWidth)  * 2 - 1;
         mouse.y = -(e.clientY / innerHeight) * 2 + 1;
         raycaster.setFromCamera(mouse, cam);
-        const hits = raycaster.intersectObjects(_paintMeshes, false);
+        const hits = raycaster.intersectObjects(_paintMeshes, false).filter(h => _hitAllowed(h.object));
         const hitObj = hits[0];
         if (hitObj) {
           cv.style.cursor = 'pointer';
@@ -2455,7 +2471,7 @@
     let _pedMats = null;
     function pedestalMats(T) {
       if (!_pedMats) _pedMats = {
-        rod:   new T.MeshStandardMaterial({color:0x2a2a26, roughness:0.55, metalness:0.35}),
+        rod:   new T.MeshBasicMaterial({color: new T.Color(0x2a2a26).convertSRGBToLinear()}),   // Anthrazit, unabhängig vom Licht
         // obere Kanten: feiner Goldschimmer durch das Spotlight
         rodTop:new T.MeshStandardMaterial({color:0x8B6E2E, roughness:0.32, metalness:0.55, emissive:0x3a2a0c}),
         plate: new T.MeshStandardMaterial({color:0x34322d, roughness:0.92, metalness:0.05}),
@@ -2532,13 +2548,21 @@
       });
       // Unsichtbare Trefferfläche für Hover/Klick (wie bei den Bildern)
       const hit = new T.Mesh(new T.BoxGeometry(PED.w + 0.06, 0.68, PED.w + 0.06), new T.MeshBasicMaterial({visible:false}));
-      hit.position.y = 0.33; hit.userData.artworkTitle = title; g.add(hit);
+      hit.position.y = 0.33; hit.userData.artworkTitle = title; hit.userData.room3 = true; g.add(hit);
       _paintMeshes.push(hit);
       // Blickrichtung des Podests (zur Raummitte) in Weltkoordinaten
       const f = r3w(-side, 0), o = r3w(0, 0);
       _sculpts.push({ g, planes, fx: f.x - o.x, fz: f.z - o.z });
     }
 
+    // Treffer zulassen? Plastiken nur, wenn man im Gang oder im Plastik-Raum steht – sonst
+    // wären sie durch die Wand von Raum 2 hindurch anklickbar.
+    function _hitAllowed(o) {
+      if (!cam) return false;
+      if (o.userData.room3) return cam.position.x < R3.ox + 0.05;
+      // Bilder aus Raum 1/2 nicht aus dem Plastik-Raum heraus (durch dessen Wände) anklickbar
+      return cam.position.x > R3.ox + R3.entry;
+    }
     function updateSculptures() {
       if (!cam) return;
       for (const s of _sculpts) {
@@ -2546,7 +2570,8 @@
         const dl = Math.hypot(dx, dz) || 1;
         s.g.rotation.y = Math.atan2(dx, dz);                          // dem Betrachter zuwenden
         const side = (s.fz * dx - s.fx * dz) / dl;                    // −1 … 1: von welcher Seite man schaut
-        const k = Math.max(0, Math.min(1, (side + 0.25) / 0.5));
+        // frontal und von links: Ansicht 1; erst deutlich von rechts (> ca. 15–35°): Ansicht 2
+        const k = Math.max(0, Math.min(1, (side - 0.25) / 0.32));
         const wB = k * k * (3 - 2 * k);                               // weiche Überblendung
         const [a, b] = s.planes;
         a.material.opacity = 1 - wB; a.visible = !!a.userData.ready && a.material.opacity > 0.01;
@@ -2564,12 +2589,14 @@
         // Durchgang in Raum 2: Goldrahmen + Schild „Plastik" darüber (schon aus Raum 2 sichtbar)
         addArchFrame(T, 0, R3.aw);
         addWallSign(T, 1.10, 0.52, 0, 3.72, 0.03, 0, false, 'Plastik', '');
+        // Rückseite des Sturzes (vom Gang aus gesehen) – verdeckt auch die Schild-Rückseite
+        addPlane(T, R3.aw + 0.02, RH - 3.2, M.trans, [0, 3.2 + (RH - 3.2)/2, -0.012], [0, Math.PI, 0]);
         buildConnector(T, -R3.conn/2, R3.aw, R3.conn);
         // Eingangswand des Plastik-Raums mit Torbogen – gleicher Aufbau wie die Bögen zwischen Raum 1 und 2
         buildArchWall(T, R3.entry, R3.aw);
         addArchFrame(T, R3.entry, R3.aw);
         // Raum selbst: derselbe Aufbau wie Raum 1 und 2
-        buildRoomShell(T, { depth:R3.depth, cz:R3.cz, fillRows:R3.rows.concat(R3.end + 1), lightRows:R3.rows, extraLights:[R3.entry, R3.end] });
+        buildRoomShell(T, { depth:R3.depth, cz:R3.cz, fillRows:[R3.rows[0], R3.end + 1], lightRows:R3.rows, extraLights:[R3.entry, R3.end] });
         addPlane(T, RW, RH, M.trans, [0, RH/2, R3.end], [0, 0, 0]);                              // Rückwand wie Raum 2
         addWallSign(T, 3.20, 2.00, 0, 2.10, R3.end + 0.10, 0, true, 'Horst Schwab', 'P  L  A  S  T  I  K');
         [[-2.5, R3.entry - 0.4], [2.5, R3.entry - 0.4], [-2.5, R3.end + 0.4], [2.5, R3.end + 0.4]]
@@ -2691,8 +2718,10 @@
       // Stationen mit cut:true bilden den Raumwechsel; bei „reduzierter Bewegung"
       // wird dieser Abschnitt per Überblendung statt Kamerafahrt übersprungen.
       if (SCULPTURE_TITLES.length) {
+        // add() nutzt Object3D.lookAt (richtet +z aufs Ziel); die Kamera blickt aber entlang −z.
+        // Daher das Ziel am Standpunkt spiegeln, damit die Kamera wirklich dorthin schaut.
         const addW = (p, l, ly, trans, hold, cut) => {
-          add(p.x, CAM_Y, p.z, l.x, ly, l.z, trans, hold);
+          add(p.x, CAM_Y, p.z, 2*p.x - l.x, 2*CAM_Y - ly, 2*p.z - l.z, trans, hold);
           if (cut) seq[seq.length - 1].cut = true;
         };
         const LY_L = CAM_Y + 0.30;                                   // fast waagerechter Blick
@@ -2741,7 +2770,7 @@
         { x0:-xMax, x1:xMax, z0:-18 + WALK_GAP, z1:0.05 - WALK_GAP },   // Raum 1
         { x0:-1.5,  x1:1.5,  z0:-22 - WALK_GAP, z1:-18 + WALK_GAP },    // Durchgang Raum 1 ↔ 2
         { x0:-xMax, x1:xMax, z0:-41 + WALK_GAP, z1:-22 - WALK_GAP },    // Raum 2
-        { x0:Math.max(r3a.x, r3b.x) - 0.2, x1:-xMax + 0.5, z0:R3.oz - cHalf, z1:R3.oz + cHalf },  // Durchgang Raum 2 ↔ 3
+        { x0:Math.max(r3a.x, r3b.x) - 0.2, x1:-xMax + 0.15, z0:R3.oz - cHalf, z1:R3.oz + cHalf },  // Durchgang Raum 2 ↔ 3 (frei von der Säule)
         { x0:Math.min(r3a.x, r3b.x), x1:Math.max(r3a.x, r3b.x), z0:Math.min(r3a.z, r3b.z), z1:Math.max(r3a.z, r3b.z) }, // Raum 3
       ];
     })();
@@ -2889,42 +2918,52 @@
     function _reducedMotion(){
       return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     }
-    // Raumwechsel bei reduzierter Bewegung: kurz abblenden, an die letzte Station des
-    // Abschnitts springen, wieder aufblenden – keine Kamerafahrt.
-    function cutTo(i){
-      let j=i; while(j+1<seq.length && seq[j+1].cut) j++;
-      const fd=ensureFadeDiv();
+    // Kurz abblenden, unter der Blende umsetzen (apply), wieder aufblenden
+    function fadeJump(apply){
+      const sess=_vrSession, fd=ensureFadeDiv();
       fd.style.transition='opacity 0.4s ease'; fd.style.opacity='1';
       phase='fading';
       setTimeout(()=>{
-        if(!cam||!seq) return;
+        if(sess!==_vrSession||!cam||!seq) return;
+        apply();
+        fd.style.opacity='0';
+      },450);
+    }
+    // Raumwechsel bei reduzierter Bewegung: an die letzte Station des Abschnitts
+    // springen (mit Blende) – keine Kamerafahrt.
+    function cutTo(i){
+      let j=i; while(j+1<seq.length && seq[j+1].cut) j++;
+      fadeJump(()=>{
         seqIdx=j;
         if(!freeNav){
           cam.position.copy(seq[j].pos); cam.quaternion.copy(seq[j].quat);
           fromPos.copy(seq[j].pos); fromQuat.copy(seq[j].quat);
         }
         phase='hold'; t0=performance.now();
-        fd.style.opacity='0';
-      },450);
+      });
     }
+    // Grober Raum einer Position (1, Durchgang 12, 2, 3 inkl. Gang) – für die Rückkehr zur Tour
+    function _zoneOf(p){ return p.x < R3.ox ? 3 : p.z > -18 ? 1 : p.z < -22 ? 2 : 12; }
 
     function doLoop(now){
+      const sess=_vrSession;
       ensureFadeDiv().style.transition='opacity 1.2s ease';
       fadeDiv.style.opacity='1';
       setTimeout(()=>{
-        if(!cam||!seq) return;   // Rundgang inzwischen geschlossen
+        if(sess!==_vrSession||!cam||!seq) return;   // Rundgang inzwischen geschlossen
         if(freeNav){ seqIdx=0; phase='hold'; t0=performance.now(); fadeDiv.style.opacity='0'; return; }  // nicht aus dem freien Erkunden reißen
         cam.position.copy(seq[0].pos); cam.quaternion.copy(seq[0].quat);
         fromPos.copy(seq[0].pos); fromQuat.copy(seq[0].quat);
         if (resumeFov !== null || cam.fov !== FOV_BASE) { cam.fov = FOV_BASE; cam.updateProjectionMatrix(); resumeFov = null; }
         seqIdx=0; phase='hold'; t0=performance.now();
-        setTimeout(()=>{fadeDiv.style.opacity='0';},200);
+        setTimeout(()=>{ if(sess===_vrSession && fadeDiv) fadeDiv.style.opacity='0'; },200);
       },1300);
     }
 
     function teardown(){
       if(rafId) cancelAnimationFrame(rafId);
       if(renderer){renderer.dispose();renderer=null;}
+      _vrSession++;
       if(fadeDiv) fadeDiv.remove();   // keine stehengebliebene Blende beim nächsten Öffnen
       scene=null;cam=null;seq=null;fadeDiv=null;
       _paintMeshes.length=0; _sculpts.length=0; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
