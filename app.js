@@ -965,7 +965,9 @@
 
     // Info-Panel: ? Button, close button, backdrop click
     var infoPanel = document.getElementById('vr-info-panel');
+    let pausedAt = 0;
     document.getElementById('vr-info-btn').addEventListener('click', function() {
+      if (!vrPaused) pausedAt = performance.now();
       vrPaused = true;
       infoPanel.classList.add('visible');
     });
@@ -982,16 +984,21 @@
     window.closeVrInfo = function() {
       var p = document.getElementById('vr-info-panel');
       if(p) p.classList.remove('visible');
+      // laufende Rückkehr-Animation dort fortsetzen, wo sie pausiert wurde (kein Sprung)
+      if (phase === 'resume' && pausedAt) t0 += performance.now() - pausedAt;
+      pausedAt = 0;
       vrPaused = false;
     };
     function skipStep() {
-      if (!seq) return;
+      if (!seq || phase === 'fading' || !seq[seqIdx]) return;
+      if (resumeFov !== null) { cam.fov = FOV_BASE; cam.updateProjectionMatrix(); resumeFov = null; }
       const s = seq[seqIdx];
       cam.position.copy(s.pos);
       cam.quaternion.copy(s.quat);
       fromPos.copy(s.pos); fromQuat.copy(s.quat);
       seqIdx++;
       if (seqIdx >= seq.length) { doLoop(performance.now()); return; }
+      if (seq[seqIdx].cut && _reducedMotion()) { cutTo(seqIdx); return; }
       phase = 'trans'; t0 = performance.now();
     }
 
@@ -1022,7 +1029,8 @@
       try {
         const sp = cam.position.clone(), sq = cam.quaternion.clone(), sf = cam.fov;
         cam.fov = 100; cam.updateProjectionMatrix();   // weites FOV erfasst mehr pro Frame
-        const pts  = [[0,CAM_Y,-3],[0,CAM_Y,-15],[0,CAM_Y,-30]];
+        const p3a = r3w(0, R3.entry - 2), p3b = r3w(0, R3.end + 3);
+        const pts  = [[0,CAM_Y,-3],[0,CAM_Y,-15],[0,CAM_Y,-30],[p3a.x,CAM_Y,p3a.z],[p3b.x,CAM_Y,p3b.z]];
         const yaws = [0, Math.PI/2, Math.PI, -Math.PI/2];
         for (const p of pts) {
           cam.position.set(p[0], p[1], p[2]);
@@ -1049,8 +1057,11 @@
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
     let navMovedDist=0;       // Gesamt-Zeigerbewegung seit Drücken (Klick vs. Ziehen)
     let navMoveTarget=null;   // Klick-zum-Gehen Ziel (Street-View-Stil)
-    let navFov=72;            // aktuelles Sichtfeld (Trackpad-/Mausrad-/Pinch-Zoom)
-    let navPinch=false, navPinchDist=0, navPinchFov=72;  // Zwei-Finger-Pinch (Mobile)
+    // Zoom über das Sichtfeld: 72° = normal, 40° ≈ 2-fach (Grenze); gleitet weich zum Ziel
+    const FOV_BASE=72, FOV_MIN=40;
+    let navFov=FOV_BASE;      // Ziel-Sichtfeld (Trackpad-/Mausrad-/Pinch-Zoom)
+    let navPinch=false, navPinchDist=0, navPinchFov=FOV_BASE;  // Zwei-Finger-Pinch (Mobile)
+    let resumeFov=null;       // „Tour fortsetzen": Sichtfeld beim Start der Rückkehr
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -1060,6 +1071,26 @@
     const PW=1.75, PH=2.15, PY=2.05;   // painting size & height
     const CAM_Y=1.70;
     const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+
+    // ── Raum 3: Plastiken „ums Eck" (links am Ende von Raum 2) ───────
+    // Inhalt kommt aus derselben Quelle wie die Kollektion „Plastik" (ARTWORKS).
+    const SCULPTURE_TITLES = Object.keys(ARTWORKS).filter(t => ARTWORKS[t].cat === 'Plastik' && ARTWORKS[t].views && ARTWORKS[t].views.length);
+    // Gebaut wird in einer um 90° gedrehten Gruppe mit denselben lokalen Raumkoordinaten
+    // wie Raum 1/2: lokal z=0 liegt in der linken Wand von Raum 2 (x=−5), lokal −z zeigt nach −x.
+    const R3 = (() => {
+      const r = { ox: -RW/2, oz: -39.6, aw: 2.4, conn: 4 };
+      const rowCount = Math.max(1, Math.ceil(SCULPTURE_TITLES.length / 2));
+      r.entry = -r.conn;                                  // Eingangswand des Raums (lokal)
+      r.rows  = Array.from({length: rowCount}, (_, i) => r.entry - 3 - 4*i);   // Rhythmus wie Raum 1: 3 m, dann alle 4 m
+      r.depth = 4*rowCount + 3;
+      r.cz    = r.entry - r.depth/2;
+      r.end   = r.entry - r.depth;                        // Rückwand (lokal)
+      return r;
+    })();
+    // lokale Raum-3-Koordinaten → Welt
+    function r3w(xl, zl) { return { x: R3.ox + zl, z: R3.oz - xl }; }
+    // Podest: offener Metallrahmen, Breite : Höhe = 1 : 3,5, Oberkante etwa Hüft-/Brusthöhe
+    const PED = { w: 0.40, h: 1.40, x: RW/2 - 1.2 };
 
     // Painting definitions: {x, y, z, rotY}
     // rotY: 0=faces+z, π=faces-z, -π/2=faces+x, π/2=faces-x
@@ -1136,9 +1167,6 @@
       fromPos  = new T.Vector3();
       fromQuat = new T.Quaternion();
       buildRooms(T);
-      buildWainscoting(T);
-      buildMoldings(T, 18, -9);
-      buildMoldings(T, 19, -31.5);
       buildPaintings(T);
       buildLights(T);
       buildPictureLights(T);
@@ -1146,8 +1174,7 @@
       buildPlants(T);
       buildColumns(T);
       buildWallSigns(T);
-      buildAOStrips(T);
-      buildArchFrames(T);
+      buildSculptureRoom(T);
       // buildFloorReflection(T);  // entfernt: erzeugte den weißen Lichtstreifen in der Bodenmitte
       buildSeq(T);
       window.addEventListener('resize', onResize);
@@ -1189,6 +1216,12 @@
           navKeys.clear();
           navMoveTarget = null;
           navHint.style.opacity = '0';
+          // Weich zurück zur aktuellen Tour-Station gleiten, Zoom dabei auf 1× zurücksetzen
+          if (seq) {
+            fromPos.copy(cam.position); fromQuat.copy(cam.quaternion);
+            resumeFov = cam.fov; navFov = FOV_BASE;
+            phase = 'resume'; t0 = performance.now();
+          }
         }
       });
 
@@ -1217,6 +1250,7 @@
       // ── Touch-Drag (Umschauen) + Zwei-Finger-Pinch (Zoom) ───────────
       cv.addEventListener('touchstart', e => {
         if (e.touches.length === 2) {            // Pinch beginnt
+          if (!freeNav) return;                  // Zoom nur beim freien Erkunden
           navPinch=true; navDrag=false;
           navPinchDist=_touchDist(e); navPinchFov=navFov;
           return;
@@ -1226,12 +1260,12 @@
         navDrag=true; navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
       }, {passive:true});
       cv.addEventListener('touchmove', e => {
+        if (e.touches.length === 2) e.preventDefault();   // nie die ganze Seite zoomen
         if (navPinch && e.touches.length === 2) {   // Pinch-Zoom (verändert FOV)
           e.preventDefault();
           const d=_touchDist(e);
           if (d>0 && navPinchDist>0) {
-            navFov = Math.max(26, Math.min(75, navPinchFov * (navPinchDist / d)));
-            cam.fov = navFov; cam.updateProjectionMatrix();
+            navFov = Math.max(FOV_MIN, Math.min(FOV_BASE, navPinchFov * (navPinchDist / d)));
           }
           return;
         }
@@ -1286,7 +1320,7 @@
         const dx = tgt.x - cam.position.x, dz = tgt.z - cam.position.z;
         const dist = Math.hypot(dx, dz);
         if (dist > 10) { tgt.x = cam.position.x + dx/dist*10; tgt.z = cam.position.z + dz/dist*10; }
-        clampToRoom(tgt);
+        clampToRoom(tgt, cam.position);
         navMoveTarget = tgt;
       }
 
@@ -1320,9 +1354,10 @@
       // ── Zoom per Trackpad-Pinch / Mausrad (verändert das Sichtfeld) ──
       cv.addEventListener('wheel', e => {
         e.preventDefault();
-        navFov = Math.max(26, Math.min(75, navFov + e.deltaY * 0.04));
-        cam.fov = navFov;
-        cam.updateProjectionMatrix();
+        if (!freeNav) return;                    // Zoom nur beim freien Erkunden
+        const raw = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;   // Firefox meldet Zeilen statt Pixel
+        const dy = Math.max(-60, Math.min(60, raw));                 // Ausreißer (Mausrad-Rasten) dämpfen
+        navFov = Math.max(FOV_MIN, Math.min(FOV_BASE, navFov + dy * 0.025));
       }, {passive:false});
 
       cv.addEventListener('mousemove', e => {
@@ -1334,7 +1369,7 @@
         if (hitObj) {
           cv.style.cursor = 'pointer';
           const d = ARTWORKS[hitObj.object.userData.artworkTitle];
-          tooltip.textContent = d ? hitObj.object.userData.artworkTitle + '  ·  ' + d.year : hitObj.object.userData.artworkTitle;
+          tooltip.textContent = d && d.year ? hitObj.object.userData.artworkTitle + '  ·  ' + d.year : hitObj.object.userData.artworkTitle;
           tooltip.style.display = 'block';
           tooltip.style.left = (e.clientX + 18) + 'px';
           tooltip.style.top  = (e.clientY - 14) + 'px';
@@ -1348,28 +1383,142 @@
       function frame(ts){
         rafId=requestAnimationFrame(frame);
         tick(T,ts);
+        if (_sculpts.length) updateSculptures();
         renderer.render(scene,cam);
       }
       requestAnimationFrame(frame);
     }
 
     // ── Rooms ─────────────────────────────────────────────────────
-    function buildRooms(T) {
-      const wW  = new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.FrontSide});
-      const wF  = new T.MeshBasicMaterial({map: makeCeilingTex(T)});
-      const wFc = new T.MeshBasicMaterial({color:0xf0efe9});
-      const flTex = makeFloorTex(T);
-      const wFl = new T.MeshStandardMaterial({map:flTex, roughness:0.72, metalness:0.03});
-      const wAll= new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.DoubleSide});
-      const wTrans = new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide});
+    // ══ Wiederverwendbarer Raumaufbau ═══════════════════════════════
+    // Alle Galerieräume (Raum 1, Raum 2 und der Plastik-Raum) entstehen aus denselben
+    // Bausteinen. Gebaut wird in lokalen Raumkoordinaten: der Raum läuft entlang −z,
+    // ist RW breit und RH hoch. Ein gedrehter Raum (Plastik-Raum) wird einfach in eine
+    // gedrehte Gruppe gebaut (siehe _buildTarget).
 
-      const aw=3.6, ah=3.2, lw=(RW-aw)/2, rw=lw;
+    // Gemeinsame Materialien – einmal erzeugt, von allen Räumen genutzt
+    let _rm = null;
+    function roomMats(T) {
+      if (_rm) return _rm;
+      function aoTex(darkOnLeft) {
+        const cv=document.createElement('canvas'); cv.width=128; cv.height=4;
+        const ctx=cv.getContext('2d');
+        const gr=ctx.createLinearGradient(0,0,128,0);
+        if(darkOnLeft){gr.addColorStop(0,'rgba(0,0,0,0.54)');gr.addColorStop(0.5,'rgba(0,0,0,0.10)');gr.addColorStop(1,'rgba(0,0,0,0)');}
+        else           {gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(0.5,'rgba(0,0,0,0.10)');gr.addColorStop(1,'rgba(0,0,0,0.54)');}
+        ctx.fillStyle=gr; ctx.fillRect(0,0,128,4);
+        return new T.CanvasTexture(cv);
+      }
+      _rm = {
+        wall:   new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.FrontSide}),
+        ceil:   new T.MeshBasicMaterial({map: makeCeilingTex(T)}),
+        ceilC:  new T.MeshBasicMaterial({color:0xf0efe9}),
+        floor:  new T.MeshStandardMaterial({map:makeFloorTex(T), roughness:0.72, metalness:0.03}),
+        trans:  new T.MeshStandardMaterial({color:0x252525, roughness:0.88, side:T.DoubleSide}),
+        marble: new T.MeshStandardMaterial({map:makeMarbleTex(T), roughness:0.20, metalness:0.14}),
+        mold:   new T.MeshStandardMaterial({color:0xdedad3, roughness:0.84}),
+        panel:  new T.MeshStandardMaterial({color:0x272421, roughness:0.82, metalness:0.01}),
+        rail:   new T.MeshStandardMaterial({color:0xb08828, roughness:0.38, metalness:0.72}),
+        gold:   new T.MeshBasicMaterial({color:0xb08828}),
+        aoL:    new T.MeshBasicMaterial({map:aoTex(true),  transparent:true, depthWrite:false}),
+        aoR:    new T.MeshBasicMaterial({map:aoTex(false), transparent:true, depthWrite:false}),
+      };
+      return _rm;
+    }
+
+    // Wandabschnitte zwischen Durchgängen: [[zVorne, zHinten], …]
+    function wallSpans(zFront, zBack, cuts) {
+      const spans = []; let cur = zFront;
+      cuts.slice().sort((a, b) => b.z0 - a.z0).forEach(c => {
+        if (c.z0 < cur) spans.push([cur, c.z0]);
+        cur = Math.min(cur, c.z1);
+      });
+      if (cur > zBack) spans.push([cur, zBack]);
+      return spans;
+    }
+
+    // Raumhülle: Boden, Oberlicht-Decke, Seitenwände (mit optionalen Durchgängen),
+    // Wandverkleidung, Leisten, Kontaktschatten, Schienen und Deckenlicht.
+    // o = { depth, cz, openings:[{side:-1|1, z0, z1, h}], fillRows, lightRows, extraLights }
+    function buildRoomShell(T, o) {
+      const M = roomMats(T);
+      const depth = o.depth, cz = o.cz, zFront = cz + depth/2, zBack = cz - depth/2;
+      const openings = o.openings || [];
+      const OFF = 0.013, wH = 1.12, sw = 0.44;
+
+      addPlane(T, RW, depth, M.floor, [0, 0,  cz], [-Math.PI/2, 0, 0]);
+      addPlane(T, RW, depth, M.ceil,  [0, RH, cz], [ Math.PI/2, 0, 0]);
+
+      [-1, 1].forEach(side => {
+        const cuts = openings.filter(op => op.side === side);
+        const ry = side < 0 ? Math.PI/2 : -Math.PI/2;
+        const xWall = side * RW/2, xPan = side * (RW/2 - OFF), xMold = side * (RW/2 - 0.022);
+        wallSpans(zFront, zBack, cuts).forEach(([za, zb]) => {
+          const len = za - zb, mz = (za + zb) / 2;
+          addPlane(T, len, RH, M.wall, [xWall, RH/2, mz], [0, ry, 0]);                // Wand
+          addPlane(T, len, wH, M.panel, [xPan, wH/2, mz], [0, ry, 0]);                // Wandverkleidung
+          addBox(T, 0.024, 0.036, len + 0.01, M.rail, [xPan, wH + 0.018, mz]);         // Goldleiste
+          addBox(T, 0.055, 0.11, len + 0.01, M.mold, [xMold, 0.055, mz]);              // Sockelleiste
+          addBox(T, 0.022, 0.04, len + 0.01, M.mold, [xMold, 0.13,  mz]);
+          const ao = new T.Mesh(new T.PlaneGeometry(sw, len), side < 0 ? M.aoL : M.aoR); // Kontaktschatten
+          ao.rotation.x = -Math.PI/2; ao.position.set(side * (RW/2 - sw/2), 0.005, mz); _add(ao);
+        });
+        // Sturz über jedem Durchgang
+        cuts.forEach(c => addPlane(T, c.z0 - c.z1, RH - c.h, M.wall, [xWall, c.h + (RH - c.h)/2, (c.z0 + c.z1)/2], [0, ry, 0]));
+        // Kranzleiste läuft über die ganze Länge (auch über Durchgängen)
+        addBox(T, 0.10, 0.022, depth + 0.01, M.mold, [xMold, RH - 0.011, cz]);
+        addBox(T, 0.022, 0.10, depth + 0.01, M.mold, [xMold, RH - 0.062, cz]);
+      });
+
+      buildSkylightGrid(T, depth, cz);
+      buildTrackRails(T, depth, cz);
+
+      // Deckenlicht: Füll-Lichter, ein Licht pro Bild-/Objektreihe, Lichter an Bögen/Rückwand
+      (o.fillRows || []).forEach(z => { const pl = new T.PointLight(0xffffff, 0.60, 18, 1.1); pl.position.set(0, RH - 0.2, z); _add(pl); });
+      (o.lightRows || []).forEach(z => { const pl = new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3); pl.position.set(0, RH - 0.15, z); _add(pl); });
+      (o.extraLights || []).forEach(z => { const pl = new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3); pl.position.set(0, RH - 0.15, z); _add(pl); });
+    }
+
+    // Anthrazit-Trennwand mit Torbogen (Breite aw) bei z
+    function buildArchWall(T, z, aw) {
+      const M = roomMats(T), ah = 3.2, lw = (RW - aw) / 2;
+      addBox(T, lw,     RH, 0.18, M.trans, [-(RW/2 - lw/2), RH/2, z]);
+      addBox(T, lw,     RH, 0.18, M.trans, [ (RW/2 - lw/2), RH/2, z]);
+      addBox(T, aw, RH - ah, 0.18, M.trans, [0, ah + (RH - ah)/2, z]);
+    }
+
+    // Verbindungsgang (Länge len, Breite aw) mit Marmorboden und Wandverkleidung, Mitte cz
+    function buildConnector(T, cz, aw, len) {
+      const M = roomMats(T), OFF = 0.013;
+      addPlane(T, len, RH, M.trans,  [-aw/2, RH/2, cz], [0,  Math.PI/2, 0]);
+      addPlane(T, len, RH, M.trans,  [ aw/2, RH/2, cz], [0, -Math.PI/2, 0]);
+      addPlane(T, aw,  RH, M.ceilC,  [0, RH, cz],       [ Math.PI/2, 0, 0]);
+      addPlane(T, aw, len, M.marble, [0,  0, cz],       [-Math.PI/2, 0, 0]);
+      [-aw/2 + OFF, aw/2 - OFF].forEach(x => {
+        const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
+        addPlane(T, len, 1.12, M.panel, [x, 0.56, cz], [0, sign, 0]);
+        addBox(T, 0.024, 0.036, len + 0.01, M.rail, [x, 1.138, cz]);
+      });
+    }
+
+    // Goldener Dekorrahmen an einem Torbogen (Breite aw) bei z
+    function addArchFrame(T, z, aw) {
+      const gMat = roomMats(T).gold, ah = 3.2, fw = 0.055;
+      addBox(T, aw + 2*fw, fw,    fw, gMat, [0, ah + fw/2, z]);
+      addBox(T, fw,        ah+fw, fw, gMat, [-aw/2 - fw/2, (ah + fw)/2, z]);
+      addBox(T, fw,        ah+fw, fw, gMat, [ aw/2 + fw/2, (ah + fw)/2, z]);
+      const od = fw * 1.9;
+      [[-aw/2 - fw/2, ah + fw], [aw/2 + fw/2, ah + fw], [-aw/2 - fw/2, 0], [aw/2 + fw/2, 0]].forEach(([x, y]) => {
+        addBox(T, od, od, fw * 1.4, gMat, [x, y, z]);
+      });
+    }
+
+    function buildRooms(T) {
+      const M = roomMats(T);
+      const aw = 3.6;
 
       // ── Room 1 (verlängert: Tiefe 18, Mitte -9, damit je 4 Bilder passen) ──
-      addPlane(T, RW, 18, wFl, [0,0,-9],        [-Math.PI/2,0,0]);
-      addPlane(T, RW, 18, wF,  [0,RH,-9],       [ Math.PI/2,0,0]);
-      addPlane(T, 18, RH, wW,  [-RW/2,RH/2,-9], [0, Math.PI/2,0]);
-      addPlane(T, 18, RH, wW,  [ RW/2,RH/2,-9], [0,-Math.PI/2,0]);
+      buildRoomShell(T, { depth:18, cz:-9, fillRows:[-3,-7,-11,-15], lightRows:[-3,-7,-11,-15], extraLights:[-18] });
       // Eingangswand mit Wandpaneelen als Canvas-Textur
       {
         const W=2048, H=896;
@@ -1399,38 +1548,21 @@
         const entranceMat=new T.MeshStandardMaterial({map:tex, roughness:0.88, side:T.DoubleSide});
         addPlane(T, RW, RH, entranceMat, [0,RH/2, 0.05], [0, Math.PI,0]);
       }
-
-      // Room 1 end wall + archway (anthracite transition) — jetzt bei z=-18
-      addBox(T, lw,     RH,    0.18, wTrans, [-(RW/2-lw/2), RH/2, -18]);
-      addBox(T, rw,     RH,    0.18, wTrans, [ (RW/2-rw/2), RH/2, -18]);
-      addBox(T, aw,  RH-ah,    0.18, wTrans, [0, ah+(RH-ah)/2, -18]);
+      // Room 1 end wall + archway (anthracite transition) — bei z=-18
+      buildArchWall(T, -18, aw);
 
       // ── Connector ─────────────────────────────────────────────── (Mitte z=-20)
-      const marbleTex = makeMarbleTex(T);
-      const wMar = new T.MeshStandardMaterial({map:marbleTex, roughness:0.20, metalness:0.14});
-      addPlane(T, 4, RH, wTrans, [-aw/2, RH/2,-20],[0, Math.PI/2,0]);
-      addPlane(T, 4, RH, wTrans, [ aw/2, RH/2,-20],[0,-Math.PI/2,0]);
-      addPlane(T, aw, RH, wFc, [0, RH,-20],      [ Math.PI/2,0,0]);
-      addPlane(T, aw,  4, wMar, [0,  0,-20],      [-Math.PI/2,0,0]);
+      buildConnector(T, -20, aw, 4);
 
-      // ── Room 2 ────────────────────────────────────────────────── (gekürzt: Rückwand z=-41)
-      const r2d=19, r2cz=-31.5;
-      addPlane(T, RW, r2d, wFl, [0,0,r2cz],        [-Math.PI/2,0,0]);
-      addPlane(T, RW, r2d, wF,  [0,RH,r2cz],       [ Math.PI/2,0,0]);
-      addPlane(T, r2d, RH, wW,  [-RW/2,RH/2,r2cz], [0, Math.PI/2,0]);
-      addPlane(T, r2d, RH, wW,  [ RW/2,RH/2,r2cz], [0,-Math.PI/2,0]);
-      addPlane(T, RW,  RH, wTrans, [0,RH/2,-41],      [0,0,0]);
+      // ── Room 2 ── (Rückwand z=-41; links am Ende der Durchgang zum Plastik-Raum)
+      buildRoomShell(T, { depth:19, cz:-31.5, fillRows:[-24,-30,-36,-39], lightRows:[-25,-29,-33,-37], extraLights:[-22,-41],
+        openings:[{ side:-1, z0:R3.oz + R3.aw/2, z1:R3.oz - R3.aw/2, h:3.2 }] });
+      addPlane(T, RW, RH, M.trans, [0,RH/2,-41], [0,0,0]);
+      // Room 2 entry wall (anthracite transition) — bei z=-22
+      buildArchWall(T, -22, aw);
 
-      // Room 2 entry wall (anthracite transition) — jetzt bei z=-22
-      addBox(T, lw,    RH,   0.18, wTrans, [-(RW/2-lw/2), RH/2, -22]);
-      addBox(T, rw,    RH,   0.18, wTrans, [ (RW/2-rw/2), RH/2, -22]);
-      addBox(T, aw, RH-ah,   0.18, wTrans, [0, ah+(RH-ah)/2, -22]);
-
-      // ── Skylight grid + Track lighting (both rooms) ─────────────
-      buildSkylightGrid(T, 18, -9);
-      buildSkylightGrid(T, r2d, r2cz);
-      buildTrackRails(T, 18, -9);
-      buildTrackRails(T, r2d, r2cz);
+      addArchFrame(T, -18, aw);
+      addArchFrame(T, -22, aw);
     }
 
     // ── Skylight ceiling grid ─────────────────────────────────────
@@ -1475,51 +1607,18 @@
       });
     }
 
-    function buildMoldings(T, depth, cz) {
-      const moldMat = new T.MeshStandardMaterial({color:0xdedad3, roughness:0.84});
-      [[-RW/2+0.022],[RW/2-0.022]].forEach(([x])=>{
-        // Kranzleiste oben: horizontale + vertikale Platte
-        addBox(T, 0.10, 0.022, depth+0.01, moldMat, [x, RH-0.011, cz]);
-        addBox(T, 0.022, 0.10, depth+0.01, moldMat, [x, RH-0.062, cz]);
-        // Sockelleiste unten
-        addBox(T, 0.055, 0.11, depth+0.01, moldMat, [x, 0.055, cz]);
-        addBox(T, 0.022, 0.04, depth+0.01, moldMat, [x, 0.13,  cz]);
-      });
-    }
-
-    // ── Wainscoting (Wandverkleidung) ─────────────────────────────
-    function buildWainscoting(T) {
-      const wH = 1.12;
-      const panMat = new T.MeshStandardMaterial({color:0x272421, roughness:0.82, metalness:0.01});
-      const railMat= new T.MeshStandardMaterial({color:0xb08828, roughness:0.38, metalness:0.72});
-      const OFF = 0.013;
-
-      [[18,-9],[19,-31.5]].forEach(([depth,cz])=>{
-        [-RW/2+OFF, RW/2-OFF].forEach(x=>{
-          const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
-          addPlane(T, depth, wH, panMat, [x, wH/2, cz], [0, sign, 0]);
-          addBox(T, 0.024, 0.036, depth+0.01, railMat, [x, wH+0.018, cz]);
-        });
-      });
-
-      // Connector Wände (Mitte z=-20)
-      const aw2=3.6;
-      [-aw2/2+OFF, aw2/2-OFF].forEach(x=>{
-        const sign = x < 0 ? Math.PI/2 : -Math.PI/2;
-        addPlane(T, 4, 1.12, panMat, [x, 0.56, -20], [0, sign, 0]);
-        addBox(T, 0.024, 0.036, 4.01, railMat, [x, 1.138, -20]);
-      });
-    }
-
+    // Bauziel: normalerweise die Szene; beim Plastik-Raum eine gedrehte Gruppe
+    let _buildTarget = null;
+    function _add(m) { (_buildTarget || scene).add(m); return m; }
     function addPlane(T, w, h, mat, pos, rot) {
       const m = new T.Mesh(new T.PlaneGeometry(w,h), mat);
       m.position.set(...pos); m.rotation.set(...rot);
-      scene.add(m); return m;
+      return _add(m);
     }
     function addBox(T, w, h, d, mat, pos) {
       const m = new T.Mesh(new T.BoxGeometry(w,h,d), mat);
       m.position.set(...pos);
-      scene.add(m); return m;
+      return _add(m);
     }
 
     // ── Weiche Kontaktschatten (gefälschte Bodenschatten, sehr günstig) ──
@@ -1541,7 +1640,7 @@
       const mat = new T.MeshBasicMaterial({map:getShadowTex(T), transparent:true, opacity:op==null?0.8:op, depthWrite:false});
       const m = new T.Mesh(new T.PlaneGeometry(sx, sz), mat);
       m.rotation.x = -Math.PI/2; m.position.set(x, 0.006, z);
-      scene.add(m); return m;
+      return _add(m);
     }
 
     function makeWallTex(T) {
@@ -2092,15 +2191,22 @@
       ring(0.31,0.25,0.14);              // Echinus (Wulst)
       ring(0.33,0.31,0.04);              // Annulet
       const ab=new T.Mesh(new T.BoxGeometry(0.62,0.13,0.62),stoneMat); ab.position.y=y+0.065; g.add(ab);
-      g.position.set(x,0,z); scene.add(g);
+      g.position.set(x,0,z); _add(g);
     }
 
+    let _colMats = null;
+    function columnMats(T) {
+      if (!_colMats) _colMats = {
+        shaft: new T.MeshStandardMaterial({map:makeColumnTex(T), color:0xf2ede2, roughness:0.58, metalness:0.03}),
+        stone: new T.MeshStandardMaterial({color:0xece6d6, roughness:0.6, metalness:0.02}),
+      };
+      return _colMats;
+    }
     function buildColumns(T) {
-      const shaftMat=new T.MeshStandardMaterial({map:makeColumnTex(T), color:0xf2ede2, roughness:0.58, metalness:0.03});
-      const stoneMat=new T.MeshStandardMaterial({color:0xece6d6, roughness:0.6, metalness:0.02});
+      const cm = columnMats(T);
       // x=+/-2.5: Schaft bleibt frei vom Pfeilerschild; Höhe endet unter den Schienen
       [[-2.5,-17.6],[2.5,-17.6], [-2.5,-22.4],[2.5,-22.4], [-2.5,-40.6],[2.5,-40.6]]
-        .forEach(([x,z])=>buildColumn(T,x,z,shaftMat,stoneMat));
+        .forEach(([x,z])=>buildColumn(T,x,z,cm.shaft,cm.stone));
     }
 
     function makeLeafTex(T) {
@@ -2208,26 +2314,9 @@
 
     // ── Lights ───────────────────────────────────────────────────
     function buildLights(T) {
-      // Diffuses neutrales Deckenlicht (wie im bevorzugten Original)
+      // Diffuses neutrales Deckenlicht (wie im bevorzugten Original);
+      // die Raumlichter setzt buildRoomShell je Raum
       scene.add(new T.AmbientLight(0xffffff, 0.95));
-
-      // Overhead fill lights
-      [[0,RH-0.2,-3],[0,RH-0.2,-7],[0,RH-0.2,-11],[0,RH-0.2,-15],
-       [0,RH-0.2,-24],[0,RH-0.2,-30],[0,RH-0.2,-36],[0,RH-0.2,-39]
-      ].forEach(([x,y,z])=>{
-        const pl=new T.PointLight(0xffffff, 0.60, 18, 1.1);
-        pl.position.set(x,y,z); scene.add(pl);
-      });
-
-      // Ein PointLight pro Gemälde-Reihe (beide Wände)
-      [-3,-7,-11,-15,-25,-29,-33,-37].forEach(z=>{
-        const pl=new T.PointLight(0xfff8f0, 1.6, 5.5, 1.3);
-        pl.position.set(0, RH-0.15, z); scene.add(pl);
-      });
-      [-18,-22,-41].forEach(z=>{
-        const pl=new T.PointLight(0xfff8f0, 1.5, 5.0, 1.3);
-        pl.position.set(0, RH-0.15, z); scene.add(pl);
-      });
     }
 
     // ── Picture Lights (decorative brass lamps above each frame) ─
@@ -2283,7 +2372,9 @@
     }
 
     // ── Wall Signage ─────────────────────────────────────────────
-    function makeWallSignTex(T, large) {
+    function makeWallSignTex(T, large, script, caption) {
+      if (script == null) script = 'Horst Schwab';
+      if (caption == null) caption = 'G  A  L  L  E  R  I  E';
       const W=1024, H= large ? 640 : 480;
       const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
       const ctx=cv.getContext('2d');
@@ -2305,38 +2396,196 @@
 
       // Kalligrafisches Script
       ctx.font=`${scriptSize}px "Great Vibes", "Snell Roundhand", cursive`;
-      ctx.fillText('Horst Schwab', W/2, midY);
+      ctx.fillText(script, W/2, caption ? midY : (midY + capY) / 2 + scriptSize * 0.12);
 
-      // Dünne Trennlinie
-      ctx.strokeStyle=ink;
-      ctx.lineWidth=1.0;
-      ctx.beginPath(); ctx.moveTo(W/2-155,lineY); ctx.lineTo(W/2+155,lineY); ctx.stroke();
+      if (caption) {
+        // Dünne Trennlinie
+        ctx.strokeStyle=ink;
+        ctx.lineWidth=1.0;
+        ctx.beginPath(); ctx.moveTo(W/2-155,lineY); ctx.lineTo(W/2+155,lineY); ctx.stroke();
 
-      // Gesperrte Versalien
-      ctx.font=`300 ${capSize}px "Cormorant Garamond", serif`;
-      ctx.fillText('G  A  L  L  E  R  I  E', W/2, capY);
+        // Gesperrte Versalien
+        ctx.font=`300 ${capSize}px "Cormorant Garamond", serif`;
+        ctx.fillText(caption, W/2, capY);
+      }
 
       return new T.CanvasTexture(cv);
     }
 
+    function addWallSign(T, w, h, x, y, z, ry, large, script, caption) {
+      const tex = makeWallSignTex(T, large, script, caption);
+      const mat = new T.MeshBasicMaterial({map:tex, side:T.DoubleSide});
+      const m   = new T.Mesh(new T.PlaneGeometry(w,h), mat);
+      m.position.set(x,y,z); m.rotation.y=ry; _add(m);
+      // Font-Update sobald Great Vibes geladen
+      document.fonts.load(`${large?188:142}px "Great Vibes"`).then(()=>{
+        m.material.map = makeWallSignTex(T, large, script, caption);
+        m.material.needsUpdate = true;
+      }).catch(()=>{});
+      return m;
+    }
     function buildWallSigns(T) {
-      function sign(w,h,x,y,z,ry,large){
-        const tex = makeWallSignTex(T, large);
-        const mat = new T.MeshBasicMaterial({map:tex, side:T.DoubleSide});
-        const m   = new T.Mesh(new T.PlaneGeometry(w,h), mat);
-        m.position.set(x,y,z); m.rotation.y=ry; scene.add(m);
-        // Font-Update sobald Great Vibes geladen
-        document.fonts.load(`${large?188:142}px "Great Vibes"`).then(()=>{
-          m.material.map = makeWallSignTex(T, large);
-          m.material.needsUpdate = true;
-        }).catch(()=>{});
-      }
+      const sign = (w,h,x,y,z,ry,large) => addWallSign(T, w, h, x, y, z, ry, large);
 
       // Rückwand Raum 2 z=-41 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
       sign(3.20, 2.00,  0,   2.10, -40.90, 0,        true);
       // Horst-Schwab-Schild am Torbogen-Pfeiler (Bogen jetzt bei z=-18)
       sign(1.30, 0.82,  3.4, 2.50, -17.90, 0,        false);   // aus Raum 1 sichtbar
       sign(1.30, 0.82,  3.4, 2.50, -22.10, Math.PI,  false);   // aus Raum 2 sichtbar
+    }
+
+    // ══ Raum 3: Plastik-Raum ═════════════════════════════════════════
+    const _sculpts = [];   // Plastiken (Billboards), werden pro Frame zum Betrachter gedreht
+
+    // Weicher, warmer Lichtfleck (für Spot-Licht auf Wand und Boden)
+    let _glowTex = null;
+    function getGlowTex(T) {
+      if (_glowTex) return _glowTex;
+      const s = 256, cv = document.createElement('canvas'); cv.width = cv.height = s;
+      const ctx = cv.getContext('2d');
+      const g = ctx.createRadialGradient(s/2, s/2, 0, s/2, s/2, s/2);
+      g.addColorStop(0,    'rgba(255,226,170,0.95)');
+      g.addColorStop(0.35, 'rgba(255,214,150,0.45)');
+      g.addColorStop(1,    'rgba(255,205,140,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, s, s);
+      _glowTex = new T.CanvasTexture(cv);
+      return _glowTex;
+    }
+
+    let _pedMats = null;
+    function pedestalMats(T) {
+      if (!_pedMats) _pedMats = {
+        rod:   new T.MeshStandardMaterial({color:0x2a2a26, roughness:0.55, metalness:0.35}),
+        // obere Kanten: feiner Goldschimmer durch das Spotlight
+        rodTop:new T.MeshStandardMaterial({color:0x8B6E2E, roughness:0.32, metalness:0.55, emissive:0x3a2a0c}),
+        plate: new T.MeshStandardMaterial({color:0x34322d, roughness:0.92, metalness:0.05}),
+        head:  new T.MeshStandardMaterial({color:0x1e1e1c, roughness:0.5, metalness:0.4}),
+        lens:  new T.MeshBasicMaterial({color:0xfff1d6}),
+        glow:  new T.MeshBasicMaterial({map:getGlowTex(T), transparent:true, depthWrite:false, blending:T.AdditiveBlending, opacity:0.30}),
+        glowF: new T.MeshBasicMaterial({map:getGlowTex(T), transparent:true, depthWrite:false, blending:T.AdditiveBlending, opacity:0.22}),
+        shadow:new T.MeshBasicMaterial({map:getShadowTex(T), transparent:true, depthWrite:false, opacity:0.55}),
+      };
+      return _pedMats;
+    }
+
+    // Offener Metallrahmen-Sockel: 12 dünne Kanten, matte Deckplatte, Spot von der Decke.
+    // Lokale Raum-3-Koordinaten; side = −1 linke / +1 rechte Wand.
+    function buildPedestal(T, x, z, side) {
+      const PM = pedestalMats(T), w = PED.w, h = PED.h, t = 0.014, e = w/2 - t/2;
+      const g = new T.Group(); g.position.set(x, 0, z);
+      const rod = (sx, sy, sz, px, py, pz, mat) => { const m = new T.Mesh(new T.BoxGeometry(sx, sy, sz), mat); m.position.set(px, py, pz); g.add(m); };
+      [[-e,-e],[e,-e],[-e,e],[e,e]].forEach(([px, pz]) => rod(t, h, t, px, h/2, pz, PM.rod));     // 4 senkrechte Kanten
+      [-e, e].forEach(p => {
+        rod(w, t, t, 0, t/2, p, PM.rod);   rod(t, t, w, p, t/2, 0, PM.rod);                         // 4 untere Kanten
+        rod(w, t, t, 0, h - t/2, p, PM.rodTop); rod(t, t, w, p, h - t/2, 0, PM.rodTop);             // 4 obere Kanten (Gold)
+      });
+      const plate = new T.Mesh(new T.BoxGeometry(w + 0.012, 0.012, w + 0.012), PM.plate);          // dünne, matte Deckplatte
+      plate.position.y = h + 0.006; g.add(plate);
+      const ps = new T.Mesh(new T.PlaneGeometry(w * 0.78, w * 0.78), PM.shadow);                   // Schatten der Plastik auf der Platte
+      ps.rotation.x = -Math.PI/2; ps.position.y = h + 0.0125; g.add(ps);
+      _add(g);
+      addGroundShadow(T, x, z, w * 2.0, w * 2.0, 0.75);                                          // weicher Bodenschatten
+
+      // Spot von oben: Strahlerkopf an der äußeren Schiene, auf die Plastik gerichtet
+      const hx = side * 2.6, hy = RH - 0.16, ty = h + 0.30;
+      const head = new T.Mesh(new T.CylinderGeometry(0.045, 0.055, 0.16, 18), PM.head);
+      head.position.set(hx, hy, z); head.rotation.z = Math.atan2(x - hx, -(ty - hy)); _add(head);
+      const lens = new T.Mesh(new T.CircleGeometry(0.04, 18), PM.lens);
+      const dx = x - hx, dy = ty - hy, dl = Math.hypot(dx, dy);
+      lens.position.set(hx + dx/dl * 0.085, hy + dy/dl * 0.085, z);
+      lens.lookAt(new T.Vector3(x, ty, z));   // noch ohne Elternobjekt → lokale Ausrichtung
+      _add(lens);
+      // Lichtkegel als weicher Schein auf Wand und Boden
+      const wallGlow = new T.Mesh(new T.PlaneGeometry(1.7, 2.6), PM.glow);
+      wallGlow.position.set(side * (RW/2 - 0.03), 1.95, z); wallGlow.rotation.y = side < 0 ? Math.PI/2 : -Math.PI/2; _add(wallGlow);
+      const floorGlow = new T.Mesh(new T.PlaneGeometry(1.6, 1.6), PM.glowF);
+      floorGlow.rotation.x = -Math.PI/2; floorGlow.position.set(x, 0.008, z); _add(floorGlow);
+    }
+
+    // Plastik als freigestelltes Foto (Billboard) auf dem Podest; zeigt je nach Blickseite
+    // Ansicht 1 oder 2 (weiche Überblendung). Daten aus ARTWORKS (Quelle der Kollektion).
+    function addSculpture(T, title, xl, zl, side) {
+      const d = ARTWORKS[title], wp = r3w(xl, zl);
+      const g = new T.Group(); g.position.set(wp.x, PED.h + 0.012, wp.z); scene.add(g);
+      const planes = d.views.slice(0, 2).map((src, i) => {
+        const mat = new T.MeshBasicMaterial({color:0xf3eee6, transparent:true, alphaTest:0.03, side:T.DoubleSide, opacity: i ? 0 : 1});
+        const geo = new T.PlaneGeometry(1, 1); geo.translate(0, 0.5, 0);
+        const m = new T.Mesh(geo, mat);
+        m.position.z = i * 0.003; m.renderOrder = 2 + i; m.visible = false;
+        g.add(m);
+        const base = src.replace('Images/', 'Images/vr-plastik/');
+        const loader = new T.TextureLoader();
+        let col = null, msk = null;
+        const done = () => {
+          if (!col || !msk) return;
+          col.encoding = T.sRGBEncoding;
+          mat.map = col; mat.alphaMap = msk; mat.needsUpdate = true;
+          const a = (col.image.naturalWidth || col.image.width) / (col.image.naturalHeight || col.image.height);
+          const pw = Math.min(PED.w * 1.0, 0.62 * a);               // Größe passend zur Plattenbreite
+          m.scale.set(pw, pw / a, 1);
+          m.visible = mat.opacity > 0.01;
+          m.userData.ready = true;
+        };
+        loader.load(base, t => { col = t; done(); });
+        loader.load(base.replace(/\.jpg$/i, '-mask.jpg'), t => { msk = t; done(); });
+        return m;
+      });
+      // Unsichtbare Trefferfläche für Hover/Klick (wie bei den Bildern)
+      const hit = new T.Mesh(new T.BoxGeometry(PED.w + 0.06, 0.68, PED.w + 0.06), new T.MeshBasicMaterial({visible:false}));
+      hit.position.y = 0.33; hit.userData.artworkTitle = title; g.add(hit);
+      _paintMeshes.push(hit);
+      // Blickrichtung des Podests (zur Raummitte) in Weltkoordinaten
+      const f = r3w(-side, 0), o = r3w(0, 0);
+      _sculpts.push({ g, planes, fx: f.x - o.x, fz: f.z - o.z });
+    }
+
+    function updateSculptures() {
+      if (!cam) return;
+      for (const s of _sculpts) {
+        const dx = cam.position.x - s.g.position.x, dz = cam.position.z - s.g.position.z;
+        const dl = Math.hypot(dx, dz) || 1;
+        s.g.rotation.y = Math.atan2(dx, dz);                          // dem Betrachter zuwenden
+        const side = (s.fz * dx - s.fx * dz) / dl;                    // −1 … 1: von welcher Seite man schaut
+        const k = Math.max(0, Math.min(1, (side + 0.25) / 0.5));
+        const wB = k * k * (3 - 2 * k);                               // weiche Überblendung
+        const [a, b] = s.planes;
+        a.material.opacity = 1 - wB; a.visible = !!a.userData.ready && a.material.opacity > 0.01;
+        if (b) { b.material.opacity = wB; b.visible = !!b.userData.ready && wB > 0.01; }
+      }
+    }
+
+    function buildSculptureRoom(T) {
+      const M = roomMats(T), cm = columnMats(T);
+      const g = new T.Group();
+      g.position.set(R3.ox, 0, R3.oz); g.rotation.y = Math.PI/2;
+      scene.add(g); g.updateMatrixWorld(true);
+      _buildTarget = g;
+      try {
+        // Durchgang in Raum 2: Goldrahmen + Schild „Plastik" darüber (schon aus Raum 2 sichtbar)
+        addArchFrame(T, 0, R3.aw);
+        addWallSign(T, 1.10, 0.52, 0, 3.72, 0.03, 0, false, 'Plastik', '');
+        buildConnector(T, -R3.conn/2, R3.aw, R3.conn);
+        // Eingangswand des Plastik-Raums mit Torbogen – gleicher Aufbau wie die Bögen zwischen Raum 1 und 2
+        buildArchWall(T, R3.entry, R3.aw);
+        addArchFrame(T, R3.entry, R3.aw);
+        // Raum selbst: derselbe Aufbau wie Raum 1 und 2
+        buildRoomShell(T, { depth:R3.depth, cz:R3.cz, fillRows:R3.rows.concat(R3.end + 1), lightRows:R3.rows, extraLights:[R3.entry, R3.end] });
+        addPlane(T, RW, RH, M.trans, [0, RH/2, R3.end], [0, 0, 0]);                              // Rückwand wie Raum 2
+        addWallSign(T, 3.20, 2.00, 0, 2.10, R3.end + 0.10, 0, true, 'Horst Schwab', 'P  L  A  S  T  I  K');
+        [[-2.5, R3.entry - 0.4], [2.5, R3.entry - 0.4], [-2.5, R3.end + 0.4], [2.5, R3.end + 0.4]]
+          .forEach(([x, z]) => buildColumn(T, x, z, cm.shaft, cm.stone));
+        // Podeste im Rhythmus der Bilder: je Reihe links, dann rechts
+        SCULPTURE_TITLES.forEach((title, i) => {
+          const side = i % 2 === 0 ? -1 : 1, zl = R3.rows[Math.floor(i / 2)];
+          buildPedestal(T, side * PED.x, zl, side);
+        });
+      } finally {
+        _buildTarget = null;
+      }
+      SCULPTURE_TITLES.forEach((title, i) => {
+        const side = i % 2 === 0 ? -1 : 1, zl = R3.rows[Math.floor(i / 2)];
+        addSculpture(T, title, side * PED.x, zl, side);
+      });
     }
 
     // ── Kassetten-Decke ──────────────────────────────────────────
@@ -2366,42 +2615,6 @@
     }
 
     // ── Ambient-Occlusion-Streifen an Wandfüßen ──────────────────
-    function buildAOStrips(T) {
-      function aoTex(darkOnLeft) {
-        const cv=document.createElement('canvas'); cv.width=128; cv.height=4;
-        const ctx=cv.getContext('2d');
-        const gr=ctx.createLinearGradient(0,0,128,0);
-        if(darkOnLeft){gr.addColorStop(0,'rgba(0,0,0,0.54)');gr.addColorStop(0.5,'rgba(0,0,0,0.10)');gr.addColorStop(1,'rgba(0,0,0,0)');}
-        else           {gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(0.5,'rgba(0,0,0,0.10)');gr.addColorStop(1,'rgba(0,0,0,0.54)');}
-        ctx.fillStyle=gr; ctx.fillRect(0,0,128,4);
-        return new T.CanvasTexture(cv);
-      }
-      const sw=0.44;
-      const matL=new T.MeshBasicMaterial({map:aoTex(true),  transparent:true, depthWrite:false});
-      const matR=new T.MeshBasicMaterial({map:aoTex(false), transparent:true, depthWrite:false});
-      [[18,-9],[19,-31.5]].forEach(([depth,cz])=>{
-        const pL=new T.Mesh(new T.PlaneGeometry(sw,depth),matL);
-        pL.rotation.x=-Math.PI/2; pL.position.set(-RW/2+sw/2,0.005,cz); scene.add(pL);
-        const pR=new T.Mesh(new T.PlaneGeometry(sw,depth),matR);
-        pR.rotation.x=-Math.PI/2; pR.position.set(RW/2-sw/2,0.005,cz); scene.add(pR);
-      });
-    }
-
-    // ── Goldener Dekorrahmen an Torbögen ─────────────────────────
-    function buildArchFrames(T) {
-      const gMat=new T.MeshBasicMaterial({color:0xb08828});
-      const aw=3.6,ah=3.2,fw=0.055;
-      [-18,-22].forEach(z=>{
-        addBox(T, aw+2*fw, fw,      fw,  gMat, [0, ah+fw/2, z]);
-        addBox(T, fw,      ah+fw,   fw,  gMat, [-aw/2-fw/2, (ah+fw)/2, z]);
-        addBox(T, fw,      ah+fw,   fw,  gMat, [ aw/2+fw/2, (ah+fw)/2, z]);
-        const od=fw*1.9;
-        [[-aw/2-fw/2,ah+fw],[aw/2+fw/2,ah+fw],[-aw/2-fw/2,0],[aw/2+fw/2,0]].forEach(([x,y])=>{
-          addBox(T,od,od,fw*1.4,gMat,[x,y,z]);
-        });
-      });
-    }
-
     // ── Boden-Schimmer unter Oberlicht ───────────────────────────
     function buildFloorReflection(T) {
       const mat=new T.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.055, depthWrite:false});
@@ -2474,18 +2687,114 @@
         seq.push({pos: fPos, quat: fQuat, trans: 1800, hold: 3000});
       }
 
+      // ── Ums Eck in den Plastik-Raum ─────────────────────────────
+      // Stationen mit cut:true bilden den Raumwechsel; bei „reduzierter Bewegung"
+      // wird dieser Abschnitt per Überblendung statt Kamerafahrt übersprungen.
+      if (SCULPTURE_TITLES.length) {
+        const addW = (p, l, ly, trans, hold, cut) => {
+          add(p.x, CAM_Y, p.z, l.x, ly, l.z, trans, hold);
+          if (cut) seq[seq.length - 1].cut = true;
+        };
+        const LY_L = CAM_Y + 0.30;                                   // fast waagerechter Blick
+        const LY_P = PED.h + 0.28;                                   // Blickhöhe auf die Plastik
+        const corner = { x: -1.2, z: R3.oz };
+        // bis zur Ecke gehen (Durchgang links ist bereits sichtbar) …
+        addW(corner, { x: -3.2, z: -41 }, LY_L + 0.2, 2000, 400);
+        // … und flüssig um 90° nach links in den Durchgang drehen
+        addW(corner, { x: -9, z: R3.oz }, LY_L, 1700, 300, true);
+        addW(r3w(0, -R3.conn/2), r3w(0, R3.entry - 6), LY_L + 0.2, 2000, 150, true);
+        addW(r3w(0, R3.entry - 1.5), r3w(0, R3.entry - 6), LY_W, 1800, 500, true);
+        // Podest-Reihen: Rhythmus wie in Raum 1 (links, dann rechts)
+        R3.rows.forEach((zr, k) => {
+          if (k > 0) addW(r3w(0, zr), r3w(0, zr - 3), LY_W, 2000, 400);
+          const hasL = !!SCULPTURE_TITLES[2*k], hasR = !!SCULPTURE_TITLES[2*k + 1];
+          if (hasL) addW(r3w(0, zr), r3w(-PED.x, zr), LY_P, k ? 1300 : 1500, 3800);
+          if (hasR) addW(r3w(0, zr), r3w( PED.x, zr), LY_P, 1700, 3800);
+        });
+        // Rückwand mit Schild, dann umdrehen
+        const endPos = r3w(0, R3.end + 3.5);
+        addW(endPos, r3w(0, R3.end), 2.10, 2000, 2500);
+        addW(endPos, r3w(0, R3.entry), LY_W, 2200, 300);
+        // Rückweg: durch den Durchgang und mit einer Drehung nach rechts zurück Richtung Raum 1
+        addW(r3w(0, R3.entry - 1.5), r3w(0, 2), LY_L, 3200, 100);
+        addW(r3w(0, -R3.conn/2), r3w(0, 4), LY_L, 1800, 100, true);
+        addW(corner, { x: 5, z: R3.oz }, LY_L, 1700, 200, true);
+        addW(corner, { x: -0.6, z: -30 }, LY_W, 1600, 400, true);
+        addW({ x: 0, z: -31 }, { x: 0, z: -24 }, LY_W, 3000, 800);
+      }
+
       cam.position.copy(seq[0].pos);
       cam.quaternion.copy(seq[0].quat);
       fromPos.copy(seq[0].pos); fromQuat.copy(seq[0].quat);
       seqIdx=0; phase='hold'; t0=performance.now();
     }
 
-    // Hält eine Position innerhalb der begehbaren Räume (Torbogen ist schmaler).
-    function clampToRoom(p) {
-      p.z = Math.max(-40.6, Math.min(0.9, p.z));
-      if (p.z < -17.6 && p.z > -22.4) { p.x = Math.max(-1.5, Math.min(1.5, p.x)); }
-      else { p.x = Math.max(-RW/2+0.45, Math.min(RW/2-0.45, p.x)); }
+    // ── Begehbarer Bereich beim freien Erkunden ─────────────────
+    // Überall ca. 1,8 m Abstand zu Wänden und Bildern/Podesten. Der Bereich besteht aus
+    // sich überlappenden Rechtecken (Räume und Durchgänge); Bänke sind Hindernisse.
+    const WALK_GAP = 1.8;
+    const WALK_RECTS = (() => {
+      const xMax = WALLX - WALK_GAP;                     // Seitenwände mit Bildern
+      const r3a = r3w(-(RW/2 - WALK_GAP), R3.entry - WALK_GAP), r3b = r3w(RW/2 - WALK_GAP, R3.end + WALK_GAP);
+      const cHalf = R3.aw/2 - 0.3;                       // Durchgang zum Plastik-Raum
+      return [
+        { x0:-xMax, x1:xMax, z0:-18 + WALK_GAP, z1:0.05 - WALK_GAP },   // Raum 1
+        { x0:-1.5,  x1:1.5,  z0:-22 - WALK_GAP, z1:-18 + WALK_GAP },    // Durchgang Raum 1 ↔ 2
+        { x0:-xMax, x1:xMax, z0:-41 + WALK_GAP, z1:-22 - WALK_GAP },    // Raum 2
+        { x0:Math.max(r3a.x, r3b.x) - 0.2, x1:-xMax + 0.5, z0:R3.oz - cHalf, z1:R3.oz + cHalf },  // Durchgang Raum 2 ↔ 3
+        { x0:Math.min(r3a.x, r3b.x), x1:Math.max(r3a.x, r3b.x), z0:Math.min(r3a.z, r3b.z), z1:Math.max(r3a.z, r3b.z) }, // Raum 3
+      ];
+    })();
+    const BENCHES = [-9, -33].map(z => ({ x0:-2.15, x1:2.15, z0:z-0.7, z1:z+0.7 }));  // inkl. Puffer
+    function inRect(p, r) { return p.x >= r.x0 && p.x <= r.x1 && p.z >= r.z0 && p.z <= r.z1; }
+    function clampIntoRect(p, r) { return { x: Math.max(r.x0, Math.min(r.x1, p.x)), z: Math.max(r.z0, Math.min(r.z1, p.z)) }; }
+
+    // Hält p im begehbaren Bereich; prev = letzte gültige Position. Liegt p außerhalb,
+    // wird es in das Rechteck zurückgeholt, in dem man gerade steht (wirkt wie eine Wand).
+    function clampToRoom(p, prev) {
+      if (!WALK_RECTS.some(r => inRect(p, r))) {
+        let cands = prev ? WALK_RECTS.filter(r => inRect(prev, r)) : [];
+        if (!cands.length) cands = WALK_RECTS;
+        let best = null, bd = Infinity;
+        cands.forEach(r => { const c = clampIntoRect(p, r), d = Math.hypot(c.x - p.x, c.z - p.z); if (d < bd) { bd = d; best = c; } });
+        p.x = best.x; p.z = best.z;
+      }
+      // Bänke: zur nächstgelegenen Kante hinausschieben
+      BENCHES.forEach(b => {
+        if (p.x > b.x0 && p.x < b.x1 && p.z > b.z0 && p.z < b.z1) {
+          const d = [p.x - b.x0, b.x1 - p.x, p.z - b.z0, b.z1 - p.z];
+          const m = Math.min.apply(null, d);
+          if (m === d[0]) p.x = b.x0; else if (m === d[1]) p.x = b.x1;
+          else if (m === d[2]) p.z = b.z0; else p.z = b.z1;
+        }
+      });
       return p;
+    }
+    function isWalkable(p) {
+      const c = clampToRoom(p.clone(), p);
+      return Math.abs(c.x - p.x) < 1e-4 && Math.abs(c.z - p.z) < 1e-4;
+    }
+    // Nächster Zwischenpunkt auf dem Weg zum Klickziel (durch die Durchgänge statt durch Wände)
+    function walkWaypoint(p, tgt) {
+      const cur = WALK_RECTS.filter(r => inRect(p, r));
+      const goal = WALK_RECTS.findIndex(r => inRect(tgt, r));
+      if (!cur.length || goal < 0 || cur.some(r => inRect(tgt, r))) return tgt;
+      // Breitensuche über überlappende Rechtecke
+      const ov = (a, b) => a.x0 <= b.x1 && b.x0 <= a.x1 && a.z0 <= b.z1 && b.z0 <= a.z1;
+      const start = cur.map(r => WALK_RECTS.indexOf(r));
+      const prevOf = {}; const queue = start.slice(); start.forEach(i => prevOf[i] = -1);
+      while (queue.length) {
+        const i = queue.shift();
+        if (i === goal) break;
+        WALK_RECTS.forEach((r, j) => { if (!(j in prevOf) && ov(WALK_RECTS[i], r)) { prevOf[j] = i; queue.push(j); } });
+      }
+      if (!(goal in prevOf)) return tgt;
+      let n = goal; while (prevOf[n] !== -1 && start.indexOf(prevOf[n]) === -1) n = prevOf[n];
+      // in das nächste Rechteck hinein (etwas vom Rand weg, damit man es sicher erreicht)
+      const r = WALK_RECTS[n], m = 0.15;
+      const inner = { x0: r.x0 + Math.min(m, (r.x1 - r.x0)/2), x1: r.x1 - Math.min(m, (r.x1 - r.x0)/2),
+                      z0: r.z0 + Math.min(m, (r.z1 - r.z0)/2), z1: r.z1 - Math.min(m, (r.z1 - r.z0)/2) };
+      return clampIntoRect(p, inner);
     }
 
     // ── Freie Navigation Tick ─────────────────────────────────────
@@ -2503,21 +2812,54 @@
       if (manual) {
         navMoveTarget = null;                 // Tastatur unterbricht das Klick-Gleiten
       } else if (navMoveTarget) {
-        p.x += (navMoveTarget.x - p.x) * 0.08; // sanftes Gleiten zum Klickziel
-        p.z += (navMoveTarget.z - p.z) * 0.08;
+        // Ziel in einem anderen Raum: über die Durchgänge gehen statt in die Wand
+        const w = walkWaypoint(p, navMoveTarget);
+        const dx = w.x - p.x, dz = w.z - p.z, d = Math.hypot(dx, dz);
+        const step = Math.min(d, Math.max(d * 0.08, 0.03));   // sanftes Gleiten, nie ganz zäh
+        if (d > 0) { p.x += dx / d * step; p.z += dz / d * step; }
         if (Math.hypot(navMoveTarget.x - p.x, navMoveTarget.z - p.z) < 0.05) navMoveTarget = null;
       }
-      clampToRoom(p);
+      const prev = cam.position;
+      if (isWalkable(prev)) {
+        clampToRoom(p, prev);
+      } else {
+        // z. B. Start an der Eingangsstation außerhalb des Bereichs: sanft hineingleiten statt springen.
+        // Bewegungen, die weiter nach außen führen würden, werden dabei verworfen.
+        const cPrev = clampToRoom(prev.clone(), prev);
+        let c = clampToRoom(p.clone(), p);
+        if (Math.hypot(p.x - c.x, p.z - c.z) > Math.hypot(prev.x - cPrev.x, prev.z - cPrev.z)) {
+          p.x = prev.x; p.z = prev.z; c = cPrev;
+        }
+        const dx = c.x - p.x, dz = c.z - p.z, d = Math.hypot(dx, dz);
+        const step = Math.min(d, Math.max(d * 0.12, 0.02), 0.07);   // weich, aber gedeckelt
+        if (d > 0) { p.x += dx / d * step; p.z += dz / d * step; }
+      }
       p.y = CAM_Y;
       cam.position.copy(p);
+      // Zoom weich zum Ziel-Sichtfeld
+      if (Math.abs(cam.fov - navFov) > 0.05) {
+        cam.fov += (navFov - cam.fov) * 0.15;
+        cam.updateProjectionMatrix();
+      }
     }
 
     // ── Tick ─────────────────────────────────────────────────────
     function tick(T,now){
       if(!seq) return;
       if(freeNav) { tickFreeNav(T); return; }
-      if(vrPaused) return;
+      if(vrPaused || phase==='fading') return;
       const s=seq[seqIdx], dt=now-t0;
+      if(!s) return;   // Schlussblende läuft (doLoop setzt gleich auf den Anfang zurück)
+      if(phase==='resume'){
+        if(!s) return;   // Endschleifen-Blende läuft gerade; doLoop setzt gleich neu
+        // Rückkehr aus dem freien Erkunden: weich zur aktuellen Station, Zoom zurück auf 1×
+        const raw=Math.min(dt/1600,1), et=ease(raw);
+        cam.position.lerpVectors(fromPos,s.pos,et);
+        cam.quaternion.slerpQuaternions(fromQuat,s.quat,et);
+        cam.fov = resumeFov + (FOV_BASE - resumeFov) * et; cam.updateProjectionMatrix();
+        if(raw>=1){phase='hold';t0=now;resumeFov=null;}
+        return;
+      }
       if(phase==='trans'){
         const raw=Math.min(dt/Math.max(s.trans,1),1), et=ease(raw);
         cam.position.lerpVectors(fromPos,s.pos,et);
@@ -2529,21 +2871,52 @@
           fromPos.copy(cam.position); fromQuat.copy(cam.quaternion);
           seqIdx++;
           if(seqIdx>=seq.length){doLoop(now);return;}
+          if(seq[seqIdx].cut && _reducedMotion()){cutTo(seqIdx);return;}
           phase='trans'; t0=now;
         }
       }
     }
 
-    function doLoop(now){
+    function ensureFadeDiv(){
       if(!fadeDiv){
         fadeDiv=document.createElement('div');
+        fadeDiv.className='vr-fade';
         fadeDiv.style.cssText='position:absolute;inset:0;background:#080706;pointer-events:none;opacity:0;transition:opacity 1.2s ease;z-index:1;';
         document.getElementById('gallery-vr').appendChild(fadeDiv);
       }
+      return fadeDiv;
+    }
+    function _reducedMotion(){
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+    // Raumwechsel bei reduzierter Bewegung: kurz abblenden, an die letzte Station des
+    // Abschnitts springen, wieder aufblenden – keine Kamerafahrt.
+    function cutTo(i){
+      let j=i; while(j+1<seq.length && seq[j+1].cut) j++;
+      const fd=ensureFadeDiv();
+      fd.style.transition='opacity 0.4s ease'; fd.style.opacity='1';
+      phase='fading';
+      setTimeout(()=>{
+        if(!cam||!seq) return;
+        seqIdx=j;
+        if(!freeNav){
+          cam.position.copy(seq[j].pos); cam.quaternion.copy(seq[j].quat);
+          fromPos.copy(seq[j].pos); fromQuat.copy(seq[j].quat);
+        }
+        phase='hold'; t0=performance.now();
+        fd.style.opacity='0';
+      },450);
+    }
+
+    function doLoop(now){
+      ensureFadeDiv().style.transition='opacity 1.2s ease';
       fadeDiv.style.opacity='1';
       setTimeout(()=>{
+        if(!cam||!seq) return;   // Rundgang inzwischen geschlossen
+        if(freeNav){ seqIdx=0; phase='hold'; t0=performance.now(); fadeDiv.style.opacity='0'; return; }  // nicht aus dem freien Erkunden reißen
         cam.position.copy(seq[0].pos); cam.quaternion.copy(seq[0].quat);
         fromPos.copy(seq[0].pos); fromQuat.copy(seq[0].quat);
+        if (resumeFov !== null || cam.fov !== FOV_BASE) { cam.fov = FOV_BASE; cam.updateProjectionMatrix(); resumeFov = null; }
         seqIdx=0; phase='hold'; t0=performance.now();
         setTimeout(()=>{fadeDiv.style.opacity='0';},200);
       },1300);
@@ -2552,8 +2925,10 @@
     function teardown(){
       if(rafId) cancelAnimationFrame(rafId);
       if(renderer){renderer.dispose();renderer=null;}
+      if(fadeDiv) fadeDiv.remove();   // keine stehengebliebene Blende beim nächsten Öffnen
       scene=null;cam=null;seq=null;fadeDiv=null;
-      freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=72; navPinch=false;
+      _paintMeshes.length=0; _sculpts.length=0; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
+      freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=FOV_BASE; navPinch=false; resumeFov=null;
       _imgsLoaded=0; _loaderHidden=false; _warmedUp=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
