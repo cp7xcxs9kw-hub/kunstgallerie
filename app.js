@@ -995,6 +995,8 @@
       if (e.key === 'ArrowLeft') { e.preventDefault(); skipStep(-1); }
     });
     document.addEventListener('keyup', function(e) { navKeys.delete(e.code); });
+    // Fenster verliert den Fokus: das keyup käme nie an – sonst liefe man endlos weiter
+    window.addEventListener('blur', function() { navKeys.clear(); });
     window.closeVrInfo = function() {
       var p = document.getElementById('vr-info-panel');
       if(p) p.classList.remove('visible');
@@ -1074,7 +1076,11 @@
     }
     let freeNav = false;
     const navKeys = new Set();
-    let navYaw=0, navPitch=0;
+    let navYaw=0, navPitch=0;          // aktuelle Blickrichtung (folgt dem Ziel weich)
+    let navYawT=0, navPitchT=0;        // Ziel-Blickrichtung aus Ziehen / Wischen
+    const _navVel = { x: 0, z: 0 };    // Gehgeschwindigkeit in m/s
+    let _glideV = 0, _glideStall = 0;  // Klick-Gleiten: Tempo und Blockade-Zeit
+    let _frameDt = 16;                 // Dauer des letzten Bildes in ms
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
     let navMovedDist=0;       // Gesamt-Zeigerbewegung seit Drücken (Klick vs. Ziehen)
     let navMoveTarget=null;   // Klick-zum-Gehen Ziel (Street-View-Stil)
@@ -1083,6 +1089,37 @@
     let navFov=FOV_BASE;      // Ziel-Sichtfeld (Trackpad-/Mausrad-/Pinch-Zoom)
     let navPinch=false, navPinchDist=0, navPinchFov=FOV_BASE;  // Zwei-Finger-Pinch (Mobile)
     let resumeFov=null;       // „Tour fortsetzen": Sichtfeld beim Start der Rückkehr
+
+    // ── Renderauflösung ──────────────────────────────────────────
+    // Retina-Bildschirme hätten bei voller Pixeldichte die 4-fache Pixelzahl – zu viel für
+    // 60 Bilder/s. Gerendert werden darum höchstens ~1,8 Mio. Bildpunkte (Kanten bleiben dank
+    // Antialiasing sauber). Schafft ein Gerät auch das nicht, regelt _watchFps weiter herunter.
+    const PX_BUDGET = 1.8e6;
+    let _resScale = 1, _resProbe = 0, _resLocked = false, _fpsSum = 0, _fpsN = 0, _fpsWarm = 0, _adEl = null, _infoEl = null;
+    function _pixelRatio() {
+      const fit = Math.sqrt(PX_BUDGET / (innerWidth * innerHeight));
+      return Math.max(0.5, Math.min(devicePixelRatio || 1, 2, Math.max(1, fit)) * _resScale);
+    }
+    function _watchFps(raw) {
+      if (!_loaderHidden || raw > 250 || document.hidden) return;   // Ladephase, Tab-Wechsel
+      if (_fpsWarm < 150) { _fpsWarm++; return; }                    // Ausblenden des Ladescreens abwarten
+      _adEl = _adEl || document.getElementById('artwork-detail');
+      _infoEl = _infoEl || document.getElementById('vr-info-panel');
+      // Über der Galerie liegende Fenster kosten selbst Leistung – dann nicht messen
+      if ((_adEl && _adEl.classList.contains('active')) || (_infoEl && _infoEl.classList.contains('visible'))) { _fpsSum = 0; _fpsN = 0; return; }
+      _fpsSum += raw; _fpsN++;
+      if (_fpsN < 90) return;
+      const avg = _fpsSum / _fpsN; _fpsSum = 0; _fpsN = 0;
+      if (_resProbe) {
+        // Hat die letzte Absenkung geholfen? Wenn nicht (Engpass ist nicht die Grafik):
+        // zurück zur schärferen Stufe und nicht weiter senken.
+        if (avg > _resProbe * 0.9) { _resScale /= 0.85; _resLocked = true; _applyRes(); }
+        _resProbe = 0;
+      } else if (!_resLocked && avg > 19.5 && _resScale > 0.6) {   // unter ~50 Bilder/s: eine Stufe senken
+        _resProbe = avg; _resScale *= 0.85; _applyRes();
+      }
+    }
+    function _applyRes() { renderer.setPixelRatio(_pixelRatio()); renderer.setSize(innerWidth, innerHeight); }
 
     // ── Layout ────────────────────────────────────────────────────
     // Room 1 (Eingangssaal):  z:  0 → -14   width 10
@@ -1206,10 +1243,9 @@
     function initGallery() {
       const T = window.THREE;
       const cv = document.getElementById('gallery-canvas');
-      const _dpr = Math.min(devicePixelRatio, 2);
       renderer = new T.WebGLRenderer({canvas:cv, antialias: true, powerPreference:'high-performance'});
+      renderer.setPixelRatio(_pixelRatio());
       renderer.setSize(innerWidth, innerHeight);
-      renderer.setPixelRatio(_dpr);
       renderer.setClearColor(0x000000, 1);
       renderer.outputEncoding = T.sRGBEncoding;
       // Lineares Tonemapping — kräftige, gesättigte Farben (kein ACES-Washout)
@@ -1264,7 +1300,8 @@
         if (freeNav) {
           vrPaused = true;
           const euler = new T.Euler().setFromQuaternion(cam.quaternion, 'YXZ');
-          navYaw = euler.y; navPitch = euler.x;
+          navYaw = navYawT = euler.y; navPitch = navPitchT = euler.x;
+          _navVel.x = _navVel.z = 0; _glideV = 0;
           freeBtn.textContent = '▶ TOUR FORTSETZEN';
           freeBtn.classList.add('active');
           navHint.style.opacity = '1';
@@ -1274,6 +1311,7 @@
           freeBtn.classList.remove('active');
           navKeys.clear();
           navMoveTarget = null;
+          _navVel.x = _navVel.z = 0; _glideV = 0;
           navHint.style.opacity = '0';
           // Zurück zur aktuellen Tour-Station, Zoom dabei auf 1×. Im selben (oder direkt
           // angrenzenden) Raum weich gleiten; liegt die Station in einem anderen Raum,
@@ -1311,8 +1349,8 @@
         cv.addEventListener('mousemove', e => {
           if (!freeNav || !navDrag) return;
           const dx=e.clientX-navDragX, dy=e.clientY-navDragY;
-          navYaw   -= dx*0.0025; navPitch -= dy*0.0025;
-          navPitch  = Math.max(-1.1, Math.min(0.9, navPitch));
+          navYawT   -= dx*0.0025; navPitchT -= dy*0.0025;
+          navPitchT  = Math.max(-1.1, Math.min(0.9, navPitchT));
           navDragX=e.clientX; navDragY=e.clientY;
           navMovedDist += Math.abs(dx)+Math.abs(dy);
         });
@@ -1349,8 +1387,8 @@
           if (!freeNav || !navDrag || e.touches.length!==1) return;
           e.preventDefault();
           const dx=e.touches[0].clientX-navDragX, dy=e.touches[0].clientY-navDragY;
-          navYaw -= dx*0.0025; navPitch -= dy*0.0025;
-          navPitch = Math.max(-1.1, Math.min(0.9, navPitch));
+          navYawT -= dx*0.0025; navPitchT -= dy*0.0025;
+          navPitchT = Math.max(-1.1, Math.min(0.9, navPitchT));
           navDragX=e.touches[0].clientX; navDragY=e.touches[0].clientY;
           navMovedDist += Math.abs(dx)+Math.abs(dy);
         }, {passive:false});
@@ -1396,7 +1434,7 @@
           const dist = Math.hypot(dx, dz);
           if (dist > 10) { tgt.x = cam.position.x + dx/dist*10; tgt.z = cam.position.z + dz/dist*10; }
           clampToRoom(tgt, cam.position);
-          navMoveTarget = tgt;
+          navMoveTarget = tgt; _glideStall = 0;
         }
 
         // Einheitliche Tap-Behandlung: Bild öffnen – oder im Frei-Modus hingehen.
@@ -1468,7 +1506,9 @@
       let _lastTs = 0;
       function frame(ts){
         rafId=requestAnimationFrame(frame);
-        const dt = _lastTs ? Math.min(100, ts - _lastTs) : 16; _lastTs = ts;
+        const raw = _lastTs ? ts - _lastTs : 16, dt = Math.min(100, raw); _lastTs = ts;
+        _frameDt = dt;
+        _watchFps(raw);
         tick(T,ts);
         updateZone();
         updateLights(dt);
@@ -3136,30 +3176,70 @@
     }
 
     // ── Freie Navigation Tick ─────────────────────────────────────
+    // Alles zeitbasiert (Meter pro Sekunde statt pro Bild): gleiches Tempo bei 30, 60 oder
+    // 120 Bildern/s. Gehen fährt weich an und rollt aus; der Blick folgt dem Ziehen leicht
+    // geglättet, weil Maus- und Touch-Ereignisse nicht im Bildtakt eintreffen.
+    const WALK_SPEED = 2.8, GLIDE_SPEED = 4.0, GLIDE_ACC = 4.5;   // m/s, m/s, m/s²
+    let _fnEuler = null, _fnP = null;
     function tickFreeNav(T) {
-      cam.quaternion.setFromEuler(new T.Euler(navPitch, navYaw, 0, 'YXZ'));
-      const spd = 0.055;
-      const fwd = new T.Vector3(-Math.sin(navYaw), 0, -Math.cos(navYaw));
-      const rgt = new T.Vector3( Math.cos(navYaw), 0, -Math.sin(navYaw));
-      const p = cam.position.clone();
-      let manual = false;
-      if (navKeys.has('KeyW')||navKeys.has('ArrowUp'))    { p.addScaledVector(fwd,  spd); manual=true; }
-      if (navKeys.has('KeyS')||navKeys.has('ArrowDown'))  { p.addScaledVector(fwd, -spd); manual=true; }
-      if (navKeys.has('KeyA')||navKeys.has('ArrowLeft'))  { p.addScaledVector(rgt, -spd); manual=true; }
-      if (navKeys.has('KeyD')||navKeys.has('ArrowRight')) { p.addScaledVector(rgt,  spd); manual=true; }
+      const s = Math.min(_frameDt, 50) / 1000;               // Sekunden; nach einem Ruckler nicht springen
+      const kLook = 1 - Math.exp(-s / 0.05);
+      navYaw += (navYawT - navYaw) * kLook; navPitch += (navPitchT - navPitch) * kLook;
+      if (!_fnEuler) { _fnEuler = new T.Euler(0, 0, 0, 'YXZ'); _fnP = new T.Vector3(); }
+      _fnEuler.set(navPitch, navYaw, 0, 'YXZ');
+      cam.quaternion.setFromEuler(_fnEuler);
+      const fx = -Math.sin(navYaw), fz = -Math.cos(navYaw), rx = Math.cos(navYaw), rz = -Math.sin(navYaw);
+      let ix = 0, iz = 0, manual = false;
+      if (navKeys.has('KeyW')||navKeys.has('ArrowUp'))    { ix += fx; iz += fz; manual=true; }
+      if (navKeys.has('KeyS')||navKeys.has('ArrowDown'))  { ix -= fx; iz -= fz; manual=true; }
+      if (navKeys.has('KeyA')||navKeys.has('ArrowLeft'))  { ix -= rx; iz -= rz; manual=true; }
+      if (navKeys.has('KeyD')||navKeys.has('ArrowRight')) { ix += rx; iz += rz; manual=true; }
+      const p = _fnP.copy(cam.position);
       if (manual) {
-        navMoveTarget = null;                 // Tastatur unterbricht das Klick-Gleiten
+        navMoveTarget = null; _glideV = 0;    // Tastatur unterbricht das Klick-Gleiten
+        const l = Math.hypot(ix, iz), kv = 1 - Math.exp(-s / 0.12);   // weich anfahren / ausrollen
+        const tvx = l > 1e-6 ? ix / l * WALK_SPEED : 0, tvz = l > 1e-6 ? iz / l * WALK_SPEED : 0;
+        _navVel.x += (tvx - _navVel.x) * kv; _navVel.z += (tvz - _navVel.z) * kv;
+        p.x += _navVel.x * s; p.z += _navVel.z * s;
       } else if (navMoveTarget) {
         // Ziel in einem anderen Raum: über die Durchgänge gehen statt in die Wand
         const w = walkWaypoint(p, navMoveTarget);
-        const dx = w.x - p.x, dz = w.z - p.z, d = Math.hypot(dx, dz);
-        const step = Math.min(d, Math.max(d * 0.08, 0.03), 0.12);   // sanftes Gleiten: nie zäh, nie hastig
-        if (d > 0) { p.x += dx / d * step; p.z += dz / d * step; }
-        if (Math.hypot(navMoveTarget.x - p.x, navMoveTarget.z - p.z) < 0.05) navMoveTarget = null;
+        let dx = w.x - p.x, dz = w.z - p.z, d = Math.hypot(dx, dz);
+        const rest = d + Math.hypot(navMoveTarget.x - w.x, navMoveTarget.z - w.z);   // restlicher Weg
+        if (d < 1e-4) { dx = navMoveTarget.x - p.x; dz = navMoveTarget.z - p.z; d = Math.hypot(dx, dz); }
+        if (rest < 0.02 || d < 1e-4) {
+          navMoveTarget = null; _glideV = 0; _navVel.x = _navVel.z = 0;
+        } else {
+          // Anfahren mit fester Beschleunigung, rechtzeitig bremsen: kommt genau am Ziel zum Stehen
+          const vBrake = Math.max(0.25, Math.sqrt(2 * GLIDE_ACC * rest));
+          _glideV = Math.min(GLIDE_SPEED, vBrake, Math.max(_glideV, Math.hypot(_navVel.x, _navVel.z)) + GLIDE_ACC * s);
+          const step = Math.min(d, _glideV * s);
+          p.x += dx / d * step; p.z += dz / d * step;
+          _navVel.x = dx / d * _glideV; _navVel.z = dz / d * _glideV;
+        }
+      } else if (_navVel.x || _navVel.z) {
+        // Ausrollen nach dem Loslassen der Taste
+        const kv = Math.exp(-s / 0.12);
+        _navVel.x *= kv; _navVel.z *= kv;
+        if (Math.hypot(_navVel.x, _navVel.z) < 0.02) _navVel.x = _navVel.z = 0;
+        p.x += _navVel.x * s; p.z += _navVel.z * s;
       }
       const prev = cam.position;
       if (isWalkable(prev)) {
+        const wantX = p.x - prev.x, wantZ = p.z - prev.z;
         clampToRoom(p, prev);
+        // An Wänden entlanggleiten: Tempo auf die tatsächlich gegangene Bewegung kürzen
+        if (s > 0 && (wantX || wantZ)) {
+          const gotX = p.x - prev.x, gotZ = p.z - prev.z;
+          if (Math.abs(gotX - wantX) > 1e-5) _navVel.x = gotX / s;
+          if (Math.abs(gotZ - wantZ) > 1e-5) _navVel.z = gotZ / s;
+          const vl = Math.hypot(_navVel.x, _navVel.z);
+          if (vl > GLIDE_SPEED) { _navVel.x *= GLIDE_SPEED / vl; _navVel.z *= GLIDE_SPEED / vl; }
+          // Klickziel nicht erreichbar (Wand/Bank im Weg): nach kurzer Zeit aufgeben
+          if (navMoveTarget && Math.hypot(gotX, gotZ) < 0.25 * Math.hypot(wantX, wantZ)) {
+            if ((_glideStall += s) > 0.35) { navMoveTarget = null; _glideV = 0; _navVel.x = _navVel.z = 0; }
+          } else _glideStall = 0;
+        }
       } else {
         // z. B. Start an der Eingangsstation außerhalb des Bereichs: sanft hineingleiten statt springen.
         // Bewegungen, die weiter nach außen führen würden, werden dabei verworfen.
@@ -3169,14 +3249,14 @@
           p.x = prev.x; p.z = prev.z; c = cPrev;
         }
         const dx = c.x - p.x, dz = c.z - p.z, d = Math.hypot(dx, dz);
-        const step = Math.min(d, Math.max(d * 0.12, 0.02), 0.07);   // weich, aber gedeckelt
+        const step = Math.min(d, Math.max(d * (1 - Math.exp(-s / 0.13)), 1.2 * s), 4.2 * s);   // weich, aber gedeckelt
         if (d > 0) { p.x += dx / d * step; p.z += dz / d * step; }
       }
       p.y = CAM_Y;
       cam.position.copy(p);
       // Zoom weich zum Ziel-Sichtfeld
       if (Math.abs(cam.fov - navFov) > 0.05) {
-        cam.fov += (navFov - cam.fov) * 0.15;
+        cam.fov += (navFov - cam.fov) * (1 - Math.exp(-s / 0.1));
         cam.updateProjectionMatrix();
       }
     }
@@ -3271,6 +3351,8 @@
       _occluders.length=0; _lightDefs.length=0; _pool.length=0; _lpFirst=true; _zoneGroups=null; _curZone=null; _hitList=[];
       _plRes=null; _panelTex=null;
       freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=FOV_BASE; navPinch=false; resumeFov=null;
+      _navVel.x=_navVel.z=0; _glideV=0; _glideStall=0; _fpsSum=0; _fpsN=0; _fpsWarm=0;
+      if(_resProbe){ _resScale/=0.85; _resProbe=0; }   // ungeprüfte Absenkung nicht mitnehmen
       _texPending=0; _buildDone=false; _loaderHidden=false; _warmedUp=false;
       const fb=document.getElementById('vr-free-btn');
       if(fb) fb.remove();
@@ -3281,6 +3363,7 @@
     function onResize(){
       if(!cam||!renderer) return;
       cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix();
+      renderer.setPixelRatio(_pixelRatio());
       renderer.setSize(innerWidth,innerHeight);
     }
   })();
