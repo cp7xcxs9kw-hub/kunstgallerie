@@ -2977,13 +2977,33 @@
       _lightDefs.forEach(d => d.zone = zoneAt(d.pos.x, d.pos.z) || nearestZone(d.pos.x, d.pos.z));
     }
     function setAllZonesVisible() { if (_zoneGroups) ZONE_ORDER.forEach(k => _zoneGroups[k].visible = true); }
+    // Knapp hinter einer Zonengrenze sieht man noch, was nur aus der Nachbarzone sichtbar ist
+    // (z. B. aus dem Durchgang Raum 2 → 3 schräg zurück bis in Raum 1). Darum gelten die
+    // Sichtmengen aller Zonen im Umkreis von VIS_NEAR zusammen. Ohne Speicher-Allokation pro Bild:
+    // Zonen als Bitmaske, vereinigte Mengen werden einmal gebildet und wiederverwendet.
+    const VIS_NEAR = 1.5;
+    const _visByMask = new Map();
+    let _curMask = -1, _curVis = null;
     function updateZone(force) {
       if (!_zoneGroups || !cam) return;
-      const k = zoneAt(cam.position.x, cam.position.z) || _curZone || nearestZone(cam.position.x, cam.position.z);
-      if (k === _curZone && !force) return;
+      const x = cam.position.x, z = cam.position.z;
+      const k = zoneAt(x, z) || _curZone || nearestZone(x, z);
+      let mask = 1 << ZONE_ORDER.indexOf(k);
+      for (let i = 0; i < ZONE_ORDER.length; i++) {
+        const r = ZONES[ZONE_ORDER[i]], dx = Math.max(r.x0 - x, 0, x - r.x1), dz = Math.max(r.z0 - z, 0, z - r.z1);
+        if (dx*dx + dz*dz < VIS_NEAR*VIS_NEAR) mask |= 1 << i;
+      }
       _curZone = k;
-      const vis = ZONE_VIS[k];
-      ZONE_ORDER.forEach(z => _zoneGroups[z].visible = vis.has(z));
+      if (mask === _curMask && !force) return;
+      _curMask = mask;
+      let vis = _visByMask.get(mask);
+      if (!vis) {
+        vis = new Set();
+        ZONE_ORDER.forEach((zk, i) => { if (mask & (1 << i)) ZONE_VIS[zk].forEach(v => vis.add(v)); });
+        _visByMask.set(mask, vis);
+      }
+      _curVis = vis;
+      ZONE_ORDER.forEach(zk => _zoneGroups[zk].visible = vis.has(zk));
       _hitList = _paintMeshes.concat(_occluders).filter(m => vis.has(m.userData.zone));
     }
 
@@ -2999,8 +3019,8 @@
       for (let i = 0; i < LIGHT_POOL; i++) { const pl = new T.PointLight(0xffffff, 0, 1, 1); scene.add(pl); _pool.push(pl); }
     }
     function updateLights(dt) {
-      if (!_pool.length || !_curZone) return;
-      const vis = ZONE_VIS[_curZone], cp = cam.position;
+      if (!_pool.length || !_curVis) return;
+      const vis = _curVis, cp = cam.position;
       _lpCand.length = 0;
       for (const d of _lightDefs) { d.want = 0; d.dist = d.pos.distanceToSquared(cp); if (vis.has(d.zone)) _lpCand.push(d); }
       _lpCand.sort((a, b) => a.dist - b.dist);
@@ -3373,7 +3393,7 @@
       if(fadeDiv) fadeDiv.remove();   // keine stehengebliebene Blende beim nächsten Öffnen
       scene=null;cam=null;seq=null;fadeDiv=null;
       _paintMeshes.length=0; _sculpts.length=0; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
-      _occluders.length=0; _lightDefs.length=0; _pool.length=0; _lpFirst=true; _zoneGroups=null; _curZone=null; _hitList=[];
+      _occluders.length=0; _lightDefs.length=0; _pool.length=0; _lpFirst=true; _zoneGroups=null; _curZone=null; _curMask=-1; _curVis=null; _hitList=[];
       _plRes=null; _panelTex=null;
       freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=FOV_BASE; navPinch=false; resumeFov=null;
       _navVel.x=_navVel.z=0; _glideV=0; _glideStall=0; _fpsSum=0; _fpsN=0; _fpsWarm=0;
