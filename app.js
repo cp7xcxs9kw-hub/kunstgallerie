@@ -3,11 +3,15 @@
   const zoomOverlay = document.getElementById('zoom-hero-overlay');
 
   function zoomIntoGallery(targetId) {
+    // Ablauf: Wand dunkelt weich ab (DIM ms), gleichzeitig Flug ins gezeigte Werk (ZOOM ms);
+    // schon während des Flugs blendet das Overlay ab FADE_AT weich aus – die Bewegung bleibt nie stehen.
+    const ZOOM = 1500, DIM = 380, FADE_AT = 850, FADE = 650;
+    if (document.body.classList.contains('hero-zooming')) return;   // läuft schon (Doppelklick)
     const title  = heroSection.querySelector('.hero-title');
     const label  = heroSection.querySelector('.hero-art-label');
     const floor  = heroSection.querySelector('.hero-floor');
 
-    // 0. Schrift sofort ausblenden
+    // 0. Schrift ausblenden
     [title, label, floor].forEach(el => {
       if (!el) return;
       el.style.animation = 'none';
@@ -16,63 +20,90 @@
     requestAnimationFrame(() => requestAnimationFrame(() => {
       [title, label, floor].forEach(el => {
         if (!el) return;
-        el.style.transition = 'opacity 0.5s ease';
+        el.style.transition = 'opacity 0.4s ease';
         el.style.opacity    = '0';
       });
     }));
 
     // 1. Overlay-Bild exakt auf das gezeigte Werk legen – von dort aus wird hineingezoomt
+    //    (das Bild ist bereits vorgeladen und dekodiert, siehe HERO-WERK)
     const oImg   = zoomOverlay.querySelector('img');
     const artImg = document.getElementById('hero-art-img');
     let zoomTo = '';
     if (oImg && artImg) {
       const r = artImg.getBoundingClientRect();
-      oImg.src = artImg.currentSrc || artImg.src;
+      const src = artImg.currentSrc || artImg.src;
+      if (oImg.src !== src) oImg.src = src;
       Object.assign(oImg.style, {
         position: 'absolute', left: r.left + 'px', top: r.top + 'px',
         width: r.width + 'px', height: r.height + 'px',
-        objectFit: 'cover', transformOrigin: '50% 50%', filter: 'none', transform: 'none',
-        transition: 'transform 1.3s cubic-bezier(0.55, 0, 0.35, 1)'
+        objectFit: 'cover', transformOrigin: '50% 50%', filter: 'none',
+        transform: 'translate3d(0,0,0) scale(1)', willChange: 'transform',
+        // falls gerade ein Werkwechsel überblendet: mit derselben Helligkeit starten
+        opacity: getComputedStyle(artImg).opacity,
+        transition: 'transform ' + ZOOM + 'ms cubic-bezier(0.45, 0, 0.2, 1), opacity ' + DIM + 'ms ease'
       });
-      zoomOverlay.style.background = '#0b0a09';
       const sc = Math.max(innerWidth / r.width, innerHeight / r.height) * 2.2;
       const tx = innerWidth / 2 - (r.left + r.width / 2);
       const ty = innerHeight / 2 - (r.top + r.height / 2);
-      zoomTo = 'translate(' + tx + 'px,' + ty + 'px) scale(' + sc + ')';
+      zoomTo = 'translate3d(' + tx + 'px,' + ty + 'px,0) scale(' + sc + ')';
     }
 
-    // Zoom-Overlay anzeigen und Zoom starten
+    // 2. Overlay mit durchsichtigem Hintergrund einblenden – Leuchte, Rahmen und Schrift
+    //    bleiben zunächst sichtbar; Navigation während des Flugs ruhig halten
+    zoomOverlay.classList.remove('zooming');
+    zoomOverlay.style.transition = 'none';
     zoomOverlay.style.opacity = '1';
-    zoomOverlay.style.transition = 'opacity 0s';
-    zoomOverlay.classList.remove('fade-out');
+    zoomOverlay.style.background = 'rgba(11,10,9,0)';
     zoomOverlay.classList.add('active');
+    document.body.classList.add('hero-zooming');
+    if (oImg) void oImg.offsetWidth;
 
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      zoomOverlay.classList.add('zooming');
-      if (oImg && zoomTo) oImg.style.transform = zoomTo;
+      zoomOverlay.style.transition = 'background-color ' + DIM + 'ms ease';
+      zoomOverlay.style.background = 'rgba(11,10,9,1)';
+      if (oImg && zoomTo) { oImg.style.opacity = '1'; oImg.style.transform = zoomTo; }
+      else zoomOverlay.classList.add('zooming');   // Fallback: alter Zoom
     }));
 
-    // 2. Sofort zur neuen Seite scrollen (Overlay verdeckt alles)
-    const target = document.getElementById(targetId);
-    if (target) target.scrollIntoView({ behavior: 'instant' });
-
-    // 3. Bei 1.2s: Overlay sanft ausblenden → neue Seite erscheint
+    // 3. Erst wenn die Wand ganz abgedunkelt ist, unter dem Overlay zur neuen Seite springen
+    //    (Puffer für die zwei Frames bis zum Start des Abdunkelns)
     setTimeout(() => {
-      zoomOverlay.classList.add('fade-out');
+      const target = document.getElementById(targetId);
+      if (target) target.scrollIntoView({ behavior: 'instant' });
+    }, DIM + 120);
 
-      setTimeout(() => {
-        zoomOverlay.classList.remove('active', 'zooming', 'fade-out');
-        zoomOverlay.style.transition = 'opacity 0s';
-        zoomOverlay.style.opacity = '1';
-        zoomOverlay.style.background = '';
-        if (oImg) oImg.removeAttribute('style');
+    // 4. Noch während der Bewegung weich ausblenden → neue Seite erscheint
+    setTimeout(() => {
+      zoomOverlay.style.transition = 'opacity ' + FADE + 'ms ease';
+      zoomOverlay.style.opacity = '0';
+      zoomOverlay.addEventListener('transitionend', function onEnd(e) {
+        if (e.target !== zoomOverlay || e.propertyName !== 'opacity') return;
+        zoomOverlay.removeEventListener('transitionend', onEnd);
+        cleanup();
+      });
+    }, FADE_AT);
 
-        [title, label, floor].forEach(el => {
-          if (!el) return;
-          el.style.animation = el.style.transition = el.style.opacity = '';
-        });
-      }, 450);
-    }, 1200);
+    // 5. Aufräumen – nach dem Ausblenden, mit Sicherheitsnetz falls transitionend ausbleibt
+    let cleaned = false;
+    const fallback = setTimeout(cleanup, FADE_AT + FADE + 500);
+    function cleanup() {
+      if (cleaned) return;
+      cleaned = true;
+      clearTimeout(fallback);
+      zoomOverlay.classList.remove('active', 'zooming');
+      zoomOverlay.style.transition = 'none';
+      zoomOverlay.style.opacity = '1';
+      zoomOverlay.style.background = '';
+      if (oImg) oImg.removeAttribute('style');
+      document.body.classList.remove('hero-zooming');
+
+      [title, label, floor].forEach(el => {
+        if (!el) return;
+        el.style.animation = el.style.transition = el.style.opacity = '';
+      });
+      if (window._heroZoomSync) window._heroZoomSync();
+    }
   }
 
   function roomTransition(targetId) {
@@ -154,6 +185,7 @@
   if (heroEnterBtn) {
     heroEnterBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      if (document.body.classList.contains('hero-zooming')) return;   // Doppelklick ignorieren
       _enterGallery();
       const targetId = heroEnterBtn.getAttribute('href').slice(1);
       zoomIntoGallery(targetId);
@@ -2959,6 +2991,7 @@
           idx = n;
           img.src = WORKS[n].src;
           setLabel(WORKS[n]);
+          syncZoomImg();
           setTimeout(() => {
             frame.classList.remove('is-changing');
             label.classList.remove('is-changing');
@@ -2970,6 +3003,15 @@
       pre.src = WORKS[n].src;
     }
     function schedule() { if (!timer) timer = setTimeout(next, INTERVAL); }
+    // Zoom-Overlay (Übergang „Galerie betreten") immer mit dem aktuellen Werk vorbereiten,
+    // damit beim Klick nichts mehr geladen oder dekodiert werden muss
+    function syncZoomImg() {
+      const z = document.querySelector('#zoom-hero-overlay img');
+      // während des Übergangs nicht das Bild im Flug austauschen – wird danach nachgeholt
+      if (!z || document.body.classList.contains('hero-zooming')) return;
+      z.src = WORKS[idx].src;
+      if (z.decode) z.decode().catch(() => {});
+    }
 
     frame.addEventListener('click', () => openArtwork(WORKS[idx].title));
     frame.addEventListener('mouseenter', () => { hovering = true; });
@@ -2977,6 +3019,8 @@
     new IntersectionObserver(es => { inView = es[0].isIntersecting; }, { threshold: 0.3 }).observe(hero);
 
     setLabel(WORKS[0]);
+    syncZoomImg();
+    window._heroZoomSync = syncZoomImg;
     // Sprachwechsel: Screenreader-Beschriftung des Werks sofort mitziehen
     window._heroArtRelabel = function() { setLabel(WORKS[idx]); };
     // Wechsel erst starten, wenn der Startbildschirm sichtbar ist (nach dem Ladebildschirm)
@@ -3048,6 +3092,7 @@
 
   // ── Rundgang-Hinweis-Popup ────────────────────────────────────
   function _showRundgangHint() {
+    if (document.getElementById('rundgang-hint')) return;   // nur ein Hinweis gleichzeitig
     const isEN = localStorage.getItem('lang') === 'en';
     const hint = document.createElement('div');
     hint.id = 'rundgang-hint';
