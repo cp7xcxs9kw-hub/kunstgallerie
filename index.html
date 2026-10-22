@@ -65,7 +65,65 @@
 <link rel="manifest" href="site.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="theme-color" content="#080706">
-<link rel="stylesheet" href="styles.css?v=20261022f">
+<style>
+  /* Ladeschirm: Stile direkt in der Seite, damit er nicht von styles.css abhängt (gesteuert vom Skript nach dem Hero) */
+  #preloader {
+    position: fixed;
+    inset: 0;
+    background: #0A0A0A;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .preloader-line {
+    position: relative;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    animation: preloader-line-grow 1.1s ease forwards 0.5s;
+  }
+  /* Lichtreflex, der fortlaufend über die Linie wandert – zeigt, dass noch geladen wird */
+  .preloader-line::after {
+    content: '';
+    position: absolute;
+    top: -3px; height: 7px;
+    left: 0; width: 40%;
+    background: radial-gradient(ellipse at center, rgba(255,236,180,1) 0%, rgba(214,180,90,0.5) 40%, transparent 72%);
+    opacity: 0;
+    animation: preloader-glint 1.6s ease-in-out 1.6s infinite;
+  }
+  @keyframes preloader-glint {
+    0%   { left: 0;   opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { left: 60%; opacity: 0; }
+  }
+  .preloader-text {
+    font-size: 0.5rem;
+    letter-spacing: 0.6em;
+    color: rgba(201,168,76,0.45);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: preloader-fade-in 0.7s ease forwards 1s;
+  }
+  @keyframes preloader-fade-in {
+    to { opacity: 1; }
+  }
+  @keyframes preloader-line-grow {
+    to { width: 120px; }
+  }
+
+</style>
+<link rel="stylesheet" href="styles.css?v=20261022i">
 </head>
 <body>
 <svg id="nav-sweep" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
@@ -201,6 +259,34 @@
 
   <div class="hero-floor"></div>
 </section>
+<script>
+/* Ladeschirm – bewusst direkt hier und nicht in app.js: so verschwindet er, sobald Startbild und
+   Schriften da sind, auch wenn die große Skriptdatei bei langsamer Verbindung noch lädt.
+   Mindestens 1,5 s (Linie ist gezeichnet), spätestens nach 6 s. */
+(function(){
+  var pl = document.getElementById('preloader');
+  var hero = document.getElementById('hero');
+  var t0 = Date.now(), MIN = 1500, MAX = 6000, done = false;
+  function hide(){
+    if (done) return; done = true;
+    if (hero) hero.classList.add('hero-ready');
+    if (pl) { pl.classList.add('hidden'); setTimeout(function(){ if (pl.parentNode) pl.remove(); }, 900); }
+    window._preloaderHidden = true;
+    document.dispatchEvent(new Event('preloader:hidden'));
+    // Kachelbilder erst jetzt laden – vorher hat das Startbild die volle Bandbreite
+    var tiles = document.querySelectorAll('img[data-defer-src]');
+    for (var i = 0; i < tiles.length; i++) { tiles[i].src = tiles[i].getAttribute('data-defer-src'); tiles[i].removeAttribute('data-defer-src'); }
+  }
+  var img = document.getElementById('hero-art-img');
+  var imgReady = new Promise(function(res){
+    if (!img || img.complete) return res();   // schon geladen (oder schon mit Fehler fertig)
+    img.addEventListener('load', res); img.addEventListener('error', res);
+  });
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  Promise.all([imgReady, fontsReady]).then(function(){ setTimeout(hide, Math.max(0, MIN - (Date.now() - t0))); });
+  setTimeout(hide, MAX);
+})();
+</script>
 
 
 <!-- ══════════════════════════════════════
@@ -240,7 +326,7 @@
   <div class="cat-grid">
 
     <div class="cat-tile" onclick="openCollection('oel')">
-      <img class="cat-tile-bg" loading="lazy" decoding="async" src="Images/C-F-2004-2entzerrt.JPG" alt="">
+      <img class="cat-tile-bg" loading="lazy" decoding="async" data-defer-src="Images/C-F-2004-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-oel">Collage &amp; Zeichnungen</p>
       <p class="cat-tile-count" id="cat-view-1">Kollektion ansehen</p>
@@ -248,7 +334,7 @@
     </div>
 
     <div class="cat-tile" onclick="openCollection('acryl')">
-      <img class="cat-tile-bg" loading="lazy" decoding="async" src="Images/C-F-2002-2entzerrt.JPG" alt="">
+      <img class="cat-tile-bg" loading="lazy" decoding="async" data-defer-src="Images/C-F-2002-2entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-acryl">Malerei</p>
       <p class="cat-tile-count" id="cat-view-2">Kollektion ansehen</p>
@@ -256,7 +342,7 @@
     </div>
 
     <div class="cat-tile" onclick="openCollection('aquarell')">
-      <img class="cat-tile-bg" loading="lazy" decoding="async" src="Images/C-F-2003-1entzerrt.JPG" alt="">
+      <img class="cat-tile-bg" loading="lazy" decoding="async" data-defer-src="Images/C-F-2003-1entzerrt.JPG" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-aquarell">Grafik</p>
       <p class="cat-tile-count" id="cat-view-3">Kollektion ansehen</p>
@@ -264,7 +350,7 @@
     </div>
 
     <div class="cat-tile" onclick="openCollection('mixed')">
-      <img class="cat-tile-bg" loading="lazy" decoding="async" src="Images/Plastik-3-b.jpg" alt="">
+      <img class="cat-tile-bg" loading="lazy" decoding="async" data-defer-src="Images/Plastik-3-b.jpg" alt="">
       <div class="cat-tile-rule"></div>
       <p class="cat-tile-name" id="cat-mixed">Plastik</p>
       <p class="cat-tile-count" id="cat-view-4">Kollektion ansehen</p>
@@ -329,67 +415,67 @@
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Zwei Figuren I')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2001-1entzerrt.jpg" alt="Zwei Figuren I"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2001-1entzerrt.jpg" alt="Zwei Figuren I"></div>
         <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren I</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 28 × 40 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 400 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren I')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Badende')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2001-2entzerrt.JPG" alt="Badende"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2001-2entzerrt.JPG" alt="Badende"></div>
         <div class="coll-card-body"><p class="coll-card-title">Badende</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Badende')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2002-1entzerrt.JPG" alt="Zwei Badende"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2002-1entzerrt.JPG" alt="Zwei Badende"></div>
         <div class="coll-card-body"><p class="coll-card-title">Zwei Badende</p><p class="coll-card-meta">Mischtechnik auf Papier &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Badende')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Figur und Torsi')">
-        <div class="coll-card-img coll-card-img--landscape"><img loading="lazy" decoding="async" src="Images/C-F-2002-2entzerrt.JPG" alt="Figur und Torsi"></div>
+        <div class="coll-card-img coll-card-img--landscape"><img loading="lazy" decoding="async" data-src="Images/C-F-2002-2entzerrt.JPG" alt="Figur und Torsi"></div>
         <div class="coll-card-body"><p class="coll-card-title">Figur und Torsi</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Figur und Torsi')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Langgezogene Figurengruppe')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2002-3entzerrt.JPG" alt="Langgezogene Figurengruppe"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2002-3entzerrt.JPG" alt="Langgezogene Figurengruppe"></div>
         <div class="coll-card-body"><p class="coll-card-title">Langgezogene Figurengruppe</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Langgezogene Figurengruppe')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Totenkult')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2003-1entzerrt.JPG" alt="Totenkult"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2003-1entzerrt.JPG" alt="Totenkult"></div>
         <div class="coll-card-body"><p class="coll-card-title">Totenkult</p><p class="coll-card-meta">Acrylcollage &nbsp;·&nbsp; 45 × 72 cm &nbsp;·&nbsp; 2003</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Totenkult')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Bunte Figur')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2004-1entzerrt.JPG" alt="Bunte Figur"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2004-1entzerrt.JPG" alt="Bunte Figur"></div>
         <div class="coll-card-body"><p class="coll-card-title">Bunte Figur</p><p class="coll-card-meta">Acrylcollage auf Pressspahn &nbsp;·&nbsp; 48 × 60 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Bunte Figur')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Goldene Figur')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2004-2entzerrt.JPG" alt="Goldene Figur"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2004-2entzerrt.JPG" alt="Goldene Figur"></div>
         <div class="coll-card-body"><p class="coll-card-title">Goldene Figur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 48 × 68 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Goldene Figur')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Kopf im Profil')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2004-3entzerrt.JPG" alt="Kopf im Profil"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2004-3entzerrt.JPG" alt="Kopf im Profil"></div>
         <div class="coll-card-body"><p class="coll-card-title">Kopf im Profil</p><p class="coll-card-meta">Deckfarben auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kopf im Profil')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Hockende Figur')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2004-4entzerrt.JPG" alt="Hockende Figur"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2004-4entzerrt.JPG" alt="Hockende Figur"></div>
         <div class="coll-card-body"><p class="coll-card-title">Hockende Figur</p><p class="coll-card-meta">Pastell auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Hockende Figur')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Figuren II')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2005-1entzerrt.JPG" alt="Zwei Figuren II"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2005-1entzerrt.JPG" alt="Zwei Figuren II"></div>
         <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren II</p><p class="coll-card-meta">Collage aus Drucken &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren II')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Kuss')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2005-2entzerrt.JPG" alt="Kuss"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2005-2entzerrt.JPG" alt="Kuss"></div>
         <div class="coll-card-body"><p class="coll-card-title">Kuss</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kuss')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Badende in blau')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2005-3entzerrt.JPG" alt="Badende in blau"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2005-3entzerrt.JPG" alt="Badende in blau"></div>
         <div class="coll-card-body"><p class="coll-card-title">Badende in blau</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 24 × 34 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende in blau')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Paar')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2005-4.JPG" alt="Paar"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2005-4.JPG" alt="Paar"></div>
         <div class="coll-card-body"><p class="coll-card-title">Paar</p><p class="coll-card-meta">Collage aus Graphik &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Paar')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Frauen')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2005-5.JPG" alt="Zwei Frauen"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2005-5.JPG" alt="Zwei Frauen"></div>
         <div class="coll-card-body"><p class="coll-card-title">Zwei Frauen</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 65 × 50 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Frauen')">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Meer')">
-        <div class="coll-card-img"><img loading="lazy" decoding="async" src="Images/C-F-2005-6entzerrt.JPG" alt="Meer"></div>
+        <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/C-F-2005-6entzerrt.JPG" alt="Meer"></div>
         <div class="coll-card-body"><p class="coll-card-title">Meer</p><p class="coll-card-meta">Grafikkollage &nbsp;·&nbsp; 33 × 24 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Meer')">Angebot abgeben</button></div>
       </div>
     </div>
@@ -446,8 +532,8 @@
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Kniende Figur')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-1-a.jpg" alt="Kniende Figur – Ansicht 1">
-          <img loading="lazy" decoding="async" src="Images/Plastik-1-b.jpg" alt="Kniende Figur – Ansicht 2">
+          <img class="active" loading="lazy" decoding="async" data-src="Images/Plastik-1-a.jpg" alt="Kniende Figur – Ansicht 1">
+          <img loading="lazy" decoding="async" data-src="Images/Plastik-1-b.jpg" alt="Kniende Figur – Ansicht 2">
           <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
@@ -456,8 +542,8 @@
       </div>
       <div class="coll-card" onclick="openArtwork('Weiblicher Torso')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-2-a.jpg" alt="Weiblicher Torso – Ansicht 1">
-          <img loading="lazy" decoding="async" src="Images/Plastik-2-b.jpg" alt="Weiblicher Torso – Ansicht 2">
+          <img class="active" loading="lazy" decoding="async" data-src="Images/Plastik-2-a.jpg" alt="Weiblicher Torso – Ansicht 1">
+          <img loading="lazy" decoding="async" data-src="Images/Plastik-2-b.jpg" alt="Weiblicher Torso – Ansicht 2">
           <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
@@ -466,8 +552,8 @@
       </div>
       <div class="coll-card" onclick="openArtwork('Verhüllte Figur')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-3-a.jpg" alt="Verhüllte Figur – Ansicht 1">
-          <img loading="lazy" decoding="async" src="Images/Plastik-3-b.jpg" alt="Verhüllte Figur – Ansicht 2">
+          <img class="active" loading="lazy" decoding="async" data-src="Images/Plastik-3-a.jpg" alt="Verhüllte Figur – Ansicht 1">
+          <img loading="lazy" decoding="async" data-src="Images/Plastik-3-b.jpg" alt="Verhüllte Figur – Ansicht 2">
           <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
@@ -476,8 +562,8 @@
       </div>
       <div class="coll-card" onclick="openArtwork('Torso mit Rillen')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-4-a.jpg" alt="Torso mit Rillen – Ansicht 1">
-          <img loading="lazy" decoding="async" src="Images/Plastik-4-b.jpg" alt="Torso mit Rillen – Ansicht 2">
+          <img class="active" loading="lazy" decoding="async" data-src="Images/Plastik-4-a.jpg" alt="Torso mit Rillen – Ansicht 1">
+          <img loading="lazy" decoding="async" data-src="Images/Plastik-4-b.jpg" alt="Torso mit Rillen – Ansicht 2">
           <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
@@ -486,8 +572,8 @@
       </div>
       <div class="coll-card" onclick="openArtwork('Stehender Torso')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-5-a.jpg" alt="Stehender Torso – Ansicht 1">
-          <img loading="lazy" decoding="async" src="Images/Plastik-5-b.jpg" alt="Stehender Torso – Ansicht 2">
+          <img class="active" loading="lazy" decoding="async" data-src="Images/Plastik-5-a.jpg" alt="Stehender Torso – Ansicht 1">
+          <img loading="lazy" decoding="async" data-src="Images/Plastik-5-b.jpg" alt="Stehender Torso – Ansicht 2">
           <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
@@ -496,8 +582,8 @@
       </div>
       <div class="coll-card" onclick="openArtwork('Sitzende Figur')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" src="Images/Plastik-6-a.jpg" alt="Sitzende Figur – Ansicht 1">
-          <img loading="lazy" decoding="async" src="Images/Plastik-6-b.jpg" alt="Sitzende Figur – Ansicht 2">
+          <img class="active" loading="lazy" decoding="async" data-src="Images/Plastik-6-a.jpg" alt="Sitzende Figur – Ansicht 1">
+          <img loading="lazy" decoding="async" data-src="Images/Plastik-6-b.jpg" alt="Sitzende Figur – Ansicht 2">
           <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
@@ -516,11 +602,11 @@
   <div class="about-visual" id="bio-carousel">
     <img class="bio-slide active" loading="lazy" decoding="async" src="assets/portrait.jpg"
          alt="Horst Schwab">
-    <img class="bio-slide" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10588&sec=742b843864981929eb30f77c4ec85e5e"
+    <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10588&sec=742b843864981929eb30f77c4ec85e5e"
          alt="80. Geburtstag, 2015" style="object-position: right center;">
-    <img class="bio-slide" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=5352&sec=ec5c47c5ba500d4238093c750ff4fc3b"
+    <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=5352&sec=ec5c47c5ba500d4238093c750ff4fc3b"
          alt="Porträt">
-    <img class="bio-slide" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10815&sec=ef001e31245f248f1fb09ad97de6797f"
+    <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10815&sec=ef001e31245f248f1fb09ad97de6797f"
          alt="Selbstbildnis, 1982">
     <button class="bio-nav bio-nav-prev" aria-label="Vorheriges Bild">&#8592;</button>
     <button class="bio-nav bio-nav-next" aria-label="Nächstes Bild">&#8594;</button>
@@ -1370,6 +1456,6 @@
 </div>
 
 
-<script src="app.js?v=20261022s"></script>
+<script src="app.js?v=20261022v"></script>
 </body>
 </html>

@@ -847,6 +847,9 @@
   function openCollection(cat, noHash) {
     const el = document.getElementById('coll-' + cat);
     if (!el) return;
+    // Bilder erst jetzt laden: die unsichtbaren Ebenen liegen über dem Bildschirm, „lazy“ allein
+    // würde sonst beim Seitenaufruf alle Kollektionen (rund 10 MB) sofort mitladen
+    el.querySelectorAll('img[data-src]').forEach(img => { img.src = img.dataset.src; img.removeAttribute('data-src'); });
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
     el.scrollTop = 0;
@@ -1538,7 +1541,7 @@
         return new T.CanvasTexture(cv);
       }
       _rm = {
-        wall:   new T.MeshStandardMaterial({color:0xe8d5b0, roughness:0.95, side:T.FrontSide}),
+        wall:   new T.MeshStandardMaterial({color:0xe9e2d6, roughness:0.95, side:T.FrontSide}),   // warmes Gebrochen-Weiß (kräftigeres Beige wirkte bei wenig Licht gelblich)
         ceil:   new T.MeshBasicMaterial({map: makeCeilingTex(T)}),
         ceilC:  new T.MeshBasicMaterial({color:0xf0efe9}),
         floor:  new T.MeshStandardMaterial({map:makeFloorTex(T), roughness:0.72, metalness:0.03}),
@@ -2927,13 +2930,14 @@
     const ZONE_VIS = {
       R1:  ['R1','C12','R2','C23','G'],
       C12: ['C12','R1','R2','C23','G'],
-      R2:  ['R2','C12','R1','C23','R3','G'],
-      C23: ['C23','R2','R3','C34','C12'],
+      // Die Ecken-Durchgänge liegen auf einer Linie: von Raum 2 sieht man durch Raum 3 bis in Raum 4
+      R2:  ['R2','C12','R1','C23','R3','C34','R4','G'],
+      C23: ['C23','R2','R3','C34','R4','C12'],
       R3:  ['R3','C23','C34','R2','R4'],
-      C34: ['C34','R3','R4','C23'],
-      R4:  ['R4','C34','R3','C45','R5','G'],
-      C45: ['C45','R4','R5','G'],
-      R5:  ['R5','C45','R4','G','R1'],
+      C34: ['C34','R3','R4','C23','R2','C45','R5'],
+      R4:  ['R4','C34','R3','C23','R2','C45','R5','G'],
+      C45: ['C45','R4','C34','R3','R5','G'],
+      R5:  ['R5','C45','R4','C34','R3','G','R1'],
       G:   ['G','R5','R1','C12','R2'],
     };
     Object.keys(ZONE_VIS).forEach(k => ZONE_VIS[k] = new Set(ZONE_VIS[k]));
@@ -2985,9 +2989,10 @@
 
     // ── Licht-Pool: feste Anzahl echter Punktlichter, die jeweils die nächsten Raumlichter
     //    der sichtbaren Räume übernehmen; Wechsel werden weich überblendet (kein Aufpoppen).
-    //    12 Lichter: nahezu wie 22 (ferne Raumenden etwas dunkler), aber bei voller Retina-Auflösung flüssig (jedes Licht kostet
-    //    pro Bildpunkt); 2 Plätze bleiben frei für Lichter, die gerade ausblenden.
-    const LIGHT_POOL = 12, LIGHT_NEAR = 10;
+    //    14 Lichter: wirken nahezu wie 22, kosten bei voller Retina-Auflösung aber nur ~6 ms pro Bild
+    //    (ab 16 springt die Grafikzeit auf über 11 ms, bei 22 auf ~26 ms); weniger als 14 lassen
+    //    entferntere Wände zu dunkel und gelblich wirken. 2 Plätze bleiben frei für ausblendende Lichter.
+    const LIGHT_POOL = 14, LIGHT_NEAR = 12;
     const _pool = [], _lpCand = [], _lpActive = [];
     let _lpFirst = true;
     function buildLightPool(T) {
@@ -4121,22 +4126,14 @@
 
 
   /* ── PRELOADER JS ── */
+  // Den Ladeschirm steuert ein kleines Skript direkt in index.html (erscheint und verschwindet
+  // unabhängig davon, wann diese Datei geladen ist). Hier nur: Werk-Rotation starten, sobald er weg ist.
   (function(){
-    var pl = document.getElementById('preloader');
     var heroReady = function(){
       var h = document.getElementById('hero');
       if (h) h.classList.add('hero-ready');
       if (window._heroArtStart) window._heroArtStart();
     };
-    if (!pl) { heroReady(); return; }
-    var hide = function(){
-      pl.classList.add('hidden');
-      heroReady();
-      setTimeout(function(){ pl.remove(); }, 900);
-    };
-    if (document.readyState === 'complete') {
-      setTimeout(hide, 1800);
-    } else {
-      window.addEventListener('load', function(){ setTimeout(hide, 400); });
-    }
+    if (window._preloaderHidden || !document.getElementById('preloader')) heroReady();
+    else document.addEventListener('preloader:hidden', heroReady, { once: true });
   })();
