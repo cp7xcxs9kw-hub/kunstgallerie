@@ -74,6 +74,11 @@
      wachsen dadurch mit. Grenzen in rem: eine im Browser größer eingestellte Schrift gilt weiter.
      (Gleiche Regel steht für den Ladeschirm auch inline in index.html.) */
   html { scroll-behavior: auto; font-size: clamp(1rem, min(1.0667vw, 2vh), 1.875rem); }
+  /* Mindestgröße für sehr kleine Beschriftungen: auf Bildschirmen ohne Retina (Windows-Laptops,
+     Monitore bei 100–125 %) wären sie sonst nur 7–9 Pixel groß und kaum lesbar. Retina (Mac, Handy)
+     bleibt unverändert, dort gilt 0. Verwendet als font-size: max(…, var(--label-min)). */
+  :root { --label-min: 0px; }
+  @media (max-resolution: 1.49dppx), (-webkit-max-device-pixel-ratio: 1.49) { :root { --label-min: 0.58rem; } }
 
   body {
     font-family: 'Montserrat', sans-serif;
@@ -485,7 +490,7 @@
   }
 
   .scroll-text {
-    font-size: 0.48rem;
+    font-size: max(0.48rem, var(--label-min));
     letter-spacing: 0.3em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -551,7 +556,7 @@
     align-items: center;
     gap: 0.5rem;
     color: var(--gold);
-    font-size: 0.54rem;
+    font-size: max(0.54rem, var(--label-min));
     letter-spacing: 0.45em;
     text-transform: uppercase;
     animation: introHintPulse 2.8s ease-in-out infinite;
@@ -664,7 +669,7 @@
   .artwork-placeholder svg { opacity: 0.2; }
 
   .artwork-placeholder-text {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.3em;
     color: var(--gray-mid);
     text-transform: uppercase;
@@ -714,7 +719,7 @@
   }
 
   .artwork-meta {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.2em;
     color: var(--gold-light);
     text-transform: uppercase;
@@ -723,7 +728,7 @@
   .artwork-btn {
     margin-top: 1rem;
     display: inline-block;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--gold);
@@ -892,7 +897,7 @@
     pointer-events: none;
   }
   .wip-banner-eyebrow {
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--gold);
@@ -922,7 +927,7 @@
     opacity: 0.5;
   }
   .wip-notify-label {
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--gray-mid);
@@ -955,7 +960,7 @@
     padding: 0.7rem 1.4rem;
     flex: 1;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.25em;
     text-transform: uppercase;
     cursor: pointer;
@@ -1063,7 +1068,7 @@
     border: 1px solid rgba(201,168,76,0.2);
   }
   #ad-views-nav .views-count {
-    font-family: 'Montserrat', sans-serif; font-size: 0.5rem;
+    font-family: 'Montserrat', sans-serif; font-size: max(0.5rem, var(--label-min));
     letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
     white-space: nowrap;
   }
@@ -1128,7 +1133,7 @@
   .fav-btn.fav-active { color: var(--gold); }
   .fav-count-badge {
     display: inline-block; background: var(--gold); color: var(--black);
-    font-size: 0.38rem; font-family: 'Montserrat', sans-serif;
+    font-size: max(0.38rem, var(--label-min)); font-family: 'Montserrat', sans-serif;
     min-width: 1.5em; height: 1.5em; line-height: 1.5em;
     text-align: center; border-radius: 50%;
     margin-left: 0.35em; vertical-align: middle; letter-spacing: 0;
@@ -1166,7 +1171,7 @@
   }
   .lang-toggle-btn {
     background: none; border: none; cursor: pointer;
-    font-family: 'Montserrat', sans-serif; font-size: 0.50rem;
+    font-family: 'Montserrat', sans-serif; font-size: max(0.50rem, var(--label-min));
     letter-spacing: 0.22em; color: var(--gray-mid);
     padding: 0; display: flex; gap: 0.3em; align-items: center;
     transition: color 0.2s;
@@ -1207,14 +1212,14 @@
     color: rgba(26,26,26,0.52);
     padding: 0.48rem 1.4rem;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.56rem; letter-spacing: 0.26em;
+    font-size: max(0.56rem, var(--label-min)); letter-spacing: 0.26em;
     cursor: pointer; text-transform: uppercase;
     transition: all 0.25s;
   }
   .ad-back-btn:hover { color: var(--gold-dim); border-color: var(--gold); }
   .ad-topbar-title {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.55rem; font-weight: 300;
+    font-size: max(0.55rem, var(--label-min)); font-weight: 300;
     letter-spacing: 0.38em;
     color: rgba(26,26,26,0.35);
     text-transform: uppercase;
@@ -1302,7 +1307,7 @@
   }
   .ad-placeholder-sub {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.48rem; letter-spacing: 0.28em;
+    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.28em;
     color: rgba(201,168,76,0.30);
     text-transform: uppercase;
   }
@@ -1330,7 +1335,7 @@
     transform: translateX(-50%);
     white-space: nowrap;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.48rem; letter-spacing: 0.24em;
+    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.24em;
     color: rgba(201,168,76,0.25);
     pointer-events: none;
   }
@@ -1347,7 +1352,7 @@
   }
   .ad-eyebrow {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.50rem; letter-spacing: 0.44em;
+    font-size: max(0.50rem, var(--label-min)); letter-spacing: 0.44em;
     color: var(--gold-dim);
     text-transform: uppercase;
     margin-bottom: 1rem;
@@ -1362,7 +1367,7 @@
   }
   .ad-meta-line {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.56rem; letter-spacing: 0.18em;
+    font-size: max(0.56rem, var(--label-min)); letter-spacing: 0.18em;
     color: var(--gray-mid);
     text-transform: uppercase;
     margin-bottom: 1.4rem;
@@ -1380,7 +1385,7 @@
   }
   .ad-story-head {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.52rem; letter-spacing: 0.32em;
+    font-size: max(0.52rem, var(--label-min)); letter-spacing: 0.32em;
     color: var(--gold-dim);
     text-transform: uppercase;
     margin-bottom: 0.9rem;
@@ -1403,7 +1408,7 @@
   .ad-detail-item { display: flex; flex-direction: column; gap: 0.3rem; }
   .ad-detail-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.48rem; letter-spacing: 0.30em;
+    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.30em;
     color: var(--gray-mid); text-transform: uppercase;
   }
   .ad-detail-value {
@@ -1416,7 +1421,7 @@
     border: 1px solid var(--gold-dim);
     color: var(--gold-dim);
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.56rem; letter-spacing: 0.30em;
+    font-size: max(0.56rem, var(--label-min)); letter-spacing: 0.30em;
     text-transform: uppercase;
     background: transparent; cursor: pointer;
     transition: all 0.28s;
@@ -1431,7 +1436,7 @@
     border: 1px solid rgba(201,168,76,0.6);
     color: var(--gold);
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.52rem; letter-spacing: 0.25em;
+    font-size: max(0.52rem, var(--label-min)); letter-spacing: 0.25em;
     text-transform: uppercase;
     background: rgba(8,7,6,0.72);
     backdrop-filter: blur(6px);
@@ -1488,7 +1493,7 @@
   .modal-close:hover { opacity: 1; }
 
   .modal-label {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.4em;
     color: var(--gold);
     text-transform: uppercase;
@@ -1538,7 +1543,7 @@
   .field:focus-within label,
   .field.has-value label {
     top: 0.05rem;
-    font-size: 0.46rem;
+    font-size: max(0.46rem, var(--label-min));
     letter-spacing: 0.3em;
     color: var(--gold);
   }
@@ -1606,7 +1611,7 @@
     gap: 0.6rem;
   }
   .frame-label {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--gray-mid);
@@ -1624,7 +1629,7 @@
     border: 0.5px solid rgba(201,168,76,0.4);
     background: transparent;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--gray-mid);
@@ -1760,7 +1765,7 @@
     bottom: 2rem; left: 0; right: 0;
     text-align: center;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.48rem;
+    font-size: max(0.48rem, var(--label-min));
     letter-spacing: 0.3em;
     color: rgba(201,168,76,0.6);
     text-transform: uppercase;
@@ -1849,7 +1854,7 @@
   }
   .bio-tl-text {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.46rem;
+    font-size: max(0.46rem, var(--label-min));
     letter-spacing: 0.07em;
     color: var(--gray-mid);
     line-height: 1.85;
@@ -1871,7 +1876,7 @@
   }
   .bio-fact-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.42rem;
+    font-size: max(0.42rem, var(--label-min));
     letter-spacing: 0.28em;
     color: var(--gray-mid);
     text-transform: uppercase;
@@ -1936,7 +1941,7 @@
     color: rgba(201,168,76,0.6);
     border: 1px solid rgba(201,168,76,0.22);
     padding: 0.55rem 1.5rem;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.32em;
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
@@ -1984,6 +1989,8 @@
     transform: translateY(1.125rem); opacity: 0;
     transition: transform 0.55s ease 0.15s, opacity 0.55s ease 0.15s;
   }
+  /* Niedrige Laptop-Fenster: Kasten kompakter, damit er ganz auf den Bildschirm passt */
+  @media (max-height: 700px) { .vr-info-box { padding: 2.2rem 3rem; } }
   .vr-info-box::before {
     content: ''; position: absolute;
     top: -1px; left: 20%; right: 20%; height: 1px;
@@ -1996,7 +2003,7 @@
   }
 
   .vr-info-label {
-    font-size: 0.44rem; letter-spacing: 0.58em; text-transform: uppercase;
+    font-size: max(0.44rem, var(--label-min)); letter-spacing: 0.58em; text-transform: uppercase;
     color: rgba(201,168,76,0.55); margin-bottom: 1.2rem;
     font-family: 'Montserrat', sans-serif; font-weight: 300;
   }
@@ -2007,7 +2014,7 @@
     margin-bottom: 0.9rem; line-height: 1.2;
   }
   .vr-info-ornament {
-    color: rgba(201,168,76,0.45); font-size: 0.5rem;
+    color: rgba(201,168,76,0.45); font-size: max(0.5rem, var(--label-min));
     margin-bottom: 1.6rem; letter-spacing: 0.15em;
   }
   .vr-info-text {
@@ -2030,12 +2037,12 @@
     font-family: 'Montserrat', sans-serif;
   }
   .vr-info-step-text {
-    font-size: 0.43rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-size: max(0.43rem, var(--label-min)); letter-spacing: 0.2em; text-transform: uppercase;
     color: rgba(255,255,255,0.62); font-family: 'Montserrat', sans-serif; line-height: 1.7;
   }
   .vr-info-step-text em { color: rgba(201,168,76,0.9); font-style: normal; }
   .vr-info-close {
-    font-size: 0.54rem; letter-spacing: 0.42em; text-transform: uppercase;
+    font-size: max(0.54rem, var(--label-min)); letter-spacing: 0.42em; text-transform: uppercase;
     color: var(--gold); background: transparent;
     border: 1px solid rgba(201,168,76,0.55);
     padding: 0.9rem 2.6rem; cursor: pointer;
@@ -2057,7 +2064,7 @@
     color: rgba(201,168,76,0.55);
     border: 1px solid rgba(201,168,76,0.2);
     padding: 0.5rem 1.3rem;
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.32em;
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
@@ -2075,7 +2082,7 @@
     color: rgba(201,168,76,0.55);
     border: 1px solid rgba(201,168,76,0.2);
     padding: 0.5rem 1.3rem;
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.32em;
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
@@ -2104,7 +2111,7 @@
     border: 1px solid rgba(201,168,76,0.28);
     color: rgba(201,168,76,0.65);
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.28em;
     padding: 0.5rem 1.4rem;
     cursor: pointer;
@@ -2369,7 +2376,7 @@
     margin-bottom: 0.5rem;
   }
   .cal-weekdays span {
-    text-align: center; font-size: 0.42rem;
+    text-align: center; font-size: max(0.42rem, var(--label-min));
     letter-spacing: 0.2em; color: rgba(201,168,76,0.4);
     text-transform: uppercase; padding-bottom: 0.6rem;
   }
@@ -2391,7 +2398,7 @@
   .cal-day.cal-empty { cursor: default; }
   .cal-confirm {
     margin-top: 1.6rem; text-align: center;
-    font-size: 0.55rem; letter-spacing: 0.18em;
+    font-size: max(0.55rem, var(--label-min)); letter-spacing: 0.18em;
     color: rgba(201,168,76,0.4); text-transform: uppercase;
     min-height: 1.4rem;
   }
@@ -2400,7 +2407,7 @@
     display: block; width: 100%; margin-top: 1.2rem;
     background: transparent; border: 1px solid rgba(201,168,76,0.35);
     color: var(--gold); font-family: 'Montserrat', sans-serif;
-    font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase;
+    font-size: max(0.55rem, var(--label-min)); letter-spacing: 0.3em; text-transform: uppercase;
     padding: 0.85rem; cursor: pointer;
     transition: background 0.25s, border-color 0.25s;
     opacity: 0; pointer-events: none; transition: opacity 0.3s, background 0.25s;
@@ -2414,7 +2421,7 @@
     color: var(--gold); text-align: center; margin-bottom: 0.3rem; letter-spacing: 0.08em;
   }
   .cal-auth-sub {
-    font-size: 0.48rem; letter-spacing: 0.22em; color: rgba(201,168,76,0.35);
+    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.22em; color: rgba(201,168,76,0.35);
     text-transform: uppercase; text-align: center; margin-bottom: 1.8rem;
   }
   .cal-auth-tabs {
@@ -2422,7 +2429,7 @@
   }
   .cal-auth-tab {
     flex: 1; background: none; border: none; padding: 0.6rem 0;
-    font-family: 'Montserrat', sans-serif; font-size: 0.5rem; letter-spacing: 0.28em;
+    font-family: 'Montserrat', sans-serif; font-size: max(0.5rem, var(--label-min)); letter-spacing: 0.28em;
     text-transform: uppercase; color: rgba(250,250,248,0.3); cursor: pointer;
     border-bottom: 1px solid transparent; margin-bottom: -0.5px;
     transition: color 0.2s, border-color 0.2s;
@@ -2437,7 +2444,7 @@
     transition: top 0.2s, font-size 0.2s, color 0.2s;
   }
   .cal-auth-field:focus-within label,
-  .cal-auth-field.has-val label { top: 0.1rem; font-size: 0.42rem; letter-spacing: 0.28em; color: var(--gold); }
+  .cal-auth-field.has-val label { top: 0.1rem; font-size: max(0.42rem, var(--label-min)); letter-spacing: 0.28em; color: var(--gold); }
   .cal-auth-field input {
     width: 100%; border: none; border-bottom: 0.5px solid rgba(201,168,76,0.2);
     padding: 0.55rem 0.7rem; background: transparent;
@@ -2448,13 +2455,13 @@
   .cal-auth-btn {
     margin-top: 1.4rem; width: 100%; background: transparent;
     border: 1px solid rgba(201,168,76,0.35); color: var(--gold);
-    font-family: 'Montserrat', sans-serif; font-size: 0.52rem;
+    font-family: 'Montserrat', sans-serif; font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.3em; text-transform: uppercase;
     padding: 0.85rem; cursor: pointer; transition: background 0.25s, border-color 0.25s;
   }
   .cal-auth-btn:hover { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.65); }
   .cal-auth-error {
-    font-size: 0.48rem; letter-spacing: 0.1em; color: rgba(220,80,80,0.8);
+    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.1em; color: rgba(220,80,80,0.8);
     text-align: center; margin-top: 0.7rem; min-height: 0.8rem;
   }
   .cal-auth-greeting {
@@ -2465,7 +2472,7 @@
   .cal-auth-greeting strong { color: var(--gold); font-style: normal; font-weight: 300; }
   .cal-auth-logout {
     display: block; margin: 0.4rem auto 0; background: none; border: none;
-    font-size: 0.42rem; letter-spacing: 0.2em; color: rgba(201,168,76,0.3);
+    font-size: max(0.42rem, var(--label-min)); letter-spacing: 0.2em; color: rgba(201,168,76,0.3);
     text-transform: uppercase; cursor: pointer; text-decoration: underline;
     text-underline-offset: 3px; transition: color 0.2s;
   }
@@ -2479,7 +2486,7 @@
   }
   .cal-time-wrap.open { max-height: 11.25rem; opacity: 1; }
   .cal-time-label {
-    text-align: center; font-size: 0.42rem; letter-spacing: 0.32em;
+    text-align: center; font-size: max(0.42rem, var(--label-min)); letter-spacing: 0.32em;
     color: rgba(201,168,76,0.38); text-transform: uppercase; margin-bottom: 0.7rem;
   }
   .cal-rollers { display: flex; align-items: center; justify-content: center; }
@@ -2524,7 +2531,7 @@
     color: var(--gold); font-size: 1.2rem;
   }
   .cal-success p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold); font-style: italic; }
-  .cal-success .sub { font-family: 'Montserrat', sans-serif; font-size: 0.52rem; letter-spacing: 0.15em; color: var(--gray-mid); font-style: normal; text-transform: uppercase; }
+  .cal-success .sub { font-family: 'Montserrat', sans-serif; font-size: max(0.52rem, var(--label-min)); letter-spacing: 0.15em; color: var(--gray-mid); font-style: normal; text-transform: uppercase; }
 
   /* ── CONTACT ── */
   #kontakt {
@@ -2558,7 +2565,7 @@
   }
 
   .contact-item .label {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.4em;
     color: var(--gold);
     text-transform: uppercase;
@@ -2629,7 +2636,7 @@
   }
 
   .footer-links a {
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     letter-spacing: 0.22em;
     color: rgba(201,168,76,0.32);
     text-transform: uppercase;
@@ -2651,7 +2658,7 @@
   .footer-links a:hover::after { transform: scaleX(1); }
 
   .footer-copy {
-    font-size: 0.5rem;
+    font-size: max(0.5rem, var(--label-min));
     letter-spacing: 0.2em;
     color: rgba(201,168,76,0.18);
     text-transform: uppercase;
@@ -2716,7 +2723,7 @@
     border: 1px solid #222;
     color: var(--gray-mid);
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.5rem;
+    font-size: max(0.5rem, var(--label-min));
     letter-spacing: 0.35em;
     text-transform: uppercase;
     padding: 0.55rem 1.1rem;
@@ -2729,7 +2736,7 @@
   }
   .legal-close-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
   .legal-eyebrow {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.45em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -2749,7 +2756,7 @@
     margin: 2.8rem 0;
   }
   .legal-section-head {
-    font-size: 0.55rem;
+    font-size: max(0.55rem, var(--label-min));
     letter-spacing: 0.4em;
     color: var(--gold);
     text-transform: uppercase;
@@ -2990,8 +2997,8 @@
     }
     .nav-links::-webkit-scrollbar { display: none; }
     .nav-links li { flex-shrink: 0; padding: 0 1rem; }
-    .nav-links a { font-size: 0.54rem; white-space: nowrap; }
-    #nav-account { font-size: 0.54rem; white-space: nowrap; }
+    .nav-links a { font-size: max(0.54rem, var(--label-min)); white-space: nowrap; }
+    #nav-account { font-size: max(0.54rem, var(--label-min)); white-space: nowrap; }
 
     /* ── Sprachumschalter ── */
     #lang-switcher { top: 0.8rem; right: 1rem; padding: 0.35rem 0.7rem; }
@@ -3043,7 +3050,7 @@
     .cat-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
     .cat-tile { min-height: 0; height: clamp(130px, calc((100svh - 210px) / 2), 210px); padding: 1rem 0.6rem; gap: 0.55rem; }
     .cat-tile-name { font-size: 1.2rem; letter-spacing: 0.1em; line-height: 1.2; }
-    .cat-tile-count { font-size: 0.44rem; letter-spacing: 0.2em; }
+    .cat-tile-count { font-size: max(0.44rem, var(--label-min)); letter-spacing: 0.2em; }
     .cat-tile.settled:hover { transform: none; box-shadow: none; }
 
     /* ── Collection Overlay ── */
@@ -3069,7 +3076,7 @@
     /* Bild passt ins Bildfeld (42vh) – Platz oben und unten für den Rundgang-Knopf */
     #ad-img-inner { padding: 1rem 1rem 3.4rem !important; }
     #ad-img-el img, .ad-placeholder-canvas { max-width: 86vw; max-height: calc(42vh - 4.4rem); }
-    #ad-rundgang-btn { bottom: 0.8rem; padding: 0.55rem 1.2rem; font-size: 0.48rem; letter-spacing: 0.2em; }
+    #ad-rundgang-btn { bottom: 0.8rem; padding: 0.55rem 1.2rem; font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.2em; }
     #ad-info-footer { padding: 1rem 1.5rem 1.5rem !important; }
     #artwork-detail > div:first-child {
       height: 56px !important;
@@ -3116,7 +3123,7 @@
     .form-row { grid-template-columns: 1fr; }
     .coll-grid { grid-template-columns: 1fr; }
     .nav-links li { padding: 0 0.7rem; }
-    .nav-links a { font-size: 0.5rem; }
+    .nav-links a { font-size: max(0.5rem, var(--label-min)); }
     .bio-tl-item { flex: 0 0 100%; }
     .bio-facts { grid-template-columns: 1fr; }
     #ad-img-panel { height: 38vh !important; top: 52px !important; }
@@ -3125,7 +3132,7 @@
     .ad-topbar-title { display: none; }
     #ad-info-panel { top: calc(52px + 38vh) !important; }
     .hero-name { font-size: clamp(2.2rem, 10vw, 2.9rem); }
-    .hero-label { font-size: 0.56rem; letter-spacing: 0.55em; }
+    .hero-label { font-size: max(0.56rem, var(--label-min)); letter-spacing: 0.55em; }
   }
 
   /* Sehr schmale Handys (320 px): Logo kleiner, sonst liegt der Sprachumschalter darauf */
@@ -3141,7 +3148,7 @@
     .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
     .cat-tile { min-height: 0; height: clamp(110px, calc(100svh - 200px), 220px); padding: 0.8rem 0.5rem; gap: 0.5rem; }
     .cat-tile-name { font-size: 1.05rem; letter-spacing: 0.08em; line-height: 1.2; }
-    .cat-tile-count { font-size: 0.42rem; letter-spacing: 0.16em; }
+    .cat-tile-count { font-size: max(0.42rem, var(--label-min)); letter-spacing: 0.16em; }
   }
   /* Handy quer mit Desktop-Aufteilung der Werkansicht: Bild über dem Rundgang-Knopf halten */
   @media (max-height: 500px) and (orientation: landscape) and (min-width: 769px) {
@@ -3207,7 +3214,7 @@
     border: 1.5px solid rgba(201,168,76,0.75);
     color: var(--gold);
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.52rem;
+    font-size: max(0.52rem, var(--label-min));
     font-weight: 500;
     letter-spacing: 0.28em;
     padding: 0.65rem 0;

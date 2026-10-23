@@ -353,13 +353,21 @@
     malerei: ['Malerei I','Malerei II','Malerei III','Malerei IV','Malerei V','Malerei VI','Malerei VII','Malerei VIII'],
     grafik:  ['Grafik I','Grafik II','Grafik III','Grafik IV','Grafik V','Grafik VI','Grafik VII','Grafik VIII'],
   };
+  // Anzeigename eines Platzhalters („Malerei I") – im englischen Modus übersetzt; der deutsche Name bleibt Schlüssel
+  function _roomWorkLabel(t) {
+    return _lang === 'en' ? t.replace(/^Malerei /, 'Painting ').replace(/^Grafik /, 'Graphic Work ') : t;
+  }
 
   // Meta-Zeile "Technik · Maße · Jahr" – leere Angaben (z.B. bei Plastiken) werden ausgelassen
   function _artMeta(d, isEN) {
     return [isEN ? d.technique_en : d.technique, d.size, d.year].filter(Boolean).join('  ·  ');
   }
   function _artPrice(d, isEN) {
-    return d.price ? '€ ' + d.price : (isEN ? 'Price on request' : 'Preis auf Anfrage');
+    return d.price ? '€ ' + _priceTxt(d.price, isEN) : (isEN ? 'Price on request' : 'Preis auf Anfrage');
+  }
+  // Preisangaben sind deutsch geschrieben („4.750 – 7.200“); englisch mit Komma als Tausendertrennzeichen
+  function _priceTxt(p, isEN) {
+    return isEN ? p.replace(/(\d)\.(\d{3})/g, '$1,$2') : p;
   }
 
   /* ══ LANGUAGE ══ */
@@ -425,7 +433,22 @@
   function setLang(lang) {
     _lang = lang;
     localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;   // auch Kalender und Meldungen richten sich danach
+    document.title = lang === 'en' ? 'Galerie Horst Schwab – Art | Passion | Timeless' : 'Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos';
     const t = I18N[lang];
+    // Statische Texte ohne eigene ID: Englisch steht in data-en (bzw. data-en-<Attribut>),
+    // das Deutsche wird beim ersten Umschalten in data-de gemerkt
+    document.querySelectorAll('[data-en]').forEach(function(el) {
+      if (el.dataset.de == null) el.dataset.de = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.de;
+    });
+    ['placeholder', 'aria-label', 'title', 'alt'].forEach(function(a) {
+      document.querySelectorAll('[data-en-' + a + ']').forEach(function(el) {
+        if (!el.hasAttribute('data-de-' + a)) el.setAttribute('data-de-' + a, el.getAttribute(a) || '');
+        el.setAttribute(a, el.getAttribute(lang === 'en' ? 'data-en-' + a : 'data-de-' + a));
+      });
+    });
+    document.querySelectorAll('.fav-btn[data-title]').forEach(function(b) { b.title = lang === 'en' ? 'Wishlist' : 'Merkliste'; });
     // translate all labelled elements
     Object.keys(t).forEach(function(id) {
       var el = document.getElementById(id);
@@ -442,7 +465,7 @@
     document.querySelectorAll('.lang-en').forEach(function(el) { el.style.display = lang === 'en' ? '' : 'none'; });
     // bio roles text contains HTML entities — must use innerHTML
     var bioRoles = document.getElementById('bio-roles');
-    if (bioRoles) bioRoles.innerHTML = lang === 'en' ? 'PAINTER &nbsp;|&nbsp; GRAPHIC ARTIST &nbsp;|&nbsp; SCULPTOR' : 'MALER &nbsp;|&nbsp; GRAFIKER &nbsp;|&nbsp; BILDHAUER &nbsp;|&nbsp; LYRIKER';
+    if (bioRoles) bioRoles.innerHTML = lang === 'en' ? 'PAINTER &nbsp;|&nbsp; GRAPHIC ARTIST &nbsp;|&nbsp; SCULPTOR &nbsp;|&nbsp; POET' : 'MALER &nbsp;|&nbsp; GRAFIKER &nbsp;|&nbsp; BILDHAUER &nbsp;|&nbsp; LYRIKER';
     // update card metas
     document.querySelectorAll('.coll-card').forEach(function(card) {
       var titleEl = card.querySelector('.coll-card-title');
@@ -452,9 +475,13 @@
       var meta = card.querySelector('.coll-card-meta');
       if (meta) meta.textContent = _artMeta(d, lang === 'en');
       var priceEl = card.querySelector('.coll-card-price');
-      if (priceEl && !d.price) priceEl.textContent = _artPrice(d, lang === 'en');
+      // Preis wie auf der Karte notiert (deutsch), englisch nur mit Komma als Tausendertrennzeichen
+      if (priceEl && priceEl.dataset.de == null) priceEl.dataset.de = priceEl.textContent;
+      if (priceEl) priceEl.textContent = !d.price ? _artPrice(d, lang === 'en') : (lang === 'en' ? _priceTxt(priceEl.dataset.de, true) : priceEl.dataset.de);
     });
     if (window._heroArtRelabel) window._heroArtRelabel();
+    if (window._bioCapRelabel) window._bioCapRelabel();
+    updateNavAccount();   // angemeldet: Name statt „Anmelden“/„Sign in“ aus I18N behalten
     // re-render open artwork if any
     var adEl = document.getElementById('artwork-detail');
     if (_adCurrentTitle && adEl && adEl.classList.contains('active')) openArtwork(_adCurrentTitle, true);
@@ -523,9 +550,10 @@
     _navClosed('favs');
   }
 
+  let _favEmptyMsg = null;
   function renderFavs() {
     const grid = document.getElementById('fav-grid');
-    const emptyMsg = document.getElementById('fav-empty-msg');
+    const emptyMsg = _favEmptyMsg = _favEmptyMsg || document.getElementById('fav-empty-msg');
     if (_favs.size === 0) {
       grid.innerHTML = '';
       if (emptyMsg) { emptyMsg.style.display = ''; grid.appendChild(emptyMsg); }
@@ -824,7 +852,7 @@
 
   function openModal(title, range) {
     document.getElementById('modal-title').textContent = title;
-    document.getElementById('modal-range').textContent = range ? '€ ' + range : (_lang === 'en' ? 'Price on request' : 'Preis auf Anfrage');
+    document.getElementById('modal-range').textContent = range ? '€ ' + _priceTxt(range, _lang === 'en') : (_lang === 'en' ? 'Price on request' : 'Preis auf Anfrage');
     document.getElementById('form-wrap').style.display = 'flex';
     document.getElementById('form-wrap').style.flexDirection = 'column';
     document.getElementById('form-wrap').style.gap = '1rem';
@@ -889,7 +917,7 @@
     const email = document.getElementById('email').value.trim();
     const offer = document.getElementById('offer').value.trim();
     if (!fname || !email || !offer) {
-      alert('Bitte füllen Sie Vorname, E-Mail und Ihr Angebot aus.');
+      alert(_lang === 'en' ? 'Please enter your first name, e-mail and your offer.' : 'Bitte füllen Sie Vorname, E-Mail und Ihr Angebot aus.');
       return;
     }
     document.getElementById('form-wrap').style.display = 'none';
@@ -1298,7 +1326,9 @@
       // ── Freie-Navigation-Button ───────────────────────────────────
       const freeBtn = document.createElement('button');
       freeBtn.id = 'vr-free-btn';
-      freeBtn.textContent = '↖ FREI ERKUNDEN';
+      const _en = _lang === 'en';
+      const FREE_TXT = _en ? '↖ EXPLORE FREELY' : '↖ FREI ERKUNDEN', RESUME_TXT = _en ? '▶ RESUME TOUR' : '▶ TOUR FORTSETZEN';
+      freeBtn.textContent = FREE_TXT;
       vrEl.appendChild(freeBtn);
 
       // Bedien-Hinweis, nur im Frei-Modus sichtbar
@@ -1313,8 +1343,9 @@
         + 'border-radius:16px;pointer-events:none;opacity:0;transition:opacity 0.4s ease;'
         + 'z-index:6;backdrop-filter:blur(4px);';
       navHint.textContent = _touchDevice
-        ? 'Ziehen: umschauen · Tippen: hingehen · 2 Finger: Zoom'
-        : 'Wischen: gehen & drehen · Kneifen / Strg + Rad: Zoom · Klick: hingehen · Ziehen: umschauen';
+        ? (_en ? 'Drag: look around · Tap: walk there · 2 fingers: zoom' : 'Ziehen: umschauen · Tippen: hingehen · 2 Finger: Zoom')
+        : (_en ? 'Swipe: walk & turn · Pinch / Ctrl + wheel: zoom · Click: walk there · Drag: look around'
+               : 'Wischen: gehen & drehen · Kneifen / Strg + Rad: Zoom · Klick: hingehen · Ziehen: umschauen');
       vrEl.appendChild(navHint);
 
       freeBtn.addEventListener('click', () => {
@@ -1324,7 +1355,7 @@
           const euler = new T.Euler().setFromQuaternion(cam.quaternion, 'YXZ');
           navYaw = navYawT = euler.y; navPitch = navPitchT = euler.x;
           _navVel.x = _navVel.z = 0; _glideV = 0; _wheelWalk = 0;
-          freeBtn.textContent = '▶ TOUR FORTSETZEN';
+          freeBtn.textContent = RESUME_TXT;
           freeBtn.classList.add('active');
           // knapp über dem Knopf, egal wo er gerade sitzt (Handy/Desktop, Fensterbreite)
           const br = freeBtn.getBoundingClientRect();
@@ -1332,7 +1363,7 @@
           navHint.style.opacity = '1';
         } else {
           vrPaused = false;
-          freeBtn.textContent = '↖ FREI ERKUNDEN';
+          freeBtn.textContent = FREE_TXT;
           freeBtn.classList.remove('active');
           navKeys.clear();
           navMoveTarget = null;
@@ -1530,7 +1561,7 @@
           if (o) {
             const t = o.userData.artworkTitle, d = ARTWORKS[t];
             cv.style.cursor = o.userData.placeholder ? 'default' : 'pointer';
-            tooltip.textContent = o.userData.placeholder ? t + '  ·  Werk folgt' : (d && d.year ? t + '  ·  ' + d.year : t);
+            tooltip.textContent = o.userData.placeholder ? _roomWorkLabel(t) + (_lang === 'en' ? '  ·  Coming soon' : '  ·  Werk folgt') : (d && d.year ? t + '  ·  ' + d.year : t);
             tooltip.style.display = 'block';
             tooltip.style.left = '0px'; tooltip.style.top = '0px';
             tooltip.style.transform = 'translate(' + (_hoverX + 18) + 'px,' + (_hoverY - 14) + 'px)';
@@ -2167,7 +2198,7 @@
       ctx.beginPath(); ctx.moveTo(352,680); ctx.lineTo(672,680); ctx.stroke();
       ctx.font='300 26px Arial,sans-serif'; ctx.fillStyle='rgba(222,200,150,0.75)';
       ctx.fillText('HORST  SCHWAB', 512, 740);
-      ctx.fillText(art.label + '  ·  WERK  FOLGT', 512, 788);
+      ctx.fillText(art.label + (_lang === 'en' ? '  ·  COMING  SOON' : '  ·  WERK  FOLGT'), 512, 788);
       const tex=new T.CanvasTexture(cv);
       tex.encoding=T.sRGBEncoding;
       tex.wrapS=T.RepeatWrapping;
@@ -2197,13 +2228,14 @@
       // daher wird das Canvas horizontal gespiegelt gezeichnet (wie die Gemälde).
       const _t=art.title||''; const _a=art.placeholder ? null : ARTWORKS[_t];
       if (_t) {
-        const _tech=_a ? [_a.technique, _a.year].filter(Boolean).join('  ·  ') : (art.placeholder ? 'Werk folgt' : '');
+        const _tech=_a ? [_lang === 'en' ? _a.technique_en : _a.technique, _a.year].filter(Boolean).join('  ·  ') : (art.placeholder ? (_lang === 'en' ? 'Coming soon' : 'Werk folgt') : '');
         const F_ARTIST='italic 600 46px "Times New Roman",Georgia,serif';
         const F_TITLE ='700 70px "Times New Roman",Georgia,serif';
         const F_TECH  ='500 44px "Times New Roman",Georgia,serif';
         const _m=document.createElement('canvas').getContext('2d');
         _m.font=F_ARTIST; const _wA=_m.measureText('Horst Schwab').width;
-        _m.font=F_TITLE;  const _wT=_m.measureText(_t).width;
+        const _tShow=art.placeholder ? _roomWorkLabel(_t) : _t;   // Platzhalter im englischen Modus übersetzt
+        _m.font=F_TITLE;  const _wT=_m.measureText(_tShow).width;
         _m.font=F_TECH;   const _wC=_tech? _m.measureText(_tech).width : 0;
         const LH=360, padX=96;
         const LW=Math.ceil(Math.max(_wA,_wT,_wC)+padX*2);
@@ -2220,7 +2252,7 @@
         lCtx.fillStyle='#8a6a28'; lCtx.font=F_ARTIST; lCtx.fillText('Horst Schwab',_cx,96);
         lCtx.strokeStyle='#c9a84c'; lCtx.lineWidth=2;
         lCtx.beginPath(); lCtx.moveTo(_cx-78,122); lCtx.lineTo(_cx+78,122); lCtx.stroke();
-        lCtx.fillStyle='#161410'; lCtx.font=F_TITLE; lCtx.fillText(_t,_cx,204);
+        lCtx.fillStyle='#161410'; lCtx.font=F_TITLE; lCtx.fillText(_tShow,_cx,204);
         if(_tech){lCtx.fillStyle='#5c564a'; lCtx.font=F_TECH; lCtx.fillText(_tech,_cx,288);}
         const lTex=new T.CanvasTexture(lCv);
         lTex.minFilter=T.LinearFilter; lTex.magFilter=T.LinearFilter; lTex.generateMipmaps=false;
@@ -2661,7 +2693,7 @@
     // ── Wall Signage ─────────────────────────────────────────────
     function makeWallSignTex(T, large, script, caption) {
       if (script == null) script = 'Horst Schwab';
-      if (caption == null) caption = 'G  A  L  E  R  I  E';
+      if (caption == null) caption = _lang === 'en' ? 'G  A  L  L  E  R  Y' : 'G  A  L  E  R  I  E';
       const W=1024, H= large ? 640 : 480;
       const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
       const ctx=cv.getContext('2d');
@@ -2832,7 +2864,7 @@
     let _signHolderMat = null;   // dunkler Träger, von allen Plastik-Schildern geteilt
     function addSculptureSign(T, title, z, side) {
       if (!_signHolderMat) _signHolderMat = new T.MeshBasicMaterial({color:0x2b2b2b});
-      const d = ARTWORKS[title], tech = [d.technique, d.year].filter(Boolean).join('  ·  ');
+      const d = ARTWORKS[title], tech = [_lang === 'en' ? d.technique_en : d.technique, d.year].filter(Boolean).join('  ·  ');
       const W = 1024, H = 512, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
       const ctx = cv.getContext('2d');
       const bg = ctx.createLinearGradient(0, 0, 0, H);
@@ -2894,7 +2926,7 @@
       _buildTarget = g;
       try {
         // Durchgang in Raum 2: Goldrahmen + Schild „Plastik" darüber (schon aus Raum 2 sichtbar)
-        addPortal(T, 0, R3.aw, 1, 'Plastik');
+        addPortal(T, 0, R3.aw, 1, _lang === 'en' ? 'Sculpture' : 'Plastik');
         // Rückseite des Sturzes (vom Gang aus gesehen) – verdeckt auch die Schild-Rückseite
         _occ(addPlane(T, R3.aw + 0.02, RH - PORTAL.crown, M.trans, [0, PORTAL.crown + (RH - PORTAL.crown)/2, -0.012], [0, Math.PI, 0]));
         buildConnector(T, -R3.conn/2, R3.aw, R3.conn);
@@ -2905,7 +2937,7 @@
         buildRoomShell(T, { depth:R3.depth, cz:R3.cz, fillRows:[R3.rows[0], R3.rows[R3.rows.length - 1]], lightRows:R3.rows, extraLights:[R3.entry, R3.end] });
         // Ausgang: Torbogen und kurzer Gang in die linke Wand von Raum 4 (gleicher Aufbau wie der Eingang)
         buildArchWall(T, R3.end, R3.aw, PORTAL.crown);
-        addPortal(T, R3.end + 0.09, R3.aw, 1, 'Malerei');
+        addPortal(T, R3.end + 0.09, R3.aw, 1, _lang === 'en' ? 'Painting' : 'Malerei');
         buildConnector(T, R3.end - R3.conn/2, R3.aw, R3.conn);
         addPortal(T, R3.exit, R3.aw, -1);                                                         // Marmorportal am Durchgang in Raum 4
         _occ(addPlane(T, R3.aw + 0.02, RH - PORTAL.crown, M.trans, [0, PORTAL.crown + (RH - PORTAL.crown)/2, R3.exit + 0.012], [0, 0, 0]));  // Sturz-Rückseite
@@ -2945,7 +2977,7 @@
         buildRoomShell(T, { depth:ROW2.r4Depth, cz:-ROW2.r4Depth/2, fillRows:[-2,-5,-11,-17], lightRows:ROW2.r4Rows, extraLights:[-ROW2.r4Depth, 0],
           openings:[ROW2.r4Open] });
         _occ(addPlane(T, RW, RH, M.trans, [0, RH/2, 0], [0, Math.PI, 0]));
-        addWallSign(T, 3.20, 2.00, 0, 2.10, -0.10, Math.PI, true, 'Horst Schwab', 'M  A  L  E  R  E  I');
+        addWallSign(T, 3.20, 2.00, 0, 2.10, -0.10, Math.PI, true, 'Horst Schwab', _lang === 'en' ? 'P  A  I  N  T  I  N  G' : 'M  A  L  E  R  E  I');
         // Torbögen + Verbindung Raum 4 → 5 (wie Raum 1 → 2)
         buildArchWall(T, -ROW2.r4Depth, aw);
         buildConnector(T, -ROW2.r4Depth - ROW2.conn/2, aw, ROW2.conn);
@@ -2968,8 +3000,8 @@
             addPictureLight(T, { x, z, rotY });
           });
         });
-        hang(ROW2.r4Rows, VR_ROOM_WORKS.malerei, 'MALEREI');
-        hang(ROW2.r5Rows, VR_ROOM_WORKS.grafik,  'GRAFIK');
+        hang(ROW2.r4Rows, VR_ROOM_WORKS.malerei, _lang === 'en' ? 'PAINTING' : 'MALEREI');
+        hang(ROW2.r5Rows, VR_ROOM_WORKS.grafik,  _lang === 'en' ? 'GRAPHICS' : 'GRAFIK');
         // Säulen, Bänke, Pflanzen, Sessel – gespiegelte Positionen von Raum 1/2
         [[-2.5,-0.4],[2.5,-0.4],[-2.5,-ROW2.r4Depth+0.4],[2.5,-ROW2.r4Depth+0.4],[-2.5,ROW2.r5Start-0.4],[2.5,ROW2.r5Start-0.4]]
           .forEach(([x, z]) => buildColumn(T, x, z, cm.shaft, cm.stone));
@@ -3735,7 +3767,7 @@
     btn.className = 'fav-btn' + (_favs.has(title) ? ' fav-active' : '');
     btn.dataset.title = title;
     btn.textContent = _favs.has(title) ? '♥' : '♡';
-    btn.title = 'Merkliste';
+    btn.title = _lang === 'en' ? 'Wishlist' : 'Merkliste';
     btn.onclick = function(e) { e.stopPropagation(); toggleFav(title); };
     card.appendChild(btn);
   });
@@ -3922,7 +3954,8 @@
     document.getElementById('tab-login').classList.toggle('active', !isReg);
     document.getElementById('tab-register').classList.toggle('active', isReg);
     document.getElementById('auth-field-name').style.display = isReg ? '' : 'none';
-    document.getElementById('cal-auth-submit').textContent = isReg ? 'Konto erstellen' : 'Anmelden';
+    var en = _lang === 'en';
+    document.getElementById('cal-auth-submit').textContent = isReg ? (en ? 'Create account' : 'Konto erstellen') : (en ? 'Sign in' : 'Anmelden');
     document.getElementById('cal-auth-error').textContent = '';
     document.getElementById('auth-email').value = '';
     document.getElementById('auth-name').value = '';
@@ -4098,9 +4131,9 @@
       var h = getRollerValue('cal-roller-h', HOURS);
       var m = getRollerValue('cal-roller-m', MINS);
       var conf = document.getElementById('cal-confirm');
-      conf.textContent = (lang === 'en' ? 'Selected: ' : 'Gewählt: ') +
-        selectedDate.d + '. ' + months[selectedDate.m] + ' ' + selectedDate.y +
-        ' · ' + h + ':' + m + ' Uhr';
+      conf.textContent = lang === 'en'
+        ? 'Selected: ' + selectedDate.d + ' ' + months[selectedDate.m] + ' ' + selectedDate.y + ' · ' + h + ':' + m
+        : 'Gewählt: ' + selectedDate.d + '. ' + months[selectedDate.m] + ' ' + selectedDate.y + ' · ' + h + ':' + m + ' Uhr';
       conf.classList.add('has-date');
       document.getElementById('cal-book-btn').classList.add('visible');
     }
@@ -4356,7 +4389,7 @@
     const hint = document.createElement('div');
     hint.id = 'rundgang-hint';
     hint.innerHTML =
-      '<button class="rh-close" aria-label="Schließen">✕</button>' +
+      '<button class="rh-close" aria-label="' + (isEN ? 'Close' : 'Schließen') + '">✕</button>' +
       '<span class="rh-icon">🎨</span>' +
       '<span class="rh-title">' + (isEN ? 'Virtual Tour' : 'Virtueller Rundgang') + '</span>' +
       '<span class="rh-text">' +
@@ -4388,7 +4421,8 @@
     const slides   = document.querySelectorAll('#bio-carousel .bio-slide');
     const dots     = document.querySelectorAll('#bio-carousel .bio-dot');
     const cap      = document.getElementById('bio-cap');
-    const captions = ['Portrait', '80. Geburtstag, 2015', 'Porträt', 'Selbstbildnis, 1982'];
+    const captions = { de: ['Portrait', '80. Geburtstag, 2015', 'Porträt', 'Selbstbildnis, 1982'],
+                       en: ['Portrait', '80th birthday, 2015', 'Portrait', 'Self-portrait, 1982'] };
     let idx = 0;
 
     function goTo(n) {
@@ -4397,8 +4431,10 @@
       idx = (n + slides.length) % slides.length;
       slides[idx].classList.add('active');
       dots[idx].classList.add('active');
-      if (cap) cap.textContent = captions[idx];
+      if (cap) cap.textContent = captions[_lang === 'en' ? 'en' : 'de'][idx];
     }
+    // Sprachwechsel: Bildunterschrift sofort mitziehen
+    window._bioCapRelabel = function() { if (cap) cap.textContent = captions[_lang === 'en' ? 'en' : 'de'][idx]; };
 
     const prev = document.querySelector('#bio-carousel .bio-nav-prev');
     const next = document.querySelector('#bio-carousel .bio-nav-next');

@@ -125,7 +125,7 @@
   }
 
 </style>
-<link rel="stylesheet" href="styles.css?v=20261023d">
+<link rel="stylesheet" href="styles.css?v=20261023f">
 <script>
 /* Galerie schon betreten (Neuladen): Startseite sofort ausblenden – vor dem ersten Aufbau,
    damit die wiederhergestellte Scrollposition stimmt (siehe _syncHero in app.js) */
@@ -188,43 +188,43 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 </div>
 <div id="gallery-vr">
   <canvas id="gallery-canvas"></canvas>
-  <button id="gallery-vr-close"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x2715;&nbsp;&nbsp;BEENDEN</button>
-  <button id="vr-info-btn" title="Rundgang-Hilfe">?</button>
+  <button id="gallery-vr-close"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x2715;&nbsp;&nbsp;<span data-en="EXIT">BEENDEN</span></button>
+  <button id="vr-info-btn" title="Rundgang-Hilfe" data-en-title="Tour help">?</button>
   <div id="vr-info-panel">
     <div class="vr-info-box">
       <p class="vr-info-label">Galerie Horst Schwab</p>
-      <h2 class="vr-info-title">Virtueller Rundgang</h2>
+      <h2 class="vr-info-title" data-en="Virtual Tour">Virtueller Rundgang</h2>
       <p class="vr-info-ornament">◆</p>
-      <p class="vr-info-text">Erleben Sie ausgewählte Werke aus den Räumen der Galerie – eine geführte Tour durch das Schaffen von Horst Schwab.</p>
+      <p class="vr-info-text" data-en="Experience selected works from the rooms of the gallery – a guided tour through the art of Horst Schwab.">Erleben Sie ausgewählte Werke aus den Räumen der Galerie – eine geführte Tour durch das Schaffen von Horst Schwab.</p>
       <div class="vr-info-steps">
         <div class="vr-info-step">
           <span class="vr-info-step-icon">↗</span>
-          <span class="vr-info-step-text">Gemälde anklicken — Details zum jeweiligen Werk öffnen</span>
+          <span class="vr-info-step-text" data-en="Click a painting — open the details of the work">Gemälde anklicken — Details zum jeweiligen Werk öffnen</span>
         </div>
         <div class="vr-info-step">
           <span class="vr-info-step-icon">→</span>
-          <span class="vr-info-step-text">Nächste Station — <em>Leertaste</em> oder <em>Pfeil rechts</em> oder Button »Weiter«</span>
+          <span class="vr-info-step-text" data-en="Next stop — &lt;em&gt;Space&lt;/em&gt; or &lt;em&gt;Right arrow&lt;/em&gt; or the ‘Next’ button">Nächste Station — <em>Leertaste</em> oder <em>Pfeil rechts</em> oder Button »Weiter«</span>
         </div>
         <div class="vr-info-step">
           <span class="vr-info-step-icon">←</span>
-          <span class="vr-info-step-text">Zurück / Gegenrichtung — <em>Pfeil links</em> oder Button »Zurück« (der Rundgang ist ein Kreis)</span>
+          <span class="vr-info-step-text" data-en="Back / reverse direction — &lt;em&gt;Left arrow&lt;/em&gt; or the ‘Back’ button (the tour is a loop)">Zurück / Gegenrichtung — <em>Pfeil links</em> oder Button »Zurück« (der Rundgang ist ein Kreis)</span>
         </div>
         <div class="vr-info-step">
           <span class="vr-info-step-icon">✕</span>
-          <span class="vr-info-step-text">Rundgang beenden — Button »Beenden« oben rechts</span>
+          <span class="vr-info-step-text" data-en="End the tour — ‘Exit’ button at the top right">Rundgang beenden — Button »Beenden« oben rechts</span>
         </div>
       </div>
-      <button class="vr-info-close">Rundgang betreten</button>
+      <button class="vr-info-close" data-en="Enter Tour">Rundgang betreten</button>
     </div>
   </div>
-  <button id="vr-back" aria-label="Zurück"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x276E;&#x276E;&nbsp;&nbsp;ZURÜCK</button>
-  <button id="vr-skip"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x276F;&#x276F;&nbsp;&nbsp;WEITER</button>
+  <button id="vr-back" aria-label="Zurück" data-en-aria-label="Back"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x276E;&#x276E;&nbsp;&nbsp;<span data-en="BACK">ZURÜCK</span></button>
+  <button id="vr-skip"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x276F;&#x276F;&nbsp;&nbsp;<span data-en="NEXT">WEITER</span></button>
   <div id="gallery-tooltip"></div>
   <div id="gallery-loader">
     <div class="gl-inner">
       <div class="gl-script">Horst Schwab</div>
       <div class="gl-rule"></div>
-      <div class="gl-label">G &nbsp; A &nbsp; L &nbsp; E &nbsp; R &nbsp; I &nbsp; E</div>
+      <div class="gl-label" data-en="G &amp;nbsp; A &amp;nbsp; L &amp;nbsp; L &amp;nbsp; E &amp;nbsp; R &amp;nbsp; Y">G &nbsp; A &nbsp; L &nbsp; E &nbsp; R &nbsp; I &nbsp; E</div>
       <div class="gl-dots"><span></span><span></span><span></span></div>
     </div>
   </div>
@@ -381,33 +381,33 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <h2 class="coll-heading" id="coll-head-acryl">Malerei</h2>
     </div>
     <div class="wip-banner">
-      <p class="wip-banner-eyebrow">Im Aufbau</p>
-      <p class="wip-banner-title">Neue Werke folgen in Kürze</p>
-      <p class="wip-banner-sub">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
+      <p class="wip-banner-eyebrow" data-en="In Progress">Im Aufbau</p>
+      <p class="wip-banner-title" data-en="New works coming soon">Neue Werke folgen in Kürze</p>
+      <p class="wip-banner-sub" data-en="This section is growing steadily. Visit us regularly — or get notified by e-mail as soon as new works are available.">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
       <div class="wip-banner-divider"></div>
-      <p class="wip-notify-label">Benachrichtigung erhalten</p>
+      <p class="wip-notify-label" data-en="Get notified">Benachrichtigung erhalten</p>
       <div class="wip-notify-row">
-        <input type="email" id="wip-email-acryl" placeholder="Ihre E-Mail-Adresse" />
-        <button class="wip-notify-btn" onclick="wipNotify('acryl')">Benachrichtigen</button>
+        <input type="email" id="wip-email-acryl" placeholder="Ihre E-Mail-Adresse" data-en-placeholder="Your e-mail address" />
+        <button class="wip-notify-btn" onclick="wipNotify('acryl')" data-en="Notify me">Benachrichtigen</button>
       </div>
-      <p class="wip-notify-thanks" id="wip-thanks-acryl">Vielen Dank — wir melden uns.</p>
+      <p class="wip-notify-thanks" id="wip-thanks-acryl" data-en="Thank you — we will be in touch.">Vielen Dank — wir melden uns.</p>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Komposition I')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.5"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Komposition I</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 120 × 90 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Komposition I</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 120 × 90 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Stille II')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.5"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Stille II</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 80 × 60 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Stille II</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 80 × 60 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Aufbruch')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Aufbruch</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 100 × 80 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Aufbruch</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 100 × 80 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Horizont')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><line x1="4" y1="32" x2="60" y2="32" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="40" x2="60" y2="40" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Horizont</p><p class="coll-card-meta">Acryl auf Papier &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Horizont</p><p class="coll-card-meta">Acryl auf Papier &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
     </div>
   </div>
@@ -423,67 +423,67 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Zwei Figuren I')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2001-1entzerrt.jpg" alt="Zwei Figuren I"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren I</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 28 × 40 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 400 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren I')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren I</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 28 × 40 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 400 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren I')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Badende')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2001-2entzerrt.JPG" alt="Badende"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Badende</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Badende</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Badende')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2002-1entzerrt.JPG" alt="Zwei Badende"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Badende</p><p class="coll-card-meta">Mischtechnik auf Papier &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Badende')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Badende</p><p class="coll-card-meta">Mischtechnik auf Papier &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Badende')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Figur und Torsi')">
         <div class="coll-card-img coll-card-img--landscape"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2002-2entzerrt.JPG" alt="Figur und Torsi"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Figur und Torsi</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Figur und Torsi')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Figur und Torsi</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Figur und Torsi')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Langgezogene Figurengruppe')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2002-3entzerrt.JPG" alt="Langgezogene Figurengruppe"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Langgezogene Figurengruppe</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Langgezogene Figurengruppe')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Langgezogene Figurengruppe</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Langgezogene Figurengruppe')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Totenkult')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2003-1entzerrt.JPG" alt="Totenkult"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Totenkult</p><p class="coll-card-meta">Acrylcollage &nbsp;·&nbsp; 45 × 72 cm &nbsp;·&nbsp; 2003</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Totenkult')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Totenkult</p><p class="coll-card-meta">Acrylcollage &nbsp;·&nbsp; 45 × 72 cm &nbsp;·&nbsp; 2003</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Totenkult')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Bunte Figur')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-1entzerrt.JPG" alt="Bunte Figur"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Bunte Figur</p><p class="coll-card-meta">Acrylcollage auf Pressspahn &nbsp;·&nbsp; 48 × 60 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Bunte Figur')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Bunte Figur</p><p class="coll-card-meta">Acrylcollage auf Pressspahn &nbsp;·&nbsp; 48 × 60 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Bunte Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Goldene Figur')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-2entzerrt.JPG" alt="Goldene Figur"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Goldene Figur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 48 × 68 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Goldene Figur')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Goldene Figur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 48 × 68 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Goldene Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Kopf im Profil')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-3entzerrt.JPG" alt="Kopf im Profil"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Kopf im Profil</p><p class="coll-card-meta">Deckfarben auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kopf im Profil')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kopf im Profil</p><p class="coll-card-meta">Deckfarben auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kopf im Profil')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Hockende Figur')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-4entzerrt.JPG" alt="Hockende Figur"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Hockende Figur</p><p class="coll-card-meta">Pastell auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Hockende Figur')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Hockende Figur</p><p class="coll-card-meta">Pastell auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Hockende Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Figuren II')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-1entzerrt.JPG" alt="Zwei Figuren II"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren II</p><p class="coll-card-meta">Collage aus Drucken &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren II')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren II</p><p class="coll-card-meta">Collage aus Drucken &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren II')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Kuss')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-2entzerrt.JPG" alt="Kuss"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Kuss</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kuss')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kuss</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kuss')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Badende in blau')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-3entzerrt.JPG" alt="Badende in blau"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Badende in blau</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 24 × 34 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende in blau')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Badende in blau</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 24 × 34 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende in blau')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Paar')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-4.JPG" alt="Paar"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Paar</p><p class="coll-card-meta">Collage aus Graphik &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Paar')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Paar</p><p class="coll-card-meta">Collage aus Graphik &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Paar')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Frauen')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-5.JPG" alt="Zwei Frauen"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Frauen</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 65 × 50 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Frauen')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Frauen</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 65 × 50 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Frauen')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Meer')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-6entzerrt.JPG" alt="Meer"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Meer</p><p class="coll-card-meta">Grafikkollage &nbsp;·&nbsp; 33 × 24 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Meer')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Meer</p><p class="coll-card-meta">Grafikkollage &nbsp;·&nbsp; 33 × 24 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Meer')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
     </div>
   </div>
@@ -497,33 +497,33 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <h2 class="coll-heading" id="coll-head-aquarell">Grafik</h2>
     </div>
     <div class="wip-banner">
-      <p class="wip-banner-eyebrow">Im Aufbau</p>
-      <p class="wip-banner-title">Neue Werke folgen in Kürze</p>
-      <p class="wip-banner-sub">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
+      <p class="wip-banner-eyebrow" data-en="In Progress">Im Aufbau</p>
+      <p class="wip-banner-title" data-en="New works coming soon">Neue Werke folgen in Kürze</p>
+      <p class="wip-banner-sub" data-en="This section is growing steadily. Visit us regularly — or get notified by e-mail as soon as new works are available.">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
       <div class="wip-banner-divider"></div>
-      <p class="wip-notify-label">Benachrichtigung erhalten</p>
+      <p class="wip-notify-label" data-en="Get notified">Benachrichtigung erhalten</p>
       <div class="wip-notify-row">
-        <input type="email" id="wip-email-aquarell" placeholder="Ihre E-Mail-Adresse" />
-        <button class="wip-notify-btn" onclick="wipNotify('aquarell')">Benachrichtigen</button>
+        <input type="email" id="wip-email-aquarell" placeholder="Ihre E-Mail-Adresse" data-en-placeholder="Your e-mail address" />
+        <button class="wip-notify-btn" onclick="wipNotify('aquarell')" data-en="Notify me">Benachrichtigen</button>
       </div>
-      <p class="wip-notify-thanks" id="wip-thanks-aquarell">Vielen Dank — wir melden uns.</p>
+      <p class="wip-notify-thanks" id="wip-thanks-aquarell" data-en="Thank you — we will be in touch.">Vielen Dank — wir melden uns.</p>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Vergänglichkeit')">
         <div class="coll-card-img"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Vergänglichkeit</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 60 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Vergänglichkeit</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 60 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Morgenrot')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.5" opacity="0.6"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Morgenrot</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 50 × 40 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Morgenrot</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 50 × 40 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Nebel')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><line x1="8" y1="28" x2="56" y2="28" stroke="#C9A84C" stroke-width="0.5"/><line x1="12" y1="36" x2="52" y2="36" stroke="#C9A84C" stroke-width="0.4" opacity="0.6"/><line x1="18" y1="44" x2="46" y2="44" stroke="#C9A84C" stroke-width="0.3" opacity="0.3"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Nebel</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 70 × 55 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Nebel</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 70 × 55 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Fluss')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Fluss</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 55 × 45 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Fluss</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 55 × 45 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
     </div>
   </div>
@@ -539,63 +539,63 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Kniende Figur')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-1-a.jpg" alt="Kniende Figur – Ansicht 1">
-          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-1-b.jpg" alt="Kniende Figur – Ansicht 2">
-          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
-          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
-          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-1-a.jpg" alt="Kniende Figur – Ansicht 1" data-en-alt="Kniende Figur – view 1">
+          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-1-b.jpg" alt="Kniende Figur – Ansicht 2" data-en-alt="Kniende Figur – view 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Kniende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kniende Figur')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kniende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kniende Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Weiblicher Torso')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-2-a.jpg" alt="Weiblicher Torso – Ansicht 1">
-          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-2-b.jpg" alt="Weiblicher Torso – Ansicht 2">
-          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
-          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
-          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-2-a.jpg" alt="Weiblicher Torso – Ansicht 1" data-en-alt="Weiblicher Torso – view 1">
+          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-2-b.jpg" alt="Weiblicher Torso – Ansicht 2" data-en-alt="Weiblicher Torso – view 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Weiblicher Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Weiblicher Torso')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Weiblicher Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Weiblicher Torso')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Verhüllte Figur')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-3-a.jpg" alt="Verhüllte Figur – Ansicht 1">
-          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-3-b.jpg" alt="Verhüllte Figur – Ansicht 2">
-          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
-          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
-          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-3-a.jpg" alt="Verhüllte Figur – Ansicht 1" data-en-alt="Verhüllte Figur – view 1">
+          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-3-b.jpg" alt="Verhüllte Figur – Ansicht 2" data-en-alt="Verhüllte Figur – view 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Verhüllte Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Verhüllte Figur')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Verhüllte Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Verhüllte Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Torso mit Rillen')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-4-a.jpg" alt="Torso mit Rillen – Ansicht 1">
-          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-4-b.jpg" alt="Torso mit Rillen – Ansicht 2">
-          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
-          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
-          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-4-a.jpg" alt="Torso mit Rillen – Ansicht 1" data-en-alt="Torso mit Rillen – view 1">
+          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-4-b.jpg" alt="Torso mit Rillen – Ansicht 2" data-en-alt="Torso mit Rillen – view 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Torso mit Rillen</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Torso mit Rillen')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Torso mit Rillen</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Torso mit Rillen')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Stehender Torso')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-5-a.jpg" alt="Stehender Torso – Ansicht 1">
-          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-5-b.jpg" alt="Stehender Torso – Ansicht 2">
-          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
-          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
-          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-5-a.jpg" alt="Stehender Torso – Ansicht 1" data-en-alt="Stehender Torso – view 1">
+          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-5-b.jpg" alt="Stehender Torso – Ansicht 2" data-en-alt="Stehender Torso – view 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Stehender Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Stehender Torso')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Stehender Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Stehender Torso')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Sitzende Figur')">
         <div class="coll-card-img coll-card-views">
-          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-6-a.jpg" alt="Sitzende Figur – Ansicht 1">
-          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-6-b.jpg" alt="Sitzende Figur – Ansicht 2">
-          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
-          <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
-          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
+          <img class="active" loading="lazy" decoding="async" data-src="Images/web/Plastik-6-a.jpg" alt="Sitzende Figur – Ansicht 1" data-en-alt="Sitzende Figur – view 1">
+          <img loading="lazy" decoding="async" data-src="Images/web/Plastik-6-b.jpg" alt="Sitzende Figur – Ansicht 2" data-en-alt="Sitzende Figur – view 2">
+          <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="event.stopPropagation();cardShowView(this,-1)">&#x2039;</button>
+          <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
+          <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Sitzende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Sitzende Figur')">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Sitzende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Sitzende Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
       </div>
     </div>
   </div>
@@ -610,13 +610,13 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <img class="bio-slide active" loading="lazy" decoding="async" src="assets/portrait.jpg"
          alt="Horst Schwab">
     <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10588&sec=742b843864981929eb30f77c4ec85e5e"
-         alt="80. Geburtstag, 2015" style="object-position: right center;">
+         alt="80. Geburtstag, 2015" data-en-alt="80th birthday, 2015" style="object-position: right center;">
     <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=5352&sec=ec5c47c5ba500d4238093c750ff4fc3b"
-         alt="Porträt">
+         alt="Porträt" data-en-alt="Portrait">
     <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10815&sec=ef001e31245f248f1fb09ad97de6797f"
-         alt="Selbstbildnis, 1982">
-    <button class="bio-nav bio-nav-prev" aria-label="Vorheriges Bild">&#8592;</button>
-    <button class="bio-nav bio-nav-next" aria-label="Nächstes Bild">&#8594;</button>
+         alt="Selbstbildnis, 1982" data-en-alt="Self-portrait, 1982">
+    <button class="bio-nav bio-nav-prev" aria-label="Vorheriges Bild" data-en-aria-label="Previous image">&#8592;</button>
+    <button class="bio-nav bio-nav-next" aria-label="Nächstes Bild" data-en-aria-label="Next image">&#8594;</button>
     <div class="bio-dots">
       <span class="bio-dot active"></span>
       <span class="bio-dot"></span>
@@ -644,11 +644,11 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   </div>
     <blockquote class="bio-quote lang-de">
       <span class="bio-quote-mark">"</span>Die Bildsprache des Expressionismus ist nie fern — doch hängt über diesen malerischen Welten eine auffällige Stille.<span class="bio-quote-mark">"</span>
-      <cite style="display:block;margin-top:0.7rem;font-size:0.55rem;letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
+      <cite style="display:block;margin-top:0.7rem;font-size:max(0.55rem, var(--label-min));letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
     </blockquote>
     <blockquote class="bio-quote lang-en" style="display:none">
       <span class="bio-quote-mark">"</span>The language of Expressionism is never far — yet a striking stillness pervades these painted worlds.<span class="bio-quote-mark">"</span>
-      <cite style="display:block;margin-top:0.7rem;font-size:0.55rem;letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
+      <cite style="display:block;margin-top:0.7rem;font-size:max(0.55rem, var(--label-min));letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
     </blockquote>
     <div class="gold-divider" style="margin: 2rem 0;"></div>
     <p style="font-size:0.6rem; letter-spacing:0.2em; color: var(--gold);" id="bio-roles">MALER &nbsp;|&nbsp; GRAFIKER &nbsp;|&nbsp; BILDHAUER &nbsp;|&nbsp; LYRIKER</p>
@@ -838,9 +838,10 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 <!-- ══════════════════════════════════════
      IMPRESSUM OVERLAY
 ══════════════════════════════════════ -->
-<div class="legal-overlay" id="overlay-impressum" role="dialog" aria-modal="true" aria-label="Impressum">
-  <button class="legal-close-btn" onclick="closeLegal('impressum')">&#x2715;&nbsp; Schließen</button>
+<div class="legal-overlay" id="overlay-impressum" role="dialog" aria-modal="true" aria-label="Impressum" data-en-aria-label="Legal Notice">
+  <button class="legal-close-btn" onclick="closeLegal('impressum')"><span data-en="&#x2715;&nbsp; Close">&#x2715;&nbsp; Schließen</span></button>
   <div class="legal-inner">
+  <div class="lang-de">
 
     <p class="legal-eyebrow">Rechtliche Angaben</p>
     <h1 class="legal-title">Impressum</h1>
@@ -971,6 +972,139 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       </div>
     </div>
 
+    </div>
+  <div class="lang-en" style="display:none">
+<p class="legal-note legal-translation-note">This English translation is provided for convenience only. In the event of any discrepancy, the German version is legally binding.</p>
+
+    <p class="legal-eyebrow">Legal Information</p>
+    <h1 class="legal-title">Legal Notice</h1>
+
+    <!-- 1. INFORMATION PURSUANT TO § 5 TMG -->
+    <div class="legal-block">
+      <p class="legal-section-head">Information pursuant to § 5 TMG (German Telemedia Act)</p>
+      <div class="legal-body">
+        <p>
+          <span class="legal-ph">[FULL NAME]</span><br>
+          <span class="legal-ph">[STREET AND NUMBER]</span><br>
+          <span class="legal-ph">[POSTCODE]</span> <span class="legal-ph">[CITY]</span><br>
+          Germany
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 2. CONTACT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Contact</p>
+      <div class="legal-body">
+        <p>
+          Email:&nbsp; <span class="legal-ph">[EMAIL ADDRESS]</span>
+        </p>
+        <p class="legal-note">
+          Note: As an email address is provided for fast electronic contact, a telephone number is not required in the legal notice.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 3. PROFESSIONAL TITLE -->
+    <div class="legal-block">
+      <p class="legal-section-head">Professional Title &amp; Field of Activity</p>
+      <div class="legal-body">
+        <p>
+          Professional title: Freelance visual artist<br>
+          Field of activity: Painting, fine art, art sales<br>
+          Competent professional organisation: <span class="legal-ph">[PROFESSIONAL ASSOCIATION / CHAMBER, if applicable — otherwise remove this line]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 4. TAX INFORMATION -->
+    <div class="legal-block">
+      <p class="legal-section-head">Tax Information</p>
+      <div class="legal-body">
+        <p class="legal-note">
+          Option A — Subject to VAT (§ 27a UStG, German VAT Act):<br>
+          VAT identification number: <span class="legal-ph">[DE_________]</span>
+        </p>
+        <p class="legal-note">
+          Option B — Small business (§ 19 UStG, German VAT Act, small business regulation):<br>
+          Pursuant to § 19 UStG, no VAT is charged. No VAT ID is held. — Please choose the applicable option and remove the other.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 5. RESPONSIBLE FOR CONTENT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Responsible for content (§ 18 (2) MStV, German Interstate Media Treaty)</p>
+      <div class="legal-body">
+        <p>
+          <span class="legal-ph">[FULL NAME]</span><br>
+          <span class="legal-ph">[STREET AND NUMBER]</span><br>
+          <span class="legal-ph">[POSTCODE]</span> <span class="legal-ph">[CITY]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 6. EU DISPUTE RESOLUTION -->
+    <div class="legal-block">
+      <p class="legal-section-head">EU Dispute Resolution</p>
+      <div class="legal-body">
+        <p>
+          The European Commission provides a platform for online dispute resolution (ODR):
+          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a>
+        </p>
+        <p>
+          We are neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 7. LIABILITY FOR CONTENT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Liability for Content</p>
+      <div class="legal-body">
+        <p>
+          As a service provider, we are responsible for our own content on these pages in accordance with the general laws pursuant to § 7 (1) TMG. Under §§ 8 to 10 TMG, however, we as a service provider are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate unlawful activity.
+        </p>
+        <p>
+          Obligations to remove or block the use of information under the general laws remain unaffected. Liability in this respect, however, is only possible from the point in time at which we become aware of a specific infringement. Upon becoming aware of such infringements, we will remove the content in question immediately.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 8. LIABILITY FOR LINKS -->
+    <div class="legal-block">
+      <p class="legal-section-head">Liability for Links</p>
+      <div class="legal-body">
+        <p>
+          Our website contains links to external third-party websites over whose content we have no influence. We can therefore accept no liability for this third-party content. The respective provider or operator of the linked pages is always responsible for their content.
+        </p>
+        <p>
+          The linked pages were checked for possible legal violations at the time of linking. No unlawful content was apparent at the time of linking. However, permanent monitoring of the content of the linked pages is not reasonable without concrete indications of an infringement. Upon becoming aware of infringements, we will remove such links immediately.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 9. COPYRIGHT -->
+    <div class="legal-block">
+      <p class="legal-section-head">Copyright</p>
+      <div class="legal-body">
+        <p>
+          The content and works created by the site operator on these pages — in particular all depictions of artworks, photographs and texts — are subject to German copyright law. Reproduction, editing, distribution and any kind of exploitation beyond the limits of copyright law require the written consent of the respective author or creator.
+        </p>
+        <p>
+          Downloads and copies of this page are permitted for private, non-commercial use only. Where content on this page was not created by the operator, the copyrights of third parties are respected. Should you nevertheless become aware of a copyright infringement, please let us know. Upon becoming aware of infringements, we will remove such content immediately.
+        </p>
+      </div>
+    </div>
+  </div>
   </div><!-- /.legal-inner -->
 </div><!-- /#overlay-impressum -->
 
@@ -978,9 +1112,10 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 <!-- ══════════════════════════════════════
      DATENSCHUTZ OVERLAY
 ══════════════════════════════════════ -->
-<div class="legal-overlay" id="overlay-datenschutz" role="dialog" aria-modal="true" aria-label="Datenschutzerklärung">
-  <button class="legal-close-btn" onclick="closeLegal('datenschutz')">&#x2715;&nbsp; Schließen</button>
+<div class="legal-overlay" id="overlay-datenschutz" role="dialog" aria-modal="true" aria-label="Datenschutzerklärung" data-en-aria-label="Privacy Policy">
+  <button class="legal-close-btn" onclick="closeLegal('datenschutz')"><span data-en="&#x2715;&nbsp; Close">&#x2715;&nbsp; Schließen</span></button>
   <div class="legal-inner">
+  <div class="lang-de">
 
     <p class="legal-eyebrow">Rechtliche Angaben</p>
     <h1 class="legal-title">Datenschutzerklärung</h1>
@@ -1163,14 +1298,200 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       </div>
     </div>
 
+    </div>
+  <div class="lang-en" style="display:none">
+<p class="legal-note legal-translation-note">This English translation is provided for convenience only. In the event of any discrepancy, the German version is legally binding.</p>
+
+    <p class="legal-eyebrow">Legal Information</p>
+    <h1 class="legal-title">Privacy Policy</h1>
+
+    <!-- 1. CONTROLLER -->
+    <div class="legal-block">
+      <p class="legal-section-head">1 · Controller</p>
+      <div class="legal-body">
+        <p>
+          The controller within the meaning of the General Data Protection Regulation (GDPR) is:
+        </p>
+        <p>
+          <span class="legal-ph">[FULL NAME]</span><br>
+          <span class="legal-ph">[STREET AND NUMBER]</span><br>
+          <span class="legal-ph">[POSTCODE]</span> <span class="legal-ph">[CITY]</span><br>
+          Email: <span class="legal-ph">[EMAIL ADDRESS]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 2. GENERAL -->
+    <div class="legal-block">
+      <p class="legal-section-head">2 · General Information on Data Processing</p>
+      <div class="legal-body">
+        <p>
+          We take the protection of your personal data seriously and treat your personal data confidentially and in accordance with the statutory data protection provisions and this privacy policy.
+        </p>
+        <p>
+          As a matter of principle, this website collects and uses personal data only to the extent necessary to provide a functioning website and our content and services. Personal data is regularly collected and used only with the user's consent, unless a statutory basis permits the processing.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 3. SERVER LOG FILES -->
+    <div class="legal-block">
+      <p class="legal-section-head">3 · Server Log Files &amp; Hosting</p>
+      <div class="legal-body">
+        <p>
+          This website is hosted by: <span class="legal-ph">[HOSTING PROVIDER, e.g. GitHub Pages / Netlify / Hetzner / own server — please enter]</span>
+        </p>
+        <p>
+          When this website is accessed, the hosting provider automatically collects so-called server log files. These contain:
+        </p>
+        <p>
+          Browser type and browser version · Operating system used · Referrer URL · Hostname of the accessing computer · Time of the server request · IP address (usually anonymised)
+        </p>
+        <p>
+          These data are not merged with other data sources. The legal basis is Art. 6 (1) lit. f GDPR (legitimate interest in the secure and error-free operation of the website).
+        </p>
+        <p class="legal-note">
+          Note: If your hosting provider requires a data processing agreement (DPA), conclude it in accordance with Art. 28 GDPR. Add the provider's name and privacy policy where applicable.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 4. CONTACT FORM / OFFER FORM -->
+    <div class="legal-block">
+      <p class="legal-section-head">4 · Contact and Offer Form</p>
+      <div class="legal-body">
+        <p>
+          This website contains a form through which you can submit enquiries and offers regarding artworks. If you use the form, the data you enter — including first and last name, email address, your offer and any messages — are transmitted to us and processed.
+        </p>
+        <p>
+          The processing is based on Art. 6 (1) lit. b GDPR (pre-contractual measures) and Art. 6 (1) lit. f GDPR (legitimate interest in handling enquiries).
+        </p>
+        <p class="legal-note">
+          Note: If the form sends data to an email service or third-party provider (e.g. Formspree, EmailJS, own SMTP server), please add the respective service, its privacy policy and, where applicable, a note on data processing here.
+        </p>
+        <p>
+          Your data are used exclusively to process your enquiry and are not passed on to third parties unless this is necessary to perform the contract. The data are deleted as soon as the enquiry has been finally processed and no statutory retention obligations prevent this.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 5. EXTERNAL FONTS -->
+    <div class="legal-block">
+      <p class="legal-section-head">5 · Fonts</p>
+      <div class="legal-body">
+        <p>
+          This website uses only locally embedded fonts (Cormorant Garamond, Great Vibes, Montserrat). No connection to Google servers or other external font services is established. No personal data are transmitted in the process.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 5b. EXTERNAL IMAGES (KUNSTPORTAL PFALZ) -->
+    <div class="legal-block">
+      <p class="legal-section-head">5b · External Images (Kunstportal Pfalz)</p>
+      <div class="legal-body">
+        <p>
+          In the biography section of this website, individual portrait photographs are embedded via the Kunstportal Pfalz service (<a href="https://www.kunstportal-pfalz.de" target="_blank" rel="noopener">www.kunstportal-pfalz.de</a>). When these images are loaded, a connection to the servers of Kunstportal Pfalz is established, and your IP address may be transmitted in the process.
+        </p>
+        <p>
+          The legal basis is Art. 6 (1) lit. f GDPR (legitimate interest in presenting historical portrait photographs of Horst Schwab).
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 6. EXTERNAL CDN RESOURCES -->
+    <div class="legal-block">
+      <p class="legal-section-head">6 · External CDN Resources (3D Gallery)</p>
+      <div class="legal-body">
+        <p>
+          The interactive tour (virtual 3D gallery) of this website loads the JavaScript library Three.js via the content delivery network jsDelivr (Fondation jsDelivr, Luxembourg). When the tour is opened, a connection to the servers of jsDelivr is established, and your IP address may be transmitted in the process.
+        </p>
+        <p>
+          The legal basis is Art. 6 (1) lit. f GDPR (legitimate interest in the technical provision of the function). Privacy information from jsDelivr:
+          <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener">jsDelivr Privacy Policy</a>
+        </p>
+        <p>
+          The library is loaded only if the user actively starts the tour. Without this interaction, no connection to jsDelivr is established.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 7. COOKIES -->
+    <div class="legal-block">
+      <p class="legal-section-head">7 · Cookies and Local Storage</p>
+      <div class="legal-body">
+        <p>
+          This website does not use tracking or analytics cookies. No cookies are set for advertising purposes or to track user behaviour.</p>
+          <p>The <em>Wishlist</em> (favourites) function uses your browser's local storage (<em>localStorage</em>) to save bookmarked artworks exclusively on your device. These data are not transmitted to us and can be removed at any time by deleting your browser data. No personal data processing takes place. Legal basis: Art. 6 (1) lit. f GDPR.
+        </p>
+        <p class="legal-note">
+          Note: If you integrate analytics services (e.g. Google Analytics, Matomo) or marketing tools in the future, this section must be supplemented accordingly and a cookie banner becomes mandatory.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 8. DATA SUBJECT RIGHTS -->
+    <div class="legal-block">
+      <p class="legal-section-head">8 · Your Rights as a Data Subject</p>
+      <div class="legal-body">
+        <p>You have the following rights against us with regard to your personal data:</p>
+        <p>
+          <strong style="color:var(--white);font-weight:400;">Access</strong> — Art. 15 GDPR: You can request information at any time about the data stored about you.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Rectification</strong> — Art. 16 GDPR: You have the right to have inaccurate or incomplete data rectified.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Erasure</strong> — Art. 17 GDPR: Under certain conditions, you can request the erasure of your data.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Restriction of processing</strong> — Art. 18 GDPR: You can request the restriction of the processing of your data.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Objection</strong> — Art. 21 GDPR: You can object to the processing of your data where the processing is based on legitimate interest.<br><br>
+          <strong style="color:var(--white);font-weight:400;">Data portability</strong> — Art. 20 GDPR: You have the right to receive your data in a structured, machine-readable format.
+        </p>
+        <p>
+          To exercise your rights, please contact: <span class="legal-ph">[EMAIL ADDRESS]</span>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 9. RIGHT TO LODGE A COMPLAINT -->
+    <div class="legal-block">
+      <p class="legal-section-head">9 · Right to Lodge a Complaint with a Supervisory Authority</p>
+      <div class="legal-body">
+        <p>
+          Without prejudice to any other administrative or judicial remedy, you have the right to lodge a complaint with a data protection supervisory authority if you believe that the processing of your personal data infringes the GDPR.
+        </p>
+        <p>
+          The competent supervisory authority depends on the federal state in which the controller is resident. An overview of all German supervisory authorities can be found at:
+          <a href="https://www.bfdi.bund.de/DE/Infothek/Anschriften_Links/anschriften_links-node.html" target="_blank" rel="noopener">www.bfdi.bund.de</a>
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 10. CHANGES -->
+    <div class="legal-block">
+      <p class="legal-section-head">10 · Changes to this Privacy Policy</p>
+      <div class="legal-body">
+        <p>
+          We reserve the right to amend this privacy policy where necessary in order to keep it in line with current legal requirements or to reflect changes to our services. The version current at the time applies to your next visit.
+        </p>
+        <p>As of: <span class="legal-ph">[MONTH YEAR — please enter current date]</span></p>
+      </div>
+    </div>
+  </div>
   </div><!-- /.legal-inner -->
 </div><!-- /#overlay-datenschutz -->
 <!-- ══════════════════════════════════════
      LIEFERBEDINGUNGEN & WIDERRUFSRECHT OVERLAY
 ══════════════════════════════════════ -->
-<div class="legal-overlay" id="overlay-lieferbedingungen" role="dialog" aria-modal="true" aria-label="Lieferbedingungen">
-  <button class="legal-close-btn" onclick="closeLegal('lieferbedingungen')">&#x2715;&nbsp; Schließen</button>
+<div class="legal-overlay" id="overlay-lieferbedingungen" role="dialog" aria-modal="true" aria-label="Lieferbedingungen" data-en-aria-label="Delivery Terms">
+  <button class="legal-close-btn" onclick="closeLegal('lieferbedingungen')"><span data-en="&#x2715;&nbsp; Close">&#x2715;&nbsp; Schließen</span></button>
   <div class="legal-inner">
+  <div class="lang-de">
 
     <p class="legal-eyebrow">Rechtliche Angaben</p>
     <h1 class="legal-title">Lieferbedingungen &amp; Widerrufsrecht</h1>
@@ -1244,6 +1565,81 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
 
 
+    </div>
+  <div class="lang-en" style="display:none">
+<p class="legal-note legal-translation-note">This English translation is provided for convenience only. In the event of any discrepancy, the German version is legally binding.</p>
+
+    <p class="legal-eyebrow">Legal Information</p>
+    <h1 class="legal-title">Delivery Terms &amp; Right of Withdrawal</h1>
+
+    <div class="legal-block">
+      <p class="legal-section-head">1 · Delivery Terms</p>
+      <div class="legal-body">
+        <p>All original artworks offered are carefully and professionally packed to avoid transport damage. Shipping is exclusively within Germany unless expressly agreed otherwise.</p>
+        <p><strong>Shipping costs:</strong> The shipping costs incurred will be communicated individually after acceptance of the offer and depend on the size, weight and insured value of the work.</p>
+        <p><strong>Delivery time:</strong> After written confirmation of the offer and receipt of payment, delivery generally takes place within 7–14 working days. For particularly large-format or framed works, the delivery time may differ.</p>
+        <p><strong>Insurance:</strong> Every shipment is insured for the full insured value of the artwork. The seller bears the transport risk until the work is handed over to the buyer.</p>
+        <p><strong>Packaging:</strong> The works are secured with acid-free materials and professional packaging. Framed works are additionally fitted with edge protection and padding.</p>
+      </div>
+    </div>
+
+    <div class="legal-block">
+      <p class="legal-section-head">2 · Right of Withdrawal</p>
+      <div class="legal-body">
+        <p>As a consumer, you have the right to withdraw from this contract within fourteen days without giving any reason.</p>
+        <p>The withdrawal period is fourteen days from the day on which you, or a third party other than the carrier and indicated by you, acquired physical possession of the artwork.</p>
+        <p>To exercise your right of withdrawal, you must inform us of your decision to withdraw from this contract by means of a clear statement (e.g. a letter sent by post or an email):</p>
+        <p>
+          <span class="legal-ph">[SELLER'S NAME]</span><br>
+          <span class="legal-ph">[ADDRESS]</span><br>
+          Email: <span class="legal-ph">[EMAIL ADDRESS]</span>
+        </p>
+        <p>To meet the withdrawal deadline, it is sufficient for you to send your communication concerning your exercise of the right of withdrawal before the withdrawal period has expired.</p>
+      </div>
+    </div>
+
+    <div class="legal-block">
+      <p class="legal-section-head">3 · Effects of Withdrawal</p>
+      <div class="legal-body">
+        <p>If you withdraw from this contract, we shall reimburse to you all payments received from you, including the costs of delivery, without undue delay and in any event not later than fourteen days from the day on which we are informed about your decision to withdraw from this contract.</p>
+        <p>We will carry out such reimbursement using the same means of payment as you used for the initial transaction, unless expressly agreed otherwise.</p>
+        <p>We may withhold reimbursement until we have received the artwork back or until you have supplied evidence of having sent back the work, whichever is the earlier.</p>
+      </div>
+    </div>
+
+    <div class="legal-block">
+      <p class="legal-section-head">4 · Return</p>
+      <div class="legal-body">
+        <p>You shall send back or hand over the artwork to us without undue delay and in any event not later than fourteen days from the day on which you communicate your withdrawal from this contract to us.</p>
+        <p><strong>Return costs:</strong> The direct costs of returning the work shall be borne by the buyer, unless expressly agreed otherwise.</p>
+        <p><strong>Condition of the work:</strong> You are only liable for any diminished value of the work resulting from handling other than what is necessary to establish the nature, characteristics and functioning of the work.</p>
+        <p><strong>Packaging:</strong> For the return, please use the original packaging or equivalent protective packaging, and insure the shipment adequately.</p>
+        <p><strong>Exclusion of the right of withdrawal:</strong> The right of withdrawal does not apply to artworks that were made to the customer's specifications or are clearly tailored to the buyer's personal needs.</p>
+      </div>
+    </div>
+
+    <hr class="legal-divider">
+
+    <div class="legal-block">
+      <p class="legal-section-head">5 · Model Withdrawal Form</p>
+      <div class="legal-body">
+        <p>(Complete and return this form only if you wish to withdraw from the contract.)</p>
+        <p>
+          To: <span class="legal-ph">[SELLER'S NAME]</span>, <span class="legal-ph">[ADDRESS]</span>, Email: <span class="legal-ph">[EMAIL ADDRESS]</span>
+        </p>
+        <p>I/We (*) hereby give notice that I/We (*) withdraw from my/our (*) contract of sale of the following goods (*):</p>
+        <p style="padding-left:1.2rem;">
+          Ordered on (*): ___________________________<br>
+          Received on (*): ___________________________<br>
+          Name of consumer(s): ___________________________<br>
+          Address of consumer(s): ___________________________<br>
+          Signature of consumer(s) (only if this form is notified on paper): ___________________________<br>
+          Date: ___________________________
+        </p>
+        <p style="opacity:0.6;font-size:0.85rem;">(*) Delete as appropriate.</p>
+      </div>
+    </div>
+  </div>
   </div>
 </div><!-- /#overlay-lieferbedingungen -->
 
@@ -1263,29 +1659,29 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <span class="footer-copy">© 2026 · Kunst · Leidenschaft · Zeitlos</span>
 </footer>
 
-<button id="back-to-top" aria-label="Nach oben">↑</button>
+<button id="back-to-top" aria-label="Nach oben" data-en-aria-label="Back to top">↑</button>
 
 <!-- ══ KALENDER OVERLAY ══ -->
-<div id="cal-overlay" role="dialog" aria-modal="true" aria-label="Termin buchen">
+<div id="cal-overlay" role="dialog" aria-modal="true" aria-label="Termin buchen" data-en-aria-label="Book an appointment">
   <div class="cal-box">
     <button class="cal-close" onclick="closeCal()">&#x2715;</button>
 
     <!-- AUTH SCREEN -->
     <div id="cal-auth">
-      <p class="cal-auth-title">Mein Konto</p>
-      <p class="cal-auth-sub" id="cal-auth-sub">Bitte anmelden oder registrieren</p>
+      <p class="cal-auth-title" data-en="My Account">Mein Konto</p>
+      <p class="cal-auth-sub" id="cal-auth-sub" data-en="Please sign in or register">Bitte anmelden oder registrieren</p>
 
       <!-- Eingeloggt-Ansicht -->
       <div id="cal-auth-logged" style="display:none">
         <div class="cal-auth-greeting" id="cal-auth-greeting"></div>
-        <button class="cal-auth-logout" onclick="calLogout()">Abmelden</button>
+        <button class="cal-auth-logout" onclick="calLogout()" data-en="Sign out">Abmelden</button>
       </div>
 
       <!-- Login / Register Tabs -->
       <div id="cal-auth-form">
         <div class="cal-auth-tabs">
-          <button class="cal-auth-tab active" id="tab-login" onclick="calSwitchTab('login')">Anmelden</button>
-          <button class="cal-auth-tab" id="tab-register" onclick="calSwitchTab('register')">Registrieren</button>
+          <button class="cal-auth-tab active" id="tab-login" onclick="calSwitchTab('login')" data-en="Sign in">Anmelden</button>
+          <button class="cal-auth-tab" id="tab-register" onclick="calSwitchTab('register')" data-en="Register">Registrieren</button>
         </div>
         <div class="cal-auth-fields">
           <div class="cal-auth-field" id="auth-field-name" style="display:none">
@@ -1309,12 +1705,12 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
         <button class="cal-nav" id="cal-next">&#8250;</button>
       </div>
       <div class="cal-weekdays">
-        <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+        <span>Mo</span><span data-en="Tu">Di</span><span data-en="We">Mi</span><span data-en="Th">Do</span><span>Fr</span><span>Sa</span><span data-en="Su">So</span>
       </div>
       <div class="cal-days" id="cal-days"></div>
 
       <div class="cal-time-wrap" id="cal-time-wrap">
-        <div class="cal-time-label" id="cal-time-label">Uhrzeit wählen</div>
+        <div class="cal-time-label" id="cal-time-label" data-en="Select a time">Uhrzeit wählen</div>
         <div class="cal-rollers">
           <div class="cal-roller-wrap">
             <div class="cal-roller-highlight"></div>
@@ -1333,7 +1729,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       </div>
 
       <div class="cal-confirm" id="cal-confirm">Datum wählen</div>
-      <button class="cal-book-btn" id="cal-book-btn" onclick="confirmBooking()">Termin anfragen</button>
+      <button class="cal-book-btn" id="cal-book-btn" onclick="confirmBooking()" data-en="Request Appointment">Termin anfragen</button>
     </div>
     <div class="cal-success" id="cal-success">
       <div class="cal-success-icon">✓</div>
@@ -1355,7 +1751,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <h2 class="coll-heading" id="fav-heading">Merkliste</h2>
     </div>
     <div class="coll-grid" id="fav-grid">
-      <p id="fav-empty-msg">Noch keine Werke gespeichert.<br><span style="font-size:0.6rem;font-family:'Montserrat',sans-serif;letter-spacing:0.15em;opacity:0.6">No works saved yet.</span></p>
+      <p id="fav-empty-msg"><span data-en="No works saved yet.">Noch keine Werke gespeichert.</span></p>
     </div>
   </div>
 </div>
@@ -1376,14 +1772,14 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <div id="ad-img-el" style="transform-origin:center center;transition:transform 0.08s ease;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1.8rem;"></div>
     </div>
     <div id="ad-views-nav" style="display:none">
-      <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" onclick="adShowView(_adViewIdx-1)">&#x2039;</button>
-      <button class="views-arrow views-next" aria-label="Nächste Ansicht" onclick="adShowView(_adViewIdx+1)">&#x203A;</button>
+      <button class="views-arrow views-prev" aria-label="Vorherige Ansicht" data-en-aria-label="Previous view" onclick="adShowView(_adViewIdx-1)">&#x2039;</button>
+      <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="adShowView(_adViewIdx+1)">&#x203A;</button>
       <div class="views-bar"><div class="views-dots"></div><span class="views-count"></span></div>
     </div>
     <button id="ad-rundgang-btn" onclick="closeArtwork();document.getElementById('nav-rundgang').click();">
       <span id="ad-rundgang-btn-text">&#9654;&nbsp; Im Rundgang entdecken</span>
     </button>
-    <span id="ad-zoom-hint" style="position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'Montserrat',sans-serif;font-size:0.46rem;letter-spacing:0.22em;color:rgba(201,168,76,0.25);pointer-events:none;">Scrollen zum Vergrößern &nbsp;·&nbsp; Doppelklick zum Zurücksetzen</span>
+    <span id="ad-zoom-hint" style="position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'Montserrat',sans-serif;font-size:max(0.46rem, var(--label-min));letter-spacing:0.22em;color:rgba(201,168,76,0.25);pointer-events:none;" data-en="Scroll to zoom &amp;nbsp;·&amp;nbsp; Double-click to reset">Scrollen zum Vergrößern &nbsp;·&nbsp; Doppelklick zum Zurücksetzen</span>
   </div>
 
   <!-- Right: info panel -->
@@ -1409,60 +1805,60 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
 
-    <p class="modal-label">Angebot abgeben</p>
+    <p class="modal-label" data-en="Make an Offer">Angebot abgeben</p>
     <h3 class="modal-title" id="modal-title">Komposition I</h3>
-    <p class="modal-range">Preisrahmen: <strong id="modal-range">€ 4.750 – 7.200</strong></p>
+    <p class="modal-range"><span data-en="Price range:">Preisrahmen:</span> <strong id="modal-range">€ 4.750 – 7.200</strong></p>
 
     <div id="form-wrap">
       <div class="form-row">
         <div class="field">
-          <label>Vorname</label>
+          <label data-en="First name">Vorname</label>
           <input type="text" id="fname" placeholder="Max" />
         </div>
         <div class="field">
-          <label>Nachname</label>
-          <input type="text" id="lname" placeholder="Mustermann" />
+          <label data-en="Last name">Nachname</label>
+          <input type="text" id="lname" placeholder="Mustermann" data-en-placeholder="Smith" />
         </div>
       </div>
 
       <div class="field">
-        <label>E-Mail-Adresse</label>
-        <input type="email" id="email" placeholder="max@beispiel.de" />
+        <label data-en="E-mail address">E-Mail-Adresse</label>
+        <input type="email" id="email" placeholder="max@beispiel.de" data-en-placeholder="max@example.com" />
       </div>
 
       <div class="field">
-        <label>Ihr Angebot (€)</label>
-        <input type="number" id="offer" placeholder="5.000" min="0" />
+        <label data-en="Your offer (€)">Ihr Angebot (€)</label>
+        <input type="number" id="offer" placeholder="5.000" data-en-placeholder="5,000" min="0" />
       </div>
 
       <div class="frame-section">
-        <span class="frame-label">Rahmen</span>
+        <span class="frame-label" data-en="Frame">Rahmen</span>
         <div class="frame-options">
-          <button class="frame-opt-btn"        id="frame-opt-original" onclick="setFrameOpt(this,'Original Rahmen')">Original Rahmen</button>
-          <button class="frame-opt-btn active" id="frame-opt-none"     onclick="setFrameOpt(this,'')">Ohne Rahmen</button>
-          <button class="frame-opt-btn"        id="frame-opt-weiss"    onclick="setFrameOpt(this,'Weiß')"><span class="frame-swatch" style="background:#f5f4f0;border-color:#bbb"></span>Weiß</button>
-          <button class="frame-opt-btn"        id="frame-opt-schwarz"  onclick="setFrameOpt(this,'Schwarz')"><span class="frame-swatch" style="background:#1a1a18"></span>Schwarz</button>
-          <button class="frame-opt-btn"        id="frame-opt-grau"     onclick="setFrameOpt(this,'Grau')"><span class="frame-swatch" style="background:#888"></span>Grau</button>
+          <button class="frame-opt-btn"        id="frame-opt-original" onclick="setFrameOpt(this,'Original Rahmen')"><span data-en="Original frame">Original Rahmen</span></button>
+          <button class="frame-opt-btn active" id="frame-opt-none"     onclick="setFrameOpt(this,'')"><span data-en="No frame">Ohne Rahmen</span></button>
+          <button class="frame-opt-btn"        id="frame-opt-weiss"    onclick="setFrameOpt(this,'Weiß')"><span class="frame-swatch" style="background:#f5f4f0;border-color:#bbb"></span><span data-en="White">Weiß</span></button>
+          <button class="frame-opt-btn"        id="frame-opt-schwarz"  onclick="setFrameOpt(this,'Schwarz')"><span class="frame-swatch" style="background:#1a1a18"></span><span data-en="Black">Schwarz</span></button>
+          <button class="frame-opt-btn"        id="frame-opt-grau"     onclick="setFrameOpt(this,'Grau')"><span class="frame-swatch" style="background:#888"></span><span data-en="Grey">Grau</span></button>
         </div>
       </div>
 
       <div class="field">
-        <label>Nachricht (optional)</label>
-        <textarea id="message" placeholder="Ihre Nachricht an uns..."></textarea>
+        <label data-en="Message (optional)">Nachricht (optional)</label>
+        <textarea id="message" placeholder="Ihre Nachricht an uns..." data-en-placeholder="Your message to us..."></textarea>
       </div>
 
-      <button class="submit-btn" onclick="submitOffer()">Angebot absenden</button>
+      <button class="submit-btn" onclick="submitOffer()" data-en="Submit Offer">Angebot absenden</button>
     </div>
 
     <div class="success-msg" id="success-msg">
       <div class="success-msg-icon">✓</div>
-      <p>Vielen Dank für Ihr Angebot.</p>
-      <p class="sub">Wir melden uns in Kürze bei Ihnen.</p>
+      <p data-en="Thank you for your offer.">Vielen Dank für Ihr Angebot.</p>
+      <p class="sub" data-en="We will get back to you shortly.">Wir melden uns in Kürze bei Ihnen.</p>
     </div>
   </div>
 </div>
 
 
-<script src="app.js?v=20261023j"></script>
+<script src="app.js?v=20261023l"></script>
 </body>
 </html>
