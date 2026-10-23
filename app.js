@@ -555,7 +555,8 @@
       imgWrap.className = 'coll-card-img';
       if (d.img) {
         const img = document.createElement('img');
-        img.loading = 'lazy'; img.decoding = 'async'; img.src = d.img; img.alt = title;
+        // verkleinerte Fassung (Images/web, lange Kante 1200 px) – das Original nur in der Werkansicht
+        img.loading = 'lazy'; img.decoding = 'async'; img.src = d.img.replace('Images/', 'Images/web/'); img.alt = title;
         imgWrap.appendChild(img);
       } else {
         imgWrap.appendChild(_makeArtworkCanvas(title, 400, 300));
@@ -1111,7 +1112,9 @@
     let _resScale = 1, _resProbe = 0, _resLocked = false, _fpsSum = 0, _fpsN = 0, _fpsWarm = 0, _adEl = null, _infoEl = null;
     function _pixelRatio() {
       const full = Math.min(devicePixelRatio || 1, 2);
-      return Math.max(Math.min(full, 1), full * Math.max(0.75, _resScale));   // nie unter die echte Bildschirmauflösung
+      // nie unter die echte Bildschirmauflösung bis 1,5: PCs mit 125/150 % Skalierung würden sonst
+      // hochgerechnet und unscharf; nur Retina (2) darf bei Last bis 1,5 sinken
+      return Math.max(Math.min(full, 1.5), full * Math.max(0.75, _resScale));
     }
     function _watchFps(raw) {
       if (!_loaderHidden || raw > 250 || document.hidden) return;   // Ladephase, Tab-Wechsel
@@ -1305,8 +1308,8 @@
       // sitzt über dem Knopf „Tour fortsetzen“ (Abstand wird beim Einblenden gesetzt), so breit wie nötig
       navHint.style.cssText = 'position:absolute;left:50%;bottom:16px;transform:translateX(-50%);'
         + 'width:max-content;max-width:90vw;text-align:center;'
-        + 'background:rgba(8,7,6,0.72);color:#e9e2d2;font:500 12px/1.35 Montserrat,sans-serif;'
-        + 'letter-spacing:0.03em;padding:8px 16px;border:1px solid rgba(201,168,76,0.35);'
+        + 'background:rgba(8,7,6,0.72);color:#e9e2d2;font:500 0.75rem/1.35 Montserrat,sans-serif;'
+        + 'letter-spacing:0.03em;padding:0.5rem 1rem;border:1px solid rgba(201,168,76,0.35);'
         + 'border-radius:16px;pointer-events:none;opacity:0;transition:opacity 0.4s ease;'
         + 'z-index:6;backdrop-filter:blur(4px);';
       navHint.textContent = _touchDevice
