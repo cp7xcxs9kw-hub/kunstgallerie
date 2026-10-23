@@ -181,6 +181,9 @@
     justify-content: center;
   }
 
+  /* Nach „Galerie betreten" ausgeblendet – Hochscrollen endet am Galerie-Anfang (siehe _syncHero) */
+  html.gallery-entered #hero { display: none; }
+
   /* Dunkle, leicht strukturierte Galeriewand */
   .hero-wall {
     position: absolute;
@@ -1024,6 +1027,8 @@
   .coll-card-views .views-arrow { opacity: 0; }
   .coll-card:hover .coll-card-views .views-arrow { opacity: 0.85; }
   @media (hover: none) { .coll-card-views .views-arrow { opacity: 0.75; } }
+  /* Mausrad-Hinweis der Werkansicht gibt es auf Touch-Geräten nicht */
+  @media (hover: none) { #ad-zoom-hint { display: none; } }
   .views-dots {
     display: flex; gap: 0.45rem; justify-content: center; align-items: center;
   }
@@ -2073,6 +2078,10 @@
     #gallery-vr #vr-skip     { right: 1rem; bottom: 1.2rem; padding: 0.5rem 0.9rem; letter-spacing: 0.22em; }
     #gallery-vr #vr-info-btn { left: 1rem; bottom: 1.2rem; }
     #gallery-vr #vr-free-btn { bottom: 4.4rem; }
+    #gallery-vr #vr-back, #gallery-vr #vr-skip, #gallery-vr #gallery-vr-close, #gallery-vr #vr-info-btn {
+      background: rgba(8,7,6,0.66); color: rgba(201,168,76,0.9); border-color: rgba(201,168,76,0.4);
+    }
+    #gallery-vr #gallery-vr-close { top: 1rem; right: 1rem; padding: 0.55rem 1rem; }
   }
   #vr-free-btn {
     position: absolute;
@@ -2651,7 +2660,7 @@
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
-    transition: opacity 0.35s ease, transform 0.35s ease, background 0.25s, border-color 0.25s;
+    transition: opacity 0.35s ease, transform 0.35s ease, bottom 0.35s ease, background 0.25s, border-color 0.25s;
     backdrop-filter: blur(6px);
   }
   #back-to-top.visible {
@@ -3008,12 +3017,19 @@
     /* ── Galerie ── */
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .artwork-card.large { grid-column: span 2; }
-    .intro-scene-pin #galerie { padding: 0.5rem 1rem; }
+    /* Inhalt zwischen Navigation (oben) und dem sicher sichtbaren Bereich zentrieren
+       (100svh = Höhe bei ausgeklappter iPhone-Adressleiste) */
+    .intro-scene-pin #galerie { padding: 96px 12px calc(12px + 100vh - 100svh); }
+    .intro-scene-pin .gallery-header { margin-bottom: 1.1rem; }
+    .gallery-header h2 { font-size: 1.7rem; }
     .gallery-frame { padding: 4px; }
 
     /* ── Kategorien ── */
-    .cat-grid { grid-template-columns: 1fr 1fr; gap: 3px; }
-    .cat-tile { min-height: 200px; }
+    /* alle vier Kacheln auf einen Blick (2 × 2), auch auf kleinen iPhones */
+    .cat-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+    .cat-tile { min-height: 0; height: clamp(130px, calc((100svh - 210px) / 2), 210px); padding: 1rem 0.6rem; gap: 0.55rem; }
+    .cat-tile-name { font-size: 1.2rem; letter-spacing: 0.1em; line-height: 1.2; }
+    .cat-tile-count { font-size: 0.44rem; letter-spacing: 0.2em; }
     .cat-tile.settled:hover { transform: none; box-shadow: none; }
 
     /* ── Collection Overlay ── */
@@ -3034,6 +3050,12 @@
       border-top: 1px solid rgba(201,168,76,0.14) !important;
     }
     #ad-info-scroll { padding: 1.5rem 1.5rem 1rem !important; }
+    /* Kopfzeile: Zurück einzeilig */
+    .ad-back-btn { white-space: nowrap; padding: 0.5rem 0.9rem; }
+    /* Bild passt ins Bildfeld (42vh) – Platz oben und unten für den Rundgang-Knopf */
+    #ad-img-inner { padding: 1rem 1rem 3.4rem !important; }
+    #ad-img-el img, .ad-placeholder-canvas { max-width: 86vw; max-height: calc(42vh - 4.4rem); }
+    #ad-rundgang-btn { bottom: 0.8rem; padding: 0.55rem 1.2rem; font-size: 0.48rem; letter-spacing: 0.2em; }
     #ad-info-footer { padding: 1rem 1.5rem 1.5rem !important; }
     #artwork-detail > div:first-child {
       height: 56px !important;
@@ -3055,7 +3077,7 @@
     .contact-grid { gap: 2rem; }
 
     /* ── Footer ── */
-    footer { flex-direction: column; align-items: flex-start; padding: 1.5rem; }
+    footer { flex-direction: column; align-items: flex-start; padding: 1.5rem 1.5rem 5.5rem; }
     /* ── WIP Banner ── */
     .wip-banner { padding: 2rem 1.5rem; }
 
@@ -3064,6 +3086,7 @@
 
     /* ── Legal Overlays ── */
     .legal-inner { padding: 5rem 1.5rem 4rem; }
+    .legal-title { font-size: 2.1rem; overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
     .legal-close-btn { left: 1rem; top: 1rem; }
 
     /* ── Footer Links ── */
@@ -3077,16 +3100,38 @@
     .gallery-grid { grid-template-columns: 1fr; }
     .artwork-card.large { grid-column: span 1; min-height: 300px; }
     .form-row { grid-template-columns: 1fr; }
-    .cat-grid { grid-template-columns: 1fr; }
     .coll-grid { grid-template-columns: 1fr; }
     .nav-links li { padding: 0 0.7rem; }
     .nav-links a { font-size: 0.5rem; }
     .bio-tl-item { flex: 0 0 100%; }
     .bio-facts { grid-template-columns: 1fr; }
     #ad-img-panel { height: 38vh !important; top: 52px !important; }
+    #ad-img-el img, .ad-placeholder-canvas { max-height: calc(38vh - 4.4rem); }
+    /* Titelzeile entfällt (steht direkt darunter noch einmal) */
+    .ad-topbar-title { display: none; }
     #ad-info-panel { top: calc(52px + 38vh) !important; }
     .hero-name { font-size: clamp(2.2rem, 10vw, 2.9rem); }
     .hero-label { font-size: 0.56rem; letter-spacing: 0.55em; }
+  }
+
+  /* Sehr schmale Handys (320 px): Logo kleiner, sonst liegt der Sprachumschalter darauf */
+  @media (max-width: 360px) {
+    .nav-logo { font-size: 0.92rem; letter-spacing: 0.24em; padding: 0 1rem; }
+  }
+
+  /* Handy quer: Kacheln in einer Reihe, damit alle vier unter die Navigation passen */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .intro-scene-pin #galerie { padding: 104px 16px calc(8px + 100vh - 100svh); }
+    .intro-scene-pin .gallery-header { margin-bottom: 0.6rem; }
+    .gallery-header h2 { font-size: 1.4rem; }
+    .cat-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .cat-tile { min-height: 0; height: clamp(110px, calc(100svh - 200px), 220px); padding: 0.8rem 0.5rem; gap: 0.5rem; }
+    .cat-tile-name { font-size: 1.05rem; letter-spacing: 0.08em; line-height: 1.2; }
+    .cat-tile-count { font-size: 0.42rem; letter-spacing: 0.16em; }
+  }
+  /* Handy quer mit Desktop-Aufteilung der Werkansicht: Bild über dem Rundgang-Knopf halten */
+  @media (max-height: 500px) and (orientation: landscape) and (min-width: 769px) {
+    #ad-img-el img, .ad-placeholder-canvas { max-height: calc(100svh - 64px - 9.5rem); }
   }
 
   /* ── 3D TILT ARTWORK CARDS ── */
@@ -3100,7 +3145,7 @@
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    z-index: 970;
+    z-index: 400;
     background: rgba(8,7,6,0.96);
     border: 1px solid rgba(201,168,76,0.35);
     padding: 1.6rem 1.8rem 1.4rem;
@@ -3174,8 +3219,18 @@
     transition: color 0.2s;
   }
   #rundgang-hint .rh-close:hover { color: var(--gold); }
-  @media (max-width: 480px) {
-    #rundgang-hint { right: 1rem; left: 1rem; max-width: none; bottom: 1.2rem; }
+  @media (max-width: 480px), (max-height: 500px) and (orientation: landscape) {
+    /* Handy (auch quer): eine schmale Zeile statt Karte – verdeckt sonst die Kacheln */
+    #rundgang-hint { right: 0.75rem; left: 0.75rem; max-width: none; bottom: 0.75rem; padding: 0.55rem 2.2rem 0.55rem 0.9rem;
+                     display: flex; align-items: center; gap: 0.8rem; }
+    #rundgang-hint .rh-icon, #rundgang-hint .rh-text { display: none; }
+    #rundgang-hint .rh-title { font-size: 0.92rem; margin: 0; flex: 1; min-width: 0; line-height: 1.2; }
+    #rundgang-hint .rh-btn { width: auto; padding: 0.5rem 0.8rem; letter-spacing: 0.18em; white-space: nowrap; }
+    #rundgang-hint .rh-close { top: 50%; transform: translateY(-50%); }
+    /* Nach-oben-Knopf solange darüber setzen – sonst trifft ein Tipp darauf „Rundgang starten" */
+    body:has(#rundgang-hint.visible) #back-to-top { bottom: 4.6rem; }
+    /* solange die Kategorie-Kacheln zu sehen sind, nichts darüberlegen */
+    body.scene-tiles #rundgang-hint, body.scene-tiles #back-to-top { opacity: 0; pointer-events: none; }
   }
 
   /* ── NAV SWEEP TRANSITION ── */

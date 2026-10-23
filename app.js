@@ -69,6 +69,7 @@
     // 3. Erst wenn die Wand ganz abgedunkelt ist, unter dem Overlay zur neuen Seite springen
     //    (Puffer für die zwei Frames bis zum Start des Abdunkelns)
     setTimeout(() => {
+      _syncHero();
       const target = document.getElementById(targetId);
       if (target) target.scrollIntoView({ behavior: 'instant' });
     }, DIM + 120);
@@ -110,8 +111,9 @@
     const sweep = document.getElementById('nav-sweep');
     sweep.classList.remove('out');
     sweep.classList.add('active');
-    // Scroll während Overlay sichtbar ist
+    // Scroll während Overlay sichtbar ist (Hero dabei ein-/ausblenden, siehe _syncHero)
     setTimeout(() => {
+      _syncHero();
       const target = document.getElementById(targetId);
       if (target) target.scrollIntoView({ behavior: 'instant' });
     }, 420);
@@ -122,12 +124,31 @@
     }, 730);
   }
 
-  // Scroll-Sperren: runter vom Hero + zurück zum Hero
+  // Hero ↔ Galerie: vor dem Betreten sperrt der Hero das Runterscrollen; danach ist der Hero
+  // ausgeblendet (Klasse gallery-entered an <html>, nach Neuladen schon im <head> gesetzt).
+  // Hochscrollen endet so von selbst am Galerie-Anfang – kein Zurückschnappen, das bei
+  // Wisch-Schwung oder der ein-/ausklappenden iPhone-Adressleiste die Seite springen ließ.
   // sessionStorage hält den Zustand über Refreshes
   var _galleryEntered = sessionStorage.getItem('galleryEntered') === '1';
   var _hasEnteredOnce = sessionStorage.getItem('galleryEnteredOnce') === '1';
-  var _touchStartY = 0;
-  var _snapReady = _galleryEntered; // sofort aktiv wenn aus sessionStorage
+  document.documentElement.classList.toggle('gallery-entered', _galleryEntered);
+  // Hero passend zum Zustand zeigen/ausblenden – nur unter einer Abdeckung aufrufen
+  // (Raumübergang, Zoom, Rundgang), danach springt der Aufrufer an sein Ziel
+  function _syncHero() {
+    var root = document.documentElement;
+    if (root.classList.contains('gallery-entered') === _galleryEntered) return;
+    var h = heroSection.offsetHeight, y = window.scrollY;
+    root.classList.toggle('gallery-entered', _galleryEntered);
+    // Inhalt unterhalb des Heros bleibt an seiner Stelle
+    if (!_galleryEntered) window.scrollTo({ top: y + heroSection.offsetHeight, behavior: 'instant' });
+    else if (y >= h) window.scrollTo({ top: y - h, behavior: 'instant' });
+  }
+  // Wischen/Scrollen in einer offenen Ebene (Kollektion, Werk, Rechtliches …) oder in der
+  // Navigationsleiste gehört dieser Ebene – die Hero-Sperre greift dort nicht
+  function _inLayer(t) {
+    if (document.body.style.overflow === 'hidden') return true;
+    return !!(t && t.closest && t.closest('.coll-overlay, #artwork-detail, .legal-overlay, #modal, #cal-overlay, #gallery-vr, .nav-links, #rundgang-hint'));
+  }
   /* ══ BROWSER-ZURÜCK: jede geöffnete Ebene ist ein Schritt im Browserverlauf ══
      Jeder Verlaufseintrag speichert den kompletten Ebenen-Stapel (z. B. ['gallery','col:mixed','art:Meer']).
      Bei Zurück/Vorwärts wird die Seite an den Stapel des Eintrags angeglichen. */
@@ -207,55 +228,41 @@
   function _enterGallery() {
     _galleryEntered = true;
     _hasEnteredOnce = true;
-    _snapReady = true;
     sessionStorage.setItem('galleryEntered', '1');
     sessionStorage.setItem('galleryEnteredOnce', '1');
+    _unlockHero();
   }
   function _goToHero() {
     _galleryEntered = false;
-    _snapReady = false;
     sessionStorage.removeItem('galleryEntered');
     // _hasEnteredOnce bleibt true → Down-Sperre entfällt beim Zurückkehren
+    _hideRundgangHint();
     _navClosed('gallery');
     roomTransition('hero');
   }
-  // Snap-Fallback erst nach Scroll-Restaurierung des Browsers aktivieren
-  if (!_snapReady) setTimeout(function() { _snapReady = true; }, 600);
 
-  // Puffer: 250px über der Grenze abfangen (schnelle Trackpad-Gesten)
-  window.addEventListener('wheel', function(e) {
-    if (!_galleryEntered && !_hasEnteredOnce && window.scrollY <= 5 && e.deltaY > 0) { e.preventDefault(); return; }
-    if (_galleryEntered && e.deltaY < 0 && window.scrollY <= window.innerHeight + 250) {
-      e.preventDefault();
-      if (window.scrollY < window.innerHeight) {
-        window.scrollTo({ top: window.innerHeight, behavior: 'instant' });
-      }
-    }
-  }, { passive: false });
-
-  // Touch: Startposition merken, Richtung prüfen
-  window.addEventListener('touchstart', function(e) {
-    _touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-
-  window.addEventListener('touchmove', function(e) {
-    if (!_galleryEntered && !_hasEnteredOnce && window.scrollY <= 5) { e.preventDefault(); return; }
-    if (_galleryEntered && e.touches[0].clientY > _touchStartY && window.scrollY <= window.innerHeight + 250) {
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  window.addEventListener('keydown', function(e) {
-    if (!_galleryEntered && !_hasEnteredOnce && window.scrollY <= 5 && ['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); return; }
-    if (_galleryEntered && window.scrollY <= window.innerHeight + 250 && ['ArrowUp', 'PageUp'].includes(e.key)) e.preventDefault();
-  });
-
-  // Letzter Fallback: falls doch durchgescrollt wurde, sofort zurückschnappen
-  window.addEventListener('scroll', function() {
-    if (_snapReady && _galleryEntered && window.scrollY < window.innerHeight) {
-      window.scrollTo({ top: window.innerHeight, behavior: 'instant' });
-    }
-  }, { passive: true });
+  // Hero-Sperre: vor dem ersten Betreten nicht vom Hero nach unten scrollen. Die Listener sind nur
+  // bis zum ersten Betreten angemeldet – danach muss iOS beim Wischen nicht mehr auf Skripte warten.
+  function _heroLocked() { return !_galleryEntered && !_hasEnteredOnce && window.scrollY <= 5; }
+  function _lockWheel(e) {
+    if (_heroLocked() && e.deltaY > 0 && !_inLayer(e.target)) e.preventDefault();
+  }
+  function _lockTouch(e) {
+    if (_heroLocked() && !_inLayer(e.target)) e.preventDefault();
+  }
+  function _lockKeys(e) {
+    if (_heroLocked() && !_inLayer(e.target) && ['ArrowDown', 'PageDown', ' '].includes(e.key)) e.preventDefault();
+  }
+  function _unlockHero() {
+    window.removeEventListener('wheel', _lockWheel, { passive: false });
+    window.removeEventListener('touchmove', _lockTouch, { passive: false });
+    window.removeEventListener('keydown', _lockKeys);
+  }
+  if (!_hasEnteredOnce) {
+    window.addEventListener('wheel', _lockWheel, { passive: false });
+    window.addEventListener('touchmove', _lockTouch, { passive: false });
+    window.addEventListener('keydown', _lockKeys);
+  }
 
   // Hero-Button: Zoom-In Effekt → scrollt zuerst zum Zitat
   const heroEnterBtn = document.querySelector('.hero-enter');
@@ -273,7 +280,9 @@
 
   // Rundgang-Button
   const heroGhostBtn = document.getElementById('hero-enter-ghost');
-  if (heroGhostBtn) heroGhostBtn.addEventListener('click', _enterGallery);
+  // (der Rundgang liegt dann schon deckend darüber – Hero darunter ausblenden, nach dem
+  //  Beenden steht man am Galerie-Anfang)
+  if (heroGhostBtn) heroGhostBtn.addEventListener('click', function() { _enterGallery(); _syncHero(); });
 
   // Galerie-Link: zur Startseite navigieren (Hero, frisch geladen)
   document.querySelectorAll('.nav-reload').forEach(link => {
@@ -3761,11 +3770,13 @@
       tiles[i].style.transform  = 'translate('+OX[i]+'px,'+OY[i]+'px)';
     }
 
-    var cur = 0, tgt = 0, rafId = null;
+    var cur = 0, tgt = 0, rafId = null, lastT = 0;
 
     function scrollP() {
+      // Strecke, über die der angeheftete Bildschirm steht – mit seiner festen Höhe statt innerHeight,
+      // das sich beim Ein-/Ausklappen der iPhone-Adressleiste ändert und den Fortschritt springen ließ
       var r = scene.getBoundingClientRect();
-      return Math.max(0, Math.min(1, -r.top / (scene.offsetHeight - window.innerHeight)));
+      return Math.max(0, Math.min(1, -r.top / (scene.offsetHeight - (pinEl ? pinEl.offsetHeight : window.innerHeight))));
     }
     function ss(t) { t = Math.max(0,Math.min(1,t)); return t*t*(3-2*t); }
     function band(p,a,b) { return ss(Math.max(0,Math.min(1,(p-a)/(b-a)))); }
@@ -3784,6 +3795,8 @@
 
       var stable = tileT >= 0.995;
       grid.classList.toggle('tiles-settled', stable);
+      // Kacheln im Bild: auf dem Handy treten Hinweiszeile und Nach-oben-Knopf zurück (styles.css)
+      document.body.classList.toggle('scene-tiles', tileT > 0.05);
       for (var i = 0; i < tiles.length; i++) {
         if (!stable) tiles[i].style.transition = 'none';
         tiles[i].style.transform = 'translate('+(OX[i]*(1-tileT))+'px,'+(OY[i]*(1-tileT))+'px)';
@@ -3805,14 +3818,16 @@
       }
     }
 
-    function tick() {
+    function tick(t) {
       var d = tgt - cur;
+      // Nachziehen pro Zeit statt pro Bild (gleich schnell bei 60 und 120 Hz): 9 % je 1/60 s
+      var dt = Math.min(64, lastT ? t - lastT : 16.7); lastT = t;
       if (Math.abs(d) < 0.0002) {
         cur = tgt; render(cur);
         for (var i = 0; i < tiles.length; i++) tiles[i].style.transition = '';
-        rafId = null;
+        rafId = null; lastT = 0;
       } else {
-        cur += d * 0.09; render(cur);
+        cur += d * (1 - Math.pow(1 - 0.09, dt / 16.7)); render(cur);
         rafId = requestAnimationFrame(tick);
       }
     }
@@ -4282,6 +4297,12 @@
   });
 
   // ── Rundgang-Hinweis-Popup ────────────────────────────────────
+  function _hideRundgangHint() {
+    const hint = document.getElementById('rundgang-hint');
+    if (!hint) return;
+    hint.classList.remove('visible');
+    setTimeout(() => hint.remove(), 500);
+  }
   function _showRundgangHint() {
     if (document.getElementById('rundgang-hint')) return;   // nur ein Hinweis gleichzeitig
     const isEN = localStorage.getItem('lang') === 'en';
@@ -4300,6 +4321,8 @@
     document.body.appendChild(hint);
 
     setTimeout(() => hint.classList.add('visible'), 3500);
+    // Handy: nach einer Weile von selbst ausblenden – der Platz unten ist dort knapp
+    if (window.matchMedia('(max-width: 480px), (max-height: 500px) and (orientation: landscape)').matches) setTimeout(dismiss, 3500 + 9000);
 
     hint.querySelector('.rh-btn').addEventListener('click', () => {
       dismiss();
