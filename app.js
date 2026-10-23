@@ -1126,9 +1126,9 @@
     function _applyRes() { renderer.setPixelRatio(_pixelRatio()); renderer.setSize(innerWidth, innerHeight); }
 
     // ── Layout ────────────────────────────────────────────────────
-    // Room 1 (Eingangssaal):  z:  0 → -14   width 10
-    // Durchgang:              z: -14 → -18   width 3.6
-    // Room 2 (Hauptgalerie):  z: -18 → -40  width 10
+    // Room 1 (Eingangssaal):  z:   0 → -18    width 10
+    // Durchgang:              z: -18 → -22    width 3.6
+    // Room 2 (Hauptgalerie):  z: -22 → BACK_Z (−41,8)  width 10; weitere Räume siehe R3, ROW2, GANG
     const RW=10, RH=4.4, WALLX=4.82;   // room width/height, painting-wall x
     const PW=1.75, PH=2.15, PY=2.05;   // painting size & height
     const CAM_Y=1.70;
@@ -1143,9 +1143,14 @@
     // Jeder weitere Raum wird in eine gedrehte Gruppe mit denselben lokalen Koordinaten wie
     // Raum 1/2 gebaut (lokal −z = Laufrichtung) – derselbe Code für alle Räume.
     const ROW_GAP  = 26;              // Abstand der Mittellinien der beiden langen Seiten
-    const CW       = 2.4;             // Breite der Eckdurchgänge und des Gangs
-    const CORNER_Z = -39.6;           // Mittellinie der hinteren Ecke (Durchgänge Raum 2 → 3 → 4)
-    const GANG_Z   = 1.2;             // Mittellinie des Gangs = Startposition vor Raum 1
+    const CW       = 3.0;             // Breite der Eckdurchgänge, des Gangs und seiner Durchgänge
+    const BACK_Z   = -41.8;           // Rückwand von Raum 2 = Startwand von Raum 4
+    // Mittellinie der hinteren Ecke (Durchgänge Raum 2 → 3 → 4): das Marmorportal (3 m + Pilaster)
+    // sitzt zwischen dem letzten Bild der linken Wand (bis z −37,9) und der Rückwand
+    const CORNER_Z = BACK_Z + 1.93;
+    const GANG_Z   = CW/2;            // Mittellinie des Gangs = Startposition vor Raum 1 (Gang beginnt bei z = 0)
+    // Marmorportale der kleinen Durchgänge: Öffnung bis zum Bogenscheitel, Bogen setzt bei spring an
+    const PORTAL = { spring: 3.0, crown: 3.6, pil: 0.30, d: 0.12, top: 4.26 };   // top: Oberkante unter der Kranzleiste
 
     // Raum 3: Plastiken – Inhalt aus derselben Quelle wie die Kollektion „Plastik" (ARTWORKS)
     const SCULPTURE_TITLES = Object.keys(ARTWORKS).filter(t => ARTWORKS[t].cat === 'Plastik' && ARTWORKS[t].views && ARTWORKS[t].views.length);
@@ -1162,16 +1167,16 @@
       r.rows  = Array.from({length: rowCount}, (_, i) => r.entry - first - (rowCount > 1 ? span * i/(rowCount-1) : span/2));
       return r;
     })();
-    // Obere lange Seite: Gruppe um 180° gedreht; lokal z=0 = Startwand von Raum 4 (Welt z=−41).
+    // Obere lange Seite: Gruppe um 180° gedreht; lokal z=0 = Startwand von Raum 4 (Welt z = BACK_Z).
     const ROW2 = (() => {
-      const r = { ox: -ROW_GAP, oz: -41, r4Depth: 19, conn: 4 };
+      const r = { ox: -ROW_GAP, oz: BACK_Z, r4Depth: -22 - BACK_Z, conn: 4 };
       r.r5Start = -(r.r4Depth + r.conn);                  // Welt z=−18 (gegenüber Raum 1)
-      r.r5End   = r.oz - (GANG_Z + CW/2 + 0.45);          // Endwand von Raum 5, knapp hinter dem Gang
-      r.r4Rows  = [-4, -8, -12, -16];                     // Welt z −37 … −25: gegenüber Raum 2
-      r.r5Rows  = [-26, -30, -34, -38];                   // Welt z −15 … −3:  gegenüber Raum 1
+      r.r5End   = r.oz - (GANG_Z + CW/2 + 0.7);           // Endwand von Raum 5, mit Platz für den Portal-Pilaster
+      r.r4Rows  = [-37, -33, -29, -25].map(z => r.oz - z);   // gegenüber den Bildern von Raum 2
+      r.r5Rows  = [-15, -11, -7, -3].map(z => r.oz - z);     // gegenüber den Bildern von Raum 1
       // Durchgänge in der linken Wand: Raum 4 am Anfang (von Raum 3), Raum 5 am Ende (zum Gang)
-      r.r4Open  = { side:-1, z0: r.oz - (CORNER_Z - CW/2), z1: r.oz - (CORNER_Z + CW/2), h:3.2 };
-      r.r5Open  = { side:-1, z0: r.oz - (GANG_Z - CW/2),   z1: r.oz - (GANG_Z + CW/2),   h:3.2 };
+      r.r4Open  = { side:-1, z0: r.oz - (CORNER_Z - CW/2), z1: r.oz - (CORNER_Z + CW/2), h:PORTAL.crown };
+      r.r5Open  = { side:-1, z0: r.oz - (GANG_Z - CW/2),   z1: r.oz - (GANG_Z + CW/2),   h:PORTAL.crown };
       return r;
     })();
     function rw2(xl, zl) { return { x: ROW2.ox - xl, z: ROW2.oz - zl }; }
@@ -1179,7 +1184,7 @@
     const GANG = (() => {
       const r = { ox: ROW2.ox + RW/2, oz: GANG_Z, w: CW };
       r.depth = (CW/2 + 0.5) - r.ox;                      // endet einen halben Meter hinter dem Torbogen zu Raum 1
-      r.r1Open = { side:-1, z0: r.ox + CW/2, z1: r.ox - CW/2, h:3.2 };   // Torbogen in Raum 1
+      r.r1Open = { side:-1, z0: r.ox + CW/2, z1: r.ox - CW/2, h:PORTAL.crown };   // Durchgang in Raum 1
       return r;
     })();
     function gw(xl, zl) { return { x: GANG.ox - zl, z: GANG.oz + xl }; }
@@ -1642,9 +1647,10 @@
       (o.extraLights || []).forEach(z => _lightDef(0, RH - 0.15, z, 0xfff8f0, 1.5,  5.0, 1.3));
     }
 
-    // Anthrazit-Trennwand mit Torbogen (Breite aw) bei z
-    function buildArchWall(T, z, aw) {
-      const M = roomMats(T), ah = 3.2, lw = (RW - aw) / 2;
+    // Anthrazit-Trennwand mit Torbogen (Breite aw, Höhe ah) bei z
+    function buildArchWall(T, z, aw, ah) {
+      const M = roomMats(T), lw = (RW - aw) / 2;
+      ah = ah || 3.2;
       _occ(addBox(T, lw,     RH, 0.18, M.trans, [-(RW/2 - lw/2), RH/2, z]));
       _occ(addBox(T, lw,     RH, 0.18, M.trans, [ (RW/2 - lw/2), RH/2, z]));
       _occ(addBox(T, aw, RH - ah, 0.18, M.trans, [0, ah + (RH - ah)/2, z]));
@@ -1662,6 +1668,52 @@
         addPlane(T, len, 1.12, M.panel, [x, 0.56, cz], [0, sign, 0]);
         addBox(T, 0.024, 0.036, len + 0.01, M.rail, [x, 1.138, cz]);
       });
+    }
+
+    // ══ Marmorportal für die kleinen Durchgänge (Breite aw) ═══════════
+    // Steht in der Wandebene z, Schauseite in Richtung dir (+1 / −1). Kannelierte Pilaster mit Sockel
+    // und Kapitell; ein flacher Bogen füllt die oberen Ecken der rechteckigen Öffnung – massiv, darum
+    // auch von der Rückseite als Bogen zu sehen. Dazu Bogenprofil, feine Goldkante und Schlussstein,
+    // bei benannten Durchgängen stattdessen ein Schild über dem Bogen.
+    let _pilMat = null;
+    function addPortal(T, z, aw, dir, sign) {
+      const M = roomMats(T), cm = columnMats(T), P = PORTAL;
+      if (!_pilMat) {
+        const tex = makeColumnTex(T); tex.repeat.set(0.3, 1.4);          // wenige breite Kanneluren statt 24 feiner
+        _pilMat = new T.MeshStandardMaterial({ map: tex, color: 0xf2ede2, roughness: 0.58, metalness: 0.03 });
+      }
+      const hw = aw/2, pw = P.pil, rise = P.crown - P.spring;
+      const R = (hw*hw + rise*rise) / (2*rise), cy = P.crown - R;        // Kreisbogen durch Kämpfer und Scheitel
+      const a0 = Math.atan2(P.spring - cy, hw), top = P.top, D = P.d;
+      const g = new T.Group(); g.position.set(0, 0, z + dir*0.004);
+      if (dir < 0) g.rotation.y = Math.PI;
+      _add(g);
+      const box = (w, h, d, mat, x, y, zz) => { const m = new T.Mesh(new T.BoxGeometry(w, h, d), mat); m.position.set(x, y, zz); g.add(m); return m; };
+      // Platte: außen Rechteck, innen Öffnung mit Bogen
+      const sh = new T.Shape();
+      sh.moveTo(-hw - pw, 0); sh.lineTo(-hw - pw, top); sh.lineTo(hw + pw, top); sh.lineTo(hw + pw, 0);
+      sh.lineTo(hw, 0); sh.lineTo(hw, P.spring);
+      sh.absarc(0, cy, R, a0, Math.PI - a0, false);
+      sh.lineTo(-hw, 0); sh.lineTo(-hw - pw, 0);
+      const slab = new T.Mesh(new T.ExtrudeGeometry(sh, { depth: D, bevelEnabled: false, curveSegments: 24 }), cm.stone);
+      g.add(slab); _occluders.push(slab);
+      [-1, 1].forEach(sx => {
+        const x = sx * (hw + pw/2);
+        box(pw + 0.06, 0.2, D + 0.1, cm.stone, x, 0.1, (D + 0.1)/2);                       // Sockel
+        box(pw - 0.08, P.spring - 0.36, 0.05, _pilMat, x, 0.2 + (P.spring - 0.36)/2, D + 0.025);   // Pilaster
+        box(pw + 0.08, 0.16, D + 0.1, cm.stone, x, P.spring - 0.08, (D + 0.1)/2);           // Kapitell / Kämpfer
+        box(0.016, P.spring - 0.2, 0.012, M.rail, sx * (hw + 0.014), 0.2 + (P.spring - 0.2)/2, D + 0.006);   // Goldkante
+      });
+      const arc = Math.PI - 2*a0;
+      const prof = new T.Mesh(new T.TorusGeometry(R + 0.07, 0.035, 6, 40, arc), cm.stone);    // Bogenprofil
+      prof.rotation.z = a0; prof.position.set(0, cy, D + 0.01); g.add(prof);
+      const gold = new T.Mesh(new T.TorusGeometry(R + 0.014, 0.008, 4, 40, arc), M.rail);     // Goldkante am Bogen
+      gold.rotation.z = a0; gold.position.set(0, cy, D + 0.006); g.add(gold);
+      box(aw + 2*pw + 0.14, 0.09, D + 0.1, cm.stone, 0, top - 0.045, (D + 0.1)/2);         // Gesims
+      // Schriftfeld zwischen Bogenprofil (bis Scheitel + 0,1) und Gesims: Schild im Seitenverhältnis der
+      // Schild-Textur (1024 × 480), damit die Schrift nicht verzerrt
+      if (sign) addWallSign(T, 0.85, 0.40, 0, (P.crown + 0.12 + top - 0.1) / 2, z + dir*(D + 0.012), dir < 0 ? Math.PI : 0, false, sign, '');
+      else box(0.2, 0.46, D + 0.08, cm.stone, 0, P.crown + 0.17, (D + 0.08)/2);           // Schlussstein
     }
 
     // Goldener Dekorrahmen an einem Torbogen (Breite aw) bei z; d = Tiefe (Standard fw),
@@ -1708,11 +1760,11 @@
       _panelTex = new T.CanvasTexture(cv);
       return _panelTex;
     }
-    // Paneelwand (RW × RH) bei z, Blickseite ry; optional mit Torbogen (Breite aw, Höhe 3.2).
+    // Paneelwand (RW × RH) bei z, Blickseite ry; optional mit Durchgang (Breite aw, Höhe ah, Standard 3,2).
     // Die Teilflächen übernehmen die Texturkoordinaten der ganzen Wand → Paneele laufen durch.
-    function addPanelWall(T, z, ry, aw) {
+    function addPanelWall(T, z, ry, aw, ah) {
       const mat = new T.MeshStandardMaterial({map:makePanelTex(T), roughness:0.88, side:T.DoubleSide});
-      const ah = 3.2;
+      ah = ah || 3.2;
       const pieces = aw ? [[-RW/2, -aw/2, 0, RH], [aw/2, RW/2, 0, RH], [-aw/2, aw/2, ah, RH]] : [[-RW/2, RW/2, 0, RH]];
       const g = new T.Group(); g.position.set(0, 0, z); g.rotation.y = ry;
       pieces.forEach(([x0, x1, y0, y1]) => {
@@ -1736,18 +1788,18 @@
       buildRoomShell(T, { depth:18, cz:-9, fillRows:[-3,-7,-11,-15], lightRows:[-3,-7,-11,-15], extraLights:[-18] });
       // Eingangswand mit Wandpaneelen – jetzt mit Torbogen zum Gang (Rundgang schließt sich)
       // knapp innerhalb von Raum 1: Gangwand (z=0) und Paneelwand dürfen sich nicht durchdringen
-      addPanelWall(T, -0.03, Math.PI, CW);
-      addArchFrame(T, -0.015, CW, 0.085);   // überbrückt beide Wände: von Raum 1 und aus dem Gang sichtbar
+      addPanelWall(T, -0.03, Math.PI, CW, PORTAL.crown);
+      addPortal(T, -0.035, CW, -1);         // Marmorportal zur Raum-1-Seite (auch aus dem Gang als Bogen sichtbar)
       // Room 1 end wall + archway (anthracite transition) — bei z=-18
       buildArchWall(T, -18, aw);
 
       // ── Connector ─────────────────────────────────────────────── (Mitte z=-20)
       buildConnector(T, -20, aw, 4);
 
-      // ── Room 2 ── (Rückwand z=-41; links am Ende der Durchgang zum Plastik-Raum)
-      buildRoomShell(T, { depth:19, cz:-31.5, fillRows:[-24,-30,-36,-39], lightRows:[-25,-29,-33,-37], extraLights:[-22,-41],
-        openings:[{ side:-1, z0:R3.oz + R3.aw/2, z1:R3.oz - R3.aw/2, h:3.2 }] });
-      _occ(addPlane(T, RW, RH, M.trans, [0,RH/2,-41], [0,0,0]));
+      // ── Room 2 ── (Rückwand bei BACK_Z; links am Ende der Durchgang zum Plastik-Raum)
+      buildRoomShell(T, { depth:-22 - BACK_Z, cz:(-22 + BACK_Z)/2, fillRows:[-24,-30,-36,BACK_Z + 2], lightRows:[-25,-29,-33,-37], extraLights:[-22,BACK_Z],
+        openings:[{ side:-1, z0:R3.oz + R3.aw/2, z1:R3.oz - R3.aw/2, h:PORTAL.crown }] });
+      _occ(addPlane(T, RW, RH, M.trans, [0,RH/2,BACK_Z], [0,0,0]));
       // Room 2 entry wall (anthracite transition) — bei z=-22
       buildArchWall(T, -22, aw);
 
@@ -2287,7 +2339,7 @@
     // ── Furniture ────────────────────────────────────────────────
     function buildFurniture(T, benchZs, chairs) {
       benchZs = benchZs || [-9, -33];
-      chairs  = chairs  || [[-3.8, -16.6, 0.55], [3.8, -42.5, -0.55]];
+      chairs  = chairs  || [[-3.8, -16.6, 0.55], [3.8, BACK_Z + 1.3, -0.55]];   // Raum 1 hinten links, Raum 2 hinten rechts
       // Cream/sand upholstered solid bench blocks (museum style)
       const topMat = new T.MeshStandardMaterial({color:0xd6cfbb, roughness:0.88, metalness:0.0});
       const sideMat= new T.MeshStandardMaterial({color:0xc8c0ab, roughness:0.90, metalness:0.0});
@@ -2440,7 +2492,7 @@
     function buildColumns(T) {
       const cm = columnMats(T);
       // x=+/-2.5: Schaft bleibt frei vom Pfeilerschild; Höhe endet unter den Schienen
-      [[-2.5,-17.6],[2.5,-17.6], [-2.5,-22.4],[2.5,-22.4], [-2.5,-40.6],[2.5,-40.6]]
+      [[-2.5,-17.6],[2.5,-17.6], [-2.5,-22.4],[2.5,-22.4], [-2.5,BACK_Z + 0.4],[2.5,BACK_Z + 0.4]]
         .forEach(([x,z])=>buildColumn(T,x,z,cm.shaft,cm.stone));
     }
 
@@ -2650,8 +2702,8 @@
     function buildWallSigns(T) {
       const sign = (w,h,x,y,z,ry,large) => addWallSign(T, w, h, x, y, z, ry, large);
 
-      // Rückwand Raum 2 z=-41 — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
-      sign(3.20, 2.00,  0,   2.10, -40.90, 0,        true);
+      // Rückwand Raum 2 (BACK_Z) — groß, mittig, aus Raum 2 sichtbar (Galerie-Hauptschild)
+      sign(3.20, 2.00,  0,   2.10, BACK_Z + 0.10, 0, true);
       // Horst-Schwab-Schild am Torbogen-Pfeiler (Bogen jetzt bei z=-18)
       sign(1.30, 0.82,  3.4, 2.50, -17.90, 0,        false);   // aus Raum 1 sichtbar
       sign(1.30, 0.82,  3.4, 2.50, -22.10, Math.PI,  false);   // aus Raum 2 sichtbar
@@ -2787,23 +2839,21 @@
       _buildTarget = g;
       try {
         // Durchgang in Raum 2: Goldrahmen + Schild „Plastik" darüber (schon aus Raum 2 sichtbar)
-        addArchFrame(T, 0, R3.aw);
-        addWallSign(T, 1.10, 0.52, 0, 3.72, 0.03, 0, false, 'Plastik', '');
+        addPortal(T, 0, R3.aw, 1, 'Plastik');
         // Rückseite des Sturzes (vom Gang aus gesehen) – verdeckt auch die Schild-Rückseite
-        _occ(addPlane(T, R3.aw + 0.02, RH - 3.2, M.trans, [0, 3.2 + (RH - 3.2)/2, -0.012], [0, Math.PI, 0]));
+        _occ(addPlane(T, R3.aw + 0.02, RH - PORTAL.crown, M.trans, [0, PORTAL.crown + (RH - PORTAL.crown)/2, -0.012], [0, Math.PI, 0]));
         buildConnector(T, -R3.conn/2, R3.aw, R3.conn);
         // Eingangswand des Plastik-Raums mit Torbogen – gleicher Aufbau wie die Bögen zwischen Raum 1 und 2
-        buildArchWall(T, R3.entry, R3.aw);
-        addArchFrame(T, R3.entry, R3.aw);
+        buildArchWall(T, R3.entry, R3.aw, PORTAL.crown);
+        addPortal(T, R3.entry - 0.09, R3.aw, -1);
         // Raum selbst: derselbe Aufbau wie Raum 1 und 2
         buildRoomShell(T, { depth:R3.depth, cz:R3.cz, fillRows:[R3.rows[0], R3.rows[R3.rows.length - 1]], lightRows:R3.rows, extraLights:[R3.entry, R3.end] });
         // Ausgang: Torbogen und kurzer Gang in die linke Wand von Raum 4 (gleicher Aufbau wie der Eingang)
-        buildArchWall(T, R3.end, R3.aw);
-        addArchFrame(T, R3.end, R3.aw);
-        addWallSign(T, 1.10, 0.52, 0, 3.72, R3.end + 0.10, 0, false, 'Malerei', '');
+        buildArchWall(T, R3.end, R3.aw, PORTAL.crown);
+        addPortal(T, R3.end + 0.09, R3.aw, 1, 'Malerei');
         buildConnector(T, R3.end - R3.conn/2, R3.aw, R3.conn);
-        addArchFrame(T, R3.exit, R3.aw);                                                          // Goldrahmen am Durchgang in Raum 4
-        _occ(addPlane(T, R3.aw + 0.02, RH - 3.2, M.trans, [0, 3.2 + (RH - 3.2)/2, R3.exit + 0.012], [0, 0, 0]));  // Sturz-Rückseite
+        addPortal(T, R3.exit, R3.aw, -1);                                                         // Marmorportal am Durchgang in Raum 4
+        _occ(addPlane(T, R3.aw + 0.02, RH - PORTAL.crown, M.trans, [0, PORTAL.crown + (RH - PORTAL.crown)/2, R3.exit + 0.012], [0, 0, 0]));  // Sturz-Rückseite
         [[-2.5, R3.entry - 0.4], [2.5, R3.entry - 0.4], [-2.5, R3.end + 0.4], [2.5, R3.end + 0.4]]
           .forEach(([x, z]) => buildColumn(T, x, z, cm.shaft, cm.stone));
         // Podeste im Rhythmus der Bilder: je Reihe links, dann rechts
@@ -2867,7 +2917,9 @@
         // Säulen, Bänke, Pflanzen, Sessel – gespiegelte Positionen von Raum 1/2
         [[-2.5,-0.4],[2.5,-0.4],[-2.5,-ROW2.r4Depth+0.4],[2.5,-ROW2.r4Depth+0.4],[-2.5,ROW2.r5Start-0.4],[2.5,ROW2.r5Start-0.4]]
           .forEach(([x, z]) => buildColumn(T, x, z, cm.shaft, cm.stone));
-        buildFurniture(T, [ROW2.oz + 33, ROW2.oz + 9], [[-3.8, ROW2.oz + 16.6, 0.55]]);
+        // Sessel vorn in Raum 5: blickt in den Raum zur Mitte. Die Gruppe ist um 180° gedreht,
+        // darum lokal π − 0,55 (wie der Sessel in Raum 1, nur gespiegelt)
+        buildFurniture(T, [ROW2.oz + 33, ROW2.oz + 9], [[-3.8, ROW2.oz + 16.6, Math.PI - 0.55]]);
         buildPlants(T, [[4.0, ROW2.oz + 1.5], [4.0, ROW2.oz + 16.5], [-4.0, ROW2.oz + 23.5]]);
       } finally {
         _buildTarget = null;
@@ -3010,12 +3062,12 @@
         buildRoomShell(T, { width:GANG.w, depth:GANG.depth, cz:-GANG.depth/2, fillRows:fills, fillIntensity:0.22, extraLights:[],
           openings:[GANG.r1Open] });
         addFinishedEndWall(T, -GANG.depth, GANG.w);                                              // Stirnwand hinter Raum-1-Eingang
-        addArchFrame(T, 0, GANG.w);                                                              // Durchgang in Raum 5
+        addPortal(T, 0, GANG.w, 1);                                                              // Marmorportal zum Durchgang in Raum 5
         // Zierelemente: Stuck-Wandfelder im Rhythmus, dazwischen goldene Wandleuchten mit sanftem Licht
         [-4, -8, -12, -16].forEach(z => [-1, 1].forEach(side => addStuccoPanel(T, side, z, GANG.w, 2.0, 2.1, 1.4)));
         addStuccoPanel(T, 1, GANG.ox, GANG.w, 2.0, 2.1, 1.4);                                    // mittig gegenüber dem Torbogen zu Raum 1
         [-2, -6, -10, -14, -18].forEach(z => [-1, 1].forEach(side => addSconce(T, side, z, GANG.w)));
-        _occ(addPlane(T, GANG.w + 0.02, RH - 3.2, M.trans, [0, 3.2 + (RH - 3.2)/2, -0.012], [0, Math.PI, 0]));  // Sturz-Rückseite
+        _occ(addPlane(T, GANG.w + 0.02, RH - PORTAL.crown, M.wall, [0, PORTAL.crown + (RH - PORTAL.crown)/2, -0.012], [0, Math.PI, 0]));   // Sturz-Rückseite, hell wie die Gangwände
       } finally {
         _buildTarget = null;
       }
@@ -3062,14 +3114,14 @@
     const ZONES = {
       R1:  { x0:-5,    x1:5,    z0:-18,    z1:0.05 },
       C12: { x0:-1.8,  x1:1.8,  z0:-22,    z1:-18 },
-      R2:  { x0:-5,    x1:5,    z0:-41.2,  z1:-22 },
+      R2:  { x0:-5,    x1:5,    z0:BACK_Z - 0.2, z1:-22 },
       C23: { x0:-7,    x1:-5,   z0:CORNER_Z - CW/2, z1:CORNER_Z + CW/2 },
       R3:  { x0:-19,   x1:-7,   z0:CORNER_Z - RW/2, z1:CORNER_Z + RW/2 },
       C34: { x0:-21,   x1:-19,  z0:CORNER_Z - CW/2, z1:CORNER_Z + CW/2 },
-      R4:  { x0:-31,   x1:-21,  z0:-41.2,  z1:-22 },
+      R4:  { x0:-31,   x1:-21,  z0:BACK_Z - 0.2, z1:-22 },
       C45: { x0:-27.8, x1:-24.2,z0:-22,    z1:-18 },
-      R5:  { x0:-31,   x1:-21,  z0:-18,    z1:2.9 },
-      G:   { x0:-21,   x1:1.9,  z0:-0.05,  z1:2.7 },
+      R5:  { x0:-31,   x1:-21,  z0:-18,    z1:ROW2.oz - ROW2.r5End + 0.05 },
+      G:   { x0:-21,   x1:CW/2 + 0.7, z0:-0.05, z1:GANG_Z + CW/2 + 0.05 },
     };
     const ZONE_ORDER = Object.keys(ZONES);
     // Von welchem Bereich aus ist welcher sichtbar (durch Torbögen und Durchgänge)
@@ -3279,11 +3331,11 @@
         { x0:-xMax, x1:xMax, z0:-18 + g,  z1:0.05 - g },                // Raum 1
         { x0:-ch,   x1:ch,   z0:-g - 0.2, z1:GANG_Z + 0.3 },            // Torbogen Gang ↔ Raum 1
         { x0:-1.5,  x1:1.5,  z0:-22 - g,  z1:-18 + g },                 // Durchgang Raum 1 ↔ 2
-        { x0:-xMax, x1:xMax, z0:-41 + g,  z1:-22 - g },                 // Raum 2
+        { x0:-xMax, x1:xMax, z0:BACK_Z + g, z1:-22 - g },               // Raum 2
         { x0:Math.max(r3a.x, r3b.x) - 0.2, x1:-xMax + 0.15, z0:CORNER_Z - ch, z1:CORNER_Z + ch },   // Raum 2 ↔ 3
         { x0:Math.min(r3a.x, r3b.x), x1:Math.max(r3a.x, r3b.x), z0:Math.min(r3a.z, r3b.z), z1:Math.max(r3a.z, r3b.z) }, // Raum 3
         { x0:x4 + xMax - 0.15, x1:Math.min(r3a.x, r3b.x) + 0.2, z0:CORNER_Z - ch, z1:CORNER_Z + ch }, // Raum 3 ↔ 4
-        { x0:x4 - xMax, x1:x4 + xMax, z0:-41 + g, z1:-22 - g },         // Raum 4
+        { x0:x4 - xMax, x1:x4 + xMax, z0:BACK_Z + g, z1:-22 - g },      // Raum 4
         { x0:x4 - 1.5,  x1:x4 + 1.5,  z0:-22 - g, z1:-18 + g },         // Durchgang Raum 4 ↔ 5
         { x0:x4 - xMax, x1:x4 + xMax, z0:-18 + g, z1:ROW2.oz - ROW2.r5End - g }, // Raum 5
         { x0:x4 + xMax - 0.15, x1:GANG.ox + GANG.depth - 0.3, z0:GANG_Z - ch, z1:GANG_Z + ch },   // Gang (bis 0,3 m vor die Stirnwand)
@@ -3565,7 +3617,7 @@
       scene=null;cam=null;seq=null;fadeDiv=null;
       _paintMeshes.length=0; _sculpts.length=0; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
       _occluders.length=0; _lightDefs.length=0; _pool.length=0; _lpFirst=true; _zoneGroups=null; _curZone=null; _curMask=-1; _curVis=null; _hitList=[];
-      _plRes=null; _panelTex=null; _nicheMat=null; _sconceGlass=null; _sconceGlow=null;
+      _plRes=null; _panelTex=null; _pilMat=null; _nicheMat=null; _sconceGlass=null; _sconceGlow=null;
       freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=FOV_BASE; navPinch=false; resumeFov=null;
       _navVel.x=_navVel.z=0; _glideV=0; _glideStall=0; _wheelWalk=0; _fpsSum=0; _fpsN=0; _fpsWarm=0;
       if(_resProbe){ _resScale/=0.85; _resProbe=0; }   // ungeprüfte Absenkung nicht mitnehmen
