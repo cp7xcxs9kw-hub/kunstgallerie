@@ -2824,6 +2824,49 @@
       _sculpts.push({ g, planes, fx: f.x - o.x, fz: f.z - o.z });
     }
 
+    // Wandschild hinter der Plastik: Gestaltung wie die Bildschilder (creme, Goldrahmen), nur größer.
+    // Lokale Raum-3-Koordinaten; side = −1 linke / +1 rechte Wand. Klick öffnet das Werk.
+    let _signHolderMat = null;   // dunkler Träger, von allen Plastik-Schildern geteilt
+    function addSculptureSign(T, title, z, side) {
+      if (!_signHolderMat) _signHolderMat = new T.MeshBasicMaterial({color:0x2b2b2b});
+      const d = ARTWORKS[title], tech = [d.technique, d.year].filter(Boolean).join('  ·  ');
+      const W = 1024, H = 512, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      const ctx = cv.getContext('2d');
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#f8f2e6'); bg.addColorStop(1, '#ebe1cd');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+      // Goldrahmen: kräftige Außenleiste + feine Innenlinie (wie die Bildschilder)
+      ctx.strokeStyle = '#a87f2a'; ctx.lineWidth = 16; ctx.strokeRect(20, 20, W - 40, H - 40);
+      ctx.strokeStyle = '#dcbb5e'; ctx.lineWidth = 4;  ctx.strokeRect(40, 40, W - 80, H - 80);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#8a6a28'; ctx.font = 'italic 600 64px "Times New Roman",Georgia,serif';
+      ctx.fillText('Horst Schwab', W/2, 146);
+      ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(W/2 - 110, 180); ctx.lineTo(W/2 + 110, 180); ctx.stroke();
+      // Titel und Technik notfalls schmaler setzen, damit sie im Rahmen bleiben
+      const fit = (txt, font, size, y) => {
+        ctx.font = font.replace('$', size);
+        const w = ctx.measureText(txt).width, max = W - 170;
+        if (w > max) ctx.font = font.replace('$', Math.floor(size * max / w));
+        ctx.fillText(txt, W/2, y);
+      };
+      ctx.fillStyle = '#161410'; fit(title, '700 $px "Times New Roman",Georgia,serif', 100, 300);
+      if (tech) { ctx.fillStyle = '#5c564a'; fit(tech, '500 $px "Times New Roman",Georgia,serif', 64, 400); }
+      const tex = new T.CanvasTexture(cv);
+      if (renderer) tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+      // 90 × 45 cm, Unterkante über der Plastik (auch von der Tour-Station aus darüber zu sehen);
+      // vor dem Lichtschein des Spots, auf einem dunklen Träger
+      const SW = 0.90, SH = 0.45, y = 2.45, ry = side < 0 ? Math.PI/2 : -Math.PI/2;
+      const holder = new T.Mesh(new T.BoxGeometry(0.035, SH + 0.04, SW + 0.04), _signHolderMat);
+      holder.position.set(side * (RW/2 - 0.0175), y, z); _add(holder);
+      const sign = new T.Mesh(new T.PlaneGeometry(SW, SH), new T.MeshBasicMaterial({map:tex}));
+      sign.position.set(side * (RW/2 - 0.037), y, z); sign.rotation.y = ry;
+      sign.userData.artworkTitle = title;
+      _paintMeshes.push(sign);
+      _add(sign);
+    }
+
     function updateSculptures() {
       if (!cam) return;
       for (const s of _sculpts) {
@@ -2869,6 +2912,7 @@
         SCULPTURE_TITLES.forEach((title, i) => {
           const side = i % 2 === 0 ? -1 : 1, zl = R3.rows[Math.floor(i / 2)];
           buildPedestal(T, side * PED.x, zl, side);
+          addSculptureSign(T, title, zl, side);
         });
         // Zierelemente: Rundbogennischen zwischen den Podesten, zwei Bänke davor (Blick auf die
         // gegenüberliegenden Plastiken), Pflanzen in den vier Ecken – der Mittelgang bleibt frei
@@ -3624,7 +3668,7 @@
       _vrSession++;
       if(fadeDiv) fadeDiv.remove();   // keine stehengebliebene Blende beim nächsten Öffnen
       scene=null;cam=null;seq=null;fadeDiv=null;
-      _paintMeshes.length=0; _sculpts.length=0; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
+      _paintMeshes.length=0; _sculpts.length=0; _signHolderMat=null; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
       _occluders.length=0; _lightDefs.length=0; _pool.length=0; _lpFirst=true; _zoneGroups=null; _curZone=null; _curMask=-1; _curVis=null; _hitList=[];
       _plRes=null; _panelTex=null; _pilMat=null; _nicheMat=null; _sconceGlass=null; _sconceGlow=null;
       freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=FOV_BASE; navPinch=false; resumeFov=null;
