@@ -2658,7 +2658,7 @@
     // ── Wall Signage ─────────────────────────────────────────────
     function makeWallSignTex(T, large, script, caption) {
       if (script == null) script = 'Horst Schwab';
-      if (caption == null) caption = 'G  A  L  L  E  R  I  E';
+      if (caption == null) caption = 'G  A  L  E  R  I  E';
       const W=1024, H= large ? 640 : 480;
       const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
       const ctx=cv.getContext('2d');
