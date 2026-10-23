@@ -1083,6 +1083,8 @@
     let navYawT=0, navPitchT=0;        // Ziel-Blickrichtung aus Ziehen / Wischen
     const _navVel = { x: 0, z: 0 };    // Gehgeschwindigkeit in m/s
     let _glideV = 0, _glideStall = 0;  // Klick-Gleiten: Tempo und Blockade-Zeit
+    let _wheelWalk = 0;                // noch zu gehender Weg aus Trackpad-/Mausrad-Wischen (m)
+    const WHEEL_STEP = 0.006, WHEEL_TURN = 0.0035;   // m bzw. rad pro Wisch-Pixel
     let _frameDt = 16;                 // Dauer des letzten Bildes in ms
     let navDrag=false, navDragX=0, navDragY=0, navWasDragged=false;
     let navMovedDist=0;       // Gesamt-Zeigerbewegung seit Drücken (Klick vs. Ziehen)
@@ -1286,15 +1288,16 @@
       const _touchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
       const navHint = document.createElement('div');
       navHint.id = 'vr-nav-hint';
+      // sitzt über dem Knopf „Tour fortsetzen“ (Abstand wird beim Einblenden gesetzt), so breit wie nötig
       navHint.style.cssText = 'position:absolute;left:50%;bottom:16px;transform:translateX(-50%);'
-        + 'max-width:90vw;text-align:center;'
+        + 'width:max-content;max-width:90vw;text-align:center;'
         + 'background:rgba(8,7,6,0.72);color:#e9e2d2;font:500 12px/1.35 Montserrat,sans-serif;'
         + 'letter-spacing:0.03em;padding:8px 16px;border:1px solid rgba(201,168,76,0.35);'
         + 'border-radius:16px;pointer-events:none;opacity:0;transition:opacity 0.4s ease;'
         + 'z-index:6;backdrop-filter:blur(4px);';
       navHint.textContent = _touchDevice
-        ? 'Ziehen zum Umschauen · auf den Boden tippen zum Gehen · 2 Finger = Zoom'
-        : 'Ziehen zum Umschauen · auf den Boden klicken zum Gehen · WASD · Scrollen = Zoom';
+        ? 'Ziehen: umschauen · Tippen: hingehen · 2 Finger: Zoom'
+        : 'Wischen: gehen & drehen · Kneifen / Strg + Rad: Zoom · Klick: hingehen · Ziehen: umschauen';
       vrEl.appendChild(navHint);
 
       freeBtn.addEventListener('click', () => {
@@ -1303,9 +1306,12 @@
           vrPaused = true;
           const euler = new T.Euler().setFromQuaternion(cam.quaternion, 'YXZ');
           navYaw = navYawT = euler.y; navPitch = navPitchT = euler.x;
-          _navVel.x = _navVel.z = 0; _glideV = 0;
+          _navVel.x = _navVel.z = 0; _glideV = 0; _wheelWalk = 0;
           freeBtn.textContent = '▶ TOUR FORTSETZEN';
           freeBtn.classList.add('active');
+          // knapp über dem Knopf, egal wo er gerade sitzt (Handy/Desktop, Fensterbreite)
+          const br = freeBtn.getBoundingClientRect();
+          navHint.style.bottom = Math.max(16, Math.round(vrEl.getBoundingClientRect().bottom - br.top + 10)) + 'px';
           navHint.style.opacity = '1';
         } else {
           vrPaused = false;
@@ -1313,7 +1319,7 @@
           freeBtn.classList.remove('active');
           navKeys.clear();
           navMoveTarget = null;
-          _navVel.x = _navVel.z = 0; _glideV = 0;
+          _navVel.x = _navVel.z = 0; _glideV = 0; _wheelWalk = 0;
           navHint.style.opacity = '0';
           // Zurück zur aktuellen Tour-Station, Zoom dabei auf 1×. Im selben (oder direkt
           // angrenzenden) Raum weich gleiten; liegt die Station in einem anderen Raum,
@@ -1423,20 +1429,23 @@
           // intersectPlane null oder einen sehr fernen Punkt – dann stattdessen
           // einfach in die horizontale Blickrichtung vorwärts projizieren.
           const hit = raycaster.ray.intersectPlane(_floorPlane, _floorHit);
-          if (!hit) {
-            const horiz = new T.Vector3(dir.x, 0, dir.z);
-            if (horiz.lengthSq() < 1e-5) return;
-            horiz.normalize();
-            _floorHit.copy(cam.position).addScaledVector(horiz, 6);
-          }
+          const floorDist = hit ? raycaster.ray.origin.distanceTo(_floorHit) : Infinity;
+          // Liegt eine Wand (oder ein Bild) vor dem Bodenpunkt, nur bis kurz davor gehen –
+          // die Bodenebene allein kennt keine Wände. Beidseitig, wie bei der Klick-Verdeckung.
+          const wall = _rm && _rm.wall, wallSide = wall ? wall.side : null;
+          if (wall) wall.side = T.DoubleSide;
+          const wh = raycaster.intersectObjects(_hitList, false)[0];
+          if (wall) wall.side = wallSide;
+          const horiz = new T.Vector3(dir.x, 0, dir.z);
+          if (horiz.lengthSq() < 1e-5) return;
+          horiz.normalize();
+          if (wh && wh.distance < floorDist) _floorHit.copy(wh.point).addScaledVector(horiz, -0.4);
+          else if (!hit) return;   // Klick an die Decke / ins Leere: nicht losgehen
           const tgt = _floorHit.clone(); tgt.y = CAM_Y;
-          // Pro Klick maximal ~10 m gleiten (sanftes Gehen statt Teleport quer
-          // durch die ganze Galerie / durch Wände zwischen den Räumen).
-          const dx = tgt.x - cam.position.x, dz = tgt.z - cam.position.z;
-          const dist = Math.hypot(dx, dz);
-          if (dist > 10) { tgt.x = cam.position.x + dx/dist*10; tgt.z = cam.position.z + dz/dist*10; }
-          clampToRoom(tgt, cam.position);
-          navMoveTarget = tgt; _glideStall = 0;
+          // Ohne Weitengrenze: das Gleiten führt über die Durchgänge bis zum Ziel (walkWaypoint).
+          // Liegt der Punkt im Wandabstand, gilt der nächste begehbare Punkt – auch im Nachbarraum.
+          clampToRoom(tgt, null);
+          navMoveTarget = tgt; _glideStall = 0; _wheelWalk = 0;
         }
 
         // Einheitliche Tap-Behandlung: Bild öffnen – oder im Frei-Modus hingehen.
@@ -1466,14 +1475,31 @@
           handleTap(t.clientX, t.clientY);
         }, {passive: false});
 
-        // ── Zoom per Trackpad-Pinch / Mausrad (verändert das Sichtfeld) ──
+        // ── Trackpad / Mausrad ───────────────────────────────────────
+        // Zwei-Finger-Wischen: hoch/runter = vor/zurück gehen, links/rechts = drehen
+        // (auch der Nachlauf des Trackpads wirkt mit – man rollt sanft aus).
+        // Kneifen = Zoom: Chrome/Firefox melden es als wheel mit ctrlKey (ebenso Strg + Mausrad),
+        // Safari als gesture-Ereignisse.
+        let _gestureFov = FOV_BASE, _gestureActive = false;
         cv.addEventListener('wheel', e => {
           e.preventDefault();
-          if (!freeNav) return;                    // Zoom nur beim freien Erkunden
-          const raw = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaY;   // Firefox meldet Zeilen statt Pixel
-          const dy = Math.max(-60, Math.min(60, raw));                 // Ausreißer (Mausrad-Rasten) dämpfen
-          navFov = Math.max(FOV_MIN, Math.min(FOV_BASE, navFov + dy * 0.025));
+          if (!freeNav) return;                    // nur beim freien Erkunden
+          const k = e.deltaMode === 1 ? 33 : (e.deltaMode === 2 ? 400 : 1);   // Zeilen/Seiten → Pixel
+          const dy = Math.max(-80, Math.min(80, e.deltaY * k)), dx = Math.max(-80, Math.min(80, e.deltaX * k));
+          if (e.ctrlKey) {
+            if (!_gestureActive) navFov = Math.max(FOV_MIN, Math.min(FOV_BASE, navFov + Math.max(-40, Math.min(40, dy)) * 0.12));
+            return;
+          }
+          _wheelWalk += dy * WHEEL_STEP;
+          navYawT += dx * WHEEL_TURN;
+          if (navMoveTarget) { navMoveTarget = null; _glideV = 0; _navVel.x = _navVel.z = 0; }   // Wischen beendet das Klick-Gleiten ohne Nachrollen
         }, {passive:false});
+        cv.addEventListener('gesturestart', e => { e.preventDefault(); _gestureActive = true; _gestureFov = navFov; });
+        cv.addEventListener('gesturechange', e => {
+          e.preventDefault();
+          if (freeNav && e.scale > 0) navFov = Math.max(FOV_MIN, Math.min(FOV_BASE, _gestureFov / e.scale));
+        });
+        cv.addEventListener('gestureend', e => { e.preventDefault(); _gestureActive = false; });
 
         // Hover: höchstens ein Strahl pro Bild (requestAnimationFrame), Tooltip per transform
         let _hoverX = 0, _hoverY = 0, _hoverQueued = false;
@@ -2785,6 +2811,12 @@
           const side = i % 2 === 0 ? -1 : 1, zl = R3.rows[Math.floor(i / 2)];
           buildPedestal(T, side * PED.x, zl, side);
         });
+        // Zierelemente: Rundbogennischen zwischen den Podesten, zwei Bänke davor (Blick auf die
+        // gegenüberliegenden Plastiken), Pflanzen in den vier Ecken – der Mittelgang bleibt frei
+        const gaps = R3.rows.slice(1).map((z, i) => (z + R3.rows[i]) / 2);
+        gaps.forEach(z => [-1, 1].forEach(side => addNiche(T, side, z, RW)));
+        [-1, 1].forEach(side => addWallBench(T, side, gaps[gaps.length - 1], RW));
+        buildPlants(T, [[-4.2, R3.entry - 0.75], [4.2, R3.entry - 0.75], [-4.2, R3.end + 0.75], [4.2, R3.end + 0.75]]);
       } finally {
         _buildTarget = null;
       }
@@ -2842,6 +2874,116 @@
       }
     }
 
+    // ══ Zierelemente (Raum 3 und Gang) ══════════════════════════════
+    // Alle Bausteine werden an eine Seitenwand gesetzt: side −1 = linke Wand (x = −W/2),
+    // +1 = rechte Wand; lokal liegt x entlang der Wand, y nach oben, z aus der Wand heraus.
+    function _onWall(T, side, W, z) {
+      const g = new T.Group();
+      g.position.set(side * W/2, 0, z); g.rotation.y = side < 0 ? Math.PI/2 : -Math.PI/2;
+      _add(g);
+      return g;
+    }
+    // Nischen-Innenfläche in Anthrazit (wie Sockelverkleidung und Stirnwände) – hebt sich von der hell
+    // ausgeleuchteten Wand ab. Die Tiefe ist eingemalt (Schatten unter dem Bogen, dunklere Ränder),
+    // so braucht die Nische weder echte Vertiefung noch eigenes Licht
+    let _nicheMat = null;
+    function nicheMat(T) {
+      if (_nicheMat) return _nicheMat;
+      const W = 256, H = 512, r = W/2;
+      const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      const ctx = cv.getContext('2d');
+      ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, r); ctx.arc(r, r, r, Math.PI, 0); ctx.lineTo(W, H); ctx.closePath();
+      ctx.save(); ctx.clip();
+      const v = ctx.createLinearGradient(0, 0, 0, H);
+      v.addColorStop(0, '#1d1b19'); v.addColorStop(0.35, '#34312d'); v.addColorStop(1, '#45413c');
+      ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+      const h = ctx.createLinearGradient(0, 0, W, 0);
+      h.addColorStop(0, 'rgba(0,0,0,0.35)'); h.addColorStop(0.22, 'rgba(0,0,0,0)');
+      h.addColorStop(0.78, 'rgba(0,0,0,0)'); h.addColorStop(1, 'rgba(0,0,0,0.35)');
+      ctx.fillStyle = h; ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+      _nicheMat = new T.MeshStandardMaterial({ map: new T.CanvasTexture(cv), roughness: 0.95, alphaTest: 0.5 });
+      return _nicheMat;
+    }
+    // Rundbogennische mit Stuckrahmung, Schlussstein und Gesims (Breite w, Unterkante y0)
+    function addNiche(T, side, z, W) {
+      const M = roomMats(T), g = _onWall(T, side, W, z);
+      const w = 1.1, h = 2.2, y0 = 1.38, r = w/2, fw = 0.06, yr = y0 + h - r;   // yr: Bogenansatz
+      const inner = new T.Mesh(new T.PlaneGeometry(w, h), nicheMat(T));
+      inner.position.set(0, y0 + h/2, 0.012); g.add(inner);
+      [-1, 1].forEach(sx => {
+        const post = new T.Mesh(new T.BoxGeometry(fw, yr - y0, 0.04), M.mold);
+        post.position.set(sx * (r + fw/2), (y0 + yr)/2, 0.03); g.add(post);
+      });
+      const arch = new T.Mesh(new T.TorusGeometry(r + fw/2, fw/2, 6, 28, Math.PI), M.mold);
+      arch.position.set(0, yr, 0.03); g.add(arch);
+      // feine Goldkante innen entlang von Pfosten und Bogen (wie die Goldleisten der Wände)
+      const gl = 0.016;
+      [-1, 1].forEach(sx => {
+        const e = new T.Mesh(new T.BoxGeometry(gl, yr - y0, 0.02), M.rail);
+        e.position.set(sx * (r - gl/2), (y0 + yr)/2, 0.02); g.add(e);
+      });
+      const garc = new T.Mesh(new T.TorusGeometry(r - gl/2, gl/2, 4, 28, Math.PI), M.rail);
+      garc.position.set(0, yr, 0.02); g.add(garc);
+      const key = new T.Mesh(new T.BoxGeometry(0.11, 0.15, 0.06), M.mold);
+      key.position.set(0, yr + r + fw * 0.6, 0.035); g.add(key);
+      const sill = new T.Mesh(new T.BoxGeometry(w + 0.22, 0.05, 0.12), M.mold);
+      sill.position.set(0, y0 - 0.025, 0.06); g.add(sill);
+    }
+    // Gerahmtes Stuck-Wandfeld (Breite w, Höhe h, Unterkante y0): Stuckrahmen außen, feiner Goldrahmen innen
+    function addStuccoPanel(T, side, z, W, w, h, y0) {
+      const M = roomMats(T), g = _onWall(T, side, W, z);
+      [[0, 0.045, 0.03, M.mold], [0.1, 0.016, 0.018, M.rail]].forEach(([inset, fw, d, mat]) => {
+        const pw = w - 2*inset, ph = h - 2*inset, cy = y0 + h/2;
+        [[0, cy + ph/2 - fw/2, pw, fw], [0, cy - ph/2 + fw/2, pw, fw],
+         [-pw/2 + fw/2, cy, fw, ph - 2*fw], [pw/2 - fw/2, cy, fw, ph - 2*fw]].forEach(([x, y, bw, bh]) => {
+          const b = new T.Mesh(new T.BoxGeometry(bw, bh, d), mat);
+          b.position.set(x, y, 0.015 + d/2); g.add(b);
+        });
+      });
+    }
+    // Goldene Wandleuchte (Applike) mit Milchglas-Schirm und sanftem Lichtkegel an der Wand
+    let _sconceGlass = null;
+    function addSconce(T, side, z, W) {
+      const M = roomMats(T), g = _onWall(T, side, W, z), y = 2.45;
+      _sconceGlass = _sconceGlass || new T.MeshBasicMaterial({ color: 0xfff6ea });
+      const plate = new T.Mesh(new T.BoxGeometry(0.11, 0.22, 0.02), M.rail);
+      plate.position.set(0, y, 0.02); g.add(plate);
+      const arm = new T.Mesh(new T.BoxGeometry(0.024, 0.024, 0.16), M.rail);
+      arm.position.set(0, y, 0.1); g.add(arm);
+      const cup = new T.Mesh(new T.CylinderGeometry(0.035, 0.028, 0.05, 12), M.rail);
+      cup.position.set(0, y + 0.03, 0.18); g.add(cup);
+      const shade = new T.Mesh(new T.CylinderGeometry(0.045, 0.07, 0.15, 14), _sconceGlass);
+      shade.position.set(0, y + 0.13, 0.18); g.add(shade);
+      // Lichtschein an der Wand nur gemalt – ein echtes Licht würde im Licht-Pool (feste Anzahl)
+      // den Nachbarräumen Lichter wegnehmen und sie dunkler machen
+      const glow = new T.Mesh(new T.PlaneGeometry(1.1, 1.1), sconceGlowMat(T));
+      glow.position.set(0, y + 0.18, 0.006); g.add(glow);
+    }
+    let _sconceGlow = null;
+    function sconceGlowMat(T) {
+      if (_sconceGlow) return _sconceGlow;
+      const S = 128, cv = document.createElement('canvas'); cv.width = cv.height = S;
+      const ctx = cv.getContext('2d'), gr = ctx.createRadialGradient(S/2, S/2, 0, S/2, S/2, S/2);
+      gr.addColorStop(0, 'rgba(255,250,242,0.55)'); gr.addColorStop(0.35, 'rgba(255,250,242,0.18)'); gr.addColorStop(1, 'rgba(255,250,242,0)');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, S, S);
+      _sconceGlow = new T.MeshBasicMaterial({ map: new T.CanvasTexture(cv), transparent: true, depthWrite: false });
+      return _sconceGlow;
+    }
+    // Sitzbank längs zur Wand (Polster wie in Raum 1/2), Blick in den Raum
+    function addWallBench(T, side, z, W) {
+      const x = side * (W/2 - 0.55);
+      const top = new T.MeshStandardMaterial({ color: 0xd6cfbb, roughness: 0.88 });
+      const leg = new T.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.42, metalness: 0.65 });
+      addGroundShadow(T, x, z, 1.02, 1.95, 0.82);
+      const body = new T.Mesh(new T.BoxGeometry(0.58, 0.36, 1.5), top);
+      body.position.set(x, 0.27, z); _add(body);
+      [[-0.22, -0.62], [0.22, -0.62], [-0.22, 0.62], [0.22, 0.62]].forEach(([lx, lz]) => {
+        const l = new T.Mesh(new T.BoxGeometry(0.045, 0.34, 0.045), leg);
+        l.position.set(x + lx, 0.17, z + lz); _add(l);
+      });
+    }
+
     // Stirnwand (Breite W, Blickseite +z) mit derselben Verkleidung wie die Seitenwände:
     // Wandfläche, dunkles Paneel, Goldleiste, Sockel- und Kranzleiste
     function addFinishedEndWall(T, z, W) {
@@ -2869,6 +3011,10 @@
           openings:[GANG.r1Open] });
         addFinishedEndWall(T, -GANG.depth, GANG.w);                                              // Stirnwand hinter Raum-1-Eingang
         addArchFrame(T, 0, GANG.w);                                                              // Durchgang in Raum 5
+        // Zierelemente: Stuck-Wandfelder im Rhythmus, dazwischen goldene Wandleuchten mit sanftem Licht
+        [-4, -8, -12, -16].forEach(z => [-1, 1].forEach(side => addStuccoPanel(T, side, z, GANG.w, 2.0, 2.1, 1.4)));
+        addStuccoPanel(T, 1, GANG.ox, GANG.w, 2.0, 2.1, 1.4);                                    // mittig gegenüber dem Torbogen zu Raum 1
+        [-2, -6, -10, -14, -18].forEach(z => [-1, 1].forEach(side => addSconce(T, side, z, GANG.w)));
         _occ(addPlane(T, GANG.w + 0.02, RH - 3.2, M.trans, [0, 3.2 + (RH - 3.2)/2, -0.012], [0, Math.PI, 0]));  // Sturz-Rückseite
       } finally {
         _buildTarget = null;
@@ -3224,7 +3370,7 @@
     // Alles zeitbasiert (Meter pro Sekunde statt pro Bild): gleiches Tempo bei 30, 60 oder
     // 120 Bildern/s. Gehen fährt weich an und rollt aus; der Blick folgt dem Ziehen leicht
     // geglättet, weil Maus- und Touch-Ereignisse nicht im Bildtakt eintreffen.
-    const WALK_SPEED = 2.8, GLIDE_SPEED = 4.0, GLIDE_ACC = 4.5;   // m/s, m/s, m/s²
+    const WALK_SPEED = 5.6, GLIDE_SPEED = 8.0, GLIDE_ACC = 9.0, WHEEL_MAX = 9.0;   // m/s, m/s, m/s², m/s
     let _fnEuler = null, _fnP = null;
     function tickFreeNav(T) {
       const s = Math.min(_frameDt, 50) / 1000;               // Sekunden; nach einem Ruckler nicht springen
@@ -3285,7 +3431,32 @@
             if ((_glideStall += s) > 0.35) { navMoveTarget = null; _glideV = 0; _navVel.x = _navVel.z = 0; }
           } else _glideStall = 0;
         }
+        // Wischen: gesammelten Weg weich abtragen (getrennt von der Geschwindigkeit, damit an
+        // Wänden nichts nachrollt); läuft man auf eine Wand zu, verfällt der Rest
+        if (_wheelWalk) {
+          const lim = WHEEL_MAX * s;
+          const step = Math.max(-lim, Math.min(lim, _wheelWalk * (1 - Math.exp(-s / 0.09))));
+          _wheelWalk -= step;
+          if (Math.abs(_wheelWalk) < 0.002) _wheelWalk = 0;
+          const bx = p.x, bz = p.z, tx = p.x + fx * step, tz = p.z + fz * step;
+          p.x = tx; p.z = tz;
+          clampToRoom(p, prev);
+          if (Math.hypot(p.x - bx, p.z - bz) < 0.3 * Math.abs(step)) {
+            // Steht eine Bank im Weg: seitlich an ihr vorbeigleiten (quer zur Laufrichtung)
+            const b = BENCHES.find(r => tx > r.x0 && tx < r.x1 && tz > r.z0 && tz < r.z1);
+            if (b) {
+              const ax = Math.abs(fz) >= Math.abs(fx);   // Querachse: x, wenn man vor allem längs z läuft
+              const c = ax ? bx : bz, lo = ax ? b.x0 : b.z0, hi = ax ? b.x1 : b.z1;
+              const edge = (c - lo < hi - c) ? lo - 0.02 : hi + 0.02, d = edge - c;
+              const sl = Math.sign(d) * Math.min(Math.abs(d), Math.abs(step));
+              p.x = bx + (ax ? sl : 0); p.z = bz + (ax ? 0 : sl);
+              clampToRoom(p, prev);
+              if (Math.hypot(p.x - bx, p.z - bz) < 1e-4) _wheelWalk = 0;
+            } else _wheelWalk = 0;
+          }
+        }
       } else {
+        _wheelWalk = 0;
         // z. B. Start an der Eingangsstation außerhalb des Bereichs: sanft hineingleiten statt springen.
         // Bewegungen, die weiter nach außen führen würden, werden dabei verworfen.
         const cPrev = clampToRoom(prev.clone(), prev);
@@ -3394,9 +3565,9 @@
       scene=null;cam=null;seq=null;fadeDiv=null;
       _paintMeshes.length=0; _sculpts.length=0; _rm=null; _colMats=null; _pedMats=null; _buildTarget=null;
       _occluders.length=0; _lightDefs.length=0; _pool.length=0; _lpFirst=true; _zoneGroups=null; _curZone=null; _curMask=-1; _curVis=null; _hitList=[];
-      _plRes=null; _panelTex=null;
+      _plRes=null; _panelTex=null; _nicheMat=null; _sconceGlass=null; _sconceGlow=null;
       freeNav=false; navKeys.clear(); navMoveTarget=null; navFov=FOV_BASE; navPinch=false; resumeFov=null;
-      _navVel.x=_navVel.z=0; _glideV=0; _glideStall=0; _fpsSum=0; _fpsN=0; _fpsWarm=0;
+      _navVel.x=_navVel.z=0; _glideV=0; _glideStall=0; _wheelWalk=0; _fpsSum=0; _fpsN=0; _fpsWarm=0;
       if(_resProbe){ _resScale/=0.85; _resProbe=0; }   // ungeprüfte Absenkung nicht mitnehmen
       _texPending=0; _buildDone=false; _loaderHidden=false; _warmedUp=false;
       const fb=document.getElementById('vr-free-btn');
@@ -3410,6 +3581,9 @@
       cam.aspect=innerWidth/innerHeight; cam.updateProjectionMatrix();
       renderer.setPixelRatio(_pixelRatio());
       renderer.setSize(innerWidth,innerHeight);
+      // Bedien-Hinweis wieder über den Knopf setzen (der Knopf rückt bei schmalen Fenstern höher)
+      const nh=document.getElementById('vr-nav-hint'), fb=document.getElementById('vr-free-btn'), ve=document.getElementById('gallery-vr');
+      if(nh&&fb&&ve&&freeNav) nh.style.bottom=Math.max(16, Math.round(ve.getBoundingClientRect().bottom - fb.getBoundingClientRect().top + 10))+'px';
     }
   })();
 
