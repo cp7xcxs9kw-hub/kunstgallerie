@@ -276,6 +276,15 @@
     });
   }
 
+  // Hinweis auf die Dauerausstellung: betritt die Galerie (Verlauf, Sperren) und springt zu den Ausstellungen
+  const heroDauer = document.querySelector('.hero-dauer');
+  if (heroDauer) heroDauer.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopImmediatePropagation();
+    _enterGallery();
+    _navOpen('gallery');
+    roomTransition('ausstellungen');
+  });
+
   // Rundgang-Button
   const heroGhostBtn = document.getElementById('hero-enter-ghost');
   // (der Rundgang liegt dann schon deckend darüber – Hero darunter ausblenden, nach dem
@@ -372,7 +381,7 @@
       'cat-view-1':'Kollektion ansehen','cat-view-2':'Kollektion ansehen','cat-view-3':'Kollektion ansehen','cat-view-4':'Kollektion ansehen',
       'coll-back-acryl-t':'Zurück','coll-back-oel-t':'Zurück','coll-back-aquarell-t':'Zurück','coll-back-mixed-t':'Zurück',
       'coll-head-acryl':'Malerei','coll-head-oel':'Collage &amp;<br>Zeichnungen','coll-head-aquarell':'Grafik','coll-head-mixed':'Plastik',
-      'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.',
+      'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Neuigkeiten zu Ausstellungen und zum Werk von Horst Schwab.',
       'soc-cal-label':'Termin buchen','soc-cal-sub':'Besichtigung vereinbaren',
       'cal-success-text':'Ihr E-Mail-Programm öffnet sich.','cal-success-sub':'Bitte senden Sie die vorbereitete E-Mail ab – wir bestätigen den Termin. Falls sich nichts öffnet: info@horstschwab.de',
       'kon-label':'Kontakt','kon-heading':'Fragen zum Werk','kon-sub':'Schreiben Sie uns bei Fragen zum Werk oder um eine private Besichtigung zu vereinbaren.',
@@ -395,7 +404,7 @@
       'cat-view-1':'View Collection','cat-view-2':'View Collection','cat-view-3':'View Collection','cat-view-4':'View Collection',
       'coll-back-acryl-t':'Back','coll-back-oel-t':'Back','coll-back-aquarell-t':'Back','coll-back-mixed-t':'Back',
       'coll-head-acryl':'Painting','coll-head-oel':'Collage &amp;<br>Drawings','coll-head-aquarell':'Graphics','coll-head-mixed':'Sculpture',
-      'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'Discover new works, exhibitions and behind-the-scenes insights.',
+      'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'News about exhibitions and the work of Horst Schwab.',
       'soc-cal-label':'Book appointment','soc-cal-sub':'Schedule a viewing',
       'cal-success-text':'Your e-mail program is opening.','cal-success-sub':'Please send the prepared e-mail – we will confirm the appointment. If nothing opens: info@horstschwab.de',
       'kon-label':'Contact','kon-heading':'Questions about the Work','kon-sub':'Write to us with questions about the work or to arrange a private viewing.',
@@ -413,7 +422,7 @@
   function setLang(lang) {
     _lang = lang;
     document.documentElement.lang = lang;   // auch Kalender und Meldungen richten sich danach
-    document.title = lang === 'en' ? 'Galerie Horst Schwab – Art | Passion | Timeless' : 'Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos';
+    document.title = lang === 'en' ? 'Horst Schwab (1935–2017) – Painting, Graphic Art, Sculpture' : 'Horst Schwab (1935–2017) – Malerei, Grafik, Plastik';
     const t = I18N[lang];
     // Statische Texte ohne eigene ID: Englisch steht in data-en (bzw. data-en-<Attribut>),
     // das Deutsche wird beim ersten Umschalten in data-de gemerkt
@@ -444,7 +453,9 @@
     document.querySelectorAll('.lang-en').forEach(function(el) { el.style.display = lang === 'en' ? '' : 'none'; });
     // bio roles text contains HTML entities — must use innerHTML
     var bioRoles = document.getElementById('bio-roles');
-    if (bioRoles) bioRoles.innerHTML = lang === 'en' ? 'PAINTER &nbsp;|&nbsp; GRAPHIC ARTIST &nbsp;|&nbsp; SCULPTOR &nbsp;|&nbsp; POET' : 'MALER &nbsp;|&nbsp; GRAFIKER &nbsp;|&nbsp; BILDHAUER &nbsp;|&nbsp; LYRIKER';
+    if (bioRoles) bioRoles.innerHTML = lang === 'en'
+      ? '<span class="nw">PAINTER &nbsp;|&nbsp; GRAPHIC ARTIST</span><span class="kat-sep"> &nbsp;|&nbsp; </span><span class="nw">SCULPTOR &nbsp;|&nbsp; POET</span>'
+      : '<span class="nw">MALER &nbsp;|&nbsp; GRAFIKER</span><span class="kat-sep"> &nbsp;|&nbsp; </span><span class="nw">BILDHAUER &nbsp;|&nbsp; LYRIKER</span>';
     // update card metas
     document.querySelectorAll('.coll-card').forEach(function(card) {
       var titleEl = card.querySelector('.coll-card-title');
@@ -880,7 +891,7 @@
         if (activeLink) activeLink.classList.add('active');
       }
     });
-  }, { threshold: 0.4 });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
 
   sectionEls.forEach(el => { if (el) activeObserver.observe(el); });
 
