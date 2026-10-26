@@ -873,10 +873,26 @@
     if (!el) return;
     // Bilder erst jetzt laden: die unsichtbaren Ebenen liegen über dem Bildschirm, „lazy“ allein
     // würde sonst beim Seitenaufruf alle Kollektionen (rund 10 MB) sofort mitladen
-    // Vorschaubilder erst beim Öffnen laden; die ersten Karten (sichtbar) mit Vorrang, damit sie nicht mit den übrigen um die Leitung konkurrieren
+    // Vorschaubilder erst beim Öffnen laden. Bis dahin zeigt jede Karte die winzige, weich gezeichnete
+    // Mini-Vorschau aus der Seite selbst; das echte Bild wird erst fertig dekodiert eingesetzt.
+    // Die ersten Karten mit Vorrang, die übrigen erst kurz bevor sie ins Bild scrollen.
+    const _load = (img, high) => {
+      const src = img.dataset.src; if (!src) return;
+      img.removeAttribute('data-src');
+      const full = new Image();
+      if (high) full.fetchPriority = 'high';
+      full.src = src;
+      const show = () => { img.src = src; img.classList.remove('lqip'); };
+      (full.decode ? full.decode() : new Promise((r, j) => { full.onload = r; full.onerror = j; })).then(show, show);
+    };
+    if (!el._cardIO && 'IntersectionObserver' in window) {
+      el._cardIO = new IntersectionObserver(entries => entries.forEach(e => {
+        if (e.isIntersecting) { el._cardIO.unobserve(e.target); _load(e.target); }
+      }), { root: el, rootMargin: '100% 0px' });
+    }
     el.querySelectorAll('img[data-src]').forEach((img, i) => {
-      if (i < 4) { img.loading = 'eager'; img.fetchPriority = 'high'; }
-      img.src = img.dataset.src; img.removeAttribute('data-src');
+      if (i < 4 || !el._cardIO) _load(img, i < 4);
+      else el._cardIO.observe(img);
     });
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
