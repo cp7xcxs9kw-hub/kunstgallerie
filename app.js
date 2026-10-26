@@ -147,7 +147,7 @@
   // Navigationsleiste gehört dieser Ebene – die Hero-Sperre greift dort nicht
   function _inLayer(t) {
     if (document.body.style.overflow === 'hidden') return true;
-    return !!(t && t.closest && t.closest('.coll-overlay, #artwork-detail, .legal-overlay, #modal, #cal-overlay, #gallery-vr, .nav-links, #rundgang-hint'));
+    return !!(t && t.closest && t.closest('.coll-overlay, #artwork-detail, .legal-overlay, #cal-overlay, #gallery-vr, .nav-links, #rundgang-hint'));
   }
   /* ══ BROWSER-ZURÜCK: jede geöffnete Ebene ist ein Schritt im Browserverlauf ══
      Jeder Verlaufseintrag speichert den kompletten Ebenen-Stapel (z. B. ['gallery','col:mixed','art:Meer']).
@@ -194,7 +194,6 @@
     else if (item === 'vr') document.getElementById('nav-rundgang')?.click();
     else if (item === 'favs') openFavs();
     else if (item === 'cal') window.openCal && window.openCal();
-    else if (item === 'modal') { const d = ARTWORKS[_adCurrentTitle]; if (d) openModal(_adCurrentTitle, d.price); }
     else if (item.indexOf('col:') === 0) openCollection(item.slice(4));
     else if (item.indexOf('art:') === 0) openArtwork(item.slice(4));
     else if (item.indexOf('legal:') === 0) openLegal(item.slice(6));
@@ -204,7 +203,6 @@
     else if (item === 'vr') document.getElementById('gallery-vr-close')?.click();
     else if (item === 'favs') closeFavs();
     else if (item === 'cal') window.closeCal && window.closeCal();
-    else if (item === 'modal') closeModal();
     else if (item.indexOf('col:') === 0) closeCollection(item.slice(4));
     else if (item.indexOf('art:') === 0) closeArtwork();
     else if (item.indexOf('legal:') === 0) closeLegal(item.slice(6));
@@ -306,49 +304,49 @@
 
   /* ══ ARTWORK DATA ══ */
   const ARTWORKS = {
-    'Komposition I':   { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', price:'4.750 – 7.200', cat:'Malerei', cat_en:'Painting', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Stille II':       { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'80 × 60 cm', year:'2023', price:'2.150 – 3.800', cat:'Malerei', cat_en:'Painting', story:'Stille II ist das zweite Werk einer Reihe, die sich dem Thema innerer Ruhe widmet. Schwab arbeitete hier mit ausgesprochen reduzierter Farbpalette — fast ausschließlich Weiß- und Grautöne, unterbrochen von einem einzigen warmen Akzent. Das Kreisformat innerhalb des rechteckigen Trägers erzeugt eine meditative Wirkung, die Betrachtende zum Innehalten einlädt.', story_en:'Stille II is the second work in a series dedicated to inner stillness. Schwab worked here with an exceptionally reduced palette — almost exclusively whites and greys, broken by a single warm accent. The circular form within the rectangular support creates a meditative effect, inviting the viewer to pause.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Aufbruch':        { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'100 × 80 cm', year:'2024', price:'3.150 – 4.800', cat:'Malerei', cat_en:'Painting', story:'Aufbruch entstand in einer Phase intensiver Veränderung. Die nach oben strebende Dreiecksform ist bewusst gewählt — sie symbolisiert Bewegung, Entscheidung und den Mut zur Veränderung. Warme Ockertöne treffen auf kühle Blaugrau-Flächen; diese Spannung macht das Bild zu einem emotionalen Dokument seiner Entstehungszeit.', story_en:'Aufbruch (Departure) was created during a period of intense change. The upward-pointing triangular form is deliberate — it symbolises movement, decision and the courage to change. Warm ochres meet cool blue-grey fields; this tension makes the painting an emotional document of the time in which it was made.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Horizont':        { technique:'Acryl auf Papier', technique_en:'Acrylic on paper', size:'70 × 50 cm', year:'2023', price:'1.850 – 3.100', cat:'Malerei', cat_en:'Painting', story:'Eine schlichte, fast minimalistische Arbeit — und doch eine der persönlichsten. Die horizontale Linie, die das Bild in zwei nahezu gleiche Hälften teilt, steht für den Moment kurz vor dem Sonnenuntergang. Schwab malte diese Serie während eines längeren Aufenthalts im ländlichen Raum, täglich zur gleichen Stunde, mit dem Blick auf denselben Horizont.', story_en:'A simple, almost minimalist work — yet one of the most personal. The horizontal line dividing the canvas into two near-equal halves represents the moment just before sunset. Schwab painted this series during an extended stay in the countryside, at the same hour each day, looking out at the same horizon.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
-    'Tiefe':           { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'100 × 75 cm', year:'2024', price:'3.450 – 5.500', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Tiefe ist eines der technisch anspruchsvollsten Werke Schwabs. Die charakteristische Kurve wurde mit Ölfarbe in einem einzigen langen Pinselstrich gesetzt — ein Akt, der monatelange Vorbereitung und Konzentration erforderte. Die Schichten darunter, in Lasurtechnik aufgebaut, verleihen dem Werk eine Leuchtkraft, die erst beim längeren Betrachten vollständig sichtbar wird.', story_en:'Tiefe (Depth) is one of Schwab\'s most technically demanding works. The characteristic curve was set with oil paint in a single long brushstroke — an act requiring months of preparation and concentration. The layers beneath, built up in glazing technique, lend the work a luminosity that only becomes fully visible on prolonged viewing.', svg:'<path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', price:'4.150 – 6.500', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
-    'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', price:'2.750 – 4.200', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
-    'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', price:'4.950 – 8.000', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', price:'1.750 – 3.200', cat:'Grafik', cat_en:'Graphics', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
-    'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', price:'1.350 – 2.600', cat:'Grafik', cat_en:'Graphics', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', price:'2.050 – 3.600', cat:'Grafik', cat_en:'Graphics', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
-    'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', price:'1.550 – 2.900', cat:'Grafik', cat_en:'Graphics', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Zwei Figuren I':           { img:'Images/C-F-2001-1entzerrt.jpg', technique:'Mischtechnik', technique_en:'Mixed media', size:'28 × 40 cm', year:'2001', price:'400 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Figuren treten in einen stummen Dialog. Die hintere dem Betrachter abgewandt, im Rückenakt, während die vordere zu ahnen bleibt. Lila und Orange brechen die Dunkelheit auf — Farbe als Sprache des Unausgesprochenen. Signiert unten rechts.', story_en:'Two figures in silent dialogue. One turned away, seen from behind; the other only suggested. Lilac and orange pierce the darkness — colour as the language of the unspoken. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="20" y1="8" x2="20" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="44" y1="8" x2="44" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Badende':                  { img:'Images/C-F-2001-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2001', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Eine lichte Figur in Weiß, Grau und Gelb hebt sich von zwei dunklen Torsi ab. Die Collagetechnik schichtet Körper übereinander — ein Fragment menschlicher Präsenz, das aus der Dunkelheit heraustritt. Signiert unten mittig.', story_en:'A luminous figure in white, grey and yellow emerges against two dark torsos. The collage technique layers bodies one over another — a fragment of human presence stepping out of the dark. Signed lower centre.', signed:'unten mittig', signed_en:'lower centre', svg:'<ellipse cx="32" cy="32" rx="14" ry="22" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Zwei Badende':             { img:'Images/C-F-2002-1entzerrt.JPG', technique:'Mischtechnik auf Papier', technique_en:'Mixed media on paper', size:'60 × 80 cm', year:'2002', price:'500 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Violett durchzieht das Bild wie ein Stimmungston. Die Figuren sind gestreckt, fast gelöst von ihrer Form — begrenzt nur durch schwarze Konturen, die sie aus dem Farbstrom heraustreten lassen. Signiert unten rechts.', story_en:'Violet runs through the painting like an undertone. The figures are elongated, almost dissolved — held in place only by black contours that lift them out of the current of colour. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="22" y1="8" x2="22" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="42" y1="8" x2="42" y2="56" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>' },
-    'Figur und Torsi':          { img:'Images/C-F-2002-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'70 × 50 cm', year:'2002', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Grau als Farbe der Körper, dahinter die volle Palette: Violett, Rot, Ocker. Die Torsi scheinen in einer anderen Zeitebene zu existieren als der Hintergrund — Schwabs Schichttechnik erzeugt Tiefe als zeitlichen Abstand. Signiert unten rechts.', story_en:'Grey as the colour of bodies, behind it the full palette: violet, red, ochre. The torsos seem to inhabit a different temporal layer from the background — Schwab\'s layering technique creates depth as temporal distance. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<circle cx="24" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8" fill="none"/><circle cx="44" cy="32" r="8" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.6"/>' },
-    'Langgezogene Figurengruppe':{ img:'Images/C-F-2002-3entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'60 × 80 cm', year:'2002', price:'500 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Sind es Tanzende oder Skelette? Schwab lässt die Frage offen. Schwarze Umrisse bewegen sich gegen leuchtende Farben — ein Bild, das Energie und Vergänglichkeit in einem einzigen Atem vereint. Signiert unten rechts.', story_en:'Dancers, or skeletons? Schwab leaves the question open. Black outlines move against vivid colours — a single image holding energy and transience in the same breath. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<path d="M16 56 L32 8 L48 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Totenkult':                { img:'Images/C-F-2003-1entzerrt.JPG', technique:'Acrylcollage', technique_en:'Acrylic collage', size:'45 × 72 cm', year:'2003', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Der Titel deutet auf Ritual und Übergang. Zwei Frauenfiguren — eine dem Betrachter zugewandt, eine abgewandt — verbunden durch das Violett, das die Komposition durchpulst. Blau, Rot und Schwarz grundieren das Bild wie ein uraltes Zeremoniell. Signiert unten links.', story_en:'The title speaks of ritual and passage. Two female figures — one facing the viewer, one turned away — connected by the violet that pulses through the composition. Blue, red and black underpin the image like an ancient ceremony. Signed lower left.', signed:'unten links', signed_en:'lower left', svg:'<rect x="8" y="8" width="48" height="48" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="8" y1="32" x2="56" y2="32" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
-    'Bunte Figur':              { img:'Images/C-F-2004-1entzerrt.JPG', technique:'Acrylcollage auf Pressspahn', technique_en:'Acrylic collage on hardboard', size:'48 × 60 cm', year:'2004', price:'400 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Gegen das Dunkel setzt Schwab die Figur als reines Farbereignis. Die Acrylcollage auf Pressspahn — ein grobes, unprätentiöses Trägermaterial — gibt dem Werk eine erdige Energie. Eine Figur, die sich aus dem Untergrund herausarbeitet. Signiert unten rechts.', story_en:'Against the dark, Schwab sets the figure as a pure event of colour. The acrylic collage on hardboard — a rough, unassuming support — gives the work an earthy energy. A figure working its way up from the ground. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<circle cx="32" cy="24" r="10" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="34" x2="32" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Goldene Figur':            { img:'Images/C-F-2004-2entzerrt.JPG', technique:'Mischtechnik auf Leinwand', technique_en:'Mixed media on canvas', size:'48 × 68 cm', year:'2004', price:'500 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Gold krönt den Kopf — ob als Aureole, als Maske oder als Zeichen bleibt unentschieden. Die Figur steht aufrecht, von schwarzen und blauen Streifen gerahmt und zugleich fragmentiert. Schwab verleiht dem Körper eine sakrale Präsenz. Signiert unten rechts.', story_en:'Gold crowns the head — whether as aureole, mask or sign remains undecided. The figure stands upright, framed and at the same time fragmented by black and blue stripes. Schwab gives the body a sacral presence. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<circle cx="32" cy="16" r="8" stroke="#C9A84C" stroke-width="0.9" fill="none"/><line x1="32" y1="24" x2="32" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="20" y1="36" x2="44" y2="36" stroke="#C9A84C" stroke-width="0.6"/>' },
-    'Kopf im Profil':           { img:'Images/C-F-2004-3entzerrt.JPG', technique:'Deckfarben auf Papier', technique_en:'Gouache on paper', size:'25 × 33 cm', year:'2004', price:'350 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das Profil — älteste Form des Porträts. Schwab kehrt zu ihr zurück und entzieht ihr das Individuelle: kein Name, keine Erkennung. Nur die Silhouette eines Kopfes gegen das Dunkel. Reduktion als Würde. Signiert unten rechts.', story_en:'The profile — oldest form of portraiture. Schwab returns to it and strips away the individual: no name, no recognition. Only the silhouette of a head against the dark. Reduction as dignity. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<path d="M20 12 Q40 12 40 32 Q40 52 20 52 Q20 32 20 12Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Hockende Figur':           { img:'Images/C-F-2004-4entzerrt.JPG', technique:'Pastell auf Papier', technique_en:'Pastel on paper', size:'25 × 33 cm', year:'2004', price:'350 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Hocke — eine archaische Körperhaltung, die Schutz und Konzentration zugleich bedeutet. Farbe trifft auf Farbe: die Figur droht im Hintergrund aufzugehen, nur die Kontur trennt noch Innen von Außen. Signiert unten rechts.', story_en:'The crouch — an archaic posture, signifying shelter and concentration alike. Colour meets colour: the figure threatens to dissolve into the background; only the contour still separates inside from outside. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<path d="M20 20 Q32 8 44 20 Q48 36 32 52 Q16 36 20 20Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Zwei Figuren II':          { img:'Images/C-F-2005-1entzerrt.JPG', technique:'Collage aus Drucken', technique_en:'Collage from prints', size:'50 × 70 cm', year:'2005', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Umrisse, frontal, sich berührend — in einem bootsähnlichen Gefäß vereint. Schwab collagiert Drucke zu einem Bild der Nähe und des gemeinsamen Getragenseins. Zwei Körper, die gemeinsam einem Ziel entgegentreiben. Signiert unten rechts.', story_en:'Two outlines, frontal, touching — united within a boat-like vessel. Schwab assembles prints into an image of closeness and shared passage. Two bodies drifting together towards a common destination. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<ellipse cx="24" cy="32" rx="10" ry="18" stroke="#C9A84C" stroke-width="0.8" fill="none"/><ellipse cx="40" cy="32" rx="10" ry="18" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.6"/>' },
-    'Kuss':                     { img:'Images/C-F-2005-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2005', price:'500 – 800', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Rot — die Farbe von Blut und Begehren. Zwei Figuren finden sich im Kuss und verschmelzen fast zur Einheit. Die Mischtechnik löst die Grenzen zwischen den Körpern auf: wo endet einer, wo beginnt der andere? Signiert unten rechts.', story_en:'Red — the colour of blood and desire. Two figures meet in a kiss and nearly merge into one. The mixed media dissolves the boundaries between the bodies: where does one end, where does the other begin? Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M8 32 Q32 4 56 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><path d="M8 32 Q32 60 56 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Badende in blau':          { img:'Images/C-F-2005-3entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'24 × 34 cm', year:'2005', price:'350 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Rückenakte — Körper, die sich entziehen. In Blau getaucht, zeigen die Figuren dem Betrachter das Schweigen ihrer Rücken. Eine Intimität, die nicht preisgibt. Das Blaue ist keine Farbe — es ist Atmosphäre. Signiert unten rechts.', story_en:'Figures seen from behind — bodies that withhold themselves. Steeped in blue, they show the viewer the silence of their backs. An intimacy that reveals nothing. The blue is not a colour — it is an atmosphere. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M16 12 Q24 8 32 12 Q40 8 48 12" stroke="#C9A84C" stroke-width="0.8" fill="none"/><path d="M12 40 Q32 28 52 40" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.7"/>' },
-    'Paar':                     { img:'Images/C-F-2005-4.JPG', technique:'Collage aus Graphik', technique_en:'Collage from graphic prints', size:'–', year:'2005', price:'400 – 700', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Ein Paar — hintereinander, nicht nebeneinander. Die Brauntöne und das graphische Ausgangsmaterial verleihen den Figuren etwas Archaisches, fast Monumentales. Zweiheit als Einheit: der eine Körper als Schatten des anderen. Signiert unten rechts.', story_en:'A couple — one behind the other, not side by side. The brown tones and the graphic source material give the figures an archaic, almost monumental quality. Twoness as oneness: one body as the shadow of the other. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="28" y1="8" x2="28" y2="56" stroke="#C9A84C" stroke-width="0.9"/><line x1="36" y1="8" x2="36" y2="56" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
-    'Zwei Frauen':              { img:'Images/C-F-2005-5.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'65 × 50 cm', year:'2005', price:'450 – 750', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das schwarze Quadrat im Hintergrund ist kein Zufall — eine bewusste Setzung. Zwei Frauenfiguren davor: eine vollständig, eine als Hüftfigur. Das Quadrat als Folie, als Spiegel, als Leerstelle, vor der der menschliche Körper umso mehr spricht. Signiert unten rechts.', story_en:'The black square in the background is no accident — a deliberate gesture. Two female figures before it: one complete, one cropped at the waist. The square as backdrop, as mirror, as void — against which the human body speaks all the more strongly. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<rect x="16" y="16" width="32" height="32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="8" x2="32" y2="16" stroke="#C9A84C" stroke-width="0.6"/>' },
-    'Meer':                     { img:'Images/C-F-2005-6entzerrt.JPG', technique:'Grafikkollage', technique_en:'Graphic collage', size:'33 × 24 cm', year:'2005', price:'350 – 650', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das einzige Landschaftsbild der Serie und zugleich eines der stillsten. Die Grafikkollage übersetzt das Meer in Schichten und Streifen — Wasser als Struktur, nicht als Abbild. Dahinter: ein schmaler Streifen Land, kaum mehr als eine Ahnung. Signiert unten rechts.', story_en:'The only landscape in the series, and one of its quietest works. The graphic collage translates the sea into layers and strips — water as structure, not as image. Beyond it: a narrow strip of land, little more than a suggestion. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M4 36 Q16 28 28 36 Q40 44 52 36 Q60 32 60 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="4" y1="24" x2="60" y2="24" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
-    'Kniende Figur':            { img:'Images/Plastik-1-a.jpg', views:['Images/Plastik-1-a.jpg','Images/Plastik-1-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine kniende Figur, auf das Wesentliche reduziert: Schenkel, Hüfte, ein aufstrebender Oberkörper, der in einer offenen Form endet. Feine, parallel gezogene Rillen folgen den Rundungen und lassen das Licht über die goldene Oberfläche wandern.', story_en:'A kneeling figure reduced to its essentials: thigh, hip and a rising torso that ends in an open form. Fine parallel grooves follow the curves and let the light travel across the golden surface.', svg:'' },
-    'Weiblicher Torso':         { img:'Images/Plastik-2-a.jpg', views:['Images/Plastik-2-a.jpg','Images/Plastik-2-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Von vorne fast ein Gefäß, von der Seite eine kniende Gestalt — der Torso verändert sich mit jedem Blickwinkel. Die dunkle Patina zwischen dem Gold betont die Spuren der Bearbeitung und gibt der Form Tiefe.', story_en:'From the front almost a vessel, from the side a kneeling figure — the torso changes with every viewpoint. The dark patina between the gold accentuates the traces of the working process and gives the form depth.', svg:'' },
-    'Verhüllte Figur':          { img:'Images/Plastik-3-a.jpg', views:['Images/Plastik-3-a.jpg','Images/Plastik-3-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine sitzende Gestalt, wie in einen weiten Umhang gehüllt. Der Stoff fällt in großen, geriefelten Flächen, aus denen sich Kopf und Schulter herausschieben. Risse und Unebenheiten in der Fassung sind Teil des Ausdrucks.', story_en:'A seated figure, as if wrapped in a wide cloak. The drapery falls in broad, ribbed planes from which head and shoulder emerge. Cracks and irregularities in the surface are part of its expression.', svg:'' },
-    'Torso mit Rillen':         { img:'Images/Plastik-4-a.jpg', views:['Images/Plastik-4-a.jpg','Images/Plastik-4-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Dichte, senkrecht und bogenförmig geführte Rillen überziehen den ganzen Körper wie eine zweite Haut. Von hinten ruhig und symmetrisch, von der Seite in Bewegung: Die Plastik lebt vom Wechsel der Ansichten.', story_en:'Dense grooves, running vertically and in arcs, cover the whole body like a second skin. Calm and symmetrical from behind, full of movement from the side: the sculpture lives from its changing views.', svg:'' },
-    'Stehender Torso':          { img:'Images/Plastik-5-a.jpg', views:['Images/Plastik-5-a.jpg','Images/Plastik-5-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Ein schlanker Torso, der auf einem schmalen Fuß balanciert. Die ausladende Rundung zur Seite und die feinen Kratzspuren im Gold geben der kleinen Form eine erstaunliche Spannung.', story_en:'A slender torso balancing on a narrow base. The swelling curve to one side and the fine scratch marks in the gold give the small form a remarkable tension.', svg:'' },
-    'Sitzende Figur':           { img:'Images/Plastik-6-a.jpg', views:['Images/Plastik-6-a.jpg','Images/Plastik-6-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', price:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine sitzende Figur, die Arme um die angezogenen Knie gelegt — in sich gekehrt, ohne Kopf, ganz Körperhaltung. Die durchbrochenen Zwischenräume und die tief eingeritzten Linien machen die Plastik von allen Seiten lesbar.', story_en:'A seated figure with arms wrapped around drawn-up knees — turned inward, headless, pure posture. The open spaces and deeply incised lines make the sculpture legible from every side.', svg:'' },
+    'Komposition I':   { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', cat:'Malerei', cat_en:'Painting', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Stille II':       { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'80 × 60 cm', year:'2023', cat:'Malerei', cat_en:'Painting', story:'Stille II ist das zweite Werk einer Reihe, die sich dem Thema innerer Ruhe widmet. Schwab arbeitete hier mit ausgesprochen reduzierter Farbpalette — fast ausschließlich Weiß- und Grautöne, unterbrochen von einem einzigen warmen Akzent. Das Kreisformat innerhalb des rechteckigen Trägers erzeugt eine meditative Wirkung, die Betrachtende zum Innehalten einlädt.', story_en:'Stille II is the second work in a series dedicated to inner stillness. Schwab worked here with an exceptionally reduced palette — almost exclusively whites and greys, broken by a single warm accent. The circular form within the rectangular support creates a meditative effect, inviting the viewer to pause.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Aufbruch':        { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'100 × 80 cm', year:'2024', cat:'Malerei', cat_en:'Painting', story:'Aufbruch entstand in einer Phase intensiver Veränderung. Die nach oben strebende Dreiecksform ist bewusst gewählt — sie symbolisiert Bewegung, Entscheidung und den Mut zur Veränderung. Warme Ockertöne treffen auf kühle Blaugrau-Flächen; diese Spannung macht das Bild zu einem emotionalen Dokument seiner Entstehungszeit.', story_en:'Aufbruch (Departure) was created during a period of intense change. The upward-pointing triangular form is deliberate — it symbolises movement, decision and the courage to change. Warm ochres meet cool blue-grey fields; this tension makes the painting an emotional document of the time in which it was made.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Horizont':        { technique:'Acryl auf Papier', technique_en:'Acrylic on paper', size:'70 × 50 cm', year:'2023', cat:'Malerei', cat_en:'Painting', story:'Eine schlichte, fast minimalistische Arbeit — und doch eine der persönlichsten. Die horizontale Linie, die das Bild in zwei nahezu gleiche Hälften teilt, steht für den Moment kurz vor dem Sonnenuntergang. Schwab malte diese Serie während eines längeren Aufenthalts im ländlichen Raum, täglich zur gleichen Stunde, mit dem Blick auf denselben Horizont.', story_en:'A simple, almost minimalist work — yet one of the most personal. The horizontal line dividing the canvas into two near-equal halves represents the moment just before sunset. Schwab painted this series during an extended stay in the countryside, at the same hour each day, looking out at the same horizon.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
+    'Tiefe':           { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'100 × 75 cm', year:'2024', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Tiefe ist eines der technisch anspruchsvollsten Werke Schwabs. Die charakteristische Kurve wurde mit Ölfarbe in einem einzigen langen Pinselstrich gesetzt — ein Akt, der monatelange Vorbereitung und Konzentration erforderte. Die Schichten darunter, in Lasurtechnik aufgebaut, verleihen dem Werk eine Leuchtkraft, die erst beim längeren Betrachten vollständig sichtbar wird.', story_en:'Tiefe (Depth) is one of Schwab\'s most technically demanding works. The characteristic curve was set with oil paint in a single long brushstroke — an act requiring months of preparation and concentration. The layers beneath, built up in glazing technique, lend the work a luminosity that only becomes fully visible on prolonged viewing.', svg:'<path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
+    'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', cat:'Grafik', cat_en:'Graphics', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
+    'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', cat:'Grafik', cat_en:'Graphics', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', cat:'Grafik', cat_en:'Graphics', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
+    'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', cat:'Grafik', cat_en:'Graphics', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Zwei Figuren I':           { img:'Images/C-F-2001-1entzerrt.jpg', technique:'Mischtechnik', technique_en:'Mixed media', size:'28 × 40 cm', year:'2001', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Figuren treten in einen stummen Dialog. Die hintere dem Betrachter abgewandt, im Rückenakt, während die vordere zu ahnen bleibt. Lila und Orange brechen die Dunkelheit auf — Farbe als Sprache des Unausgesprochenen. Signiert unten rechts.', story_en:'Two figures in silent dialogue. One turned away, seen from behind; the other only suggested. Lilac and orange pierce the darkness — colour as the language of the unspoken. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="20" y1="8" x2="20" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="44" y1="8" x2="44" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Badende':                  { img:'Images/C-F-2001-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2001', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Eine lichte Figur in Weiß, Grau und Gelb hebt sich von zwei dunklen Torsi ab. Die Collagetechnik schichtet Körper übereinander — ein Fragment menschlicher Präsenz, das aus der Dunkelheit heraustritt. Signiert unten mittig.', story_en:'A luminous figure in white, grey and yellow emerges against two dark torsos. The collage technique layers bodies one over another — a fragment of human presence stepping out of the dark. Signed lower centre.', signed:'unten mittig', signed_en:'lower centre', svg:'<ellipse cx="32" cy="32" rx="14" ry="22" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Zwei Badende':             { img:'Images/C-F-2002-1entzerrt.JPG', technique:'Mischtechnik auf Papier', technique_en:'Mixed media on paper', size:'60 × 80 cm', year:'2002', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Violett durchzieht das Bild wie ein Stimmungston. Die Figuren sind gestreckt, fast gelöst von ihrer Form — begrenzt nur durch schwarze Konturen, die sie aus dem Farbstrom heraustreten lassen. Signiert unten rechts.', story_en:'Violet runs through the painting like an undertone. The figures are elongated, almost dissolved — held in place only by black contours that lift them out of the current of colour. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="22" y1="8" x2="22" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="42" y1="8" x2="42" y2="56" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>' },
+    'Figur und Torsi':          { img:'Images/C-F-2002-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'70 × 50 cm', year:'2002', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Grau als Farbe der Körper, dahinter die volle Palette: Violett, Rot, Ocker. Die Torsi scheinen in einer anderen Zeitebene zu existieren als der Hintergrund — Schwabs Schichttechnik erzeugt Tiefe als zeitlichen Abstand. Signiert unten rechts.', story_en:'Grey as the colour of bodies, behind it the full palette: violet, red, ochre. The torsos seem to inhabit a different temporal layer from the background — Schwab\'s layering technique creates depth as temporal distance. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<circle cx="24" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8" fill="none"/><circle cx="44" cy="32" r="8" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.6"/>' },
+    'Langgezogene Figurengruppe':{ img:'Images/C-F-2002-3entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'60 × 80 cm', year:'2002', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Sind es Tanzende oder Skelette? Schwab lässt die Frage offen. Schwarze Umrisse bewegen sich gegen leuchtende Farben — ein Bild, das Energie und Vergänglichkeit in einem einzigen Atem vereint. Signiert unten rechts.', story_en:'Dancers, or skeletons? Schwab leaves the question open. Black outlines move against vivid colours — a single image holding energy and transience in the same breath. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<path d="M16 56 L32 8 L48 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Totenkult':                { img:'Images/C-F-2003-1entzerrt.JPG', technique:'Acrylcollage', technique_en:'Acrylic collage', size:'45 × 72 cm', year:'2003', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Der Titel deutet auf Ritual und Übergang. Zwei Frauenfiguren — eine dem Betrachter zugewandt, eine abgewandt — verbunden durch das Violett, das die Komposition durchpulst. Blau, Rot und Schwarz grundieren das Bild wie ein uraltes Zeremoniell. Signiert unten links.', story_en:'The title speaks of ritual and passage. Two female figures — one facing the viewer, one turned away — connected by the violet that pulses through the composition. Blue, red and black underpin the image like an ancient ceremony. Signed lower left.', signed:'unten links', signed_en:'lower left', svg:'<rect x="8" y="8" width="48" height="48" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="8" y1="32" x2="56" y2="32" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Bunte Figur':              { img:'Images/C-F-2004-1entzerrt.JPG', technique:'Acrylcollage auf Pressspahn', technique_en:'Acrylic collage on hardboard', size:'48 × 60 cm', year:'2004', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Gegen das Dunkel setzt Schwab die Figur als reines Farbereignis. Die Acrylcollage auf Pressspahn — ein grobes, unprätentiöses Trägermaterial — gibt dem Werk eine erdige Energie. Eine Figur, die sich aus dem Untergrund herausarbeitet. Signiert unten rechts.', story_en:'Against the dark, Schwab sets the figure as a pure event of colour. The acrylic collage on hardboard — a rough, unassuming support — gives the work an earthy energy. A figure working its way up from the ground. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<circle cx="32" cy="24" r="10" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="34" x2="32" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Goldene Figur':            { img:'Images/C-F-2004-2entzerrt.JPG', technique:'Mischtechnik auf Leinwand', technique_en:'Mixed media on canvas', size:'48 × 68 cm', year:'2004', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Gold krönt den Kopf — ob als Aureole, als Maske oder als Zeichen bleibt unentschieden. Die Figur steht aufrecht, von schwarzen und blauen Streifen gerahmt und zugleich fragmentiert. Schwab verleiht dem Körper eine sakrale Präsenz. Signiert unten rechts.', story_en:'Gold crowns the head — whether as aureole, mask or sign remains undecided. The figure stands upright, framed and at the same time fragmented by black and blue stripes. Schwab gives the body a sacral presence. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<circle cx="32" cy="16" r="8" stroke="#C9A84C" stroke-width="0.9" fill="none"/><line x1="32" y1="24" x2="32" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="20" y1="36" x2="44" y2="36" stroke="#C9A84C" stroke-width="0.6"/>' },
+    'Kopf im Profil':           { img:'Images/C-F-2004-3entzerrt.JPG', technique:'Deckfarben auf Papier', technique_en:'Gouache on paper', size:'25 × 33 cm', year:'2004', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das Profil — älteste Form des Porträts. Schwab kehrt zu ihr zurück und entzieht ihr das Individuelle: kein Name, keine Erkennung. Nur die Silhouette eines Kopfes gegen das Dunkel. Reduktion als Würde. Signiert unten rechts.', story_en:'The profile — oldest form of portraiture. Schwab returns to it and strips away the individual: no name, no recognition. Only the silhouette of a head against the dark. Reduction as dignity. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<path d="M20 12 Q40 12 40 32 Q40 52 20 52 Q20 32 20 12Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Hockende Figur':           { img:'Images/C-F-2004-4entzerrt.JPG', technique:'Pastell auf Papier', technique_en:'Pastel on paper', size:'25 × 33 cm', year:'2004', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Hocke — eine archaische Körperhaltung, die Schutz und Konzentration zugleich bedeutet. Farbe trifft auf Farbe: die Figur droht im Hintergrund aufzugehen, nur die Kontur trennt noch Innen von Außen. Signiert unten rechts.', story_en:'The crouch — an archaic posture, signifying shelter and concentration alike. Colour meets colour: the figure threatens to dissolve into the background; only the contour still separates inside from outside. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<path d="M20 20 Q32 8 44 20 Q48 36 32 52 Q16 36 20 20Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Zwei Figuren II':          { img:'Images/C-F-2005-1entzerrt.JPG', technique:'Collage aus Drucken', technique_en:'Collage from prints', size:'50 × 70 cm', year:'2005', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Umrisse, frontal, sich berührend — in einem bootsähnlichen Gefäß vereint. Schwab collagiert Drucke zu einem Bild der Nähe und des gemeinsamen Getragenseins. Zwei Körper, die gemeinsam einem Ziel entgegentreiben. Signiert unten rechts.', story_en:'Two outlines, frontal, touching — united within a boat-like vessel. Schwab assembles prints into an image of closeness and shared passage. Two bodies drifting together towards a common destination. Signed lower right.', hasFrame:true, signed:'unten rechts', signed_en:'lower right', svg:'<ellipse cx="24" cy="32" rx="10" ry="18" stroke="#C9A84C" stroke-width="0.8" fill="none"/><ellipse cx="40" cy="32" rx="10" ry="18" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.6"/>' },
+    'Kuss':                     { img:'Images/C-F-2005-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2005', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Rot — die Farbe von Blut und Begehren. Zwei Figuren finden sich im Kuss und verschmelzen fast zur Einheit. Die Mischtechnik löst die Grenzen zwischen den Körpern auf: wo endet einer, wo beginnt der andere? Signiert unten rechts.', story_en:'Red — the colour of blood and desire. Two figures meet in a kiss and nearly merge into one. The mixed media dissolves the boundaries between the bodies: where does one end, where does the other begin? Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M8 32 Q32 4 56 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><path d="M8 32 Q32 60 56 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Badende in blau':          { img:'Images/C-F-2005-3entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'24 × 34 cm', year:'2005', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Rückenakte — Körper, die sich entziehen. In Blau getaucht, zeigen die Figuren dem Betrachter das Schweigen ihrer Rücken. Eine Intimität, die nicht preisgibt. Das Blaue ist keine Farbe — es ist Atmosphäre. Signiert unten rechts.', story_en:'Figures seen from behind — bodies that withhold themselves. Steeped in blue, they show the viewer the silence of their backs. An intimacy that reveals nothing. The blue is not a colour — it is an atmosphere. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M16 12 Q24 8 32 12 Q40 8 48 12" stroke="#C9A84C" stroke-width="0.8" fill="none"/><path d="M12 40 Q32 28 52 40" stroke="#C9A84C" stroke-width="0.6" fill="none" opacity="0.7"/>' },
+    'Paar':                     { img:'Images/C-F-2005-4.JPG', technique:'Collage aus Graphik', technique_en:'Collage from graphic prints', size:'–', year:'2005', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Ein Paar — hintereinander, nicht nebeneinander. Die Brauntöne und das graphische Ausgangsmaterial verleihen den Figuren etwas Archaisches, fast Monumentales. Zweiheit als Einheit: der eine Körper als Schatten des anderen. Signiert unten rechts.', story_en:'A couple — one behind the other, not side by side. The brown tones and the graphic source material give the figures an archaic, almost monumental quality. Twoness as oneness: one body as the shadow of the other. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="28" y1="8" x2="28" y2="56" stroke="#C9A84C" stroke-width="0.9"/><line x1="36" y1="8" x2="36" y2="56" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
+    'Zwei Frauen':              { img:'Images/C-F-2005-5.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'65 × 50 cm', year:'2005', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das schwarze Quadrat im Hintergrund ist kein Zufall — eine bewusste Setzung. Zwei Frauenfiguren davor: eine vollständig, eine als Hüftfigur. Das Quadrat als Folie, als Spiegel, als Leerstelle, vor der der menschliche Körper umso mehr spricht. Signiert unten rechts.', story_en:'The black square in the background is no accident — a deliberate gesture. Two female figures before it: one complete, one cropped at the waist. The square as backdrop, as mirror, as void — against which the human body speaks all the more strongly. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<rect x="16" y="16" width="32" height="32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="32" y1="8" x2="32" y2="16" stroke="#C9A84C" stroke-width="0.6"/>' },
+    'Meer':                     { img:'Images/C-F-2005-6entzerrt.JPG', technique:'Grafikkollage', technique_en:'Graphic collage', size:'33 × 24 cm', year:'2005', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das einzige Landschaftsbild der Serie und zugleich eines der stillsten. Die Grafikkollage übersetzt das Meer in Schichten und Streifen — Wasser als Struktur, nicht als Abbild. Dahinter: ein schmaler Streifen Land, kaum mehr als eine Ahnung. Signiert unten rechts.', story_en:'The only landscape in the series, and one of its quietest works. The graphic collage translates the sea into layers and strips — water as structure, not as image. Beyond it: a narrow strip of land, little more than a suggestion. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<path d="M4 36 Q16 28 28 36 Q40 44 52 36 Q60 32 60 32" stroke="#C9A84C" stroke-width="0.8" fill="none"/><line x1="4" y1="24" x2="60" y2="24" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Kniende Figur':            { img:'Images/Plastik-1-a.jpg', views:['Images/Plastik-1-a.jpg','Images/Plastik-1-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine kniende Figur, auf das Wesentliche reduziert: Schenkel, Hüfte, ein aufstrebender Oberkörper, der in einer offenen Form endet. Feine, parallel gezogene Rillen folgen den Rundungen und lassen das Licht über die goldene Oberfläche wandern.', story_en:'A kneeling figure reduced to its essentials: thigh, hip and a rising torso that ends in an open form. Fine parallel grooves follow the curves and let the light travel across the golden surface.', svg:'' },
+    'Weiblicher Torso':         { img:'Images/Plastik-2-a.jpg', views:['Images/Plastik-2-a.jpg','Images/Plastik-2-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', cat:'Plastik', cat_en:'Sculpture', story:'Von vorne fast ein Gefäß, von der Seite eine kniende Gestalt — der Torso verändert sich mit jedem Blickwinkel. Die dunkle Patina zwischen dem Gold betont die Spuren der Bearbeitung und gibt der Form Tiefe.', story_en:'From the front almost a vessel, from the side a kneeling figure — the torso changes with every viewpoint. The dark patina between the gold accentuates the traces of the working process and gives the form depth.', svg:'' },
+    'Verhüllte Figur':          { img:'Images/Plastik-3-a.jpg', views:['Images/Plastik-3-a.jpg','Images/Plastik-3-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine sitzende Gestalt, wie in einen weiten Umhang gehüllt. Der Stoff fällt in großen, geriefelten Flächen, aus denen sich Kopf und Schulter herausschieben. Risse und Unebenheiten in der Fassung sind Teil des Ausdrucks.', story_en:'A seated figure, as if wrapped in a wide cloak. The drapery falls in broad, ribbed planes from which head and shoulder emerge. Cracks and irregularities in the surface are part of its expression.', svg:'' },
+    'Torso mit Rillen':         { img:'Images/Plastik-4-a.jpg', views:['Images/Plastik-4-a.jpg','Images/Plastik-4-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', cat:'Plastik', cat_en:'Sculpture', story:'Dichte, senkrecht und bogenförmig geführte Rillen überziehen den ganzen Körper wie eine zweite Haut. Von hinten ruhig und symmetrisch, von der Seite in Bewegung: Die Plastik lebt vom Wechsel der Ansichten.', story_en:'Dense grooves, running vertically and in arcs, cover the whole body like a second skin. Calm and symmetrical from behind, full of movement from the side: the sculpture lives from its changing views.', svg:'' },
+    'Stehender Torso':          { img:'Images/Plastik-5-a.jpg', views:['Images/Plastik-5-a.jpg','Images/Plastik-5-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', cat:'Plastik', cat_en:'Sculpture', story:'Ein schlanker Torso, der auf einem schmalen Fuß balanciert. Die ausladende Rundung zur Seite und die feinen Kratzspuren im Gold geben der kleinen Form eine erstaunliche Spannung.', story_en:'A slender torso balancing on a narrow base. The swelling curve to one side and the fine scratch marks in the gold give the small form a remarkable tension.', svg:'' },
+    'Sitzende Figur':           { img:'Images/Plastik-6-a.jpg', views:['Images/Plastik-6-a.jpg','Images/Plastik-6-b.jpg'], technique:'Plastik, goldfarben gefasst', technique_en:'Sculpture, gold-patinated', size:'', year:'', cat:'Plastik', cat_en:'Sculpture', story:'Eine sitzende Figur, die Arme um die angezogenen Knie gelegt — in sich gekehrt, ohne Kopf, ganz Körperhaltung. Die durchbrochenen Zwischenräume und die tief eingeritzten Linien machen die Plastik von allen Seiten lesbar.', story_en:'A seated figure with arms wrapped around drawn-up knees — turned inward, headless, pure posture. The open spaces and deeply incised lines make the sculpture legible from every side.', svg:'' },
   };
 
   // ══ Rundgang: Werke in Raum 4 (Malerei) und Raum 5 (Grafik) ══
   // Je 8 Plätze, gehängt wie in Raum 1 (Reihe für Reihe: linke Wand, dann rechte Wand).
   // • Platzhalter: ein Titel, der (noch) nicht mit Bild in ARTWORKS steht
-  //   → dunkle Platzhalter-Fläche, Hover „Werk folgt", kein Angebot.
-  // • Echtes Werk: Werk in ARTWORKS eintragen (img, technique, size, year, price, cat …)
+  //   → dunkle Platzhalter-Fläche, Hover „Werk folgt".
+  // • Echtes Werk: Werk in ARTWORKS eintragen (img, technique, size, year, cat …)
   //   und seinen Titel hier an die Stelle des Platzhalters setzen
-  //   → Bild hängt im Rundgang, Hover/Klick/Angebot wie bei allen Werken.
+  //   → Bild hängt im Rundgang, Hover/Klick/Werkansicht wie bei allen Werken.
   const VR_ROOM_WORKS = {
     malerei: ['Malerei I','Malerei II','Malerei III','Malerei IV','Malerei V','Malerei VI','Malerei VII','Malerei VIII'],
     grafik:  ['Grafik I','Grafik II','Grafik III','Grafik IV','Grafik V','Grafik VI','Grafik VII','Grafik VIII'],
@@ -362,12 +360,11 @@
   function _artMeta(d, isEN) {
     return [isEN ? d.technique_en : d.technique, d.size, d.year].filter(Boolean).join('  ·  ');
   }
-  function _artPrice(d, isEN) {
-    return d.price ? '€ ' + _priceTxt(d.price, isEN) : (isEN ? 'Price on request' : 'Preis auf Anfrage');
-  }
-  // Preisangaben sind deutsch geschrieben („4.750 – 7.200“); englisch mit Komma als Tausendertrennzeichen
-  function _priceTxt(p, isEN) {
-    return isEN ? p.replace(/(\d)\.(\d{3})/g, '$1,$2') : p;
+  // Die Website verkauft nichts: „Besichtigung anfragen“ öffnet nur das E-Mail-Programm des Besuchers
+  // mit vorausgefülltem Betreff – über die Website selbst werden keine Daten übertragen
+  const CONTACT_MAIL = 'info@horstschwab.de';
+  function _viewingMail(title) {
+    return 'mailto:' + CONTACT_MAIL + '?subject=' + encodeURIComponent((_lang === 'en' ? 'Viewing request: ' : 'Besichtigungsanfrage: ') + title);
   }
 
   /* ══ LANGUAGE ══ */
@@ -376,7 +373,7 @@
   const I18N = {
     de: {
       'nav-galerie':'Galerie','nav-werke':'Werke','nav-bio':'Biographie','nav-rundgang':'Rundgang',
-      'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste','nav-acc-label':'Anmelden',
+      'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste',
       'hero-label':'Galerie','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten',
       'intro-label':'Willkommen',
       'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
@@ -386,12 +383,10 @@
       'coll-head-acryl':'Malerei','coll-head-oel':'Collage &amp;<br>Zeichnungen','coll-head-aquarell':'Grafik','coll-head-mixed':'Plastik',
       'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.',
       'soc-cal-label':'Termin buchen','soc-cal-sub':'Besichtigung vereinbaren',
-      'cal-success-text':'Anfrage gesendet.','cal-success-sub':'Wir bestätigen Ihren Termin per E-Mail.',
-      'kon-label':'Kontakt','kon-heading':'Sprechen Sie mit uns','kon-sub':'Für Anfragen, private Besichtigungen oder Kooperationen.',
+      'cal-success-text':'Ihr E-Mail-Programm öffnet sich.','cal-success-sub':'Bitte senden Sie die vorbereitete E-Mail ab – wir bestätigen den Termin. Falls sich nichts öffnet: info@horstschwab.de',
+      'kon-label':'Kontakt','kon-heading':'Sprechen Sie mit uns','kon-sub':'Für Fragen zu den Werken oder eine private Besichtigung.',
       'kon-email-label':'E-Mail','kon-studio-label':'Atelier','kon-studio-val':'Nach Vereinbarung',
-      'kon-form-name-label':'Name','kon-form-email-label':'E-Mail','kon-form-msg-label':'Nachricht',
-      'kon-submit-text':'Nachricht senden','kon-success-text':'Vielen Dank für Ihre Nachricht.','kon-success-sub':'Wir melden uns in Kürze bei Ihnen.',
-      'ad-back-text':'Zurück','ad-story-head':'Über dieses Werk','ad-offer-btn':'Angebot abgeben','ad-rundgang-btn':'Im Rundgang entdecken',
+      'ad-back-text':'Zurück','ad-story-head':'Über dieses Werk','ad-offer-btn':'Besichtigung anfragen','ad-rundgang-btn':'Im Rundgang entdecken',
       'fav-back-text':'Zurück','fav-heading':'Merkliste',
       'fav-empty-label':'Noch keine Werke gespeichert.',
       'ad-tech-label':'Technik','ad-size-label':'Format','ad-year-label':'Jahr','ad-cat-label':'Kategorie','ad-sign-label':'Signatur',
@@ -403,7 +398,7 @@
     },
     en: {
       'nav-galerie':'Gallery','nav-werke':'Works','nav-bio':'Biography','nav-rundgang':'Tour',
-      'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist','nav-acc-label':'Sign in',
+      'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist',
       'hero-label':'Gallery','hero-enter':'Enter Gallery','hero-enter-ghost':'→ Enter Tour',
       'intro-label':'Welcome',
       'gal-label':'Current Works','gal-heading':'Selected Collection',
@@ -413,12 +408,10 @@
       'coll-head-acryl':'Painting','coll-head-oel':'Collage &amp;<br>Drawings','coll-head-aquarell':'Graphics','coll-head-mixed':'Sculpture',
       'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'Discover new works, exhibitions and behind-the-scenes insights.',
       'soc-cal-label':'Book appointment','soc-cal-sub':'Schedule a viewing',
-      'cal-success-text':'Request sent.','cal-success-sub':'We will confirm your appointment by e-mail.',
-      'kon-label':'Contact','kon-heading':'Get in Touch','kon-sub':'For enquiries, private viewings or collaborations.',
+      'cal-success-text':'Your e-mail program is opening.','cal-success-sub':'Please send the prepared e-mail – we will confirm the appointment. If nothing opens: info@horstschwab.de',
+      'kon-label':'Contact','kon-heading':'Get in Touch','kon-sub':'For questions about the works or a private viewing.',
       'kon-email-label':'E-Mail','kon-studio-label':'Studio','kon-studio-val':'By appointment',
-      'kon-form-name-label':'Name','kon-form-email-label':'E-Mail','kon-form-msg-label':'Message',
-      'kon-submit-text':'Send message','kon-success-text':'Thank you for your message.','kon-success-sub':'We will get back to you shortly.',
-      'ad-back-text':'Back','ad-story-head':'About This Work','ad-offer-btn':'Make an Offer','ad-rundgang-btn':'Discover in Virtual Tour',
+      'ad-back-text':'Back','ad-story-head':'About This Work','ad-offer-btn':'Request a Viewing','ad-rundgang-btn':'Discover in Virtual Tour',
       'fav-back-text':'Back','fav-heading':'Wishlist',
       'fav-empty-label':'No works saved yet.',
       'ad-tech-label':'Technique','ad-size-label':'Format','ad-year-label':'Year','ad-cat-label':'Category','ad-sign-label':'Signature',
@@ -432,7 +425,6 @@
 
   function setLang(lang) {
     _lang = lang;
-    localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;   // auch Kalender und Meldungen richten sich danach
     document.title = lang === 'en' ? 'Galerie Horst Schwab – Art | Passion | Timeless' : 'Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos';
     const t = I18N[lang];
@@ -474,14 +466,11 @@
       if (!d) return;
       var meta = card.querySelector('.coll-card-meta');
       if (meta) meta.textContent = _artMeta(d, lang === 'en');
-      var priceEl = card.querySelector('.coll-card-price');
-      // Preis wie auf der Karte notiert (deutsch), englisch nur mit Komma als Tausendertrennzeichen
-      if (priceEl && priceEl.dataset.de == null) priceEl.dataset.de = priceEl.textContent;
-      if (priceEl) priceEl.textContent = !d.price ? _artPrice(d, lang === 'en') : (lang === 'en' ? _priceTxt(priceEl.dataset.de, true) : priceEl.dataset.de);
     });
+    // Besichtigungs-Links: Betreff in der eingestellten Sprache
+    document.querySelectorAll('a.coll-offer-btn[data-title]').forEach(function(a) { a.href = _viewingMail(a.dataset.title); });
     if (window._heroArtRelabel) window._heroArtRelabel();
     if (window._bioCapRelabel) window._bioCapRelabel();
-    updateNavAccount();   // angemeldet: Name statt „Anmelden“/„Sign in“ aus I18N behalten
     // re-render open artwork if any
     var adEl = document.getElementById('artwork-detail');
     if (_adCurrentTitle && adEl && adEl.classList.contains('active')) openArtwork(_adCurrentTitle, true);
@@ -490,7 +479,8 @@
     if (favEl && favEl.classList.contains('active')) renderFavs();
   }
 
-  function toggleLang() { setLang(_lang === 'de' ? 'en' : 'de'); }
+  // Sprache nur speichern, wenn der Besucher selbst umschaltet (siehe Datenschutz: lokale Speicherung)
+  function toggleLang() { setLang(_lang === 'de' ? 'en' : 'de'); try { localStorage.setItem('lang', _lang); } catch (e) {} }
 
   /* ══ FAVORITES ══ */
   let _favs = new Set(JSON.parse(localStorage.getItem('favs') || '[]'));
@@ -575,7 +565,6 @@
         '<div class="coll-card-body">' +
           '<p class="coll-card-title">' + title + '</p>' +
           '<p class="coll-card-meta">' + _artMeta(d, _lang === 'en') + '</p>' +
-          '<p class="coll-card-price">' + _artPrice(d, _lang === 'en') + '</p>' +
         '</div>' +
         '<button class="fav-btn fav-active" data-title="' + title + '" onclick="event.stopPropagation();toggleFav(\'' + title + '\')">♥</button>';
       // Echtes Bild verwenden (falls vorhanden), sonst Platzhalter-Canvas
@@ -622,10 +611,13 @@
     document.getElementById('ad-eyebrow').textContent = cat;
     document.getElementById('ad-title').textContent = title;
     document.getElementById('ad-meta-line').textContent = _artMeta(d, isEN);
-    document.getElementById('ad-price').textContent = _artPrice(d, isEN);
     document.getElementById('ad-story').textContent = story;
     if (document.getElementById('ad-story-head')) document.getElementById('ad-story-head').textContent = t['ad-story-head'];
-    if (document.getElementById('ad-offer-btn')) document.getElementById('ad-offer-btn').textContent = t['ad-offer-btn'];
+    const _offer = document.getElementById('ad-offer-btn');
+    if (_offer) { _offer.textContent = t['ad-offer-btn']; _offer.href = _viewingMail(title); }
+    // nur bei Werken mit Bild – bei Platzhaltern entfällt der ganze Fußbereich
+    const _adFoot = document.getElementById('ad-info-footer');
+    if (_adFoot) _adFoot.style.display = d.img ? '' : 'none';
     if (document.getElementById('ad-rundgang-btn-text')) document.getElementById('ad-rundgang-btn-text').textContent = (_lang==='en' ? '▶  ' : '▶  ') + t['ad-rundgang-btn'];
     if (document.getElementById('ad-back-text')) document.getElementById('ad-back-text').textContent = _adFromRundgang ? (_lang==='en' ? 'Back to Tour' : 'Zurück zum Rundgang') : t['ad-back-text'];
     // "Im Rundgang entdecken"-Button ausblenden, wenn die Detailansicht aus dem
@@ -693,7 +685,6 @@
   document.addEventListener('keydown', function(e) {
     if (!_adViews || _adViews.length < 2) return;
     if (!document.getElementById('artwork-detail').classList.contains('active')) return;
-    if (document.getElementById('modal')?.classList.contains('active')) return;
     if (e.key === 'ArrowLeft')  { e.preventDefault(); adShowView(_adViewIdx - 1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); adShowView(_adViewIdx + 1); }
   });
@@ -836,51 +827,6 @@
       history.replaceState({ navStack: st, pushed: same && !!old.pushed }, '', location.href);
     }
   })();
-  document.getElementById('ad-offer-btn')?.addEventListener('click', () => {
-    const d = ARTWORKS[_adCurrentTitle];
-    if (d) openModal(_adCurrentTitle, d.price);
-  });
-
-  /* ══ MODAL ══ */
-  let _frameChoice = '';
-
-  function setFrameOpt(btn, value) {
-    _frameChoice = value;
-    document.querySelectorAll('.frame-opt-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  function openModal(title, range) {
-    document.getElementById('modal-title').textContent = title;
-    document.getElementById('modal-range').textContent = range ? '€ ' + _priceTxt(range, _lang === 'en') : (_lang === 'en' ? 'Price on request' : 'Preis auf Anfrage');
-    document.getElementById('form-wrap').style.display = 'flex';
-    document.getElementById('form-wrap').style.flexDirection = 'column';
-    document.getElementById('form-wrap').style.gap = '1rem';
-    document.getElementById('success-msg').classList.remove('show');
-    // reset frame selection
-    const d = ARTWORKS[title];
-    document.querySelectorAll('.frame-opt-btn').forEach(b => b.classList.remove('active'));
-    const hasFrame = d && d.hasFrame;
-    document.getElementById('frame-opt-original').style.display = hasFrame ? 'flex' : 'none';
-    if (hasFrame) {
-      _frameChoice = 'Original Rahmen';
-      document.getElementById('frame-opt-original').classList.add('active');
-    } else {
-      _frameChoice = '';
-      document.getElementById('frame-opt-none').classList.add('active');
-    }
-    document.getElementById('modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    _navOpen('modal');
-  }
-
-  function closeModal(e) {
-    if (!e || e.target === document.getElementById('modal')) {
-      document.getElementById('modal').classList.remove('active');
-      document.body.style.overflow = '';
-      _navClosed('modal');
-    }
-  }
 
   function openCollection(cat, noHash) {
     const el = document.getElementById('coll-' + cat);
@@ -900,37 +846,6 @@
     document.body.style.overflow = '';
     _navClosed('col:' + cat);
   }
-
-  function wipNotify(cat) {
-    const input = document.getElementById('wip-email-' + cat);
-    if (!input || !input.value.trim() || !input.value.includes('@')) {
-      input && input.focus();
-      return;
-    }
-    input.parentElement.style.display = 'none';
-    const thanks = document.getElementById('wip-thanks-' + cat);
-    if (thanks) thanks.style.display = 'block';
-  }
-
-  function submitOffer() {
-    const fname = document.getElementById('fname').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const offer = document.getElementById('offer').value.trim();
-    if (!fname || !email || !offer) {
-      alert(_lang === 'en' ? 'Please enter your first name, e-mail and your offer.' : 'Bitte füllen Sie Vorname, E-Mail und Ihr Angebot aus.');
-      return;
-    }
-    document.getElementById('form-wrap').style.display = 'none';
-    document.getElementById('success-msg').classList.add('show');
-    setTimeout(() => closeModal(), 3000);
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.getElementById('modal').classList.contains('active')) {
-      e._escHandled = true;
-      closeModal();
-    }
-  });
 
   /* ══ SCROLL FADE-IN ══ */
   const observer = new IntersectionObserver((entries) => {
@@ -998,7 +913,7 @@
     function loadThree(cb) {
       if (window.THREE) { cb(); return; }
       const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
+      s.src = 'vendor/three.min.js';   // Three.js r128 (MIT), lokal statt vom CDN – keine externe Verbindung
       s.onload = cb;
       document.head.appendChild(s);
     }
@@ -2174,7 +2089,7 @@
     }
 
     // Werk für einen Platz in Raum 4/5: echtes Werk, wenn der Titel mit Bild in ARTWORKS steht,
-    // sonst Platzhalter („Werk folgt", kein Angebot).
+    // sonst Platzhalter („Werk folgt").
     function roomWork(title, n, label) {
       const a = ARTWORKS[title];
       if (a && a.img) return { title, img: a.img };
@@ -3747,11 +3662,10 @@
   // Close on Escape key
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      // nur die oberste Ebene schließen (Angebotsformular und Kalender haben eigene Handler)
+      // nur die oberste Ebene schließen (der Kalender hat einen eigenen Handler)
       if (e._escHandled) return;
-      if (document.getElementById('modal')?.classList.contains('active')) return;
       if (document.getElementById('cal-overlay')?.classList.contains('active')) return;
-      const legal = ['impressum','datenschutz','lieferbedingungen'].filter(w => document.getElementById('overlay-' + w)?.classList.contains('active'));
+      const legal = ['impressum','datenschutz'].filter(w => document.getElementById('overlay-' + w)?.classList.contains('active'));
       if (legal.length) legal.forEach(closeLegal);
       else if (document.getElementById('artwork-detail').classList.contains('active')) closeArtwork();
       else if (document.getElementById('fav-overlay')?.classList.contains('active')) closeFavs();
@@ -3775,15 +3689,6 @@
   /* ── INIT: apply saved language ── */
   setLang(_lang);
   _updateFavBadge();
-
-  /* ══ FLOATING LABELS ══ */
-  document.querySelectorAll('.field input, .field textarea, .cal-auth-field input').forEach(function(inp) {
-    var parent = inp.closest('.field') || inp.closest('.cal-auth-field');
-    function upd() { parent.classList.toggle('has-value', inp.value.length > 0); parent.classList.toggle('has-val', inp.value.length > 0); }
-    inp.addEventListener('input', upd);
-    inp.addEventListener('change', upd);
-    upd();
-  });
 
   /* ══ CUSTOM CURSOR ══ */
   (function() {
@@ -3918,134 +3823,10 @@
     render(0);
   })();
 
-  /* ══ KONTAKTFORMULAR ══ */
-  function submitContact() {
-    var name  = document.getElementById('kon-name').value.trim();
-    var email = document.getElementById('kon-email-input').value.trim();
-    var msg   = document.getElementById('kon-message').value.trim();
-    if (!name || !email || !msg) {
-      var lang = document.documentElement.lang || 'de';
-      alert(lang === 'en'
-        ? 'Please fill in all fields.'
-        : 'Bitte alle Felder ausfüllen.');
-      return;
-    }
-    document.getElementById('kon-form-wrap').style.opacity = '0';
-    document.getElementById('kon-form-wrap').style.pointerEvents = 'none';
-    setTimeout(function() {
-      document.getElementById('kon-form-wrap').style.display = 'none';
-      document.getElementById('kon-success-msg').classList.add('show');
-    }, 300);
-  }
-
-  /* ══ KALENDER AUTH ══ */
-  function calGetAccounts() {
-    try { return JSON.parse(localStorage.getItem('_gal_accounts') || '{}'); } catch(e) { return {}; }
-  }
-  function calGetSession() {
-    try { return JSON.parse(localStorage.getItem('_gal_session') || 'null'); } catch(e) { return null; }
-  }
-  function calSaveSession(user) {
-    localStorage.setItem('_gal_session', JSON.stringify(user));
-  }
-
-  window.calSwitchTab = function(tab) {
-    var isReg = tab === 'register';
-    document.getElementById('tab-login').classList.toggle('active', !isReg);
-    document.getElementById('tab-register').classList.toggle('active', isReg);
-    document.getElementById('auth-field-name').style.display = isReg ? '' : 'none';
-    var en = _lang === 'en';
-    document.getElementById('cal-auth-submit').textContent = isReg ? (en ? 'Create account' : 'Konto erstellen') : (en ? 'Sign in' : 'Anmelden');
-    document.getElementById('cal-auth-error').textContent = '';
-    document.getElementById('auth-email').value = '';
-    document.getElementById('auth-name').value = '';
-  };
-
-  window.calSubmitAuth = function() {
-    var isReg = document.getElementById('tab-register').classList.contains('active');
-    var email = document.getElementById('auth-email').value.trim().toLowerCase();
-    var name  = document.getElementById('auth-name').value.trim();
-    var err   = document.getElementById('cal-auth-error');
-    var lang  = document.documentElement.lang === 'en' ? 'en' : 'de';
-
-    if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
-      err.textContent = lang === 'en' ? 'Please enter a valid e-mail.' : 'Bitte gültige E-Mail eingeben.';
-      return;
-    }
-    var accounts = calGetAccounts();
-    if (isReg) {
-      if (!name) { err.textContent = lang === 'en' ? 'Please enter your name.' : 'Bitte Namen eingeben.'; return; }
-      if (accounts[email]) { err.textContent = lang === 'en' ? 'E-mail already registered.' : 'E-Mail bereits registriert.'; return; }
-      accounts[email] = { name: name, email: email };
-      localStorage.setItem('_gal_accounts', JSON.stringify(accounts));
-      calSaveSession(accounts[email]);
-    } else {
-      if (!accounts[email]) { err.textContent = lang === 'en' ? 'No account found.' : 'Kein Konto gefunden.'; return; }
-      calSaveSession(accounts[email]);
-    }
-    updateNavAccount();
-    calShowLoggedIn(calGetSession());
-  };
-
-  function calShowLoggedIn(user) {
-    document.getElementById('cal-auth-form').style.display = 'none';
-    document.getElementById('cal-auth-logged').style.display = '';
-    document.getElementById('cal-auth-sub').style.display = 'none';
-    var lang = document.documentElement.lang === 'en' ? 'en' : 'de';
-    document.getElementById('cal-auth-greeting').innerHTML =
-      (lang === 'en' ? 'Welcome back, ' : 'Willkommen, ') +
-      '<strong>' + user.name + '</strong>';
-    setTimeout(function() {
-      if (window.showCalMain) window.showCalMain();
-    }, 1200);
-  }
-
-  function updateNavAccount() {
-    var session = calGetSession();
-    var btn = document.getElementById('nav-account');
-    var label = document.getElementById('nav-acc-label');
-    if (!btn || !label) return;
-    if (session) {
-      btn.classList.add('logged-in');
-      label.textContent = session.name;
-    } else {
-      btn.classList.remove('logged-in');
-      var lang = document.documentElement.lang === 'en' ? 'en' : 'de';
-      label.textContent = lang === 'en' ? 'Sign in' : 'Anmelden';
-    }
-  }
-  updateNavAccount();
-
-  window.openNavAccount = function() {
-    var session = calGetSession();
-    if (session) {
-      document.getElementById('cal-main').style.display = 'none';
-      document.getElementById('cal-auth').style.display = '';
-      document.getElementById('cal-auth-form').style.display = 'none';
-      document.getElementById('cal-auth-sub').style.display = 'none';
-      document.getElementById('cal-auth-logged').style.display = '';
-      var lang = document.documentElement.lang === 'en' ? 'en' : 'de';
-      document.getElementById('cal-auth-greeting').innerHTML =
-        (lang === 'en' ? 'Signed in as ' : 'Angemeldet als ') +
-        '<strong>' + session.name + '</strong>';
-      document.getElementById('cal-overlay').classList.add('active');
-      document.body.style.overflow = 'hidden';
-      _navOpen('cal');
-    } else {
-      openCal();
-    }
-  };
-
-  window.calLogout = function() {
-    localStorage.removeItem('_gal_session');
-    document.getElementById('cal-auth-logged').style.display = 'none';
-    document.getElementById('cal-auth-form').style.display = '';
-    document.getElementById('cal-auth-sub').style.display = '';
-    calSwitchTab('login');
-    updateNavAccount();
-  };
-
   /* ══ KALENDER ══ */
+  // Wunschtermin auswählen → das E-Mail-Programm öffnet sich mit vorbereiteter Anfrage. Es gibt kein Konto
+  // und keine Datenübertragung über die Website; früher lokal gespeicherte Kontodaten werden entfernt.
+  try { localStorage.removeItem('_gal_accounts'); localStorage.removeItem('_gal_session'); } catch (e) {}
   (function() {
     var MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
     var MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -4164,7 +3945,6 @@
       selectedDate = null;
       cur = { year: today.getFullYear(), month: today.getMonth() };
       document.getElementById('cal-success').classList.remove('show');
-      document.getElementById('cal-auth').style.display = 'none';
       document.getElementById('cal-main').style.display = '';
       document.getElementById('cal-time-wrap').classList.remove('open');
       buildRoller('cal-roller-h', HOURS, 0);
@@ -4179,21 +3959,10 @@
     }
 
     window.openCal = function() {
-      var session = calGetSession();
       document.getElementById('cal-overlay').classList.add('active');
       document.body.style.overflow = 'hidden';
       _navOpen('cal');
-      if (session) {
-        showCalMain();
-      } else {
-        document.getElementById('cal-main').style.display = 'none';
-        document.getElementById('cal-auth').style.display = '';
-        document.getElementById('cal-auth-logged').style.display = 'none';
-        document.getElementById('cal-auth-form').style.display = '';
-        document.getElementById('cal-auth-sub').style.display = '';
-        document.getElementById('cal-auth-error').textContent = '';
-        calSwitchTab('login');
-      }
+      showCalMain();
     };
 
     window.closeCal = function() {
@@ -4204,9 +3973,15 @@
 
     window.confirmBooking = function() {
       if (!selectedDate) return;
+      var en = getLang() === 'en';
+      var when = document.getElementById('cal-confirm').textContent.replace(/^(Gewählt|Selected):\s*/, '');
+      var subject = en ? 'Viewing appointment request' : 'Anfrage Besichtigungstermin';
+      var body = en
+        ? 'Hello,\n\nI would like to arrange a private viewing of the works of Horst Schwab.\nPreferred date: ' + when + '\n\nName:\nPhone (optional):\n\nKind regards'
+        : 'Guten Tag,\n\nich möchte gern eine private Besichtigung der Werke von Horst Schwab vereinbaren.\nWunschtermin: ' + when + '\n\nName:\nTelefon (optional):\n\nViele Grüße';
+      window.location.href = 'mailto:' + CONTACT_MAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body.replace(/\n/g, '\r\n'));
       document.getElementById('cal-main').style.display = 'none';
       document.getElementById('cal-success').classList.add('show');
-      setTimeout(function() { closeCal(); }, 3200);
     };
 
     document.getElementById('cal-prev').addEventListener('click', function() {
@@ -4385,20 +4160,17 @@
   }
   function _showRundgangHint() {
     if (document.getElementById('rundgang-hint')) return;   // nur ein Hinweis gleichzeitig
-    const isEN = localStorage.getItem('lang') === 'en';
     const hint = document.createElement('div');
     hint.id = 'rundgang-hint';
+    // deutsch angelegt mit data-en – setLang schaltet die Texte wie alle anderen um
     hint.innerHTML =
-      '<button class="rh-close" aria-label="' + (isEN ? 'Close' : 'Schließen') + '">✕</button>' +
+      '<button class="rh-close" aria-label="Schließen" data-en-aria-label="Close">✕</button>' +
       '<span class="rh-icon">🎨</span>' +
-      '<span class="rh-title">' + (isEN ? 'Virtual Tour' : 'Virtueller Rundgang') + '</span>' +
-      '<span class="rh-text">' +
-        (isEN
-          ? 'Explore all artworks in a 3D gallery walk — click on any painting to learn more.'
-          : 'Entdecken Sie alle Werke im virtuellen 3D-Rundgang — klicken Sie auf ein Gemälde für Details.') +
-      '</span>' +
-      '<button class="rh-btn">' + (isEN ? 'START TOUR' : 'RUNDGANG STARTEN') + '</button>';
+      '<span class="rh-title" data-en="Virtual Tour">Virtueller Rundgang</span>' +
+      '<span class="rh-text" data-en="Explore all artworks in a 3D gallery walk — click on any painting to learn more.">Entdecken Sie alle Werke im virtuellen 3D-Rundgang — klicken Sie auf ein Gemälde für Details.</span>' +
+      '<button class="rh-btn" data-en="START TOUR">RUNDGANG STARTEN</button>';
     document.body.appendChild(hint);
+    if (_lang === 'en') setLang('en');
 
     setTimeout(() => hint.classList.add('visible'), 3500);
     // Handy: nach einer Weile von selbst ausblenden – der Platz unten ist dort knapp

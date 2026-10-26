@@ -163,22 +163,6 @@
   .nav-links a.active { color: var(--gold); }
   .nav-links a.active::after { transform: scaleX(1); }
 
-  #nav-account {
-    background: none; border: none; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 0.38rem;
-    font-family: 'Montserrat', sans-serif; font-size: 0.58rem;
-    letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--gray-mid); transition: color 0.25s; padding: 0;
-    line-height: 1; vertical-align: middle;
-  }
-  #nav-account:hover { color: var(--gold); }
-  #nav-account .nav-acc-dot {
-    width: 0.3125rem; height: 0.3125rem; border-radius: 50%;
-    background: var(--gold); display: none; flex-shrink: 0;
-  }
-  #nav-account.logged-in { color: var(--gold); }
-  #nav-account.logged-in .nav-acc-dot { display: block; }
-
   /* ── HERO – „Werk im Licht" ── */
   #hero {
     height: 100vh;
@@ -606,7 +590,6 @@
   }
   .intro-scene-pin .gallery-header { opacity: 0; }
 
-
   /* ── GALLERY ── */
   #galerie {
     padding: 6rem 3rem 8rem;
@@ -926,55 +909,6 @@
     margin: 1.5rem auto;
     opacity: 0.5;
   }
-  .wip-notify-label {
-    font-size: max(0.52rem, var(--label-min));
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-    margin-bottom: 1rem;
-  }
-  .wip-notify-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    max-width: 25rem;
-    margin: 0 auto;
-  }
-  .wip-notify-row input {
-    flex: 1;
-    border: 0.5px solid rgba(201,168,76,0.5);
-    border-right: 0.5px solid rgba(201,168,76,0.5);
-    background: rgba(255,255,255,0.03);
-    padding: 0.7rem 1rem;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.65rem;
-    color: var(--cream);
-    outline: none;
-  }
-  .wip-notify-row input::placeholder { color: rgba(200,195,178,0.4); }
-  .wip-notify-row input:focus { border-color: var(--gold); }
-  .wip-notify-btn {
-    background: var(--gold);
-    color: var(--black);
-    border: none;
-    padding: 0.7rem 1.4rem;
-    flex: 1;
-    font-family: 'Montserrat', sans-serif;
-    font-size: max(0.55rem, var(--label-min));
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.25s;
-    white-space: nowrap;
-  }
-  .wip-notify-btn:hover { background: var(--cream); }
-  .wip-notify-thanks {
-    display: none;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    color: var(--gold);
-    margin-top: 0.8rem;
-  }
 
   .coll-grid {
     display: grid;
@@ -1095,11 +1029,7 @@
     font-size: 0.58rem; letter-spacing: 0.18em;
     color: rgba(242,236,222,0.42); margin-bottom: 0.7rem;
   }
-  .coll-card-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem; color: rgba(201,168,76,0.80);
-    margin-bottom: 1.1rem;
-  }
+
   .coll-card-soon {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.05rem;
@@ -1119,6 +1049,7 @@
     cursor: pointer; background: transparent;
     text-transform: uppercase; transition: all 0.25s;
   }
+  a.coll-offer-btn { text-decoration: none; }
   .coll-offer-btn:hover { background: rgba(201,168,76,0.10); color: var(--gold); border-color: var(--gold); }
 
   /* ── FAVORITES ── */
@@ -1372,12 +1303,7 @@
     text-transform: uppercase;
     margin-bottom: 1.4rem;
   }
-  .ad-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    color: var(--gold-dim);
-    margin-bottom: 2.2rem;
-  }
+
   .ad-divider {
     width: 3rem; height: 1px;
     background: linear-gradient(to right, var(--gold-dim), transparent);
@@ -1426,6 +1352,7 @@
     background: transparent; cursor: pointer;
     transition: all 0.28s;
   }
+  a.ad-offer-btn { text-decoration: none; display: inline-block; }
   .ad-offer-btn:hover { background: var(--gold-dim); color: var(--off-white); }
   #ad-rundgang-btn {
     position: absolute;
@@ -1447,207 +1374,6 @@
   }
   #ad-rundgang-btn:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); }
 
-  /* ── OFFER MODAL ── */
-  .modal-bg {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,10,10,0.82);
-    z-index: 985;
-    align-items: flex-start;
-    justify-content: center;
-    overflow-y: auto;
-    padding: 3vh 0;
-    box-sizing: border-box;
-  }
-
-  .modal-bg.active { display: flex; }
-
-  @keyframes _modalIn {
-    from { opacity: 0; transform: translateY(0.75rem); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .modal {
-    background: var(--white);
-    max-width: 32.5rem;
-    width: 90%;
-    padding: 3rem;
-    position: relative;
-    animation: _modalIn 0.28s ease;
-    margin: auto;
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 1.2rem; right: 1.2rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: var(--text-dark);
-    line-height: 1;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-  }
-  .modal-close:hover { opacity: 1; }
-
-  .modal-label {
-    font-size: max(0.55rem, var(--label-min));
-    letter-spacing: 0.4em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-
-  .modal-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem;
-    font-weight: 300;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
-  }
-
-  .modal-range {
-    font-size: 0.7rem;
-    color: var(--gray-mid);
-    letter-spacing: 0.1em;
-    margin-bottom: 2rem;
-  }
-
-  .modal-range strong { color: var(--gold); font-weight: 400; }
-
-  #form-wrap { display: flex; flex-direction: column; gap: 1rem; }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .field {
-    position: relative;
-    padding-top: 1.3rem;
-  }
-  .field label {
-    position: absolute;
-    top: 1.65rem;
-    left: 0.85rem;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(200,195,178,0.75);
-    pointer-events: none;
-    transition: top 0.22s ease, font-size 0.22s ease, letter-spacing 0.22s ease, color 0.22s ease;
-  }
-  .field:focus-within label,
-  .field.has-value label {
-    top: 0.05rem;
-    font-size: max(0.46rem, var(--label-min));
-    letter-spacing: 0.3em;
-    color: var(--gold);
-  }
-  .field.has-value:not(:focus-within) label { color: var(--gray-mid); }
-
-  .field input,
-  .field textarea {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid rgba(201,168,76,0.5);
-    padding: 0.6rem 0.85rem;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.75rem;
-    color: var(--text-dark);
-    background: rgba(0,0,0,0.03);
-    outline: none;
-    transition: border-color 0.3s, background 0.3s;
-  }
-  .field input:focus,
-  .field textarea:focus {
-    border-color: var(--gold);
-    background: rgba(201,168,76,0.04);
-  }
-  .field textarea { resize: none; height: 6.25rem; }
-  .field input::placeholder,
-  .field textarea::placeholder {
-    color: transparent;
-  }
-  .field input:focus::placeholder,
-  .field textarea:focus::placeholder {
-    color: rgba(140,135,120,0.5);
-  }
-
-  .offer-input-wrap {
-    display: flex;
-    align-items: center;
-    border: 0.5px solid var(--gray-light);
-    background: var(--off-white);
-    transition: border-color 0.3s;
-  }
-
-  .offer-input-wrap:focus-within { border-color: var(--gold); }
-
-  .currency {
-    padding: 0 0.8rem;
-    font-size: 0.75rem;
-    color: var(--gold);
-    border-right: 0.5px solid var(--gray-light);
-  }
-
-  .offer-input-wrap input {
-    border: none;
-    background: transparent;
-    flex: 1;
-    padding: 0.7rem 0.8rem;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.75rem;
-    color: var(--text-dark);
-    outline: none;
-  }
-
-  .frame-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .frame-label {
-    font-size: max(0.55rem, var(--label-min));
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-  }
-  .frame-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-  .frame-opt-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 0.75rem;
-    border: 0.5px solid rgba(201,168,76,0.4);
-    background: transparent;
-    font-family: 'Montserrat', sans-serif;
-    font-size: max(0.55rem, var(--label-min));
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-  }
-  .frame-opt-btn.active {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--black);
-  }
-  .frame-swatch {
-    width: 0.6875rem; height: 0.6875rem;
-    border: 0.5px solid rgba(0,0,0,0.18);
-    flex-shrink: 0;
-  }
-  #frame-opt-original { display: none; }
-
   .submit-btn {
     background: var(--black);
     color: var(--white);
@@ -1664,6 +1390,7 @@
   }
 
   .submit-btn:hover { background: var(--gold); }
+  a.submit-btn { display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
 
   /* ── ABOUT ── */
   #ueber-uns {
@@ -2414,69 +2141,6 @@
   }
   .cal-book-btn.visible { opacity: 1; pointer-events: auto; }
   .cal-book-btn:hover { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.7); }
-  /* ── AUTH SCREEN ── */
-  #cal-auth { padding: 0.5rem 0; }
-  .cal-auth-title {
-    font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300;
-    color: var(--gold); text-align: center; margin-bottom: 0.3rem; letter-spacing: 0.08em;
-  }
-  .cal-auth-sub {
-    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.22em; color: rgba(201,168,76,0.35);
-    text-transform: uppercase; text-align: center; margin-bottom: 1.8rem;
-  }
-  .cal-auth-tabs {
-    display: flex; border-bottom: 0.5px solid rgba(201,168,76,0.18); margin-bottom: 1.4rem;
-  }
-  .cal-auth-tab {
-    flex: 1; background: none; border: none; padding: 0.6rem 0;
-    font-family: 'Montserrat', sans-serif; font-size: max(0.5rem, var(--label-min)); letter-spacing: 0.28em;
-    text-transform: uppercase; color: rgba(250,250,248,0.3); cursor: pointer;
-    border-bottom: 1px solid transparent; margin-bottom: -0.5px;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .cal-auth-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .cal-auth-fields { display: flex; flex-direction: column; gap: 0.2rem; }
-  .cal-auth-field { position: relative; padding-top: 1.2rem; }
-  .cal-auth-field label {
-    position: absolute; top: 1.55rem; left: 0.7rem;
-    font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(120,115,100,0.5); pointer-events: none;
-    transition: top 0.2s, font-size 0.2s, color 0.2s;
-  }
-  .cal-auth-field:focus-within label,
-  .cal-auth-field.has-val label { top: 0.1rem; font-size: max(0.42rem, var(--label-min)); letter-spacing: 0.28em; color: var(--gold); }
-  .cal-auth-field input {
-    width: 100%; border: none; border-bottom: 0.5px solid rgba(201,168,76,0.2);
-    padding: 0.55rem 0.7rem; background: transparent;
-    font-family: 'Montserrat', sans-serif; font-size: 0.72rem;
-    color: rgba(250,250,248,0.88); outline: none; transition: border-color 0.25s;
-  }
-  .cal-auth-field input:focus { border-color: var(--gold); }
-  .cal-auth-btn {
-    margin-top: 1.4rem; width: 100%; background: transparent;
-    border: 1px solid rgba(201,168,76,0.35); color: var(--gold);
-    font-family: 'Montserrat', sans-serif; font-size: max(0.52rem, var(--label-min));
-    letter-spacing: 0.3em; text-transform: uppercase;
-    padding: 0.85rem; cursor: pointer; transition: background 0.25s, border-color 0.25s;
-  }
-  .cal-auth-btn:hover { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.65); }
-  .cal-auth-error {
-    font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.1em; color: rgba(220,80,80,0.8);
-    text-align: center; margin-top: 0.7rem; min-height: 0.8rem;
-  }
-  .cal-auth-greeting {
-    text-align: center; padding: 0.5rem 0 1rem;
-    font-family: 'Cormorant Garamond', serif; font-size: 1rem;
-    color: rgba(250,250,248,0.7); font-style: italic; letter-spacing: 0.05em;
-  }
-  .cal-auth-greeting strong { color: var(--gold); font-style: normal; font-weight: 300; }
-  .cal-auth-logout {
-    display: block; margin: 0.4rem auto 0; background: none; border: none;
-    font-size: max(0.42rem, var(--label-min)); letter-spacing: 0.2em; color: rgba(201,168,76,0.3);
-    text-transform: uppercase; cursor: pointer; text-decoration: underline;
-    text-underline-offset: 3px; transition: color 0.2s;
-  }
-  .cal-auth-logout:hover { color: rgba(201,168,76,0.65); }
 
   /* Zeitwähler Roller */
   .cal-time-wrap {
@@ -2531,7 +2195,7 @@
     color: var(--gold); font-size: 1.2rem;
   }
   .cal-success p { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold); font-style: italic; }
-  .cal-success .sub { font-family: 'Montserrat', sans-serif; font-size: max(0.52rem, var(--label-min)); letter-spacing: 0.15em; color: var(--gray-mid); font-style: normal; text-transform: uppercase; }
+  .cal-success .sub { font-family: 'Montserrat', sans-serif; font-size: max(0.62rem, var(--label-min)); letter-spacing: 0.04em; line-height: 1.7; color: var(--gray-mid); font-style: normal; text-align: center; max-width: 18rem; }
 
   /* ── CONTACT ── */
   #kontakt {
@@ -2572,6 +2236,8 @@
     margin-bottom: 0.5rem;
   }
 
+  .contact-item .value a { color: inherit; text-decoration: none; transition: color 0.25s; }
+  .contact-item .value a:hover { color: var(--gold); }
   .contact-item .value {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1rem;
@@ -2607,7 +2273,6 @@
     border-color: var(--gold);
     color: var(--gold);
   }
-  #kon-success-msg { max-width: 32.5rem; margin: 0 auto; }
 
   /* ── FOOTER ── */
   footer {
@@ -2799,36 +2464,6 @@
   }
   .legal-block:last-child { margin-bottom: 0; }
 
-  /* ── SUCCESS ── */
-  .success-msg {
-    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
-    text-align: center; padding: 2rem 1rem;
-    opacity: 0; transform: translateY(0.875rem);
-    pointer-events: none;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .success-msg.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .success-msg-icon {
-    width: 2.75rem; height: 2.75rem; border-radius: 50%;
-    border: 1px solid rgba(201,168,76,0.5);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--gold); font-size: 1.3rem;
-  }
-  .success-msg p {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
-    color: var(--gold);
-    font-style: italic;
-  }
-  .success-msg .sub {
-    font-size: 0.6rem;
-    color: var(--gray-mid);
-    font-family: 'Montserrat', sans-serif;
-    letter-spacing: 0.14em;
-    font-style: normal;
-    text-transform: uppercase;
-  }
-
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(1.5rem); }
@@ -2857,7 +2492,6 @@
     opacity: 1;
     transform: none;
   }
-
 
   #room-overlay {
     position: fixed;
@@ -2948,7 +2582,6 @@
     pointer-events: none;
   }
 
-
   #hero.zooming .hero-title {
     opacity: 0;
     transform: translateY(-1.25rem) scale(0.95);
@@ -2998,7 +2631,6 @@
     .nav-links::-webkit-scrollbar { display: none; }
     .nav-links li { flex-shrink: 0; padding: 0 1rem; }
     .nav-links a { font-size: max(0.54rem, var(--label-min)); white-space: nowrap; }
-    #nav-account { font-size: max(0.54rem, var(--label-min)); white-space: nowrap; }
 
     /* ── Sprachumschalter ── */
     #lang-switcher { top: 0.8rem; right: 1rem; padding: 0.35rem 0.7rem; }
@@ -3102,9 +2734,6 @@
     /* ── WIP Banner ── */
     .wip-banner { padding: 2rem 1.5rem; }
 
-    /* ── Modal ── */
-    .modal { padding: 2rem 1.5rem; width: 94%; }
-
     /* ── Legal Overlays ── */
     .legal-inner { padding: 5rem 1.5rem 4rem; }
     .legal-title { font-size: 2.1rem; overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
@@ -3120,7 +2749,6 @@
   @media (max-width: 480px) {
     .gallery-grid { grid-template-columns: 1fr; }
     .artwork-card.large { grid-column: span 1; min-height: 300px; }
-    .form-row { grid-template-columns: 1fr; }
     .coll-grid { grid-template-columns: 1fr; }
     .nav-links li { padding: 0 0.7rem; }
     .nav-links a { font-size: max(0.5rem, var(--label-min)); }
@@ -3159,7 +2787,6 @@
   .gallery-grid { perspective: 1400px; }
   .artwork-card { transform-style: preserve-3d; will-change: transform; transition: transform 0.08s ease, box-shadow 0.3s; }
   .artwork-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(201,168,76,0.18); }
-
 
   /* ── RUNDGANG-HINWEIS-POPUP ── */
   #rundgang-hint {

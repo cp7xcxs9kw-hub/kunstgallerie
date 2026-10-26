@@ -9,18 +9,18 @@
 <title>Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos</title>
 
 <!-- SEO -->
-<meta name="description" content="Die Galerie Horst Schwab präsentiert Werke des deutschen Malers, Grafikers und Bildhauers Horst Schwab (1935–2017). Acryl, Öl, Aquarell und Grafik aus der Pfalz.">
+<meta name="description" content="Galerie Horst Schwab: Malerei, Grafik und Plastik des Pfälzer Künstlers (1935–2017) – im virtuellen Rundgang und bei Besichtigung nach Vereinbarung.">
 <meta name="keywords" content="Horst Schwab, Galerie, Kunst, Maler, Grafiker, Bildhauer, Pfalz, Kusel, Acryl, Öl, Aquarell">
 <meta name="author" content="Galerie Horst Schwab">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://galerie-schwab.de/">
+<link rel="canonical" href="https://horstschwab.de/">
 
 <!-- Open Graph (Social Media Vorschau) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Galerie Horst Schwab">
 <meta property="og:title" content="Galerie Horst Schwab – Kunst | Leidenschaft | Zeitlos">
 <meta property="og:description" content="Werke des deutschen Malers, Grafikers und Bildhauers Horst Schwab (1935–2017) – Acryl, Öl, Aquarell und Grafik aus der Pfalz.">
-<meta property="og:url" content="https://galerie-schwab.de/">
+<meta property="og:url" content="https://horstschwab.de/">
 <meta property="og:locale" content="de_DE">
 <meta property="og:locale:alternate" content="en_GB">
 <meta property="og:image" content="https://cp7xcxs9kw-hub.github.io/kunstgallerie/assets/og-preview.jpg">
@@ -43,8 +43,8 @@
   "@type": "ArtGallery",
   "name": "Galerie Horst Schwab",
   "description": "Galerie für die Werke des deutschen Malers, Grafikers und Bildhauers Horst Schwab (1935–2017).",
-  "url": "https://galerie-schwab.de/",
-  "email": "info@galerie-schwab.de",
+  "url": "https://horstschwab.de/",
+  "email": "info@horstschwab.de",
   "foundingDate": "2017",
   "areaServed": "DE",
   "inLanguage": ["de", "en"],
@@ -125,7 +125,7 @@
   }
 
 </style>
-<link rel="stylesheet" href="styles.css?v=20261023f">
+<link rel="stylesheet" href="styles.css?v=20261026b">
 <script>
 /* Galerie schon betreten (Neuladen): Startseite sofort ausblenden – vor dem ersten Aufbau,
    damit die wiederhergestellte Scrollposition stimmt (siehe _syncHero in app.js) */
@@ -180,7 +180,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <li><a href="#socials" id="nav-socials">Socials</a></li>
     <li><a href="#kontakt" id="nav-kontakt">Kontakt</a></li>
     <li><a href="#" id="btn-favs" onclick="event.preventDefault();openFavs()"><span id="nav-favs-label">Merkliste</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
-    <li><button id="nav-account" onclick="openNavAccount()"><span class="nav-acc-dot"></span><span id="nav-acc-label">Anmelden</span></button></li>
   </ul>
 </nav>
 <div id="lang-switcher">
@@ -308,7 +307,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <p class="intro-text lang-de">
       Jedes Werk erzählt eine Geschichte.<br>
       Jeder Blick öffnet eine neue Welt.<br>
-      Willkommen in einem Ort, wo Kunst atmet.
+      Willkommen an einem Ort, wo Kunst atmet.
     </p>
     <p class="intro-text lang-en" style="display:none">
       Every work tells a story.<br>
@@ -383,14 +382,8 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="wip-banner">
       <p class="wip-banner-eyebrow" data-en="In Progress">Im Aufbau</p>
       <p class="wip-banner-title" data-en="New works coming soon">Neue Werke folgen in Kürze</p>
-      <p class="wip-banner-sub" data-en="This section is growing steadily. Visit us regularly — or get notified by e-mail as soon as new works are available.">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
+      <p class="wip-banner-sub" data-en="This section is growing steadily. Please visit us regularly.">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig.</p>
       <div class="wip-banner-divider"></div>
-      <p class="wip-notify-label" data-en="Get notified">Benachrichtigung erhalten</p>
-      <div class="wip-notify-row">
-        <input type="email" id="wip-email-acryl" placeholder="Ihre E-Mail-Adresse" data-en-placeholder="Your e-mail address" />
-        <button class="wip-notify-btn" onclick="wipNotify('acryl')" data-en="Notify me">Benachrichtigen</button>
-      </div>
-      <p class="wip-notify-thanks" id="wip-thanks-acryl" data-en="Thank you — we will be in touch.">Vielen Dank — wir melden uns.</p>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Komposition I')">
@@ -423,67 +416,67 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Zwei Figuren I')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2001-1entzerrt.jpg" alt="Zwei Figuren I"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren I</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 28 × 40 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 400 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren I')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren I</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 28 × 40 cm &nbsp;·&nbsp; 2001</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Zwei%20Figuren%20I" data-title="Zwei Figuren I" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Badende')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2001-2entzerrt.JPG" alt="Badende"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Badende</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2001</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Badende</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2001</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Badende" data-title="Badende" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Badende')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2002-1entzerrt.JPG" alt="Zwei Badende"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Badende</p><p class="coll-card-meta">Mischtechnik auf Papier &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Badende')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Badende</p><p class="coll-card-meta">Mischtechnik auf Papier &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Zwei%20Badende" data-title="Zwei Badende" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Figur und Torsi')">
         <div class="coll-card-img coll-card-img--landscape"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2002-2entzerrt.JPG" alt="Figur und Torsi"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Figur und Torsi</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Figur und Torsi')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Figur und Torsi</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2002</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Figur%20und%20Torsi" data-title="Figur und Torsi" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Langgezogene Figurengruppe')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2002-3entzerrt.JPG" alt="Langgezogene Figurengruppe"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Langgezogene Figurengruppe</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Langgezogene Figurengruppe')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Langgezogene Figurengruppe</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 60 × 80 cm &nbsp;·&nbsp; 2002</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Langgezogene%20Figurengruppe" data-title="Langgezogene Figurengruppe" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Totenkult')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2003-1entzerrt.JPG" alt="Totenkult"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Totenkult</p><p class="coll-card-meta">Acrylcollage &nbsp;·&nbsp; 45 × 72 cm &nbsp;·&nbsp; 2003</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Totenkult')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Totenkult</p><p class="coll-card-meta">Acrylcollage &nbsp;·&nbsp; 45 × 72 cm &nbsp;·&nbsp; 2003</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Totenkult" data-title="Totenkult" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Bunte Figur')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-1entzerrt.JPG" alt="Bunte Figur"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Bunte Figur</p><p class="coll-card-meta">Acrylcollage auf Pressspahn &nbsp;·&nbsp; 48 × 60 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Bunte Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Bunte Figur</p><p class="coll-card-meta">Acrylcollage auf Pressspahn &nbsp;·&nbsp; 48 × 60 cm &nbsp;·&nbsp; 2004</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Bunte%20Figur" data-title="Bunte Figur" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Goldene Figur')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-2entzerrt.JPG" alt="Goldene Figur"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Goldene Figur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 48 × 68 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Goldene Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Goldene Figur</p><p class="coll-card-meta">Mischtechnik auf Leinwand &nbsp;·&nbsp; 48 × 68 cm &nbsp;·&nbsp; 2004</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Goldene%20Figur" data-title="Goldene Figur" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Kopf im Profil')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-3entzerrt.JPG" alt="Kopf im Profil"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Kopf im Profil</p><p class="coll-card-meta">Deckfarben auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kopf im Profil')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kopf im Profil</p><p class="coll-card-meta">Deckfarben auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Kopf%20im%20Profil" data-title="Kopf im Profil" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Hockende Figur')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2004-4entzerrt.JPG" alt="Hockende Figur"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Hockende Figur</p><p class="coll-card-meta">Pastell auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Hockende Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Hockende Figur</p><p class="coll-card-meta">Pastell auf Papier &nbsp;·&nbsp; 25 × 33 cm &nbsp;·&nbsp; 2004</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Hockende%20Figur" data-title="Hockende Figur" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Figuren II')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-1entzerrt.JPG" alt="Zwei Figuren II"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren II</p><p class="coll-card-meta">Collage aus Drucken &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Figuren II')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Figuren II</p><p class="coll-card-meta">Collage aus Drucken &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Zwei%20Figuren%20II" data-title="Zwei Figuren II" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Kuss')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-2entzerrt.JPG" alt="Kuss"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Kuss</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 500 – 800</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kuss')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kuss</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 50 × 70 cm &nbsp;·&nbsp; 2005</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Kuss" data-title="Kuss" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Badende in blau')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-3entzerrt.JPG" alt="Badende in blau"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Badende in blau</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 24 × 34 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Badende in blau')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Badende in blau</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 24 × 34 cm &nbsp;·&nbsp; 2005</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Badende%20in%20blau" data-title="Badende in blau" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Paar')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-4.JPG" alt="Paar"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Paar</p><p class="coll-card-meta">Collage aus Graphik &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 400 – 700</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Paar')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Paar</p><p class="coll-card-meta">Collage aus Graphik &nbsp;·&nbsp; 2005</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Paar" data-title="Paar" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Zwei Frauen')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-5.JPG" alt="Zwei Frauen"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Zwei Frauen</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 65 × 50 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 450 – 750</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Zwei Frauen')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Zwei Frauen</p><p class="coll-card-meta">Mischtechnik &nbsp;·&nbsp; 65 × 50 cm &nbsp;·&nbsp; 2005</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Zwei%20Frauen" data-title="Zwei Frauen" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Meer')">
         <div class="coll-card-img"><img loading="lazy" decoding="async" data-src="Images/web/C-F-2005-6entzerrt.JPG" alt="Meer"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Meer</p><p class="coll-card-meta">Grafikkollage &nbsp;·&nbsp; 33 × 24 cm &nbsp;·&nbsp; 2005</p><p class="coll-card-price">€ 350 – 650</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Meer')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Meer</p><p class="coll-card-meta">Grafikkollage &nbsp;·&nbsp; 33 × 24 cm &nbsp;·&nbsp; 2005</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Meer" data-title="Meer" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
     </div>
   </div>
@@ -499,14 +492,8 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="wip-banner">
       <p class="wip-banner-eyebrow" data-en="In Progress">Im Aufbau</p>
       <p class="wip-banner-title" data-en="New works coming soon">Neue Werke folgen in Kürze</p>
-      <p class="wip-banner-sub" data-en="This section is growing steadily. Visit us regularly — or get notified by e-mail as soon as new works are available.">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig — oder lassen Sie sich per E-Mail benachrichtigen, sobald neue Werke verfügbar sind.</p>
+      <p class="wip-banner-sub" data-en="This section is growing steadily. Please visit us regularly.">Dieser Bereich wird stetig erweitert. Besuchen Sie uns regelmäßig.</p>
       <div class="wip-banner-divider"></div>
-      <p class="wip-notify-label" data-en="Get notified">Benachrichtigung erhalten</p>
-      <div class="wip-notify-row">
-        <input type="email" id="wip-email-aquarell" placeholder="Ihre E-Mail-Adresse" data-en-placeholder="Your e-mail address" />
-        <button class="wip-notify-btn" onclick="wipNotify('aquarell')" data-en="Notify me">Benachrichtigen</button>
-      </div>
-      <p class="wip-notify-thanks" id="wip-thanks-aquarell" data-en="Thank you — we will be in touch.">Vielen Dank — wir melden uns.</p>
     </div>
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Vergänglichkeit')">
@@ -545,7 +532,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Kniende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Kniende Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Kniende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Kniende%20Figur" data-title="Kniende Figur" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Weiblicher Torso')">
         <div class="coll-card-img coll-card-views">
@@ -555,7 +542,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Weiblicher Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Weiblicher Torso')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Weiblicher Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Weiblicher%20Torso" data-title="Weiblicher Torso" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Verhüllte Figur')">
         <div class="coll-card-img coll-card-views">
@@ -565,7 +552,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Verhüllte Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Verhüllte Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Verhüllte Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Verh%C3%BCllte%20Figur" data-title="Verhüllte Figur" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Torso mit Rillen')">
         <div class="coll-card-img coll-card-views">
@@ -575,7 +562,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Torso mit Rillen</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Torso mit Rillen')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Torso mit Rillen</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Torso%20mit%20Rillen" data-title="Torso mit Rillen" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Stehender Torso')">
         <div class="coll-card-img coll-card-views">
@@ -585,7 +572,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Stehender Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Stehender Torso')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Stehender Torso</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Stehender%20Torso" data-title="Stehender Torso" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Sitzende Figur')">
         <div class="coll-card-img coll-card-views">
@@ -595,7 +582,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <button class="views-arrow views-next" aria-label="Nächste Ansicht" data-en-aria-label="Next view" onclick="event.stopPropagation();cardShowView(this,1)">&#x203A;</button>
           <div class="views-dots"><button class="views-dot active" aria-label="Ansicht 1" data-en-aria-label="View 1" onclick="event.stopPropagation();cardSetView(this,0)"></button><button class="views-dot" aria-label="Ansicht 2" data-en-aria-label="View 2" onclick="event.stopPropagation();cardSetView(this,1)"></button></div>
         </div>
-        <div class="coll-card-body"><p class="coll-card-title">Sitzende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><p class="coll-card-price">Preis auf Anfrage</p><button class="coll-offer-btn" onclick="event.stopPropagation();openArtwork('Sitzende Figur')" data-en="Make an Offer">Angebot abgeben</button></div>
+        <div class="coll-card-body"><p class="coll-card-title">Sitzende Figur</p><p class="coll-card-meta">Plastik, goldfarben gefasst</p><a class="coll-offer-btn" href="mailto:info@horstschwab.de?subject=Besichtigungsanfrage%3A%20Sitzende%20Figur" data-title="Sitzende Figur" onclick="event.stopPropagation()" data-en="Request a Viewing">Besichtigung anfragen</a></div>
       </div>
     </div>
   </div>
@@ -609,11 +596,11 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <div class="about-visual" id="bio-carousel">
     <img class="bio-slide active" loading="lazy" decoding="async" src="assets/portrait.jpg"
          alt="Horst Schwab">
-    <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10588&sec=742b843864981929eb30f77c4ec85e5e"
+    <img class="bio-slide" loading="lazy" decoding="async" src="assets/bio/80-geburtstag-2015.jpg"
          alt="80. Geburtstag, 2015" data-en-alt="80th birthday, 2015" style="object-position: right center;">
-    <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=5352&sec=ec5c47c5ba500d4238093c750ff4fc3b"
+    <img class="bio-slide" loading="lazy" decoding="async" src="assets/bio/portraet.jpg"
          alt="Porträt" data-en-alt="Portrait">
-    <img class="bio-slide" loading="lazy" decoding="async" src="https://www.kunstportal-pfalz.de/cms/cms.php?cmspage=./media/load/picture.php&id=10815&sec=ef001e31245f248f1fb09ad97de6797f"
+    <img class="bio-slide" loading="lazy" decoding="async" src="assets/bio/selbstbildnis-1982.jpg"
          alt="Selbstbildnis, 1982" data-en-alt="Self-portrait, 1982">
     <button class="bio-nav bio-nav-prev" aria-label="Vorheriges Bild" data-en-aria-label="Previous image">&#8592;</button>
     <button class="bio-nav bio-nav-next" aria-label="Nächstes Bild" data-en-aria-label="Next image">&#8594;</button>
@@ -794,12 +781,12 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 <section id="kontakt">
   <p class="section-label fade-in-section" id="kon-label">Kontakt</p>
   <h2 id="kon-heading">Sprechen Sie mit uns</h2>
-  <p id="kon-sub">Für Anfragen, private Besichtigungen oder Kooperationen.</p>
+  <p id="kon-sub">Für Fragen zu den Werken oder eine private Besichtigung.</p>
 
   <div class="contact-grid fade-in-section" style="transition-delay:0.15s">
     <div class="contact-item">
       <p class="label" id="kon-email-label">E-Mail</p>
-      <p class="value">info@galerie-schwab.de</p>
+      <p class="value"><a href="mailto:info@horstschwab.de">info@horstschwab.de</a></p>
     </div>
     <div class="contact-item">
       <p class="label" id="kon-studio-label">Atelier</p>
@@ -809,28 +796,8 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
   <div class="contact-form-divider"></div>
 
-  <div class="contact-form-wrap" id="kon-form-wrap">
-    <div class="field">
-      <label id="kon-form-name-label">Name</label>
-      <input type="text" id="kon-name" autocomplete="name">
-    </div>
-    <div class="field">
-      <label id="kon-form-email-label">E-Mail</label>
-      <input type="email" id="kon-email-input" autocomplete="email">
-    </div>
-    <div class="field">
-      <label id="kon-form-msg-label">Nachricht</label>
-      <textarea id="kon-message"></textarea>
-    </div>
-    <button class="submit-btn" id="kon-submit-btn" onclick="submitContact()">
-      <span id="kon-submit-text">Nachricht senden</span>
-    </button>
-  </div>
-
-  <div class="success-msg" id="kon-success-msg">
-    <div class="success-msg-icon">✓</div>
-    <p id="kon-success-text">Vielen Dank für Ihre Nachricht.</p>
-    <p class="sub" id="kon-success-sub">Wir melden uns in Kürze bei Ihnen.</p>
+  <div class="contact-form-wrap">
+    <a class="submit-btn" href="mailto:info@horstschwab.de" data-en="Write a Message">Nachricht schreiben</a>
   </div>
 </section>
 
@@ -880,24 +847,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <div class="legal-body">
         <p>
           Berufsbezeichnung: Freischaffender Bildender Künstler<br>
-          Tätigkeitsbereich: Malerei, bildende Kunst, Kunstverkauf<br>
-          Zuständige Berufsorganisation: <span class="legal-ph">[BERUFSVERBAND / KAMMER, falls zutreffend — andernfalls diese Zeile entfernen]</span>
-        </p>
-      </div>
-    </div>
-    <hr class="legal-divider">
-
-    <!-- 4. STEUERLICHE ANGABEN -->
-    <div class="legal-block">
-      <p class="legal-section-head">Steuerliche Angaben</p>
-      <div class="legal-body">
-        <p class="legal-note">
-          Option A — Umsatzsteuerpflichtig (§ 27a UStG):<br>
-          Umsatzsteuer-Identifikationsnummer: <span class="legal-ph">[DE_________]</span>
-        </p>
-        <p class="legal-note">
-          Option B — Kleinunternehmer (§ 19 UStG):<br>
-          Gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Eine Umsatzsteuer-ID ist nicht vorhanden. — Bitte zutreffende Option wählen und die andere entfernen.
+          Tätigkeitsbereich: Malerei, Grafik, Plastik
         </p>
       </div>
     </div>
@@ -946,7 +896,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <p class="legal-section-head">Haftung für Links</p>
       <div class="legal-body">
         <p>
-          Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
+          Diese Website enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
         </p>
         <p>
           Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
@@ -1009,24 +959,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <div class="legal-body">
         <p>
           Professional title: Freelance visual artist<br>
-          Field of activity: Painting, fine art, art sales<br>
-          Competent professional organisation: <span class="legal-ph">[PROFESSIONAL ASSOCIATION / CHAMBER, if applicable — otherwise remove this line]</span>
-        </p>
-      </div>
-    </div>
-    <hr class="legal-divider">
-
-    <!-- 4. TAX INFORMATION -->
-    <div class="legal-block">
-      <p class="legal-section-head">Tax Information</p>
-      <div class="legal-body">
-        <p class="legal-note">
-          Option A — Subject to VAT (§ 27a UStG, German VAT Act):<br>
-          VAT identification number: <span class="legal-ph">[DE_________]</span>
-        </p>
-        <p class="legal-note">
-          Option B — Small business (§ 19 UStG, German VAT Act, small business regulation):<br>
-          Pursuant to § 19 UStG, no VAT is charged. No VAT ID is held. — Please choose the applicable option and remove the other.
+          Field of activity: Painting, graphic art, sculpture
         </p>
       </div>
     </div>
@@ -1143,110 +1076,74 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
-    <!-- 3. SERVER-LOG-DATEIEN -->
+    <!-- 3. HOSTING -->
     <div class="legal-block">
-      <p class="legal-section-head">3 · Server-Log-Dateien &amp; Hosting</p>
+      <p class="legal-section-head">3 · Hosting &amp; Server-Log-Dateien</p>
       <div class="legal-body">
         <p>
-          Diese Website wird gehostet bei: <span class="legal-ph">[HOSTING-ANBIETER, z. B. GitHub Pages / Netlify / Hetzner / eigener Server — bitte eintragen]</span>
+          Diese Website wird bei GitHub Pages gehostet, einem Dienst der GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA.
         </p>
         <p>
-          Der Hosting-Anbieter erhebt beim Aufruf dieser Website automatisch sogenannte Server-Log-Dateien. Diese enthalten:
+          Beim Aufruf der Website verarbeitet GitHub automatisch technisch notwendige Daten in sogenannten Server-Log-Dateien, insbesondere: IP-Adresse · Datum und Uhrzeit des Abrufs · aufgerufene Seite bzw. Datei · Browsertyp und Browserversion · verwendetes Betriebssystem · Referrer-URL.
         </p>
         <p>
-          Browsertyp und Browserversion · Verwendetes Betriebssystem · Referrer-URL · Hostname des zugreifenden Rechners · Uhrzeit der Serveranfrage · IP-Adresse (in der Regel anonymisiert)
+          Diese Daten werden benötigt, um die Website auszuliefern und ihren sicheren Betrieb zu gewährleisten; eine Zusammenführung mit anderen Datenquellen findet nicht statt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer sicheren und zuverlässigen Bereitstellung der Website).
         </p>
         <p>
-          Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an dem sicheren und fehlerfreien Betrieb der Website).
-        </p>
-        <p class="legal-note">
-          Hinweis: Falls Ihr Hosting-Anbieter einen Auftragsverarbeitungsvertrag (AVV) erfordert, schließen Sie diesen gemäß Art. 28 DSGVO ab. Ergänzen Sie ggf. den Namen und die Datenschutzrichtlinie des Anbieters.
+          Dabei können Daten in die USA übermittelt werden. GitHub ist nach dem EU-US Data Privacy Framework zertifiziert, für das die EU-Kommission einen Angemessenheitsbeschluss erlassen hat (Art. 45 DSGVO). Weitere Informationen: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Datenschutzerklärung von GitHub</a>.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 4. KONTAKTFORMULAR / ANGEBOTSFORMULAR -->
+    <!-- 4. KONTAKT PER E-MAIL -->
     <div class="legal-block">
-      <p class="legal-section-head">4 · Kontakt- und Angebotsformular</p>
+      <p class="legal-section-head">4 · Kontaktaufnahme per E-Mail</p>
       <div class="legal-body">
         <p>
-          Diese Website enthält ein Formular, über das Sie Anfragen und Angebote zu Kunstwerken einreichen können. Wenn Sie das Formular nutzen, werden die von Ihnen eingegebenen Daten — darunter Vor- und Nachname, E-Mail-Adresse, Ihr Angebot sowie etwaige Mitteilungen — an uns übermittelt und verarbeitet.
+          Diese Website enthält keine Formulare, über die Daten an uns übertragen werden. Die Schaltflächen „Besichtigung anfragen“ und „Nachricht schreiben“ sowie die Terminauswahl öffnen lediglich Ihr eigenes E-Mail-Programm mit einer vorbereiteten Nachricht. Ein ausgewählter Wunschtermin wird erst übermittelt, wenn Sie diese E-Mail selbst absenden.
         </p>
         <p>
-          Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bearbeitung von Anfragen).
-        </p>
-        <p class="legal-note">
-          Hinweis: Falls das Formular Daten an einen E-Mail-Dienst oder Drittanbieter sendet (z. B. Formspree, EmailJS, eigener SMTP-Server), bitte hier den jeweiligen Dienst, dessen Datenschutzrichtlinie und ggf. einen Hinweis zur Auftragsverarbeitung ergänzen.
+          Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir die von Ihnen übermittelten Daten (insbesondere E-Mail-Adresse, Name und Inhalt Ihrer Nachricht) ausschließlich zur Bearbeitung Ihrer Anfrage, etwa zur Vereinbarung eines Besichtigungstermins. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen) bzw. Art. 6 Abs. 1 lit. b DSGVO, soweit Ihre Anfrage auf die Vereinbarung eines Termins gerichtet ist.
         </p>
         <p>
-          Ihre Daten werden ausschließlich zur Bearbeitung Ihrer Anfrage genutzt und nicht an Dritte weitergegeben, sofern dies nicht zur Erfüllung des Vertrags erforderlich ist. Die Daten werden gelöscht, sobald die Anfrage abschließend bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
+          Ihre Daten werden nicht an Dritte weitergegeben und gelöscht, sobald Ihre Anfrage abschließend bearbeitet ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 5. EXTERNE SCHRIFTEN -->
+    <!-- 5. SCHRIFTARTEN UND INHALTE -->
     <div class="legal-block">
-      <p class="legal-section-head">5 · Schriftarten</p>
+      <p class="legal-section-head">5 · Schriftarten und eingebundene Inhalte</p>
       <div class="legal-body">
         <p>
-          Diese Website verwendet ausschließlich lokal eingebundene Schriftarten (Cormorant Garamond, Great Vibes, Montserrat). Es wird keine Verbindung zu Google-Servern oder anderen externen Schriftdiensten hergestellt. Es werden dabei keine personenbezogenen Daten übermittelt.
+          Diese Website lädt alle Inhalte – Schriftarten (Cormorant Garamond, Great Vibes, Montserrat), Bilder und die für den virtuellen Rundgang verwendete JavaScript-Bibliothek Three.js – ausschließlich vom eigenen Server. Es werden keine Verbindungen zu Google-Servern, Content-Delivery-Netzwerken oder anderen externen Diensten hergestellt.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 5b. EXTERNE BILDER (KUNSTPORTAL PFALZ) -->
+    <!-- 6. COOKIES UND LOKALE SPEICHERUNG -->
     <div class="legal-block">
-      <p class="legal-section-head">5b · Externe Bilder (Kunstportal Pfalz)</p>
+      <p class="legal-section-head">6 · Cookies und lokale Speicherung</p>
       <div class="legal-body">
         <p>
-          Im Bereich Biographie dieser Website werden einzelne Portraitfotos über den Dienst Kunstportal Pfalz (<a href="https://www.kunstportal-pfalz.de" target="_blank" rel="noopener">www.kunstportal-pfalz.de</a>) eingebunden. Beim Laden dieser Bilder wird eine Verbindung zu Servern des Kunstportal Pfalz hergestellt, dabei kann Ihre IP-Adresse übermittelt werden.
+          Diese Website setzt keine Cookies und keine Tracking- oder Analysedienste ein.
         </p>
         <p>
-          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Darstellung historischer Portraitfotografien von Horst Schwab).
+          Einige Funktionen speichern Einstellungen ausschließlich lokal in Ihrem Browser (<em>localStorage</em> bzw. <em>sessionStorage</em>): die <em>Merkliste</em> (gemerkte Kunstwerke), die von Ihnen gewählte Sprache sowie die Information, ob Sie die Galerie in dieser Sitzung bereits betreten haben. Diese Daten verbleiben auf Ihrem Gerät, werden nicht an uns übertragen und können jederzeit durch Löschen der Browserdaten entfernt werden.
+        </p>
+        <p>
+          Die Speicherung ist für diese von Ihnen genutzten Funktionen unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); eine Einwilligung ist daher nicht notwendig. Rechtsgrundlage für eine etwaige Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 6. EXTERNE CDN-RESSOURCEN -->
+    <!-- 7. RECHTE DER BETROFFENEN -->
     <div class="legal-block">
-      <p class="legal-section-head">6 · Externe CDN-Ressourcen (3D-Galerie)</p>
-      <div class="legal-body">
-        <p>
-          Der interaktive Rundgang (virtuelle 3D-Galerie) dieser Website lädt die JavaScript-Bibliothek Three.js über das Content Delivery Network jsDelivr (Fondation jsDelivr, Luxemburg). Beim Aufruf des Rundgangs wird eine Verbindung zu Servern von jsDelivr hergestellt, dabei kann Ihre IP-Adresse übermittelt werden.
-        </p>
-        <p>
-          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der technischen Bereitstellung der Funktion). Datenschutzhinweise von jsDelivr:
-          <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener">jsDelivr Privacy Policy</a>
-        </p>
-        <p>
-          Das Laden der Bibliothek erfolgt ausschließlich dann, wenn die Nutzerin oder der Nutzer aktiv den Rundgang startet. Ohne diese Interaktion wird keine Verbindung zu jsDelivr hergestellt.
-        </p>
-      </div>
-    </div>
-    <hr class="legal-divider">
-
-    <!-- 7. COOKIES -->
-    <div class="legal-block">
-      <p class="legal-section-head">7 · Cookies und lokale Speicherung</p>
-      <div class="legal-body">
-        <p>
-          Diese Website setzt keine Tracking- oder Analyse-Cookies ein. Es werden keine Cookies zu Werbezwecken oder zur Verfolgung des Nutzerverhaltens gesetzt.</p>
-          <p>Die Funktion <em>Merkliste</em> (Favoriten) nutzt den lokalen Speicher (<em>localStorage</em>) Ihres Browsers, um gemerkte Kunstwerke ausschließlich auf Ihrem Gerät zu speichern. Diese Daten werden nicht an uns übertragen und können jederzeit durch Löschen der Browser-Daten entfernt werden. Eine personenbezogene Verarbeitung findet nicht statt. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
-        </p>
-        <p class="legal-note">
-          Hinweis: Falls Sie künftig Analyse-Dienste (z. B. Google Analytics, Matomo) oder Marketing-Tools einbinden, ist dieser Abschnitt entsprechend zu ergänzen und ein Cookie-Banner verpflichtend.
-        </p>
-      </div>
-    </div>
-    <hr class="legal-divider">
-
-    <!-- 8. RECHTE DER BETROFFENEN -->
-    <div class="legal-block">
-      <p class="legal-section-head">8 · Ihre Rechte als betroffene Person</p>
+      <p class="legal-section-head">7 · Ihre Rechte als betroffene Person</p>
       <div class="legal-body">
         <p>Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
         <p>
@@ -1264,9 +1161,9 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
-    <!-- 9. BESCHWERDERECHT -->
+    <!-- 8. BESCHWERDERECHT -->
     <div class="legal-block">
-      <p class="legal-section-head">9 · Beschwerderecht bei der Aufsichtsbehörde</p>
+      <p class="legal-section-head">8 · Beschwerderecht bei der Aufsichtsbehörde</p>
       <div class="legal-body">
         <p>
           Unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher Rechtsbehelfe steht Ihnen das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde zu, wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt.
@@ -1279,9 +1176,9 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
-    <!-- 10. ÄNDERUNGEN -->
+    <!-- 9. ÄNDERUNGEN -->
     <div class="legal-block">
-      <p class="legal-section-head">10 · Änderungen dieser Datenschutzerklärung</p>
+      <p class="legal-section-head">9 · Änderungen dieser Datenschutzerklärung</p>
       <div class="legal-body">
         <p>
           Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, um sie stets den aktuellen rechtlichen Anforderungen zu entsprechen oder um Änderungen unserer Leistungen umzusetzen. Die jeweils aktuelle Version gilt für Ihren nächsten Besuch.
@@ -1328,110 +1225,74 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
-    <!-- 3. SERVER LOG FILES -->
+    <!-- 3. HOSTING -->
     <div class="legal-block">
-      <p class="legal-section-head">3 · Server Log Files &amp; Hosting</p>
+      <p class="legal-section-head">3 · Hosting &amp; Server Log Files</p>
       <div class="legal-body">
         <p>
-          This website is hosted by: <span class="legal-ph">[HOSTING PROVIDER, e.g. GitHub Pages / Netlify / Hetzner / own server — please enter]</span>
+          This website is hosted on GitHub Pages, a service of GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA.
         </p>
         <p>
-          When this website is accessed, the hosting provider automatically collects so-called server log files. These contain:
+          When the website is accessed, GitHub automatically processes technically necessary data in so-called server log files, in particular: IP address · date and time of access · page or file requested · browser type and version · operating system · referrer URL.
         </p>
         <p>
-          Browser type and browser version · Operating system used · Referrer URL · Hostname of the accessing computer · Time of the server request · IP address (usually anonymised)
+          This data is required to deliver the website and to ensure its secure operation; it is not combined with other data sources. The legal basis is Art. 6 (1) (f) GDPR (legitimate interest in providing the website securely and reliably).
         </p>
         <p>
-          These data are not merged with other data sources. The legal basis is Art. 6 (1) lit. f GDPR (legitimate interest in the secure and error-free operation of the website).
-        </p>
-        <p class="legal-note">
-          Note: If your hosting provider requires a data processing agreement (DPA), conclude it in accordance with Art. 28 GDPR. Add the provider's name and privacy policy where applicable.
+          Data may be transferred to the USA in this context. GitHub is certified under the EU-US Data Privacy Framework, for which the European Commission has adopted an adequacy decision (Art. 45 GDPR). Further information: <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a>.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 4. CONTACT FORM / OFFER FORM -->
+    <!-- 4. CONTACT BY EMAIL -->
     <div class="legal-block">
-      <p class="legal-section-head">4 · Contact and Offer Form</p>
+      <p class="legal-section-head">4 · Contact by Email</p>
       <div class="legal-body">
         <p>
-          This website contains a form through which you can submit enquiries and offers regarding artworks. If you use the form, the data you enter — including first and last name, email address, your offer and any messages — are transmitted to us and processed.
+          This website contains no forms through which data is transmitted to us. The buttons ‘Request a Viewing’ and ‘Write a Message’ as well as the appointment selection merely open your own email program with a prepared message. A selected preferred date is only transmitted once you send this email yourself.
         </p>
         <p>
-          The processing is based on Art. 6 (1) lit. b GDPR (pre-contractual measures) and Art. 6 (1) lit. f GDPR (legitimate interest in handling enquiries).
-        </p>
-        <p class="legal-note">
-          Note: If the form sends data to an email service or third-party provider (e.g. Formspree, EmailJS, own SMTP server), please add the respective service, its privacy policy and, where applicable, a note on data processing here.
+          If you contact us by email, we process the data you provide (in particular your email address, name and the content of your message) solely to handle your enquiry, for example to arrange a viewing appointment. The legal basis is Art. 6 (1) (f) GDPR (legitimate interest in responding to enquiries) or Art. 6 (1) (b) GDPR insofar as your enquiry concerns arranging an appointment.
         </p>
         <p>
-          Your data are used exclusively to process your enquiry and are not passed on to third parties unless this is necessary to perform the contract. The data are deleted as soon as the enquiry has been finally processed and no statutory retention obligations prevent this.
+          Your data will not be passed on to third parties and will be deleted once your enquiry has been fully dealt with and no statutory retention obligations apply.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 5. EXTERNAL FONTS -->
+    <!-- 5. FONTS AND EMBEDDED CONTENT -->
     <div class="legal-block">
-      <p class="legal-section-head">5 · Fonts</p>
+      <p class="legal-section-head">5 · Fonts and Embedded Content</p>
       <div class="legal-body">
         <p>
-          This website uses only locally embedded fonts (Cormorant Garamond, Great Vibes, Montserrat). No connection to Google servers or other external font services is established. No personal data are transmitted in the process.
+          This website loads all content – fonts (Cormorant Garamond, Great Vibes, Montserrat), images and the JavaScript library Three.js used for the virtual tour – exclusively from its own server. No connections are made to Google servers, content delivery networks or other external services.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 5b. EXTERNAL IMAGES (KUNSTPORTAL PFALZ) -->
+    <!-- 6. COOKIES AND LOCAL STORAGE -->
     <div class="legal-block">
-      <p class="legal-section-head">5b · External Images (Kunstportal Pfalz)</p>
+      <p class="legal-section-head">6 · Cookies and Local Storage</p>
       <div class="legal-body">
         <p>
-          In the biography section of this website, individual portrait photographs are embedded via the Kunstportal Pfalz service (<a href="https://www.kunstportal-pfalz.de" target="_blank" rel="noopener">www.kunstportal-pfalz.de</a>). When these images are loaded, a connection to the servers of Kunstportal Pfalz is established, and your IP address may be transmitted in the process.
+          This website does not use cookies or any tracking or analytics services.
         </p>
         <p>
-          The legal basis is Art. 6 (1) lit. f GDPR (legitimate interest in presenting historical portrait photographs of Horst Schwab).
+          Some features store settings exclusively locally in your browser (<em>localStorage</em> or <em>sessionStorage</em>): the <em>Wishlist</em> (saved artworks), the language you have chosen and whether you have already entered the gallery in this session. This data remains on your device, is not transmitted to us and can be removed at any time by deleting your browser data.
+        </p>
+        <p>
+          This storage is strictly necessary for these features that you use (§ 25 (2) no. 2 TDDDG, German Telecommunications Digital Services Data Protection Act); consent is therefore not required. The legal basis for any processing is Art. 6 (1) (f) GDPR.
         </p>
       </div>
     </div>
     <hr class="legal-divider">
 
-    <!-- 6. EXTERNAL CDN RESOURCES -->
+    <!-- 7. DATA SUBJECT RIGHTS -->
     <div class="legal-block">
-      <p class="legal-section-head">6 · External CDN Resources (3D Gallery)</p>
-      <div class="legal-body">
-        <p>
-          The interactive tour (virtual 3D gallery) of this website loads the JavaScript library Three.js via the content delivery network jsDelivr (Fondation jsDelivr, Luxembourg). When the tour is opened, a connection to the servers of jsDelivr is established, and your IP address may be transmitted in the process.
-        </p>
-        <p>
-          The legal basis is Art. 6 (1) lit. f GDPR (legitimate interest in the technical provision of the function). Privacy information from jsDelivr:
-          <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" target="_blank" rel="noopener">jsDelivr Privacy Policy</a>
-        </p>
-        <p>
-          The library is loaded only if the user actively starts the tour. Without this interaction, no connection to jsDelivr is established.
-        </p>
-      </div>
-    </div>
-    <hr class="legal-divider">
-
-    <!-- 7. COOKIES -->
-    <div class="legal-block">
-      <p class="legal-section-head">7 · Cookies and Local Storage</p>
-      <div class="legal-body">
-        <p>
-          This website does not use tracking or analytics cookies. No cookies are set for advertising purposes or to track user behaviour.</p>
-          <p>The <em>Wishlist</em> (favourites) function uses your browser's local storage (<em>localStorage</em>) to save bookmarked artworks exclusively on your device. These data are not transmitted to us and can be removed at any time by deleting your browser data. No personal data processing takes place. Legal basis: Art. 6 (1) lit. f GDPR.
-        </p>
-        <p class="legal-note">
-          Note: If you integrate analytics services (e.g. Google Analytics, Matomo) or marketing tools in the future, this section must be supplemented accordingly and a cookie banner becomes mandatory.
-        </p>
-      </div>
-    </div>
-    <hr class="legal-divider">
-
-    <!-- 8. DATA SUBJECT RIGHTS -->
-    <div class="legal-block">
-      <p class="legal-section-head">8 · Your Rights as a Data Subject</p>
+      <p class="legal-section-head">7 · Your Rights as a Data Subject</p>
       <div class="legal-body">
         <p>You have the following rights against us with regard to your personal data:</p>
         <p>
@@ -1449,9 +1310,9 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
-    <!-- 9. RIGHT TO LODGE A COMPLAINT -->
+    <!-- 8. RIGHT TO LODGE A COMPLAINT -->
     <div class="legal-block">
-      <p class="legal-section-head">9 · Right to Lodge a Complaint with a Supervisory Authority</p>
+      <p class="legal-section-head">8 · Right to Lodge a Complaint with a Supervisory Authority</p>
       <div class="legal-body">
         <p>
           Without prejudice to any other administrative or judicial remedy, you have the right to lodge a complaint with a data protection supervisory authority if you believe that the processing of your personal data infringes the GDPR.
@@ -1464,9 +1325,9 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
-    <!-- 10. CHANGES -->
+    <!-- 9. CHANGES -->
     <div class="legal-block">
-      <p class="legal-section-head">10 · Changes to this Privacy Policy</p>
+      <p class="legal-section-head">9 · Changes to this Privacy Policy</p>
       <div class="legal-body">
         <p>
           We reserve the right to amend this privacy policy where necessary in order to keep it in line with current legal requirements or to reflect changes to our services. The version current at the time applies to your next visit.
@@ -1478,167 +1339,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   </div><!-- /.legal-inner -->
 </div><!-- /#overlay-datenschutz -->
 <!-- ══════════════════════════════════════
-     LIEFERBEDINGUNGEN & WIDERRUFSRECHT OVERLAY
-══════════════════════════════════════ -->
-<div class="legal-overlay" id="overlay-lieferbedingungen" role="dialog" aria-modal="true" aria-label="Lieferbedingungen" data-en-aria-label="Delivery Terms">
-  <button class="legal-close-btn" onclick="closeLegal('lieferbedingungen')"><span data-en="&#x2715;&nbsp; Close">&#x2715;&nbsp; Schließen</span></button>
-  <div class="legal-inner">
-  <div class="lang-de">
-
-    <p class="legal-eyebrow">Rechtliche Angaben</p>
-    <h1 class="legal-title">Lieferbedingungen &amp; Widerrufsrecht</h1>
-
-    <div class="legal-block">
-      <p class="legal-section-head">1 · Lieferbedingungen</p>
-      <div class="legal-body">
-        <p>Alle angebotenen Originalkunstwerke werden sorgfältig und fachgerecht verpackt, um Transportschäden zu vermeiden. Der Versand erfolgt ausschließlich innerhalb Deutschlands, sofern nicht ausdrücklich anderes vereinbart wurde.</p>
-        <p><strong>Versandkosten:</strong> Die anfallenden Versandkosten werden nach Angebotsannahme individuell mitgeteilt und richten sich nach Größe, Gewicht und Versicherungswert des Werkes.</p>
-        <p><strong>Lieferzeit:</strong> Nach schriftlicher Bestätigung des Angebots und Zahlungseingang erfolgt die Lieferung in der Regel innerhalb von 7–14 Werktagen. Bei besonders großformatigen oder gerahmten Werken kann die Lieferzeit abweichen.</p>
-        <p><strong>Versicherung:</strong> Jede Sendung wird zum vollen Versicherungswert des Kunstwerks versichert. Das Transportrisiko trägt der Verkäufer bis zur Übergabe an den Käufer.</p>
-        <p><strong>Verpackung:</strong> Die Werke werden säurefreie Materialien und professionellen Verpackungsmitteln gesichert. Gerahmte Werke werden zusätzlich mit Kantenschutz und Polsterung versehen.</p>
-      </div>
-    </div>
-
-    <div class="legal-block">
-      <p class="legal-section-head">2 · Widerrufsrecht</p>
-      <div class="legal-body">
-        <p>Als Verbraucher haben Sie das Recht, diesen Vertrag binnen vierzehn Tagen ohne Angabe von Gründen zu widerrufen.</p>
-        <p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, das Kunstwerk in Besitz genommen haben bzw. hat.</p>
-        <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns mittels einer eindeutigen Erklärung (z. B. ein per Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren:</p>
-        <p>
-          Horst Schwab<br>
-          Schlosshöhe 10, 66869 Kusel<br>
-          E-Mail: <a href="mailto:info@horstschwab.de">info@horstschwab.de</a>
-        </p>
-        <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
-      </div>
-    </div>
-
-    <div class="legal-block">
-      <p class="legal-section-head">3 · Folgen des Widerrufs</p>
-      <div class="legal-body">
-        <p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist.</p>
-        <p>Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, sofern nicht ausdrücklich etwas anderes vereinbart wurde.</p>
-        <p>Wir können die Rückzahlung verweigern, bis wir das Kunstwerk zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie das Werk zurückgesandt haben, je nachdem, welches der frühere Zeitpunkt ist.</p>
-      </div>
-    </div>
-
-    <div class="legal-block">
-      <p class="legal-section-head">4 · Rücksendung</p>
-      <div class="legal-body">
-        <p>Sie haben das Kunstwerk unverzüglich und in jedem Fall spätestens binnen vierzehn Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an uns zurückzusenden oder zu übergeben.</p>
-        <p><strong>Rücksendekosten:</strong> Die unmittelbaren Kosten der Rücksendung trägt der Käufer, sofern nicht ausdrücklich anderes vereinbart wurde.</p>
-        <p><strong>Zustand des Werkes:</strong> Sie müssen für einen etwaigen Wertverlust des Werkes nur aufkommen, wenn dieser Wertverlust auf einen zur Prüfung der Beschaffenheit, Eigenschaften und Funktionsweise nicht notwendigen Umgang mit dem Werk zurückzuführen ist.</p>
-        <p><strong>Verpackung:</strong> Bitte verwenden Sie für die Rücksendung die Originalverpackung oder eine gleichwertige, schützende Verpackung und versichern Sie die Sendung ausreichend.</p>
-        <p><strong>Ausschluss des Widerrufsrechts:</strong> Das Widerrufsrecht besteht nicht bei Kunstwerken, die nach Kundenspezifikation angefertigt wurden oder eindeutig auf die persönlichen Bedürfnisse des Käufers zugeschnitten sind.</p>
-      </div>
-    </div>
-
-    <hr class="legal-divider">
-
-    <div class="legal-block">
-      <p class="legal-section-head">5 · Muster-Widerrufsformular</p>
-      <div class="legal-body">
-        <p>(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden Sie es zurück.)</p>
-        <p>
-          An: Horst Schwab, Schlosshöhe 10, 66869 Kusel, E-Mail: <a href="mailto:info@horstschwab.de">info@horstschwab.de</a>
-        </p>
-        <p>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*):</p>
-        <p style="padding-left:1.2rem;">
-          Bestellt am (*): ___________________________<br>
-          Erhalten am (*): ___________________________<br>
-          Name des/der Verbraucher(s): ___________________________<br>
-          Anschrift des/der Verbraucher(s): ___________________________<br>
-          Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier): ___________________________<br>
-          Datum: ___________________________
-        </p>
-        <p style="opacity:0.6;font-size:0.85rem;">(*) Unzutreffendes streichen.</p>
-      </div>
-    </div>
-
-
-    </div>
-  <div class="lang-en" style="display:none">
-<p class="legal-note legal-translation-note">This English translation is provided for convenience only. In the event of any discrepancy, the German version is legally binding.</p>
-
-    <p class="legal-eyebrow">Legal Information</p>
-    <h1 class="legal-title">Delivery Terms &amp; Right of Withdrawal</h1>
-
-    <div class="legal-block">
-      <p class="legal-section-head">1 · Delivery Terms</p>
-      <div class="legal-body">
-        <p>All original artworks offered are carefully and professionally packed to avoid transport damage. Shipping is exclusively within Germany unless expressly agreed otherwise.</p>
-        <p><strong>Shipping costs:</strong> The shipping costs incurred will be communicated individually after acceptance of the offer and depend on the size, weight and insured value of the work.</p>
-        <p><strong>Delivery time:</strong> After written confirmation of the offer and receipt of payment, delivery generally takes place within 7–14 working days. For particularly large-format or framed works, the delivery time may differ.</p>
-        <p><strong>Insurance:</strong> Every shipment is insured for the full insured value of the artwork. The seller bears the transport risk until the work is handed over to the buyer.</p>
-        <p><strong>Packaging:</strong> The works are secured with acid-free materials and professional packaging. Framed works are additionally fitted with edge protection and padding.</p>
-      </div>
-    </div>
-
-    <div class="legal-block">
-      <p class="legal-section-head">2 · Right of Withdrawal</p>
-      <div class="legal-body">
-        <p>As a consumer, you have the right to withdraw from this contract within fourteen days without giving any reason.</p>
-        <p>The withdrawal period is fourteen days from the day on which you, or a third party other than the carrier and indicated by you, acquired physical possession of the artwork.</p>
-        <p>To exercise your right of withdrawal, you must inform us of your decision to withdraw from this contract by means of a clear statement (e.g. a letter sent by post or an email):</p>
-        <p>
-          Horst Schwab<br>
-          Schlosshöhe 10, 66869 Kusel<br>
-          Email: <a href="mailto:info@horstschwab.de">info@horstschwab.de</a>
-        </p>
-        <p>To meet the withdrawal deadline, it is sufficient for you to send your communication concerning your exercise of the right of withdrawal before the withdrawal period has expired.</p>
-      </div>
-    </div>
-
-    <div class="legal-block">
-      <p class="legal-section-head">3 · Effects of Withdrawal</p>
-      <div class="legal-body">
-        <p>If you withdraw from this contract, we shall reimburse to you all payments received from you, including the costs of delivery, without undue delay and in any event not later than fourteen days from the day on which we are informed about your decision to withdraw from this contract.</p>
-        <p>We will carry out such reimbursement using the same means of payment as you used for the initial transaction, unless expressly agreed otherwise.</p>
-        <p>We may withhold reimbursement until we have received the artwork back or until you have supplied evidence of having sent back the work, whichever is the earlier.</p>
-      </div>
-    </div>
-
-    <div class="legal-block">
-      <p class="legal-section-head">4 · Return</p>
-      <div class="legal-body">
-        <p>You shall send back or hand over the artwork to us without undue delay and in any event not later than fourteen days from the day on which you communicate your withdrawal from this contract to us.</p>
-        <p><strong>Return costs:</strong> The direct costs of returning the work shall be borne by the buyer, unless expressly agreed otherwise.</p>
-        <p><strong>Condition of the work:</strong> You are only liable for any diminished value of the work resulting from handling other than what is necessary to establish the nature, characteristics and functioning of the work.</p>
-        <p><strong>Packaging:</strong> For the return, please use the original packaging or equivalent protective packaging, and insure the shipment adequately.</p>
-        <p><strong>Exclusion of the right of withdrawal:</strong> The right of withdrawal does not apply to artworks that were made to the customer's specifications or are clearly tailored to the buyer's personal needs.</p>
-      </div>
-    </div>
-
-    <hr class="legal-divider">
-
-    <div class="legal-block">
-      <p class="legal-section-head">5 · Model Withdrawal Form</p>
-      <div class="legal-body">
-        <p>(Complete and return this form only if you wish to withdraw from the contract.)</p>
-        <p>
-          To: Horst Schwab, Schlosshöhe 10, 66869 Kusel, Email: <a href="mailto:info@horstschwab.de">info@horstschwab.de</a>
-        </p>
-        <p>I/We (*) hereby give notice that I/We (*) withdraw from my/our (*) contract of sale of the following goods (*):</p>
-        <p style="padding-left:1.2rem;">
-          Ordered on (*): ___________________________<br>
-          Received on (*): ___________________________<br>
-          Name of consumer(s): ___________________________<br>
-          Address of consumer(s): ___________________________<br>
-          Signature of consumer(s) (only if this form is notified on paper): ___________________________<br>
-          Date: ___________________________
-        </p>
-        <p style="opacity:0.6;font-size:0.85rem;">(*) Delete as appropriate.</p>
-      </div>
-    </div>
-  </div>
-  </div>
-</div><!-- /#overlay-lieferbedingungen -->
-
-
-
-
-<!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
 <footer class="fade-in-section">
@@ -1646,7 +1346,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <ul class="footer-links">
     <li><a href="#" onclick="openLegal('impressum'); return false;">Impressum</a></li>
     <li><a href="#" onclick="openLegal('datenschutz'); return false;">Datenschutz</a></li>
-    <li><a href="#" onclick="openLegal('lieferbedingungen'); return false;">Lieferbedingungen</a></li>
   </ul>
   <span class="footer-copy">© 2026 · Kunst · Leidenschaft · Zeitlos</span>
 </footer>
@@ -1658,39 +1357,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <div class="cal-box">
     <button class="cal-close" onclick="closeCal()">&#x2715;</button>
 
-    <!-- AUTH SCREEN -->
-    <div id="cal-auth">
-      <p class="cal-auth-title" data-en="My Account">Mein Konto</p>
-      <p class="cal-auth-sub" id="cal-auth-sub" data-en="Please sign in or register">Bitte anmelden oder registrieren</p>
-
-      <!-- Eingeloggt-Ansicht -->
-      <div id="cal-auth-logged" style="display:none">
-        <div class="cal-auth-greeting" id="cal-auth-greeting"></div>
-        <button class="cal-auth-logout" onclick="calLogout()" data-en="Sign out">Abmelden</button>
-      </div>
-
-      <!-- Login / Register Tabs -->
-      <div id="cal-auth-form">
-        <div class="cal-auth-tabs">
-          <button class="cal-auth-tab active" id="tab-login" onclick="calSwitchTab('login')" data-en="Sign in">Anmelden</button>
-          <button class="cal-auth-tab" id="tab-register" onclick="calSwitchTab('register')" data-en="Register">Registrieren</button>
-        </div>
-        <div class="cal-auth-fields">
-          <div class="cal-auth-field" id="auth-field-name" style="display:none">
-            <label>Name</label>
-            <input type="text" id="auth-name" autocomplete="name">
-          </div>
-          <div class="cal-auth-field">
-            <label>E-Mail</label>
-            <input type="email" id="auth-email" autocomplete="email">
-          </div>
-        </div>
-        <div class="cal-auth-error" id="cal-auth-error"></div>
-        <button class="cal-auth-btn" id="cal-auth-submit" onclick="calSubmitAuth()">Anmelden</button>
-      </div>
-    </div>
-
-    <div id="cal-main" style="display:none">
+    <div id="cal-main">
       <div class="cal-header">
         <button class="cal-nav" id="cal-prev">&#8249;</button>
         <span class="cal-month-label" id="cal-month-label"></span>
@@ -1721,20 +1388,17 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       </div>
 
       <div class="cal-confirm" id="cal-confirm">Datum wählen</div>
-      <button class="cal-book-btn" id="cal-book-btn" onclick="confirmBooking()" data-en="Request Appointment">Termin anfragen</button>
+      <button class="cal-book-btn" id="cal-book-btn" onclick="confirmBooking()" data-en="Request by E-Mail">Per E-Mail anfragen</button>
     </div>
     <div class="cal-success" id="cal-success">
       <div class="cal-success-icon">✓</div>
-      <p id="cal-success-text">Anfrage gesendet.</p>
-      <p class="sub" id="cal-success-sub">Wir bestätigen Ihren Termin per E-Mail.</p>
+      <p id="cal-success-text">Ihr E-Mail-Programm öffnet sich.</p>
+      <p class="sub" id="cal-success-sub">Bitte senden Sie die vorbereitete E-Mail ab – wir bestätigen den Termin. Falls sich nichts öffnet: info@horstschwab.de</p>
     </div>
   </div>
 </div>
 
 
-<!-- ══════════════════════════════════════
-     ANGEBOTS-MODAL
-══════════════════════════════════════ -->
 <!-- ══ FAVORITES OVERLAY ═════════════════════════════════════════════ -->
 <div id="fav-overlay" class="coll-overlay">
   <div class="coll-inner">
@@ -1780,77 +1444,18 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <p class="ad-eyebrow" id="ad-eyebrow"></p>
       <h2 class="ad-title" id="ad-title"></h2>
       <p class="ad-meta-line" id="ad-meta-line"></p>
-      <p class="ad-price" id="ad-price"></p>
       <div class="ad-divider"></div>
       <p class="ad-story-head" id="ad-story-head">Über dieses Werk</p>
       <p class="ad-story" id="ad-story"></p>
       <div class="ad-details-grid" id="ad-details-grid"></div>
     </div>
     <div id="ad-info-footer" style="padding:1.5rem 3rem 2rem;flex-shrink:0;border-top:1px solid rgba(201,168,76,0.10);">
-      <button class="ad-offer-btn" id="ad-offer-btn">Angebot abgeben</button>
+      <a class="ad-offer-btn" id="ad-offer-btn" href="mailto:info@horstschwab.de">Besichtigung anfragen</a>
     </div>
   </div>
 
 </div>
 
-<div class="modal-bg" id="modal" onclick="closeModal(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">&times;</button>
-
-    <p class="modal-label" data-en="Make an Offer">Angebot abgeben</p>
-    <h3 class="modal-title" id="modal-title">Komposition I</h3>
-    <p class="modal-range"><span data-en="Price range:">Preisrahmen:</span> <strong id="modal-range">€ 4.750 – 7.200</strong></p>
-
-    <div id="form-wrap">
-      <div class="form-row">
-        <div class="field">
-          <label data-en="First name">Vorname</label>
-          <input type="text" id="fname" placeholder="Max" />
-        </div>
-        <div class="field">
-          <label data-en="Last name">Nachname</label>
-          <input type="text" id="lname" placeholder="Mustermann" data-en-placeholder="Smith" />
-        </div>
-      </div>
-
-      <div class="field">
-        <label data-en="E-mail address">E-Mail-Adresse</label>
-        <input type="email" id="email" placeholder="max@beispiel.de" data-en-placeholder="max@example.com" />
-      </div>
-
-      <div class="field">
-        <label data-en="Your offer (€)">Ihr Angebot (€)</label>
-        <input type="number" id="offer" placeholder="5.000" data-en-placeholder="5,000" min="0" />
-      </div>
-
-      <div class="frame-section">
-        <span class="frame-label" data-en="Frame">Rahmen</span>
-        <div class="frame-options">
-          <button class="frame-opt-btn"        id="frame-opt-original" onclick="setFrameOpt(this,'Original Rahmen')"><span data-en="Original frame">Original Rahmen</span></button>
-          <button class="frame-opt-btn active" id="frame-opt-none"     onclick="setFrameOpt(this,'')"><span data-en="No frame">Ohne Rahmen</span></button>
-          <button class="frame-opt-btn"        id="frame-opt-weiss"    onclick="setFrameOpt(this,'Weiß')"><span class="frame-swatch" style="background:#f5f4f0;border-color:#bbb"></span><span data-en="White">Weiß</span></button>
-          <button class="frame-opt-btn"        id="frame-opt-schwarz"  onclick="setFrameOpt(this,'Schwarz')"><span class="frame-swatch" style="background:#1a1a18"></span><span data-en="Black">Schwarz</span></button>
-          <button class="frame-opt-btn"        id="frame-opt-grau"     onclick="setFrameOpt(this,'Grau')"><span class="frame-swatch" style="background:#888"></span><span data-en="Grey">Grau</span></button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label data-en="Message (optional)">Nachricht (optional)</label>
-        <textarea id="message" placeholder="Ihre Nachricht an uns..." data-en-placeholder="Your message to us..."></textarea>
-      </div>
-
-      <button class="submit-btn" onclick="submitOffer()" data-en="Submit Offer">Angebot absenden</button>
-    </div>
-
-    <div class="success-msg" id="success-msg">
-      <div class="success-msg-icon">✓</div>
-      <p data-en="Thank you for your offer.">Vielen Dank für Ihr Angebot.</p>
-      <p class="sub" data-en="We will get back to you shortly.">Wir melden uns in Kürze bei Ihnen.</p>
-    </div>
-  </div>
-</div>
-
-
-<script src="app.js?v=20261023l"></script>
+<script src="app.js?v=20261026b"></script>
 </body>
 </html>
