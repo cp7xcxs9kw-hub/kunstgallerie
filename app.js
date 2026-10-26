@@ -277,6 +277,11 @@
   }
 
   // Hinweis auf die Dauerausstellung: betritt die Galerie (Verlauf, Sperren) und springt zu den Ausstellungen
+  // Geplante Ausstellungen: ab dem Starttag „Aktuell“ statt „Demnächst“
+  document.querySelectorAll('.ausst-card[data-start]').forEach(card => {
+    const [y, m, d] = card.dataset.start.split('-').map(Number);
+    card.classList.toggle('is-open', new Date() >= new Date(y, m - 1, d));
+  });
   const heroDauer = document.querySelector('.hero-dauer');
   if (heroDauer) heroDauer.addEventListener('click', (e) => {
     e.preventDefault(); e.stopImmediatePropagation();
@@ -628,10 +633,11 @@
     _adViews = d.views || null; _adViewIdx = 0;
     if (d.img) {
       const img = document.createElement('img');
-      img.src = d.img; img.alt = title;
+      img.alt = title;
+      _adSetImg(img, d.img);
       adImgEl.appendChild(img);
-      // Vorladen der weiteren Ansichten, damit der Wechsel ohne Flackern passiert
-      if (_adViews) _adViews.slice(1).forEach(src => { const p = new Image(); p.src = src; });
+      // Vorladen der weiteren Ansichten (verkleinerte Fassung), damit der Wechsel ohne Flackern passiert
+      if (_adViews) _adViews.slice(1).forEach(src => { const p = new Image(); p.src = _webImg(src); });
     } else {
       const cv = _makeArtworkCanvas(title, 500, 620);
       cv.className = 'ad-placeholder-canvas';
@@ -654,6 +660,32 @@
     document.body.style.overflow = 'hidden';
   }
 
+  /* Werkansicht: sofort die verkleinerte Fassung zeigen (aus der Übersicht meist schon im Cache),
+     das Original für Schärfe und Zoom im Hintergrund nachladen und erst fertig dekodiert einsetzen */
+  function _webImg(src) { return src.replace('Images/', 'Images/web/'); }
+  function _adSetImg(img, src) {
+    img.dataset.full = src;
+    img.src = _webImg(src);
+    const full = new Image();
+    full.src = src;
+    (full.decode ? full.decode() : new Promise(r => { full.onload = r; }))
+      .then(() => { if (img.dataset.full === src) img.src = src; })
+      .catch(() => {});
+  }
+  // Original schon beim Darüberfahren bzw. Antippen einer Werkkarte vorladen
+  const _adPreloaded = new Set();
+  function _adPreload(title) {
+    const d = ARTWORKS[title];
+    if (!d || !d.img || _adPreloaded.has(d.img)) return;
+    _adPreloaded.add(d.img);
+    const p = new Image(); p.src = d.img;
+  }
+  ['pointerenter', 'touchstart'].forEach(ev => document.addEventListener(ev, e => {
+    const card = e.target.closest && e.target.closest('.coll-card');
+    const tEl = card && card.querySelector('.coll-card-title');
+    if (tEl) _adPreload(tEl.textContent.trim());
+  }, { capture: true, passive: true }));
+
   /* Mehrere Ansichten (Plastiken): Slider in der Detailansicht */
   let _adViews = null;
   let _adViewIdx = 0;
@@ -675,7 +707,7 @@
     const n = _adViews.length;
     _adViewIdx = (i + n) % n;
     const img = document.querySelector('#ad-img-el img');
-    if (img) img.src = _adViews[_adViewIdx];
+    if (img) _adSetImg(img, _adViews[_adViewIdx]);
     _adScale = 1; _adTx = 0; _adTy = 0;
     _adApplyTransform();
     _adRenderViewsNav();

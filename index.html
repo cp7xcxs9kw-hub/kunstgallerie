@@ -117,7 +117,7 @@
   }
 
 </style>
-<link rel="stylesheet" href="styles.css?v=20261026h">
+<link rel="stylesheet" href="styles.css?v=20261027b">
 <script>
 /* Galerie schon betreten (Neuladen): Startseite sofort ausblenden – vor dem ersten Aufbau,
    damit die wiederhergestellte Scrollposition stimmt (siehe _syncHero in app.js) */
@@ -768,12 +768,23 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <h2 data-en="Exhibitions (Selection)">Ausstellungen (Auswahl)</h2>
     </div>
   </header>
-  <div class="dauer-card fade-in-section">
-    <p class="dauer-eyebrow" data-en="Permanent exhibition">Dauerausstellung</p>
-    <p class="dauer-title" data-en="Kusel Town Hall">Rathaus Kusel</p>
-    <p class="dauer-date" data-en="since 16 September 2023">seit 16. September 2023</p>
-    <span class="dauer-rule" aria-hidden="true"></span>
-    <p class="dauer-text" data-en="A permanent exhibition at Kusel Town Hall presents paintings, graphic works and sculpture by Horst Schwab – a cross-section of six decades of his work.">Im Rathaus Kusel zeigt eine Dauerausstellung Malerei, Grafik und Plastik von Horst Schwab – einen Querschnitt durch sechs Schaffensdekaden.</p>
+  <p class="kat-subhead ausst-cards-head fade-in-section" data-en="Current &amp; upcoming">Aktuell &amp; demnächst</p>
+  <div class="ausst-cards fade-in-section">
+    <!-- Ab dem Starttag schaltet app.js die Karte von „Demnächst“ auf „Aktuell“ -->
+    <article class="ausst-card" id="ausst-kl" data-start="2026-11-13">
+      <p class="ausst-card-eyebrow"><span class="when-soon" data-en="Coming soon">Demnächst</span><span class="when-now" data-en="Now on view">Aktuell</span></p>
+      <h3 class="ausst-card-title">Kaiserslautern</h3>
+      <p class="ausst-card-date" data-en="from 13 November 2026">ab 13. November 2026</p>
+      <span class="ausst-card-rule" aria-hidden="true"></span>
+      <p class="ausst-card-text" data-en="An exhibition of works by Horst Schwab in Kaiserslautern. Further details on the venue and opening hours will follow shortly.">Eine Ausstellung mit Werken von Horst Schwab in Kaiserslautern. Nähere Informationen zu Ort und Öffnungszeiten folgen in Kürze.</p>
+    </article>
+    <article class="ausst-card">
+      <p class="ausst-card-eyebrow" data-en="Permanent exhibition">Dauerausstellung</p>
+      <h3 class="ausst-card-title" data-en="Kusel Town Hall">Rathaus Kusel</h3>
+      <p class="ausst-card-date" data-en="since 16 September 2023">seit 16. September 2023</p>
+      <span class="ausst-card-rule" aria-hidden="true"></span>
+      <p class="ausst-card-text" data-en="A permanent exhibition at Kusel Town Hall presents paintings, graphic works and sculpture by Horst Schwab – a cross-section of six decades of his work.">Im Rathaus Kusel zeigt eine Dauerausstellung Malerei, Grafik und Plastik von Horst Schwab – einen Querschnitt durch sechs Schaffensdekaden.</p>
+    </article>
   </div>
 
   <div class="ausst-block fade-in-section">
@@ -1518,6 +1529,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
 </div>
 
-<script src="app.js?v=20261026e"></script>
+<script src="app.js?v=20261027a"></script>
 </body>
 </html>
