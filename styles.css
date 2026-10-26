@@ -2138,6 +2138,8 @@
     margin-bottom: 0.6rem;
   }
   .ausst-card-date { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.15rem; color: var(--gold-dim); }
+  /* Kommende Ausstellung: Datum groß wie auf einem Plakat */
+  .ausst-card[data-start] .ausst-card-date { font-size: 1.75rem; line-height: 1.2; }
   .ausst-card-rule { display: block; width: 3.5rem; height: 1px; margin: 1.4rem auto; background: linear-gradient(to right, transparent, var(--gold), transparent); }
   .ausst-card-text { max-width: 22rem; margin: 0 auto; font-size: 0.74rem; line-height: 1.95; color: #6f6d66; }
 

@@ -575,8 +575,8 @@
       imgWrap.className = 'coll-card-img';
       if (d.img) {
         const img = document.createElement('img');
-        // verkleinerte Fassung (Images/web, lange Kante 1200 px) – das Original nur in der Werkansicht
-        img.loading = 'lazy'; img.decoding = 'async'; img.src = d.img.replace('Images/', 'Images/web/'); img.alt = title;
+        // Vorschaubild (Images/thumb, lange Kante 800 px) – das Original nur in der Werkansicht
+        img.loading = 'lazy'; img.decoding = 'async'; img.src = _thumbImg(d.img); img.alt = title;
         imgWrap.appendChild(img);
       } else {
         imgWrap.appendChild(_makeArtworkCanvas(title, 400, 300));
@@ -637,7 +637,7 @@
       _adSetImg(img, d.img);
       adImgEl.appendChild(img);
       // Vorladen der weiteren Ansichten (verkleinerte Fassung), damit der Wechsel ohne Flackern passiert
-      if (_adViews) _adViews.slice(1).forEach(src => { const p = new Image(); p.src = _webImg(src); });
+      if (_adViews) _adViews.slice(1).forEach(src => { const p = new Image(); p.src = _thumbImg(src); });
     } else {
       const cv = _makeArtworkCanvas(title, 500, 620);
       cv.className = 'ad-placeholder-canvas';
@@ -660,19 +660,19 @@
     document.body.style.overflow = 'hidden';
   }
 
-  /* Werkansicht: sofort die verkleinerte Fassung zeigen (aus der Übersicht meist schon im Cache),
+  /* Werkansicht: sofort das Vorschaubild zeigen (aus der Übersicht meist schon im Cache),
      das Original für Schärfe und Zoom im Hintergrund nachladen und erst fertig dekodiert einsetzen */
-  function _webImg(src) { return src.replace('Images/', 'Images/web/'); }
+  function _thumbImg(src) { return src.replace('Images/', 'Images/thumb/'); }
   function _adSetImg(img, src) {
     img.dataset.full = src;
-    img.src = _webImg(src);
+    img.src = _thumbImg(src);
     const full = new Image();
     full.src = src;
     (full.decode ? full.decode() : new Promise(r => { full.onload = r; }))
       .then(() => { if (img.dataset.full === src) img.src = src; })
       .catch(() => {});
   }
-  // Original schon beim Darüberfahren bzw. Antippen einer Werkkarte vorladen
+  // Original schon beim Darüberfahren mit der Maus vorladen (nicht bei Touch: dort löst schon das Wischen aus und kostet mobile Daten)
   const _adPreloaded = new Set();
   function _adPreload(title) {
     const d = ARTWORKS[title];
@@ -680,11 +680,21 @@
     _adPreloaded.add(d.img);
     const p = new Image(); p.src = d.img;
   }
-  ['pointerenter', 'touchstart'].forEach(ev => document.addEventListener(ev, e => {
+  document.addEventListener('pointerover', e => {
+    if (e.pointerType !== 'mouse') return;
+    // Maus auf einer Kategorie-Kachel: die ersten Vorschaubilder dieser Kollektion schon anfordern
+    const tile = e.target.closest && e.target.closest('.cat-tile');
+    const m = tile && /openCollection\('(\w+)'\)/.exec(tile.getAttribute('onclick') || '');
+    if (m) {
+      document.querySelectorAll('#coll-' + m[1] + ' img[data-src]').forEach((img, i) => {
+        if (i < 4 && !_adPreloaded.has(img.dataset.src)) { _adPreloaded.add(img.dataset.src); const p = new Image(); p.src = img.dataset.src; }
+      });
+      return;
+    }
     const card = e.target.closest && e.target.closest('.coll-card');
     const tEl = card && card.querySelector('.coll-card-title');
     if (tEl) _adPreload(tEl.textContent.trim());
-  }, { capture: true, passive: true }));
+  }, { passive: true });
 
   /* Mehrere Ansichten (Plastiken): Slider in der Detailansicht */
   let _adViews = null;
@@ -863,7 +873,11 @@
     if (!el) return;
     // Bilder erst jetzt laden: die unsichtbaren Ebenen liegen über dem Bildschirm, „lazy“ allein
     // würde sonst beim Seitenaufruf alle Kollektionen (rund 10 MB) sofort mitladen
-    el.querySelectorAll('img[data-src]').forEach(img => { img.src = img.dataset.src; img.removeAttribute('data-src'); });
+    // Vorschaubilder erst beim Öffnen laden; die ersten Karten (sichtbar) mit Vorrang, damit sie nicht mit den übrigen um die Leitung konkurrieren
+    el.querySelectorAll('img[data-src]').forEach((img, i) => {
+      if (i < 4) { img.loading = 'eager'; img.fetchPriority = 'high'; }
+      img.src = img.dataset.src; img.removeAttribute('data-src');
+    });
     el.classList.add('active');
     document.body.style.overflow = 'hidden';
     el.scrollTop = 0;
