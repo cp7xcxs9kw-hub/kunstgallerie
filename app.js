@@ -282,15 +282,6 @@
   //  Beenden steht man am Galerie-Anfang)
   if (heroGhostBtn) heroGhostBtn.addEventListener('click', function() { _enterGallery(); _syncHero(); });
 
-  // Galerie-Link: zur Startseite navigieren (Hero, frisch geladen)
-  document.querySelectorAll('.nav-reload').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      sessionStorage.removeItem('galleryEntered');
-      window.location.href = window.location.pathname;
-    });
-  });
-
   // Alle anderen internen Links: normaler Raumübergang
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     if (link.classList.contains('hero-enter')) return;
@@ -372,11 +363,11 @@
 
   const I18N = {
     de: {
-      'nav-galerie':'Galerie','nav-werke':'Werke','nav-bio':'Biographie','nav-rundgang':'Rundgang',
-      'nav-socials':'Socials','nav-kontakt':'Kontakt','nav-favs-label':'Merkliste',
-      'hero-label':'Galerie','hero-enter':'Galerie betreten','hero-enter-ghost':'→ Rundgang starten',
+      'nav-werke':'Werke','nav-bio':'Leben','nav-werk':'Das Werk','nav-ausst':'Ausstellungen','nav-rundgang':'Rundgang',
+      'nav-socials':'Socials','nav-kontakt':'Kontakt',
+      'hero-label':'Malerei · Grafik · Plastik','hero-enter':'Werke entdecken','hero-enter-ghost':'→ Rundgang starten',
       'intro-label':'Willkommen',
-      'gal-label':'Aktuelle Werke','gal-heading':'Ausgewählte Kollektion',
+      'gal-label':'Ausgewählte Werke','gal-heading':'Werke aus sechs Jahrzehnten',
       'cat-acryl':'Malerei','cat-oel':'Collage \u0026 Zeichnungen','cat-aquarell':'Grafik',
       'cat-view-1':'Kollektion ansehen','cat-view-2':'Kollektion ansehen','cat-view-3':'Kollektion ansehen','cat-view-4':'Kollektion ansehen',
       'coll-back-acryl-t':'Zurück','coll-back-oel-t':'Zurück','coll-back-aquarell-t':'Zurück','coll-back-mixed-t':'Zurück',
@@ -384,24 +375,22 @@
       'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Entdecken Sie neue Werke, Ausstellungen und Einblicke hinter die Kulissen.',
       'soc-cal-label':'Termin buchen','soc-cal-sub':'Besichtigung vereinbaren',
       'cal-success-text':'Ihr E-Mail-Programm öffnet sich.','cal-success-sub':'Bitte senden Sie die vorbereitete E-Mail ab – wir bestätigen den Termin. Falls sich nichts öffnet: info@horstschwab.de',
-      'kon-label':'Kontakt','kon-heading':'Sprechen Sie mit uns','kon-sub':'Für Fragen zu den Werken oder eine private Besichtigung.',
+      'kon-label':'Kontakt','kon-heading':'Fragen zum Werk','kon-sub':'Schreiben Sie uns bei Fragen zum Werk oder um eine private Besichtigung zu vereinbaren.',
       'kon-email-label':'E-Mail','kon-studio-label':'Atelier','kon-studio-val':'Nach Vereinbarung',
       'ad-back-text':'Zurück','ad-story-head':'Über dieses Werk','ad-offer-btn':'Besichtigung anfragen','ad-rundgang-btn':'Im Rundgang entdecken',
       'fav-back-text':'Zurück','fav-heading':'Merkliste',
       'fav-empty-label':'Noch keine Werke gespeichert.',
       'ad-tech-label':'Technik','ad-size-label':'Format','ad-year-label':'Jahr','ad-cat-label':'Kategorie','ad-sign-label':'Signatur',
       'ad-sub-text':'Originalwerk  ·  Bild folgt in Kürze',
-      'bio-label':'Biographie','bio-teaser-label':'Biographie',
-      'bio-fl-1':'Geburtsjahr','bio-fl-2':'Ausbildung','bio-fl-3':'Tätig in','bio-fl-4':'Auszeichnung','bio-fl-5':'Techniken','bio-fl-6':'Publikation',
-      'bio-fv-3':'Kusel · Pfalz','bio-fv-4':'Pfalzpreis für Malerei','bio-fv-5':'Malerei · Grafik · Plastik','bio-fv-6':'Gedichtband 2015',
+      'bio-label':'Leben','bio-teaser-label':'Leben',
       'cat-mixed':'Plastik',
     },
     en: {
-      'nav-galerie':'Gallery','nav-werke':'Works','nav-bio':'Biography','nav-rundgang':'Tour',
-      'nav-socials':'Socials','nav-kontakt':'Contact','nav-favs-label':'Wishlist',
-      'hero-label':'Gallery','hero-enter':'Enter Gallery','hero-enter-ghost':'→ Enter Tour',
+      'nav-werke':'Works','nav-bio':'Life','nav-werk':'The Work','nav-ausst':'Exhibitions','nav-rundgang':'Tour',
+      'nav-socials':'Socials','nav-kontakt':'Contact',
+      'hero-label':'Painting · Graphic Art · Sculpture','hero-enter':'Discover the Works','hero-enter-ghost':'→ Enter Tour',
       'intro-label':'Welcome',
-      'gal-label':'Current Works','gal-heading':'Selected Collection',
+      'gal-label':'Selected Works','gal-heading':'Works from Six Decades',
       'cat-acryl':'Painting','cat-oel':'Collage \u0026 Drawings','cat-aquarell':'Graphics',
       'cat-view-1':'View Collection','cat-view-2':'View Collection','cat-view-3':'View Collection','cat-view-4':'View Collection',
       'coll-back-acryl-t':'Back','coll-back-oel-t':'Back','coll-back-aquarell-t':'Back','coll-back-mixed-t':'Back',
@@ -409,16 +398,14 @@
       'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'Discover new works, exhibitions and behind-the-scenes insights.',
       'soc-cal-label':'Book appointment','soc-cal-sub':'Schedule a viewing',
       'cal-success-text':'Your e-mail program is opening.','cal-success-sub':'Please send the prepared e-mail – we will confirm the appointment. If nothing opens: info@horstschwab.de',
-      'kon-label':'Contact','kon-heading':'Get in Touch','kon-sub':'For questions about the works or a private viewing.',
+      'kon-label':'Contact','kon-heading':'Questions about the Work','kon-sub':'Write to us with questions about the work or to arrange a private viewing.',
       'kon-email-label':'E-Mail','kon-studio-label':'Studio','kon-studio-val':'By appointment',
       'ad-back-text':'Back','ad-story-head':'About This Work','ad-offer-btn':'Request a Viewing','ad-rundgang-btn':'Discover in Virtual Tour',
       'fav-back-text':'Back','fav-heading':'Wishlist',
       'fav-empty-label':'No works saved yet.',
       'ad-tech-label':'Technique','ad-size-label':'Format','ad-year-label':'Year','ad-cat-label':'Category','ad-sign-label':'Signature',
       'ad-sub-text':'Original work  ·  Image coming soon',
-      'bio-label':'Biography','bio-teaser-label':'Biography',
-      'bio-fl-1':'Born','bio-fl-2':'Education','bio-fl-3':'Based in','bio-fl-4':'Award','bio-fl-5':'Techniques','bio-fl-6':'Publication',
-      'bio-fv-3':'Kusel · Palatinate','bio-fv-4':'Pfalz Prize for Painting','bio-fv-5':'Painting · Graphics · Sculpture','bio-fv-6':'Poetry Collection 2015',
+      'bio-label':'Life','bio-teaser-label':'Life',
       'cat-mixed':'Sculpture',
     }
   };
@@ -882,7 +869,7 @@
   heroObserver.observe(heroEl);
 
   // Aktiven Abschnitt in Nav markieren
-  const sections = ['galerie', 'ueber-uns', 'socials', 'kontakt'];
+  const sections = ['galerie', 'ueber-uns', 'das-werk', 'ausstellungen', 'socials', 'kontakt'];
   const sectionEls = sections.map(id => document.getElementById(id));
 
   const activeObserver = new IntersectionObserver((entries) => {

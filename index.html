@@ -125,7 +125,7 @@
   }
 
 </style>
-<link rel="stylesheet" href="styles.css?v=20261026b">
+<link rel="stylesheet" href="styles.css?v=20261026d">
 <script>
 /* Galerie schon betreten (Neuladen): Startseite sofort ausblenden – vor dem ersten Aufbau,
    damit die wiederhergestellte Scrollposition stimmt (siehe _syncHero in app.js) */
@@ -173,13 +173,14 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <div class="nav-logo" onclick="_goToHero()" style="cursor:pointer;"><span>G</span> Horst Schwab</div>
   <div class="nav-divider"></div>
   <ul class="nav-links">
-    <li><a href="index.html" class="nav-reload" id="nav-galerie">Galerie</a></li>
     <li><a href="#galerie" id="nav-werke">Werke</a></li>
-    <li><a href="#ueber-uns" id="nav-bio">Biographie</a></li>
+    <li><a href="#ueber-uns" id="nav-bio">Leben</a></li>
+    <li><a href="#das-werk" id="nav-werk">Das Werk</a></li>
+    <li><a href="#ausstellungen" id="nav-ausst">Ausstellungen</a></li>
     <li><a href="#" id="nav-rundgang" data-i18n="nav-rundgang">Rundgang</a></li>
     <li><a href="#socials" id="nav-socials">Socials</a></li>
     <li><a href="#kontakt" id="nav-kontakt">Kontakt</a></li>
-    <li><a href="#" id="btn-favs" onclick="event.preventDefault();openFavs()"><span id="nav-favs-label">Merkliste</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
+    <li><a href="#" id="btn-favs" aria-label="Merkliste" data-en-aria-label="Wishlist" title="Merkliste" data-en-title="Wishlist" onclick="event.preventDefault();openFavs()"><span class="nav-fav-icon" aria-hidden="true">♡</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
   </ul>
 </nav>
 <div id="lang-switcher">
@@ -240,14 +241,15 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
   <div class="hero-stage">
     <div class="hero-title">
-      <p class="hero-label" id="hero-label">Galerie</p>
+      <p class="hero-label" id="hero-label">Malerei · Grafik · Plastik</p>
       <h1 class="hero-name">Horst <br>Schwab</h1>
       <span class="hero-name-line"></span>
       <p class="hero-dates">1935 &ndash; 2017</p>
       <div class="hero-ctas">
-        <a href="#intro-scene" class="hero-enter" id="hero-enter">Galerie betreten</a>
+        <a href="#intro-scene" class="hero-enter" id="hero-enter">Werke entdecken</a>
         <button class="hero-enter-ghost" id="hero-enter-ghost" onclick="document.getElementById('nav-rundgang').click()">&#8594;&nbsp; Rundgang starten</button>
       </div>
+      <a href="#ausstellungen" class="hero-dauer" data-en="Permanent exhibition at Kusel Town Hall">Dauerausstellung im Rathaus Kusel</a>
     </div>
 
     <!-- Werk im Licht: wechselt automatisch (siehe HERO-WERK in app.js) -->
@@ -305,27 +307,23 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   <div class="intro-frame">
     <p class="section-label" id="intro-label">Willkommen</p>
     <p class="intro-text lang-de">
-      Jedes Werk erzählt eine Geschichte.<br>
-      Jeder Blick öffnet eine neue Welt.<br>
-      Willkommen an einem Ort, wo Kunst atmet.
+      Sechs Jahrzehnte künstlerischen Arbeitens.<br>Die menschliche Figur im Mittelpunkt, die Linie als Spur.<br>Ein Lebenswerk, das hier bewahrt und gezeigt wird.
     </p>
     <p class="intro-text lang-en" style="display:none">
-      Every work tells a story.<br>
-      Every glance opens a new world.<br>
-      Welcome to a place where art breathes.
+      Six decades of artistic work.<br>The human figure at its centre, the line as a trace.<br>A life’s work, preserved and presented here.
     </p>
   </div>
   <p class="intro-scroll-hint">
     <span class="intro-scroll-arrow">&#8595;</span>
-    <span class="lang-de">Entdecken Sie die Sammlung</span>
-    <span class="lang-en" style="display:none">Explore the Collection</span>
+    <span class="lang-de">Das Werk entdecken</span>
+    <span class="lang-en" style="display:none">Explore the work</span>
   </p>
 </section>
 
 <section id="galerie">
   <div class="gallery-header">
-    <p class="section-label" id="gal-label">Aktuelle Werke</p>
-    <h2 id="gal-heading">Ausgewählte Kollektion</h2>
+    <p class="section-label" id="gal-label">Ausgewählte Werke</p>
+    <h2 id="gal-heading">Werke aus sechs Jahrzehnten</h2>
   </div>
 
   <div class="gallery-frame">
@@ -616,19 +614,17 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <p class="section-label" id="bio-label">Biographie</p>
     <h2>Horst Schwab<br>1935 – 2017</h2>
     <div class="lang-de">
-    <p>Horst Schwab wurde 1935 in Kirchheimbolanden (Donnersbergkreis) geboren und verbrachte Kindheit und Jugend auf dem Weierhof in Bolanden. Nach dem Abitur 1955 studierte er Kunst und Germanistik an der Universität und Staatlichen Kunstschule Mainz (1956–1960). Von 1960 bis 2015 wirkte er als Kunstlehrer an den Gymnasien Kirchheimbolanden und Kusel.</p>
-    <p>Sein künstlerisches Schaffen umfasste Malerei, Grafik, Druckgrafik, Plastik, Skulptur und Collage — ein Werk von großer Vielseitigkeit, das zwischen Figuration und Abstraktion wechselt. Die menschliche Figur bildet ein beständiges Zentrum: in expressiver Formensprache, mit lebhafter Farbigkeit und einer charakteristischen stillen Intensität. Max Knieriemen (SWR2, 2019) beschrieb sein Werk als eines, das »durch große Vielseitigkeit besticht« und keiner Phase auf eine einzige Herangehensweise zu reduzieren ist.</p>
-    <p>Ein bedeutendes öffentliches Werk ist das <span class="tooltip-wrap"><strong>Peter-Altmeier-Denkmal am Deutschen Eck in Koblenz</strong><span class="tooltip-popup"><img loading="lazy" decoding="async" src="Images/tooltip-koblenz.jpg" alt="Peter-Altmeier-Denkmal Koblenz"><span class="tooltip-caption">Peter-Altmeier-Denkmal, Koblenz</span></span></span> (1980), das zu seinen bekanntesten Arbeiten im öffentlichen Raum zählt. Weitere öffentliche Werke sind Glasfenster für Kirchen in Altenglan und Nanzdietschweiler sowie eine Holzskulptur für ein Gemeindezentrum in Belarus.</p>
-    <p>Für sein Schaffen wurde er mehrfach ausgezeichnet: 1973 mit dem Pfalzpreis für Malerei, 1980 mit dem 1. Preis des Gestaltungswettbewerbs Peter-Altmeier-Gedenkstätte Koblenz und 1995 mit dem Preis der Vereinigung Pfälzer Kunstfreunde (Picasso-Medaille). Er hinterließ ein vielfältiges Œuvre, das bis heute in Ausstellungen und Sammlungen präsent ist.</p>
-    <p>Neben seiner bildenden Kunst verfasste er Gedichte in pfälzischem Dialekt. 2015 erschien sein Gedichtband <em>Ich unn moi Fraa und andere Gedichte</em> — illustriert mit eigenen Zeichnungen.</p>
-  </div>
-  <div class="lang-en" style="display:none">
-    <p>Horst Schwab was born in 1935 in Kirchheimbolanden (Donnersbergkreis) and grew up at the Weierhof in Bolanden. After his Abitur in 1955, he studied Art and German Studies at the University and State Art School in Mainz (1956–1960). From 1960 to 2015 he taught at grammar schools in Kirchheimbolanden and Kusel.</p>
-    <p>His artistic practice encompassed painting, printmaking, graphic art, sculpture, and collage — a body of work of remarkable versatility moving between figuration and abstraction. The human figure forms a constant centre: rendered in expressive formal language, vivid colour and a characteristic quiet intensity. Max Knieriemen (SWR2, 2019) described his work as one that "impresses through great versatility" — impossible to reduce to a single perspective or approach.</p>
-    <p>Among his significant public works is the Peter Altmeier Memorial at the Deutsches Eck in Koblenz (1980). He also created stained-glass windows for churches in Altenglan and Nanzdietschweiler, and a wooden sculpture for a community centre in Belarus.</p>
-    <p>He received numerous awards: the Pfalz Prize for Painting in 1973, First Prize in the Peter Altmeier Memorial design competition in 1980, and the Prize of the Association of Palatinate Art Friends (Picasso Medal) in 1995. He left behind a diverse body of work that remains present in exhibitions and collections to this day.</p>
-    <p>Alongside his visual art, he wrote poetry in the Palatinate dialect. In 2015, his poetry collection <em>Ich unn moi Fraa und andere Gedichte</em> was published — illustrated with his own drawings.</p>
-  </div>
+      <p>Horst Schwab wurde 1935 in Kirchheimbolanden geboren und wuchs auf dem Weierhof in der Gemeinde Bolanden auf. 1955 legte er in Kirchheimbolanden das Abitur ab. Von 1956 bis 1960 studierte er in Mainz Kunst und Germanistik; 1961 schloss er sein Studium mit dem zweiten Staatsexamen ab.</p>
+      <p>Von 1961 bis 1966 unterrichtete er als Lehrer in Kirchheimbolanden, von 1966 bis 1995 am Gymnasium in Kusel. Seine Schüler nannten ihn „Schwablo Picasso“. Neben dem Unterricht entstand über Jahrzehnte ein umfangreiches Werk aus Malerei, Grafik, Collage, Plastik und Glasfenstern.</p>
+      <p>Für sein Schaffen erhielt er 1973 den Pfalzpreis für Malerei, 1980 den ersten Preis im Gestaltungswettbewerb für die Peter-Altmeier-Gedenkstätte in Koblenz und 1995 die Picasso-Medaille, den Preis der Vereinigung Pfälzer Kunstfreunde. 2015 veröffentlichte er eine Sammlung von Gedichten in Pfälzer Mundart, „Ich unn moi Fraa und andere Gedichte“, mit eigenen Zeichnungen illustriert.</p>
+      <p>Horst Schwab starb am 31. Juli 2017 in Kusel.</p>
+    </div>
+    <div class="lang-en" style="display:none">
+      <p>Horst Schwab was born in Kirchheimbolanden in 1935 and grew up at the Weierhof in the municipality of Bolanden. He took his Abitur in Kirchheimbolanden in 1955. From 1956 to 1960 he studied art and German literature in Mainz, and in 1961 he completed his studies with the second state examination.</p>
+      <p>From 1961 to 1966 he taught in Kirchheimbolanden, and from 1966 to 1995 at the Gymnasium in Kusel. His pupils called him “Schwablo Picasso”. Alongside his teaching, an extensive body of work in painting, graphic art, collage, sculpture and stained glass took shape over the decades.</p>
+      <p>For his work he received the Pfalzpreis for painting in 1973, first prize in the design competition for the Peter Altmeier Memorial in Koblenz in 1980, and in 1995 the Picasso Medal, the prize of the Vereinigung Pfälzer Kunstfreunde. In 2015 he published a collection of poems in the Palatine dialect, “Ich unn moi Fraa und andere Gedichte”, illustrated with his own drawings.</p>
+      <p>Horst Schwab died in Kusel on 31 July 2017.</p>
+    </div>
     <blockquote class="bio-quote lang-de">
       <span class="bio-quote-mark">"</span>Die Bildsprache des Expressionismus ist nie fern — doch hängt über diesen malerischen Welten eine auffällige Stille.<span class="bio-quote-mark">"</span>
       <cite style="display:block;margin-top:0.7rem;font-size:max(0.55rem, var(--label-min));letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
@@ -641,90 +637,158 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <p style="font-size:0.6rem; letter-spacing:0.2em; color: var(--gold);" id="bio-roles">MALER &nbsp;|&nbsp; GRAFIKER &nbsp;|&nbsp; BILDHAUER &nbsp;|&nbsp; LYRIKER</p>
   </div>
 
-  <div class="bio-timeline fade-in-section">
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1935</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Geburt in Kirchheimbolanden (Donnersbergkreis)</p>
-      <p class="bio-tl-text lang-en" style="display:none">Born in Kirchheimbolanden, Donnersbergkreis</p>
+  <ol class="life-timeline fade-in-section">
+    <li class="life-item">
+      <span class="life-year">1935</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Born in Kirchheimbolanden; childhood and youth at the Weierhof (Bolanden)">Geboren in Kirchheimbolanden; Kindheit und Jugend auf dem Weierhof (Bolanden)</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1955</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Abitur in Kirchheimbolanden">Abitur in Kirchheimbolanden</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1956–1960</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Studies art and German literature in Mainz">Studium der Kunst und Germanistik in Mainz</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1961</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Second state examination in Mainz">Zweites Staatsexamen in Mainz</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1961–1966</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Teacher in Kirchheimbolanden">Lehrer in Kirchheimbolanden</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1966–1995</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Teacher at the Gymnasium in Kusel">Lehrer am Gymnasium Kusel</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1973</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Pfalzpreis for painting">Pfalzpreis für Malerei</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1980</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="First prize in the design competition for the Peter Altmeier Memorial, Koblenz">1. Preis im Gestaltungswettbewerb der Peter-Altmeier-Gedenkstätte Koblenz</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">1995</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Picasso Medal of the Vereinigung Pfälzer Kunstfreunde">Picasso-Medaille der Vereinigung Pfälzer Kunstfreunde</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">2015</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Publication of the poetry collection “Ich unn moi Fraa und andere Gedichte”">Veröffentlichung der Gedichtsammlung „Ich unn moi Fraa und andere Gedichte“</p>
+    </li>
+    <li class="life-item">
+      <span class="life-year">2017</span>
+      <span class="life-dot" aria-hidden="true"></span>
+      <p class="life-text" data-en="Dies in Kusel on 31 July">Gestorben am 31. Juli in Kusel</p>
+    </li>
+  </ol>
+
+</section>
+
+
+<!-- ══════════════════════════════════════
+     DAS WERK
+══════════════════════════════════════ -->
+<section id="das-werk">
+  <p class="section-label fade-in-section" data-en="The Work">Das Werk</p>
+  <h2 data-en="The Figure and the Line">Die Figur und die Linie</h2>
+  <div class="werk-text">
+    <div class="lang-de">
+      <p>Horst Schwab arbeitete in Malerei, Grafik und Collage ebenso wie in Holz und Bronze, schuf Glasfenster und schrieb Gedichte. Seine Kunst steht dem Expressionismus nahe: Sie lebt von kraftvoller Abstraktion, von Farbflächen und der Lust am Experiment, bleibt dabei aber ruhig und meditativ und verzichtet auf jede Effekthascherei.</p>
+      <p>Im Zentrum steht die menschliche Figur: einzelne Gestalten, Figurengruppen, Beziehungen, Torsi. In den „Urmüttern“ verschmelzen Landschaft und Figur. Schwab arbeitete ohne festes Konzept, aus dem Prozess heraus; die Linie deutet den Körper an, statt ihn auszuführen. In den 1970er und 1980er Jahren entstanden grafische und experimentelle Mischtechniken, später verwendete er Elemente früherer Blätter als „Bildbausteine“ für neue Collagen.</p>
     </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1956–1960</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Studium Kunst und Germanistik, Mainz</p>
-      <p class="bio-tl-text lang-en" style="display:none">Art &amp; German Studies, Mainz</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1960–2015</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Lehrtätigkeit Gymnasien Kirchheimbolanden und Kusel</p>
-      <p class="bio-tl-text lang-en" style="display:none">Art Teacher, Grammar Schools Kirchheimbolanden &amp; Kusel</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1965–2017</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Künstlerisches Schaffen und viele Ausstellungen</p>
-      <p class="bio-tl-text lang-en" style="display:none">Artistic Work and Many Exhibitions</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1973</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Pfalzpreis für Malerei</p>
-      <p class="bio-tl-text lang-en" style="display:none">Pfalz Prize for Painting</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1980</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">1. Preis, Gestaltungswettbewerb Peter-Altmeier-Gedenkstätte Koblenz</p>
-      <p class="bio-tl-text lang-en" style="display:none">1st Prize, Peter Altmeier Memorial Design Competition, Koblenz</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">1995</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Preis der Vereinigung Pfälzer Kunstfreunde (Picasso-Medaille)</p>
-      <p class="bio-tl-text lang-en" style="display:none">Prize of the Association of Palatinate Art Friends (Picasso Medal)</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">2015</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Gedichtband »Ich unn moi Fraa und andere Gedichte«</p>
-      <p class="bio-tl-text lang-en" style="display:none">Poetry Collection »Ich unn moi Fraa und andere Gedichte«</p>
-    </div>
-    <div class="bio-tl-item">
-      <span class="bio-tl-year">2017</span>
-      <div class="bio-tl-dot"></div>
-      <p class="bio-tl-text lang-de">Tod in Kusel</p>
-      <p class="bio-tl-text lang-en" style="display:none">Died in Kusel</p>
+    <div class="lang-en" style="display:none">
+      <p>Horst Schwab worked in painting, graphic art and collage as well as in wood and bronze, created stained-glass windows and wrote poetry. His art is close to Expressionism: it draws on forceful abstraction, planes of colour and a readiness to experiment, yet it remains quiet and meditative and avoids any striving for effect.</p>
+      <p>At the centre stands the human figure: single figures, groups, relationships, torsos. In the “Urmütter” (primal mothers), landscape and figure merge. Schwab worked without a fixed concept, allowing each piece to develop in the process; the line suggests the body rather than describing it. In the 1970s and 1980s he developed graphic and experimental mixed techniques, and later he used elements of earlier sheets as “building blocks” (“Bildbausteine”) for new collages.</p>
     </div>
   </div>
-
-  <div class="bio-facts fade-in-section">
-    <div class="bio-fact">
-      <span class="bio-fact-label" id="bio-fl-1">Geburtsjahr</span>
-      <span class="bio-fact-value">1935</span>
+  <div class="werk-facts fade-in-section">
+    <div class="werk-col">
+      <p class="werk-col-head" data-en="Works in public spaces">Arbeiten im öffentlichen Raum</p>
+      <ul>
+        <li><span data-en="Chancel window, Protestant church, Altenglan">Chorfenster, Evangelische Kirche Altenglan</span></li>
+        <li><span data-en="Baptismal window, Martinskirche, Nanzdietschweiler">Tauffenster, Martinskirche Nanzdietschweiler</span></li>
+        <li><span data-en="Peter Altmeier Memorial, Koblenz"><span class="tooltip-wrap">Peter-Altmeier-Gedenkstätte Koblenz<span class="tooltip-popup"><img loading="lazy" decoding="async" src="Images/tooltip-koblenz.jpg" alt="Peter-Altmeier-Gedenkstätte Koblenz" data-en-alt="Peter Altmeier Memorial, Koblenz"></span></span></span></li>
+        <li><span data-en="Wooden sculpture “Hoffnungsgruppe” (Group of Hope), community centre, Leltschizy (Belarus)">Holzplastik „Hoffnungsgruppe“, Gemeinschaftshaus Leltschizy (Belarus)</span></li>
+      </ul>
     </div>
-    <div class="bio-fact">
-      <span class="bio-fact-label" id="bio-fl-2">Ausbildung</span>
-      <span class="bio-fact-value">Mainz</span>
+    <div class="werk-col">
+      <p class="werk-col-head" data-en="Symposia">Symposien</p>
+      <ul>
+        <li><span class="werk-year">2002</span> <span data-en="Yggdrasill wood sculpture, Schweisweiler">Yggdrasill Holzbildhauerei, Schweisweiler</span></li>
+        <li><span class="werk-year">2006</span> <span data-en="Kunst im Grünen, Reipoltskirchen">Kunst im Grünen, Reipoltskirchen</span></li>
+        <li><span class="werk-year">2009</span> <span data-en="Mysterium Königsberg, Heimschuh (Carinthia)">Mysterium Königsberg, Heimschuh (Kärnten)</span></li>
+      </ul>
     </div>
-    <div class="bio-fact">
-      <span class="bio-fact-label" id="bio-fl-3">Tätig in</span>
-      <span class="bio-fact-value" id="bio-fv-3">Kusel · Pfalz</span>
-    </div>
-    <div class="bio-fact">
-      <span class="bio-fact-label" id="bio-fl-4">Auszeichnung</span>
-      <span class="bio-fact-value" id="bio-fv-4">Pfalzpreis für Malerei</span>
-    </div>
-    <div class="bio-fact">
-      <span class="bio-fact-label" id="bio-fl-5">Techniken</span>
-      <span class="bio-fact-value" id="bio-fv-5">Malerei · Grafik · Plastik · Skulptur</span>
-    </div>
-    <div class="bio-fact">
-      <span class="bio-fact-label" id="bio-fl-6">Lyrisches Werk</span>
-      <span class="bio-fact-value" id="bio-fv-6">Gedichtband 2015</span>
+    <div class="werk-col">
+      <p class="werk-col-head" data-en="Memberships">Mitgliedschaften</p>
+      <ul>
+        <li><span data-en="apk (Arbeitsgemeinschaft Pfälzer Künstler)">apk (Arbeitsgemeinschaft Pfälzer Künstler)</span></li>
+        <li><span data-en="BBK Rheinland-Pfalz">BBK Rheinland-Pfalz</span></li>
+        <li><span data-en="BDK">BDK</span></li>
+        <li><span data-en="Kunstverein Neustadt/Weinstraße (art society)">Kunstverein Neustadt/Weinstraße</span></li>
+        <li><span data-en="Kunstkreis Kusel (art circle)">Kunstkreis Kusel</span></li>
+        <li><span data-en="Mach-Art (Schweisweiler)">Mach-Art (Schweisweiler)</span></li>
+      </ul>
     </div>
   </div>
+</section>
 
+
+<!-- ══════════════════════════════════════
+     AUSSTELLUNGEN
+══════════════════════════════════════ -->
+<section id="ausstellungen">
+  <p class="section-label fade-in-section" data-en="Exhibitions">Ausstellungen</p>
+  <h2 data-en="Exhibitions (Selection)">Ausstellungen (Auswahl)</h2>
+
+  <div class="dauer-card fade-in-section">
+    <p class="dauer-eyebrow" data-en="Permanent exhibition">Dauerausstellung</p>
+    <p class="dauer-title" data-en="Kusel Town Hall">Rathaus Kusel</p>
+    <p class="dauer-text" data-en="Since 16 September 2023, Kusel Town Hall has presented paintings, graphic works and sculpture by Horst Schwab. The exhibition offers a cross-section of six decades of his work.">Seit dem 16. September 2023 zeigt das Rathaus Kusel Malerei, Grafik und Plastik von Horst Schwab. Die Ausstellung bietet einen Querschnitt durch sechs Schaffensdekaden.</p>
+  </div>
+
+  <div class="ausst-block">
+    <p class="werk-col-head" data-en="Solo exhibitions (selection)">Einzelausstellungen (Auswahl)</p>
+    <ul class="ausst-list">
+        <li><span class="ausst-year">2023</span> <span data-en="Kusel, Rathaus (permanent exhibition)">Kusel, Rathaus (Dauerausstellung)</span></li>
+        <li><span class="ausst-year">2019</span> <span data-en="Rockenhausen, Museum Pachen, “Vermächtnis: Figur”">Rockenhausen, Museum Pachen, „Vermächtnis: Figur“</span></li>
+        <li><span class="ausst-year">2015</span> <span data-en="Waldmohr">Waldmohr</span></li>
+        <li><span class="ausst-year">2011</span> <span data-en="Kusel, Rathaus">Kusel, Rathaus</span></li>
+        <li><span class="ausst-year">2010</span> <span data-en="Nohfelden, Bosener Mühle, “Vom Wandel der Bilder – Collagen”">Nohfelden, Bosener Mühle, „Vom Wandel der Bilder – Collagen“</span></li>
+        <li><span class="ausst-year">2004</span> <span data-en="Dahn, Kreisgalerie">Dahn, Kreisgalerie</span></li>
+        <li><span class="ausst-year">2001</span> <span data-en="Unkenbach, Künstlerhof">Unkenbach, Künstlerhof</span></li>
+        <li><span class="ausst-year">2000</span> <span data-en="Kusel, Stadt- und Heimatmuseum">Kusel, Stadt- und Heimatmuseum</span></li>
+        <li><span class="ausst-year">1998</span> <span data-en="Dahn, Altes Rathaus (Old Town Hall); Zweibrücken, Maison Charme">Dahn, Altes Rathaus; Zweibrücken, Maison Charme</span></li>
+        <li><span class="ausst-year">1996</span> <span data-en="Schifferstadt, Altes Rathaus (Old Town Hall)">Schifferstadt, Altes Rathaus</span></li>
+        <li><span class="ausst-year">1995</span> <span data-en="Neustadt/Weinstraße, Villa Böhm, and Rockenhausen, Kahnweiler-Haus (each for his 60th birthday)">Neustadt/Weinstraße, Villa Böhm, und Rockenhausen, Kahnweiler-Haus (jeweils zum 60. Geburtstag)</span></li>
+        <li><span class="ausst-year">1994</span> <span data-en="Burg Lichtenberg (VPK art prize)">Burg Lichtenberg (VPK-Kunstpreis)</span></li>
+        <li><span class="ausst-year">1993</span> <span data-en="Landstuhl, Galerie Naffouj">Landstuhl, Galerie Naffouj</span></li>
+        <li><span class="ausst-year">1990</span> <span data-en="Langwedel, Galerie Uhlenberg">Langwedel, Galerie Uhlenberg</span></li>
+        <li><span class="ausst-year">1986</span> <span data-en="Lambsheim">Lambsheim</span></li>
+        <li><span class="ausst-year">1983</span> <span data-en="Pirmasens; Heidelberg, Galerie Melnikow">Pirmasens; Heidelberg, Galerie Melnikow</span></li>
+        <li><span class="ausst-year">1979</span> <span data-en="Waldmohr">Waldmohr</span></li>
+        <li><span class="ausst-year">1974</span> <span data-en="Landstuhl, Galerie Naffouj">Landstuhl, Galerie Naffouj</span></li>
+        <li><span class="ausst-year">1972</span> <span data-en="Saarbrücken, Galerie Elitzer">Saarbrücken, Galerie Elitzer</span></li>
+    </ul>
+  </div>
+
+  <div class="ausst-block">
+    <p class="werk-col-head" data-en="Group exhibitions (selection)">Gruppenausstellungen (Auswahl)</p>
+    <p class="ausst-gruppe" data-en="Works by Horst Schwab were shown, among other places, at the Pfalzgalerie Kaiserslautern (1970, 1978, 1987, 1988, 1991, 1993, 2002), in the Landeskunstausstellungen (state art exhibitions) in Mainz in 1969 and Koblenz in 1973, at the Landtag in Mainz (1983, 1996), at the Stadtgalerie Mainz in 1993, at the Göcsej Museum in Zalaegerszeg (Hungary) in 1992, in Toucy (France) in 1980, at Galerie Reichert in Karlsruhe in 2012/13 and at the Herrenhof Neustadt-Mußbach, there in 2019, among other occasions, as a recipient of the Picasso Medal.">Arbeiten von Horst Schwab waren unter anderem in der Pfalzgalerie Kaiserslautern (1970, 1978, 1987, 1988, 1991, 1993, 2002), in den Landeskunstausstellungen Mainz 1969 und Koblenz 1973, im Landtag Mainz (1983, 1996), in der Stadtgalerie Mainz 1993, im Göcsej-Museum in Zalaegerszeg (Ungarn) 1992, in Toucy (Frankreich) 1980, in der Galerie Reichert in Karlsruhe 2012/13 sowie im Herrenhof Neustadt-Mußbach zu sehen, dort unter anderem 2019 als Preisträger der Picasso-Medaille.</p>
+  </div>
 </section>
 
 
@@ -780,8 +844,8 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 ══════════════════════════════════════ -->
 <section id="kontakt">
   <p class="section-label fade-in-section" id="kon-label">Kontakt</p>
-  <h2 id="kon-heading">Sprechen Sie mit uns</h2>
-  <p id="kon-sub">Für Fragen zu den Werken oder eine private Besichtigung.</p>
+  <h2 id="kon-heading">Fragen zum Werk</h2>
+  <p id="kon-sub">Schreiben Sie uns bei Fragen zum Werk oder um eine private Besichtigung zu vereinbaren.</p>
 
   <div class="contact-grid fade-in-section" style="transition-delay:0.15s">
     <div class="contact-item">
@@ -1347,7 +1411,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <li><a href="#" onclick="openLegal('impressum'); return false;">Impressum</a></li>
     <li><a href="#" onclick="openLegal('datenschutz'); return false;">Datenschutz</a></li>
   </ul>
-  <span class="footer-copy">© 2026 · Kunst · Leidenschaft · Zeitlos</span>
+  <span class="footer-copy" data-en="© 2026 Estate of Horst Schwab">© 2026 Nachlass Horst Schwab</span>
 </footer>
 
 <button id="back-to-top" aria-label="Nach oben" data-en-aria-label="Back to top">↑</button>
@@ -1456,6 +1520,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
 </div>
 
-<script src="app.js?v=20261026b"></script>
+<script src="app.js?v=20261026c"></script>
 </body>
 </html>
