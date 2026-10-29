@@ -3862,6 +3862,14 @@
 
     var cur = 0, tgt = 0, rafId = null, lastT = 0;
 
+    // Tastatur: springt der Fokus auf eine noch unsichtbare Kachel, die Szene an die Stelle scrollen,
+    // an der alle Kacheln ruhig im Bild stehen (Fortschritt 0,32–0,60)
+    for (var k = 0; k < tiles.length; k++) tiles[k].addEventListener('focus', function() {
+      if (parseFloat(this.style.opacity || '1') >= 0.9) return;
+      var top = scene.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + 0.46 * (scene.offsetHeight - (pinEl ? pinEl.offsetHeight : window.innerHeight)), behavior: 'instant' });
+    });
+
     function scrollP() {
       // Strecke, über die der angeheftete Bildschirm steht – mit seiner festen Höhe statt innerHeight,
       // das sich beim Ein-/Ausklappen der iPhone-Adressleiste ändert und den Fortschritt springen ließ
@@ -3980,21 +3988,21 @@
         grid.appendChild(btn);
       }
       // nur ein Tag ist per Tab erreichbar (gewählter, sonst heutiger, sonst erster freier); Pfeiltasten wechseln
-      var days = grid.querySelectorAll('.cal-day:not(:disabled)');
-      var focusDay = grid.querySelector('.cal-selected') || grid.querySelector('.cal-today:not(:disabled)') || days[0];
+      var days = grid.querySelectorAll('button.cal-day:not(:disabled)');
+      var focusDay = grid.querySelector('button.cal-selected') || grid.querySelector('button.cal-today:not(:disabled)') || days[0];
       if (focusDay) focusDay.tabIndex = 0;
     }
 
     document.getElementById('cal-days').addEventListener('keydown', function(e) {
-      var btn = e.target.closest('.cal-day');
+      var btn = e.target.closest('button.cal-day');
       if (!btn) return;
       var step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
       if (!step && e.key !== 'Home' && e.key !== 'End') return;
       e.preventDefault();
-      var days = [].slice.call(this.querySelectorAll('.cal-day:not(:disabled)'));
+      var days = [].slice.call(this.querySelectorAll('button.cal-day:not(:disabled)'));
       var d = +btn.dataset.day;
       var next = e.key === 'Home' ? days[0] : e.key === 'End' ? days[days.length - 1]
-        : this.querySelector('.cal-day[data-day="' + (d + step) + '"]:not(:disabled)');
+        : this.querySelector('button.cal-day[data-day="' + (d + step) + '"]:not(:disabled)');
       if (!next && step) {
         // über den Monatsrand: Monat wechseln und dort weiter (nicht in die Vergangenheit)
         var target = new Date(cur.year, cur.month, d + step);
@@ -4002,7 +4010,7 @@
         if (target < t0) return;
         cur = { year: target.getFullYear(), month: target.getMonth() };
         renderCal();
-        next = this.querySelector('.cal-day[data-day="' + target.getDate() + '"]');
+        next = this.querySelector('button.cal-day[data-day="' + target.getDate() + '"]');
       }
       if (!next) return;
       days.forEach(function(x) { x.tabIndex = -1; });
@@ -4498,10 +4506,13 @@
         if (open) {
           const act = document.activeElement;
           el._opener = act && act !== document.body && !el.contains(act) ? act : null;
+          el._openerKey = el._opener ? { sel: el._opener.tagName.toLowerCase() + (el._opener.classList[0] ? '.' + el._opener.classList[0] : ''), txt: el._opener.textContent.trim() } : null;
           if (!el.hasAttribute('tabindex')) el.tabIndex = -1;
           setTimeout(() => { if (isOpen(el) && !el.contains(document.activeElement)) el.focus({ preventScroll: true }); }, 60);
         } else {
-          const op = el._opener; el._opener = null;
+          let op = el._opener; const key = el._openerKey; el._opener = el._openerKey = null;
+          // wurde der Auslöser inzwischen neu gezeichnet (z. B. Merkliste), das gleichwertige Element suchen
+          if (op && !op.isConnected && key) op = [...document.querySelectorAll(key.sel)].find(x => x.textContent.trim() === key.txt && visible(x)) || null;
           const act = document.activeElement;
           if (op && op.isConnected && visible(op) && (!act || act === document.body || el.contains(act))) op.focus({ preventScroll: true });
         }

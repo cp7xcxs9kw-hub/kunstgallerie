@@ -556,11 +556,10 @@
     font-size: max(0.54rem, var(--label-min));
     letter-spacing: 0.45em;
     text-transform: uppercase;
-    animation: introHintPulse 2.8s ease-in-out infinite;
   }
   .intro-scroll-arrow {
     font-size: 1rem;
-    animation: introArrowBounce 2s ease-in-out infinite;
+    animation: introArrowBounce 2s ease-in-out infinite, introHintPulse 2.8s ease-in-out infinite;   /* Puls nur am Pfeil: Text bleibt kontraststark */
     display: block;
   }
   @keyframes introArrowBounce {
@@ -877,9 +876,13 @@
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--cream);
-    min-width: 0; overflow-wrap: anywhere;   /* lange Wörter („ZEICHNUNGEN“) ragen am schmalen Handy nicht über den Rand */
+    min-width: 0;
   }
-  @media (max-width: 400px) { .coll-heading { letter-spacing: 0.16em; } }
+  /* Schmale Handys: Überschrift unter den Zurück-Knopf, damit lange Wörter („ZEICHNUNGEN“) ganz in die Zeile passen */
+  @media (max-width: 480px) {
+    .coll-header { flex-wrap: wrap; gap: 1.2rem; }
+    .coll-heading { flex-basis: 100%; letter-spacing: 0.16em; overflow-wrap: break-word; }
+  }
   .wip-banner {
     border: 1px solid var(--gold);
     padding: 2.5rem 3rem;
@@ -2580,10 +2583,12 @@
     overflow-y: auto;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.45s ease;
+    visibility: hidden;   /* geschlossen: nicht per Tab erreichbar */
+    transition: opacity 0.45s ease, visibility 0s linear 0.45s;
     -webkit-overflow-scrolling: touch;
   }
   .legal-overlay.active {
+    visibility: visible; transition: opacity 0.45s ease, visibility 0s;
     opacity: 1;
     pointer-events: all;
   }
@@ -3235,3 +3240,9 @@
   .cal-weekdays span { color: rgba(201,168,76,0.75); }
   .cal-confirm { color: rgba(201,168,76,0.75); }
   #ad-rundgang-btn { background: rgba(8,7,6,0.85); }
+
+  /* Kalender: Uhrzeit und Anfrage-Knopf erst nach der Datumswahl bedienbar (vorher unsichtbar, also nicht per Tab) */
+  .cal-time-wrap:not(.open), .cal-book-btn:not(.visible) { visibility: hidden; }
+  .cal-time-label { color: rgba(201,168,76,0.75); }
+  /* Bio-Karussell: Pfeile auch bei Tastaturfokus sichtbar */
+  .about-visual:focus-within .bio-nav, .bio-nav:focus-visible { opacity: 1; }
