@@ -3865,7 +3865,8 @@
     // Tastatur: springt der Fokus auf eine noch unsichtbare Kachel, die Szene an die Stelle scrollen,
     // an der alle Kacheln ruhig im Bild stehen (Fortschritt 0,32–0,60)
     for (var k = 0; k < tiles.length; k++) tiles[k].addEventListener('focus', function() {
-      if (parseFloat(this.style.opacity || '1') >= 0.9) return;
+      // nur bei Tastaturfokus – Antippen/Klicken einer halb eingeblendeten Kachel soll die Seite nicht verschieben
+      if (!this.matches(':focus-visible') || parseFloat(this.style.opacity || '1') >= 0.9) return;
       var top = scene.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({ top: top + 0.46 * (scene.offsetHeight - (pinEl ? pinEl.offsetHeight : window.innerHeight)), behavior: 'instant' });
     });
@@ -4013,7 +4014,8 @@
         next = this.querySelector('button.cal-day[data-day="' + target.getDate() + '"]');
       }
       if (!next) return;
-      days.forEach(function(x) { x.tabIndex = -1; });
+      // nach einem Monatswechsel sind die Knöpfe neu – deshalb frisch abfragen, damit nur ein Tag per Tab erreichbar bleibt
+      this.querySelectorAll('button.cal-day').forEach(function(x) { x.tabIndex = -1; });
       next.tabIndex = 0; next.focus();
     });
 
@@ -4487,7 +4489,9 @@
     // Ebenen (Dialoge): Fokus beim Öffnen hinein, beim Schließen zurück zum Auslöser, Tab bleibt in der obersten Ebene
     const LAYERS = '.legal-overlay, #cal-overlay, .coll-overlay, #artwork-detail, #gallery-vr';
     const isOpen = el => el.id === 'gallery-vr' ? el.style.display === 'block' : el.classList.contains('active');
-    const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+    // nur per Tab erreichbare Elemente (tabindex="-1" zählt nicht, z. B. die übrigen Kalendertage)
+    const FOCUSABLE = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select', 'textarea', '[tabindex]']
+      .map(s => s + ':not([tabindex="-1"])').join(', ');
     const visible = el => !!(el.offsetParent || el.getClientRects().length) && getComputedStyle(el).visibility !== 'hidden';
     function topLayer() {
       let top = null, z = -Infinity;
