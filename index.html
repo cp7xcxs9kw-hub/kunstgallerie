@@ -117,13 +117,32 @@
   }
 
 </style>
-<link rel="stylesheet" href="styles.css?v=20261027d">
+<link rel="stylesheet" href="styles.css?v=20261029a">
 <script>
 /* Galerie schon betreten (Neuladen): Startseite sofort ausblenden – vor dem ersten Aufbau,
    damit die wiederhergestellte Scrollposition stimmt (siehe _syncHero in app.js) */
 try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentElement.classList.add('gallery-entered'); } catch (e) {}
 </script>
 </head>
+<!--
+  ═══ BILDNACHWEISE UND BILDRECHTE (intern, zur Klärung durch den Nachlass) ═══
+  Werke von Horst Schwab (Urheberrecht: Erben). Rechte an den Reproduktionsfotos klären, falls nicht selbst fotografiert.
+    assets/hero/C-F-2002-3.jpg, C-F-2004-1.jpg, C-F-2004-2.jpg, C-F-2005-5.jpg, C-F-2005-6.jpg   Startseite (Werkfotos)
+    Images/C-F-2001-1 … C-F-2005-6 (16 Werke)  + Images/web/, Images/thumb/ (verkleinerte Fassungen)   Kollektion Collage & Zeichnungen
+    Images/Plastik-1-a … Plastik-6-b (6 Plastiken, je 2 Ansichten)  + web/, thumb/          Kollektion Plastik
+    Images/vr-0.jpg … vr-15.jpg                                                    Werkfotos im 3D-Rundgang
+    assets/bio/selbstbildnis-1982.jpg      Selbstbildnis 1982 (Werk von Horst Schwab, Reproduktion)
+    assets/og-preview.jpg                  Vorschaubild für soziale Netzwerke (Ausschnitt aus „Meer“, 2005)
+  !! FOTOS MIT PERSONEN – Fotograf/in unbekannt, wirken wie Pressefotos: Urheberrecht des Fotografen und
+     Einwilligung/Persönlichkeitsrechte der abgebildeten Personen klären
+    assets/portrait.jpg                    Horst Schwab im Atelier (Leben, Bild 1)
+    assets/bio/80-geburtstag-2015.jpg      Horst Schwab zum 80. Geburtstag 2015, mit Werk (Leben, Bild 2)
+    assets/bio/portraet.jpg                Porträt Horst Schwab (Leben, Bild 3)
+  !! FREMDES FOTO MIT LIZENZ
+    Images/tooltip-koblenz.jpg             Peter-Altmeier-Gedenkstätte Koblenz – Foto: Holger Weinandt, CC BY-SA 3.0 DE
+                                           (Namensnennung im Tooltip und im Impressum unter „Bildnachweise“; keine Personen erkennbar)
+  Eigene Grafik: icon.svg (Logo). Nicht verwendet, aber im Repo: assets/hero-bg.jpg, assets/artwork-linie.png
+-->
 <body>
 <svg id="nav-sweep" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
   <!-- Äußerste Linien – sehr fein -->
@@ -169,19 +188,19 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <li><a href="#ueber-uns" id="nav-bio">Leben</a></li>
     <li><a href="#das-werk" id="nav-werk">Das Werk</a></li>
     <li><a href="#ausstellungen" id="nav-ausst">Ausstellungen</a></li>
-    <li><a href="#" id="nav-rundgang" data-i18n="nav-rundgang">Rundgang</a></li>
+    <li><a href="#" id="nav-rundgang" role="button" data-i18n="nav-rundgang">Rundgang</a></li>
     <li><a href="#socials" id="nav-socials">Socials</a></li>
     <li><a href="#kontakt" id="nav-kontakt">Kontakt</a></li>
-    <li><a href="#" id="btn-favs" aria-label="Merkliste" data-en-aria-label="Wishlist" title="Merkliste" data-en-title="Wishlist" onclick="event.preventDefault();openFavs()"><span class="nav-fav-icon" aria-hidden="true">♡</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
+    <li><a href="#" id="btn-favs" role="button" aria-label="Merkliste" data-en-aria-label="Wishlist" title="Merkliste" data-en-title="Wishlist" onclick="event.preventDefault();openFavs()"><span class="nav-fav-icon" aria-hidden="true">♡</span><span class="fav-count-badge" id="fav-badge" style="display:none">0</span></a></li>
   </ul>
 </nav>
 <div id="lang-switcher">
   <button class="lang-toggle-btn" onclick="toggleLang()" id="lang-btn"><span id="l-de" class="l-active">DE</span><span class="l-sep">·</span><span id="l-en">EN</span></button>
 </div>
-<div id="gallery-vr">
+<div id="gallery-vr" role="dialog" aria-modal="true" aria-label="Virtueller Rundgang" data-en-aria-label="Virtual tour">
   <canvas id="gallery-canvas"></canvas>
   <button id="gallery-vr-close"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x2715;&nbsp;&nbsp;<span data-en="EXIT">BEENDEN</span></button>
-  <button id="vr-info-btn" title="Rundgang-Hilfe" data-en-title="Tour help">?</button>
+  <button id="vr-info-btn" title="Rundgang-Hilfe" data-en-title="Tour help" aria-label="Rundgang-Hilfe" data-en-aria-label="Tour help">?</button>
   <div id="vr-info-panel">
     <div class="vr-info-box">
       <p class="vr-info-label">Galerie Horst Schwab</p>
@@ -203,10 +222,11 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
         </div>
         <div class="vr-info-step">
           <span class="vr-info-step-icon">✕</span>
-          <span class="vr-info-step-text" data-en="End the tour — ‘Exit’ button at the top right">Rundgang beenden — Button »Beenden« oben rechts</span>
+          <span class="vr-info-step-text" data-en="End the tour — ‘Exit’ button at the top right or &lt;em&gt;Esc&lt;/em&gt;">Rundgang beenden — Button »Beenden« oben rechts oder <em>Esc</em></span>
         </div>
       </div>
       <button class="vr-info-close" data-en="Enter Tour">Rundgang betreten</button>
+      <a href="#galerie" class="vr-info-alt" data-en="Without 3D: view the works in the overview">Ohne 3D: Werke in der Übersicht ansehen</a>
     </div>
   </div>
   <button id="vr-back" aria-label="Zurück" data-en-aria-label="Back"><svg class="vr-btn-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line class="vr-btn-line" x1="0.5" y1="0.5" x2="99.5" y2="0.5"/><line class="vr-btn-line" x1="0.5" y1="99.5" x2="99.5" y2="99.5"/></svg>&#x276E;&#x276E;&nbsp;&nbsp;<span data-en="BACK">ZURÜCK</span></button>
@@ -301,14 +321,14 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <p class="intro-text lang-de">
       Sechs Jahrzehnte künstlerischen Schaffens.<br>Im Mittelpunkt die menschliche Figur.<br>Ein Lebenswerk, hier bewahrt.
     </p>
-    <p class="intro-text lang-en" style="display:none">
+    <p class="intro-text lang-en" lang="en" style="display:none">
       Six decades of artistic work.<br>At its centre, the human figure.<br>A life’s work, preserved here.
     </p>
   </div>
   <p class="intro-scroll-hint">
     <span class="intro-scroll-arrow">&#8595;</span>
     <span class="lang-de">Das Werk entdecken</span>
-    <span class="lang-en" style="display:none">Explore the work</span>
+    <span class="lang-en" lang="en" style="display:none">Explore the work</span>
   </p>
 </section>
 
@@ -363,7 +383,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 <!-- ══ COLLECTION OVERLAYS ══════════════════════════════════════════ -->
 
 <!-- ACRYL -->
-<div id="coll-acryl" class="coll-overlay">
+<div id="coll-acryl" class="coll-overlay" role="dialog" aria-modal="true" aria-labelledby="coll-head-acryl">
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('acryl')" id="coll-back-acryl">&#x2190; &nbsp;<span id="coll-back-acryl-t">Zurück</span></button>
@@ -378,26 +398,26 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Komposition I')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.5"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Komposition I</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 120 × 90 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Komposition I</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Stille II')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.5"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Stille II</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 80 × 60 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Stille II</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Aufbruch')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Aufbruch</p><p class="coll-card-meta">Acryl auf Leinwand &nbsp;·&nbsp; 100 × 80 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Aufbruch</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Horizont')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><line x1="4" y1="32" x2="60" y2="32" stroke="#C9A84C" stroke-width="0.5"/><line x1="4" y1="40" x2="60" y2="40" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Horizont</p><p class="coll-card-meta">Acryl auf Papier &nbsp;·&nbsp; 70 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Horizont</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ÖL -->
-<div id="coll-oel" class="coll-overlay">
+<div id="coll-oel" class="coll-overlay" role="dialog" aria-modal="true" aria-labelledby="coll-head-oel">
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('oel')" id="coll-back-oel">&#x2190; &nbsp;<span id="coll-back-oel-t">Zurück</span></button>
@@ -473,7 +493,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 </div>
 
 <!-- AQUARELL -->
-<div id="coll-aquarell" class="coll-overlay">
+<div id="coll-aquarell" class="coll-overlay" role="dialog" aria-modal="true" aria-labelledby="coll-head-aquarell">
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('aquarell')" id="coll-back-aquarell">&#x2190; &nbsp;<span id="coll-back-aquarell-t">Zurück</span></button>
@@ -488,26 +508,26 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <div class="coll-grid">
       <div class="coll-card" onclick="openArtwork('Vergänglichkeit')">
         <div class="coll-card-img"></div>
-        <div class="coll-card-body"><p class="coll-card-title">Vergänglichkeit</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 60 × 50 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Vergänglichkeit</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Morgenrot')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.5" opacity="0.6"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.5"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Morgenrot</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 50 × 40 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Morgenrot</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Nebel')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><line x1="8" y1="28" x2="56" y2="28" stroke="#C9A84C" stroke-width="0.5"/><line x1="12" y1="36" x2="52" y2="36" stroke="#C9A84C" stroke-width="0.4" opacity="0.6"/><line x1="18" y1="44" x2="46" y2="44" stroke="#C9A84C" stroke-width="0.3" opacity="0.3"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Nebel</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 70 × 55 cm &nbsp;·&nbsp; 2024</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Nebel</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
       <div class="coll-card" onclick="openArtwork('Fluss')">
         <div class="coll-card-img"><svg width="56" height="56" viewBox="0 0 64 64" fill="none"><path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.5" fill="none"/></svg></div>
-        <div class="coll-card-body"><p class="coll-card-title">Fluss</p><p class="coll-card-meta">Aquarell auf Papier &nbsp;·&nbsp; 55 × 45 cm &nbsp;·&nbsp; 2023</p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
+        <div class="coll-card-body"><p class="coll-card-title">Fluss</p><p class="coll-card-meta"></p><p class="coll-card-soon" data-en="Work coming soon">Werk folgt in Kürze</p></div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- MIXED MEDIA -->
-<div id="coll-mixed" class="coll-overlay">
+<div id="coll-mixed" class="coll-overlay" role="dialog" aria-modal="true" aria-labelledby="coll-head-mixed">
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeCollection('mixed')" id="coll-back-mixed">&#x2190; &nbsp;<span id="coll-back-mixed-t">Zurück</span></button>
@@ -592,13 +612,13 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   </header>
   <div class="about-visual" id="bio-carousel">
     <img class="bio-slide active" loading="lazy" decoding="async" src="assets/portrait.jpg"
-         alt="Horst Schwab">
+         alt="Horst Schwab im Atelier, vor seinen Bildern" data-en-alt="Horst Schwab in his studio, in front of his paintings">
     <img class="bio-slide" loading="lazy" decoding="async" src="assets/bio/80-geburtstag-2015.jpg"
-         alt="80. Geburtstag, 2015" data-en-alt="80th birthday, 2015" style="object-position: right center;">
+         alt="Horst Schwab mit einem seiner Werke, Foto zum 80. Geburtstag 2015" data-en-alt="Horst Schwab with one of his works, photo for his 80th birthday, 2015" style="object-position: right center;">
     <img class="bio-slide" loading="lazy" decoding="async" src="assets/bio/portraet.jpg"
-         alt="Porträt" data-en-alt="Portrait">
+         alt="Porträtfoto von Horst Schwab" data-en-alt="Portrait photo of Horst Schwab">
     <img class="bio-slide" loading="lazy" decoding="async" src="assets/bio/selbstbildnis-1982.jpg"
-         alt="Selbstbildnis, 1982" data-en-alt="Self-portrait, 1982">
+         alt="Selbstbildnis von Horst Schwab, 1982 (Gemälde)" data-en-alt="Self-portrait by Horst Schwab, 1982 (painting)">
     <button class="bio-nav bio-nav-prev" aria-label="Vorheriges Bild" data-en-aria-label="Previous image">&#8592;</button>
     <button class="bio-nav bio-nav-next" aria-label="Nächstes Bild" data-en-aria-label="Next image">&#8594;</button>
     <div class="bio-dots">
@@ -616,7 +636,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
         <p>Für sein Schaffen erhielt er 1973 den Pfalzpreis für Malerei, 1980 den ersten Preis im Gestaltungswettbewerb für die Peter-Altmeier-Gedenkstätte in Koblenz und 1995 die Picasso-Medaille, den Preis der Vereinigung Pfälzer Kunstfreunde. 2015 veröffentlichte er eine Sammlung von Gedichten in Pfälzer Mundart, „Ich unn moi Fraa und andere Gedichte“, mit eigenen Zeichnungen illustriert.</p>
         <p>Horst Schwab starb am 31. Juli 2017 in Kusel.</p>
       </div>
-      <div class="lang-en" style="display:none">
+      <div class="lang-en" lang="en" style="display:none">
         <p>Horst Schwab was born in Kirchheimbolanden in 1935 and grew up at the Weierhof in the municipality of Bolanden. He took his Abitur in Kirchheimbolanden in 1955. From 1956 to 1960 he studied art and German literature at the university and the Landeskunstschule in Mainz, and in 1961 he completed his studies with the second state examination.</p>
         <p>From 1961 to 1966 he taught in Kirchheimbolanden, and from 1966 to 1995 at the Gymnasium in Kusel. His pupils called him “Schwablo Picasso”. Alongside his teaching, an extensive body of work in painting, graphic art, collage, sculpture and stained glass took shape over the decades. As a teacher and colleague, he shaped the Palatinate art scene for decades.</p>
         <p>For his work he received the Pfalzpreis for painting in 1973, first prize in the design competition for the Peter Altmeier Memorial in Koblenz in 1980, and in 1995 the Picasso Medal, the prize of the Vereinigung Pfälzer Kunstfreunde. In 2015 he published a collection of poems in the Palatine dialect, “Ich unn moi Fraa und andere Gedichte”, illustrated with his own drawings.</p>
@@ -710,17 +730,20 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
         <p>Horst Schwab arbeitete in Malerei, Grafik und Collage ebenso wie in Holz und Bronze, schuf Glasfenster und schrieb Gedichte. Seine Kunst steht dem Expressionismus nahe: Sie lebt von kraftvoller Abstraktion, von Farbflächen und der Lust am Experiment, bleibt dabei aber ruhig und meditativ und verzichtet auf jede Effekthascherei.</p>
         <p>Im Zentrum steht die menschliche Figur: einzelne Gestalten, Figurengruppen, Beziehungen, Torsi. In den „Urmüttern“ verschmelzen Landschaft und Figur. Schwab arbeitete ohne festes Konzept, aus dem Prozess heraus; die Linie deutet den Körper an, statt ihn auszuführen. In den 1970er und 1980er Jahren entstanden grafische und experimentelle Mischtechniken, später verwendete er Elemente früherer Blätter als „Bildbausteine“ für neue Collagen.</p>
       </div>
-      <div class="lang-en" style="display:none">
+      <div class="lang-en" lang="en" style="display:none">
         <p>Horst Schwab worked in painting, graphic art and collage as well as in wood and bronze, created stained-glass windows and wrote poetry. His art is close to Expressionism: it draws on forceful abstraction, planes of colour and a readiness to experiment, yet it remains quiet and meditative and avoids any striving for effect.</p>
         <p>At the centre stands the human figure: single figures, groups, relationships, torsos. In the “Urmütter” (primal mothers), landscape and figure merge. Schwab worked without a fixed concept, allowing each piece to develop in the process; the line suggests the body rather than describing it. In the 1970s and 1980s he developed graphic and experimental mixed techniques, and later he used elements of earlier sheets as “building blocks” (“Bildbausteine”) for new collages.</p>
       </div>
+      <!-- ZITAT – ZUR PRÜFUNG DER ZITATRECHTE: Thomas Behnke, „Die Rheinpfalz“, 2019 (genaues Erscheinungsdatum und
+           Artikeltitel noch nachtragen). Kurzzitat (ein Satz) mit Quellenangabe nach § 51 UrhG; englische Fassung ist eine
+           eigene Übersetzung und als solche gekennzeichnet. -->
       <blockquote class="bio-quote lang-de">
       <span class="bio-quote-mark">"</span>Die Bildsprache des Expressionismus ist nie fern — doch hängt über diesen malerischen Welten eine auffällige Stille.<span class="bio-quote-mark">"</span>
       <cite style="display:block;margin-top:0.7rem;font-size:max(0.55rem, var(--label-min));letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
     </blockquote>
-      <blockquote class="bio-quote lang-en" style="display:none">
+      <blockquote class="bio-quote lang-en" lang="en" style="display:none">
       <span class="bio-quote-mark">"</span>The language of Expressionism is never far — yet a striking stillness pervades these painted worlds.<span class="bio-quote-mark">"</span>
-      <cite style="display:block;margin-top:0.7rem;font-size:max(0.55rem, var(--label-min));letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019</cite>
+      <cite style="display:block;margin-top:0.7rem;font-size:max(0.55rem, var(--label-min));letter-spacing:0.15em;color:var(--gold-dim);font-style:normal;">— Thomas Behnke, Die Rheinpfalz, 2019 (translation)</cite>
     </blockquote>
     </div>
   </div>
@@ -730,7 +753,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
       <ul>
           <li><span data-en="Chancel window, Protestant church, Altenglan">Chorfenster, Evangelische Kirche Altenglan</span></li>
           <li><span data-en="Baptismal window, Martinskirche, Nanzdietschweiler">Tauffenster, Martinskirche Nanzdietschweiler</span></li>
-          <li><span class="tooltip-wrap"><span data-en="Peter Altmeier Memorial, Koblenz">Peter-Altmeier-Gedenkstätte Koblenz</span><span class="tooltip-popup"><img loading="lazy" decoding="async" src="Images/tooltip-koblenz.jpg" alt="Peter-Altmeier-Gedenkstätte Koblenz" data-en-alt="Peter Altmeier Memorial, Koblenz"></span></span></li>
+          <li><span class="tooltip-wrap" tabindex="0"><span data-en="Peter Altmeier Memorial, Koblenz">Peter-Altmeier-Gedenkstätte Koblenz</span><span class="tooltip-popup"><img loading="lazy" decoding="async" src="Images/tooltip-koblenz.jpg" alt="Peter-Altmeier-Gedenkstätte Koblenz" data-en-alt="Peter Altmeier Memorial, Koblenz"><span class="tooltip-caption" data-en="Photo: Holger Weinandt, CC BY-SA 3.0 DE">Foto: Holger Weinandt, CC BY-SA 3.0 DE</span></span></span></li>
           <li><span data-en="Wooden sculpture “Hoffnungsgruppe” (Group of Hope), community centre, Leltschizy (Belarus)">Holzplastik „Hoffnungsgruppe“, Gemeinschaftshaus Leltschizy (Belarus)</span></li>
       </ul>
     </div>
@@ -859,8 +882,8 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
           <rect x="11" y="13" width="3" height="3" rx="0.5" fill="currentColor" stroke="none" opacity="0.7"/>
         </svg>
       </div>
-      <p class="social-name" id="soc-cal-label">Termin buchen</p>
-      <p class="social-handle" id="soc-cal-sub">Besichtigung vereinbaren</p>
+      <p class="social-name" id="soc-cal-label">Termin anfragen</p>
+      <p class="social-handle" id="soc-cal-sub">Wunschtermin per E-Mail</p>
     </a>
   </div>
 </section>
@@ -986,6 +1009,17 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
+    <!-- 8b. BILDNACHWEISE -->
+    <div class="legal-block">
+      <p class="legal-section-head">Bildnachweise</p>
+      <div class="legal-body">
+        <p>
+          Peter-Altmeier-Gedenkstätte Koblenz: Foto von Holger Weinandt, lizenziert unter <a href="https://creativecommons.org/licenses/by-sa/3.0/de/" target="_blank" rel="noopener">Creative Commons Namensnennung – Weitergabe unter gleichen Bedingungen 3.0 Deutschland (CC BY-SA 3.0 DE)</a>.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
     <!-- 9. URHEBERRECHT -->
     <div class="legal-block">
       <p class="legal-section-head">Urheberrecht</p>
@@ -1000,7 +1034,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
 
     </div>
-  <div class="lang-en" style="display:none">
+  <div class="lang-en" lang="en" style="display:none">
 <p class="legal-note legal-translation-note">This English translation is provided for convenience only. In the event of any discrepancy, the German version is legally binding.</p>
 
     <p class="legal-eyebrow">Legal Information</p>
@@ -1083,6 +1117,17 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
         </p>
         <p>
           The linked pages were checked for possible legal violations at the time of linking. No unlawful content was apparent at the time of linking. However, permanent monitoring of the content of the linked pages is not reasonable without concrete indications of an infringement. Upon becoming aware of infringements, we will remove such links immediately.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
+    <!-- 8b. IMAGE CREDITS -->
+    <div class="legal-block">
+      <p class="legal-section-head">Image Credits</p>
+      <div class="legal-body">
+        <p>
+          Peter Altmeier Memorial, Koblenz: photo by Holger Weinandt, licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.en" target="_blank" rel="noopener">Creative Commons Attribution-ShareAlike 3.0 Germany (CC BY-SA 3.0 DE)</a>.
         </p>
       </div>
     </div>
@@ -1260,7 +1305,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
 
     </div>
-  <div class="lang-en" style="display:none">
+  <div class="lang-en" lang="en" style="display:none">
 <p class="legal-note legal-translation-note">This English translation is provided for convenience only. In the event of any discrepancy, the German version is legally binding.</p>
 
     <p class="legal-eyebrow">Legal Information</p>
@@ -1426,20 +1471,20 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 <button id="back-to-top" aria-label="Nach oben" data-en-aria-label="Back to top">↑</button>
 
 <!-- ══ KALENDER OVERLAY ══ -->
-<div id="cal-overlay" role="dialog" aria-modal="true" aria-label="Termin buchen" data-en-aria-label="Book an appointment">
+<div id="cal-overlay" role="dialog" aria-modal="true" aria-label="Wunschtermin per E-Mail anfragen" data-en-aria-label="Request a preferred date by e-mail">
   <div class="cal-box">
-    <button class="cal-close" onclick="closeCal()">&#x2715;</button>
+    <button class="cal-close" onclick="closeCal()" aria-label="Schließen" data-en-aria-label="Close">&#x2715;</button>
 
     <div id="cal-main">
       <div class="cal-header">
-        <button class="cal-nav" id="cal-prev">&#8249;</button>
-        <span class="cal-month-label" id="cal-month-label"></span>
-        <button class="cal-nav" id="cal-next">&#8250;</button>
+        <button class="cal-nav" id="cal-prev" aria-label="Vorheriger Monat" data-en-aria-label="Previous month">&#8249;</button>
+        <span class="cal-month-label" id="cal-month-label" aria-live="polite"></span>
+        <button class="cal-nav" id="cal-next" aria-label="Nächster Monat" data-en-aria-label="Next month">&#8250;</button>
       </div>
-      <div class="cal-weekdays">
+      <div class="cal-weekdays" aria-hidden="true">
         <span>Mo</span><span data-en="Tu">Di</span><span data-en="We">Mi</span><span data-en="Th">Do</span><span>Fr</span><span>Sa</span><span data-en="Su">So</span>
       </div>
-      <div class="cal-days" id="cal-days"></div>
+      <div class="cal-days" id="cal-days" role="group" aria-label="Tag wählen (Pfeiltasten zum Wechseln)" data-en-aria-label="Choose a day (use the arrow keys)"></div>
 
       <div class="cal-time-wrap" id="cal-time-wrap">
         <div class="cal-time-label" id="cal-time-label" data-en="Select a time">Uhrzeit wählen</div>
@@ -1448,19 +1493,19 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
             <div class="cal-roller-highlight"></div>
             <div class="cal-roller-fade top"></div>
             <div class="cal-roller-fade bot"></div>
-            <div class="cal-roller" id="cal-roller-h"></div>
+            <div class="cal-roller" id="cal-roller-h" role="spinbutton" tabindex="0" aria-label="Stunde" data-en-aria-label="Hour"></div>
           </div>
           <div class="cal-roller-sep">:</div>
           <div class="cal-roller-wrap">
             <div class="cal-roller-highlight"></div>
             <div class="cal-roller-fade top"></div>
             <div class="cal-roller-fade bot"></div>
-            <div class="cal-roller" id="cal-roller-m"></div>
+            <div class="cal-roller" id="cal-roller-m" role="spinbutton" tabindex="0" aria-label="Minute" data-en-aria-label="Minute"></div>
           </div>
         </div>
       </div>
 
-      <div class="cal-confirm" id="cal-confirm">Datum wählen</div>
+      <div class="cal-confirm" id="cal-confirm" aria-live="polite">Datum wählen</div>
       <button class="cal-book-btn" id="cal-book-btn" onclick="confirmBooking()" data-en="Request by E-Mail">Per E-Mail anfragen</button>
     </div>
     <div class="cal-success" id="cal-success">
@@ -1473,7 +1518,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
 
 <!-- ══ FAVORITES OVERLAY ═════════════════════════════════════════════ -->
-<div id="fav-overlay" class="coll-overlay">
+<div id="fav-overlay" class="coll-overlay" role="dialog" aria-modal="true" aria-labelledby="fav-heading">
   <div class="coll-inner">
     <div class="coll-header">
       <button class="coll-back-btn" onclick="closeFavs()">&#x2190; &nbsp;<span id="fav-back-text">Zurück</span></button>
@@ -1486,13 +1531,13 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 </div>
 
 <!-- ══ ARTWORK DETAIL OVERLAY ════════════════════════════════════════ -->
-<div id="artwork-detail">
+<div id="artwork-detail" role="dialog" aria-modal="true" aria-labelledby="ad-title">
 
   <!-- Topbar -->
   <div style="position:absolute;top:0;left:0;right:0;height:4rem;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;border-bottom:1px solid rgba(201,168,76,0.18);background:#F5F4F0;z-index:2;">
     <button class="ad-back-btn" id="ad-back-btn">&#x2190; &nbsp;<span id="ad-back-text">Zurück</span></button>
     <span class="ad-topbar-title" id="ad-topbar-title"></span>
-    <button class="ad-fav-btn" id="ad-fav-btn" onclick="toggleFav(_adCurrentTitle)">♡</button>
+    <button class="ad-fav-btn" id="ad-fav-btn" onclick="toggleFav(_adCurrentTitle)" aria-label="Zur Merkliste hinzufügen" aria-pressed="false">♡</button>
   </div>
 
   <!-- Left: dark image panel -->
@@ -1508,7 +1553,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     <button id="ad-rundgang-btn" onclick="closeArtwork();document.getElementById('nav-rundgang').click();">
       <span id="ad-rundgang-btn-text">&#9654;&nbsp; Im Rundgang entdecken</span>
     </button>
-    <span id="ad-zoom-hint" style="position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'Montserrat',sans-serif;font-size:max(0.46rem, var(--label-min));letter-spacing:0.22em;color:rgba(201,168,76,0.25);pointer-events:none;" data-en="Scroll to zoom &amp;nbsp;·&amp;nbsp; Double-click to reset">Scrollen zum Vergrößern &nbsp;·&nbsp; Doppelklick zum Zurücksetzen</span>
+    <span id="ad-zoom-hint" style="position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'Montserrat',sans-serif;font-size:max(0.46rem, var(--label-min));letter-spacing:0.22em;color:#806530;pointer-events:none;" data-en="Scroll to zoom &amp;nbsp;·&amp;nbsp; Double-click to reset">Scrollen zum Vergrößern &nbsp;·&nbsp; Doppelklick zum Zurücksetzen</span>
   </div>
 
   <!-- Right: info panel -->
@@ -1529,6 +1574,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
 </div>
 
-<script src="app.js?v=20261027c"></script>
+<script src="app.js?v=20261029a"></script>
 </body>
 </html>

@@ -309,18 +309,18 @@
 
   /* ══ ARTWORK DATA ══ */
   const ARTWORKS = {
-    'Komposition I':   { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'120 × 90 cm', year:'2024', cat:'Malerei', cat_en:'Painting', story:'Komposition I markiert einen Wendepunkt im Schaffen von Horst Schwab. In ruhigen Abendsitzungen entstanden, greift das Werk die Spannung zwischen geometrischer Strenge und freiem Ausdruck auf. Die überlagernden Farbschichten wurden in mehreren Wochen aufgebaut — jede Schicht durfte vollständig trocknen, bevor die nächste aufgetragen wurde. Das Ergebnis ist eine vibrierende Tiefe, die sich je nach Lichteinfall verändert.', story_en:'Komposition I marks a turning point in Horst Schwab\'s work. Created during quiet evening sessions, the painting explores the tension between geometric rigour and free expression. The overlapping colour layers were built up over several weeks — each layer left to dry completely before the next was applied. The result is a vibrant depth that shifts with the light.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Stille II':       { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'80 × 60 cm', year:'2023', cat:'Malerei', cat_en:'Painting', story:'Stille II ist das zweite Werk einer Reihe, die sich dem Thema innerer Ruhe widmet. Schwab arbeitete hier mit ausgesprochen reduzierter Farbpalette — fast ausschließlich Weiß- und Grautöne, unterbrochen von einem einzigen warmen Akzent. Das Kreisformat innerhalb des rechteckigen Trägers erzeugt eine meditative Wirkung, die Betrachtende zum Innehalten einlädt.', story_en:'Stille II is the second work in a series dedicated to inner stillness. Schwab worked here with an exceptionally reduced palette — almost exclusively whites and greys, broken by a single warm accent. The circular form within the rectangular support creates a meditative effect, inviting the viewer to pause.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Aufbruch':        { technique:'Acryl auf Leinwand', technique_en:'Acrylic on canvas', size:'100 × 80 cm', year:'2024', cat:'Malerei', cat_en:'Painting', story:'Aufbruch entstand in einer Phase intensiver Veränderung. Die nach oben strebende Dreiecksform ist bewusst gewählt — sie symbolisiert Bewegung, Entscheidung und den Mut zur Veränderung. Warme Ockertöne treffen auf kühle Blaugrau-Flächen; diese Spannung macht das Bild zu einem emotionalen Dokument seiner Entstehungszeit.', story_en:'Aufbruch (Departure) was created during a period of intense change. The upward-pointing triangular form is deliberate — it symbolises movement, decision and the courage to change. Warm ochres meet cool blue-grey fields; this tension makes the painting an emotional document of the time in which it was made.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Horizont':        { technique:'Acryl auf Papier', technique_en:'Acrylic on paper', size:'70 × 50 cm', year:'2023', cat:'Malerei', cat_en:'Painting', story:'Eine schlichte, fast minimalistische Arbeit — und doch eine der persönlichsten. Die horizontale Linie, die das Bild in zwei nahezu gleiche Hälften teilt, steht für den Moment kurz vor dem Sonnenuntergang. Schwab malte diese Serie während eines längeren Aufenthalts im ländlichen Raum, täglich zur gleichen Stunde, mit dem Blick auf denselben Horizont.', story_en:'A simple, almost minimalist work — yet one of the most personal. The horizontal line dividing the canvas into two near-equal halves represents the moment just before sunset. Schwab painted this series during an extended stay in the countryside, at the same hour each day, looking out at the same horizon.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
-    'Tiefe':           { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'100 × 75 cm', year:'2024', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Tiefe ist eines der technisch anspruchsvollsten Werke Schwabs. Die charakteristische Kurve wurde mit Ölfarbe in einem einzigen langen Pinselstrich gesetzt — ein Akt, der monatelange Vorbereitung und Konzentration erforderte. Die Schichten darunter, in Lasurtechnik aufgebaut, verleihen dem Werk eine Leuchtkraft, die erst beim längeren Betrachten vollständig sichtbar wird.', story_en:'Tiefe (Depth) is one of Schwab\'s most technically demanding works. The characteristic curve was set with oil paint in a single long brushstroke — an act requiring months of preparation and concentration. The layers beneath, built up in glazing technique, lend the work a luminosity that only becomes fully visible on prolonged viewing.', svg:'<path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Stille I':        { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'120 × 90 cm', year:'2022', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das erste Werk der Stille-Serie und Ausgangspunkt einer mehrjährigen Auseinandersetzung mit dem Thema Reduktion. Schwab verzichtete hier bewusst auf jede narrative Botschaft — das Bild soll kein Thema transportieren, sondern einen Zustand erzeugen. Mehrfach übermalt und wieder freigelegt, trägt die Oberfläche die Geschichte seiner eigenen Entstehung in sich.', story_en:'The first work of the Stille series and the starting point of a multi-year exploration of reduction. Schwab deliberately renounced all narrative message — the painting is not intended to carry a theme, but to generate a state. Repeatedly painted over and uncovered again, the surface carries the history of its own making.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
-    'Dämmerung':       { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'90 × 70 cm', year:'2023', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Die Tageszeit zwischen Tag und Nacht hat Schwab schon immer fasziniert. Dämmerung versucht, diesen flüchtigen Moment festzuhalten — nicht als Abbild, sondern als Stimmung. Der Halbkreis am unteren Bildrand ist kein Sonnen-Symbol, sondern das Ergebnis eines spontanen Eingriffs am späten Abend im Atelier, der das Bild aus seiner ursprünglichen Planung herausriss und in etwas Ungeplantes verwandelte.', story_en:'The hour between day and night has always fascinated Schwab. Dämmerung (Dusk) tries to capture this fleeting moment — not as an image, but as a mood. The semicircle at the lower edge is not a sun symbol; it arose from a spontaneous late-evening intervention in the studio that wrenched the painting out of its original plan into something unplanned.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
-    'Landschaft I':    { technique:'Öl auf Leinwand', technique_en:'Oil on canvas', size:'140 × 100 cm', year:'2024', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Das großformatigste Ölbild dieser Kollektion. Schwab kehrte hier zu seinen Wurzeln zurück — figurativ, landschaftsbezogen, aber ohne jemals konkret zu werden. Die geschwungene Linie, die das Bild diagonal durchzieht, ist gleichzeitig Horizont, Fluss und Geste. Entstanden über einen Zeitraum von vier Monaten, ist Landschaft I eine Meditation über das Vergehen von Zeit im Raum.', story_en:'The largest oil painting in this collection. Schwab returned here to his roots — figurative, landscape-related, yet never quite concrete. The sweeping line crossing the canvas diagonally is at once a horizon, a river and a gesture. Created over four months, Landschaft I is a meditation on the passing of time through space.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
-    'Vergänglichkeit': { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'60 × 50 cm', year:'2023', cat:'Grafik', cat_en:'Graphics', story:'Aquarell ist das Medium der Augenblicke — einmal gesetzt, lässt sich nichts zurücknehmen. Vergänglichkeit macht genau diese Eigenschaft zum Thema. Die rautenförmige Komposition im Zentrum scheint sich in die Ränder des Blattes aufzulösen, als ob die Form selbst im Begriff ist zu verschwinden. Ein Werk über Zeit, Erinnerung und das Loslassen.', story_en:'Watercolour is the medium of moments — once laid down, nothing can be taken back. Vergänglichkeit (Impermanence) makes this very quality its subject. The diamond-shaped composition at the centre appears to dissolve towards the edges of the sheet, as if the form itself is about to disappear. A work about time, memory and letting go.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
-    'Morgenrot':       { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'50 × 40 cm', year:'2023', cat:'Grafik', cat_en:'Graphics', story:'Morgenrot entstand in den frühen Morgenstunden, unmittelbar nach dem Erwachen, als eine Art malerisches Tagebucheintrag. Die konzentrischen Kreise entstanden ohne Vorlage, nur aus der Erinnerung an einen Traum. Schwab beschreibt dieses Werk als eines seiner persönlichsten — klein im Format, aber groß in dem, was es für ihn bedeutet.', story_en:'Morgenrot (Dawn) was created in the early morning hours, immediately upon waking, as a kind of painted diary entry. The concentric circles were made without a sketch, purely from the memory of a dream. Schwab describes this work as one of his most personal — small in format, but large in what it means to him.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
-    'Nebel':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'70 × 55 cm', year:'2024', cat:'Grafik', cat_en:'Graphics', story:'Nebel ist das Ergebnis eines Experiments mit dem Nasstrocken-Verfahren. Das Papier wurde vollständig gewässert, bevor die ersten Pigmente aufgetragen wurden — das ließ die Farben ineinanderfließen auf eine Weise, die sich nicht planen lässt. Was als Versuch begann, wurde zu einem der ausdrucksstärksten Werke der Aquarell-Kollektion.', story_en:'Nebel (Fog) is the result of an experiment in wet-on-wet technique. The paper was fully saturated before the first pigments were applied — allowing the colours to bleed into one another in a way that cannot be planned. What began as an experiment became one of the most expressive works in the watercolour collection.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
-    'Fluss':           { technique:'Aquarell auf Papier', technique_en:'Watercolour on paper', size:'55 × 45 cm', year:'2023', cat:'Grafik', cat_en:'Graphics', story:'Die geschwungene Linie, die Fluss durchzieht, ist von einem Spaziergang am Inn entlehnt. Schwab skizzierte die Kurve des Flusses in einem einzigen Zug ins nasse Papier. Entstanden in weniger als zwanzig Minuten, ist Fluss der Beweis, dass Authentizität keine Zeit braucht — nur Präsenz.', story_en:'The sweeping line running through Fluss (River) was borrowed from a walk along the Inn. Schwab sketched the curve of the river in a single stroke into wet paper. Completed in under twenty minutes, Fluss is proof that authenticity needs no time — only presence.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Komposition I':   { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Malerei', cat_en:'Painting', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<rect x="4" y="4" width="56" height="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="4" x2="60" y2="60" stroke="#C9A84C" stroke-width="0.8"/><line x1="60" y1="4" x2="4" y2="60" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Stille II':       { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Malerei', cat_en:'Painting', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<circle cx="32" cy="32" r="24" stroke="#C9A84C" stroke-width="0.8"/><circle cx="32" cy="32" r="12" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Aufbruch':        { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Malerei', cat_en:'Painting', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<path d="M4 60 L32 4 L60 60Z" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Horizont':        { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Malerei', cat_en:'Painting', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<line x1="4" y1="30" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="38" x2="60" y2="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>' },
+    'Tiefe':           { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<path d="M8 56 Q32 8 56 56" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Stille I':        { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<rect x="12" y="12" width="40" height="40" stroke="#C9A84C" stroke-width="0.8"/><rect x="22" y="22" width="20" height="20" stroke="#C9A84C" stroke-width="0.4" opacity="0.5"/>' },
+    'Dämmerung':       { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<circle cx="32" cy="48" r="20" stroke="#C9A84C" stroke-width="0.8"/><line x1="4" y1="48" x2="60" y2="48" stroke="#C9A84C" stroke-width="0.4"/>' },
+    'Landschaft I':    { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<path d="M4 48 Q20 20 32 32 Q44 44 60 16" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
+    'Vergänglichkeit': { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Grafik', cat_en:'Graphics', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<rect x="20" y="20" width="24" height="24" stroke="#C9A84C" stroke-width="0.8" transform="rotate(45 32 32)"/>' },
+    'Morgenrot':       { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Grafik', cat_en:'Graphics', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<circle cx="32" cy="32" r="16" stroke="#C9A84C" stroke-width="0.8" opacity="0.7"/><circle cx="32" cy="32" r="8" stroke="#C9A84C" stroke-width="0.8"/>' },
+    'Nebel':           { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Grafik', cat_en:'Graphics', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<line x1="8" y1="26" x2="56" y2="26" stroke="#C9A84C" stroke-width="0.8"/><line x1="12" y1="34" x2="52" y2="34" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/><line x1="18" y1="42" x2="46" y2="42" stroke="#C9A84C" stroke-width="0.4" opacity="0.35"/>' },
+    'Fluss':           { placeholder:true, technique:'', technique_en:'', size:'', year:'', cat:'Grafik', cat_en:'Graphics', story:'Werkangaben folgen in Kürze.', story_en:'Details on this work will follow shortly.', svg:'<path d="M4 40 Q20 24 32 36 Q44 48 60 24" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
     'Zwei Figuren I':           { img:'Images/C-F-2001-1entzerrt.jpg', technique:'Mischtechnik', technique_en:'Mixed media', size:'28 × 40 cm', year:'2001', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Zwei Figuren treten in einen stummen Dialog. Die hintere dem Betrachter abgewandt, im Rückenakt, während die vordere zu ahnen bleibt. Lila und Orange brechen die Dunkelheit auf — Farbe als Sprache des Unausgesprochenen. Signiert unten rechts.', story_en:'Two figures in silent dialogue. One turned away, seen from behind; the other only suggested. Lilac and orange pierce the darkness — colour as the language of the unspoken. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="20" y1="8" x2="20" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="44" y1="8" x2="44" y2="56" stroke="#C9A84C" stroke-width="0.8"/>' },
     'Badende':                  { img:'Images/C-F-2001-2entzerrt.JPG', technique:'Mischtechnik', technique_en:'Mixed media', size:'50 × 70 cm', year:'2001', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Eine lichte Figur in Weiß, Grau und Gelb hebt sich von zwei dunklen Torsi ab. Die Collagetechnik schichtet Körper übereinander — ein Fragment menschlicher Präsenz, das aus der Dunkelheit heraustritt. Signiert unten mittig.', story_en:'A luminous figure in white, grey and yellow emerges against two dark torsos. The collage technique layers bodies one over another — a fragment of human presence stepping out of the dark. Signed lower centre.', signed:'unten mittig', signed_en:'lower centre', svg:'<ellipse cx="32" cy="32" rx="14" ry="22" stroke="#C9A84C" stroke-width="0.8" fill="none"/>' },
     'Zwei Badende':             { img:'Images/C-F-2002-1entzerrt.JPG', technique:'Mischtechnik auf Papier', technique_en:'Mixed media on paper', size:'60 × 80 cm', year:'2002', cat:'Collage & Zeichnungen', cat_en:'Collage & Drawings', story:'Violett durchzieht das Bild wie ein Stimmungston. Die Figuren sind gestreckt, fast gelöst von ihrer Form — begrenzt nur durch schwarze Konturen, die sie aus dem Farbstrom heraustreten lassen. Signiert unten rechts.', story_en:'Violet runs through the painting like an undertone. The figures are elongated, almost dissolved — held in place only by black contours that lift them out of the current of colour. Signed lower right.', signed:'unten rechts', signed_en:'lower right', svg:'<line x1="22" y1="8" x2="22" y2="56" stroke="#C9A84C" stroke-width="0.8"/><line x1="42" y1="8" x2="42" y2="56" stroke="#C9A84C" stroke-width="0.6" opacity="0.6"/>' },
@@ -387,7 +387,7 @@
       'coll-back-acryl-t':'Zurück','coll-back-oel-t':'Zurück','coll-back-aquarell-t':'Zurück','coll-back-mixed-t':'Zurück',
       'coll-head-acryl':'Malerei','coll-head-oel':'Collage &amp;<br>Zeichnungen','coll-head-aquarell':'Grafik','coll-head-mixed':'Plastik',
       'soc-label':'Folgen Sie uns','soc-heading':'Bleiben Sie in Verbindung','soc-sub':'Neuigkeiten zu Ausstellungen und zum Werk von Horst Schwab.',
-      'soc-cal-label':'Termin buchen','soc-cal-sub':'Besichtigung vereinbaren',
+      'soc-cal-label':'Termin anfragen','soc-cal-sub':'Wunschtermin per E-Mail',
       'cal-success-text':'Ihr E-Mail-Programm öffnet sich.','cal-success-sub':'Bitte senden Sie die vorbereitete E-Mail ab – wir bestätigen den Termin. Falls sich nichts öffnet: info@horstschwab.de',
       'kon-label':'Kontakt','kon-heading':'Fragen zum Werk','kon-sub':'Schreiben Sie uns bei Fragen zum Werk oder um eine private Besichtigung zu vereinbaren.',
       'kon-email-label':'E-Mail','kon-studio-label':'Atelier','kon-studio-val':'Nach Vereinbarung',
@@ -410,7 +410,7 @@
       'coll-back-acryl-t':'Back','coll-back-oel-t':'Back','coll-back-aquarell-t':'Back','coll-back-mixed-t':'Back',
       'coll-head-acryl':'Painting','coll-head-oel':'Collage &amp;<br>Drawings','coll-head-aquarell':'Graphics','coll-head-mixed':'Sculpture',
       'soc-label':'Follow Us','soc-heading':'Stay Connected','soc-sub':'News about exhibitions and the work of Horst Schwab.',
-      'soc-cal-label':'Book appointment','soc-cal-sub':'Schedule a viewing',
+      'soc-cal-label':'Request a date','soc-cal-sub':'Preferred date by e-mail',
       'cal-success-text':'Your e-mail program is opening.','cal-success-sub':'Please send the prepared e-mail – we will confirm the appointment. If nothing opens: info@horstschwab.de',
       'kon-label':'Contact','kon-heading':'Questions about the Work','kon-sub':'Write to us with questions about the work or to arrange a private viewing.',
       'kon-email-label':'E-Mail','kon-studio-label':'Studio','kon-studio-val':'By appointment',
@@ -644,7 +644,7 @@
       adImgEl.appendChild(cv);
     }
     document.getElementById('ad-details-grid').innerHTML =
-      '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-tech-label'] + '</span><span class="ad-detail-value">' + tech + '</span></div>' +
+      (tech ? '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-tech-label'] + '</span><span class="ad-detail-value">' + tech + '</span></div>' : '') +
       (d.size ? '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-size-label'] + '</span><span class="ad-detail-value">' + d.size + '</span></div>' : '') +
       (d.year ? '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-year-label'] + '</span><span class="ad-detail-value">' + d.year + '</span></div>' : '') +
       '<div class="ad-detail-item"><span class="ad-detail-label">' + t['ad-cat-label'] + '</span><span class="ad-detail-value">' + cat + '</span></div>' +
@@ -977,16 +977,44 @@
       s.onload = cb;
       document.head.appendChild(s);
     }
+    // Ohne WebGL (alter Browser, Grafik abgeschaltet) gibt es keinen 3D-Rundgang: Hinweis mit Weg zur Werkübersicht
+    function _webglOK() {
+      try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); }
+      catch (err) { return false; }
+    }
+    function _showNoWebGL() {
+      const en = document.documentElement.lang === 'en';
+      let box = document.getElementById('vr-nowebgl');
+      if (!box) { box = document.createElement('div'); box.id = 'vr-nowebgl'; box.className = 'vr-info-box'; vrEl.appendChild(box); }
+      box.innerHTML = '<h2 class="vr-info-title">' + (en ? 'Virtual tour not available' : 'Rundgang nicht verfügbar') + '</h2>' +
+        '<p class="vr-info-text">' + (en ? 'Your browser cannot display 3D graphics (WebGL). You can view all works in the overview.'
+                                         : 'Ihr Browser kann keine 3D-Grafik (WebGL) darstellen. Alle Werke können Sie in der Übersicht ansehen.') + '</p>' +
+        '<a href="#galerie" class="vr-info-close vr-info-alt-btn">' + (en ? 'View the works' : 'Zur Werkübersicht') + '</a>';
+      document.getElementById('vr-info-panel')?.classList.remove('visible');
+      const loader = document.getElementById('gallery-loader'); if (loader) loader.style.display = 'none';
+    }
+    // „Ohne 3D“: Rundgang schließen und zur normalen Werkübersicht
+    vrEl.addEventListener('click', e => {
+      const alt = e.target.closest('.vr-info-alt, .vr-info-alt-btn');
+      if (!alt) return;
+      e.preventDefault();
+      closeBtn.click();
+      document.getElementById('vr-nowebgl')?.remove();
+      document.getElementById('nav-werke')?.click();
+    });
     openBtn.addEventListener('click', e => {
       e.preventDefault();
       _navOpen('vr');
       vrEl.style.display='block';
+      if (!_webglOK()) { _showNoWebGL(); return; }
       vrPaused = true;
       setTimeout(function(){
         var p = document.getElementById('vr-info-panel');
         if(p) p.classList.add('visible');
       }, 120);
-      loadThree(initGallery);
+      loadThree(function() {
+        try { initGallery(); } catch (err) { try { teardown(); } catch (_) {} _showNoWebGL(); }
+      });
     });
     // Skip-Button: zur nächsten Kameraposition springen
     document.getElementById('vr-skip').addEventListener('click', () => skipStep(1));
@@ -1005,7 +1033,19 @@
     });
     infoPanel.querySelector('.vr-info-close').addEventListener('click', function(){ window.closeVrInfo(); });
     document.addEventListener('keydown', function(e) {
-      if (!vrEl || vrEl.style.display === 'none') return;
+      if (!vrEl || vrEl.style.display !== 'block') return;   // nur bei geöffnetem Rundgang (anfangs ist display leer)
+      // Esc: erst die Hilfe schließen, sonst den Rundgang beenden
+      if (e.key === 'Escape') {
+        e._escHandled = true;
+        if (infoPanel.classList.contains('visible')) window.closeVrInfo(); else closeBtn.click();
+        return;
+      }
+      // Tastatur-Zoom beim freien Erkunden: + näher heran, − zurück
+      if (freeNav && (e.key === '+' || e.key === '=' || e.key === '-')) {
+        e.preventDefault();
+        navFov = Math.max(FOV_MIN, Math.min(FOV_BASE, navFov + (e.key === '-' ? 6 : -6)));
+        return;
+      }
       if (freeNav) { navKeys.add(e.code); return; }
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); skipStep(1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); skipStep(-1); }
@@ -3632,6 +3672,8 @@
         cam.quaternion.slerpQuaternions(fromQuat,q,et);
         if(raw>=1){phase='hold';t0=now;}
       } else {
+        // Bei „Bewegung reduzieren“: kein Wippen und keine automatische Weiterfahrt – weiter nur per Taste/Knopf
+        if (_reducedMotion()) return;
         cam.position.y=s.pos.y+Math.sin(now*0.00065)*0.005;
         if(dt>=s.hold) advance(now);
       }
@@ -3729,6 +3771,10 @@
       if (legal.length) legal.forEach(closeLegal);
       else if (document.getElementById('artwork-detail').classList.contains('active')) closeArtwork();
       else if (document.getElementById('fav-overlay')?.classList.contains('active')) closeFavs();
+      else {
+        const col = document.querySelector('.coll-overlay.active:not(#fav-overlay)');
+        if (col) closeCollection(col.id.slice(5));
+      }
     }
   });
 
@@ -3911,23 +3957,57 @@
         grid.appendChild(empty);
       }
       for (var d = 1; d <= daysInMonth; d++) {
-        var btn = document.createElement('div');
+        // echte Buttons: per Tastatur erreichbar, vergangene Tage deaktiviert, volles Datum für Screenreader
+        var btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'cal-day';
         btn.textContent = d;
+        btn.dataset.day = d;
+        btn.tabIndex = -1;
+        btn.setAttribute('aria-label', lang === 'en' ? d + ' ' + months[cur.month] + ' ' + cur.year : d + '. ' + months[cur.month] + ' ' + cur.year);
         var isPast = (cur.year < today.getFullYear()) ||
           (cur.year === today.getFullYear() && cur.month < today.getMonth()) ||
           (cur.year === today.getFullYear() && cur.month === today.getMonth() && d < today.getDate());
         var isToday = cur.year === today.getFullYear() && cur.month === today.getMonth() && d === today.getDate();
-        if (isPast) btn.classList.add('cal-past');
-        if (isToday) btn.classList.add('cal-today');
-        if (selectedDate && selectedDate.d === d && selectedDate.m === cur.month && selectedDate.y === cur.year)
-          btn.classList.add('cal-selected');
+        if (isPast) { btn.classList.add('cal-past'); btn.disabled = true; }
+        if (isToday) { btn.classList.add('cal-today'); btn.setAttribute('aria-current', 'date'); }
+        var isSel = !!(selectedDate && selectedDate.d === d && selectedDate.m === cur.month && selectedDate.y === cur.year);
+        if (isSel) btn.classList.add('cal-selected');
+        btn.setAttribute('aria-pressed', isSel ? 'true' : 'false');
         if (!isPast) btn.addEventListener('click', (function(day) {
           return function() { selectDay(day); };
         })(d));
         grid.appendChild(btn);
       }
+      // nur ein Tag ist per Tab erreichbar (gewählter, sonst heutiger, sonst erster freier); Pfeiltasten wechseln
+      var days = grid.querySelectorAll('.cal-day:not(:disabled)');
+      var focusDay = grid.querySelector('.cal-selected') || grid.querySelector('.cal-today:not(:disabled)') || days[0];
+      if (focusDay) focusDay.tabIndex = 0;
     }
+
+    document.getElementById('cal-days').addEventListener('keydown', function(e) {
+      var btn = e.target.closest('.cal-day');
+      if (!btn) return;
+      var step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
+      if (!step && e.key !== 'Home' && e.key !== 'End') return;
+      e.preventDefault();
+      var days = [].slice.call(this.querySelectorAll('.cal-day:not(:disabled)'));
+      var d = +btn.dataset.day;
+      var next = e.key === 'Home' ? days[0] : e.key === 'End' ? days[days.length - 1]
+        : this.querySelector('.cal-day[data-day="' + (d + step) + '"]:not(:disabled)');
+      if (!next && step) {
+        // über den Monatsrand: Monat wechseln und dort weiter (nicht in die Vergangenheit)
+        var target = new Date(cur.year, cur.month, d + step);
+        var t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        if (target < t0) return;
+        cur = { year: target.getFullYear(), month: target.getMonth() };
+        renderCal();
+        next = this.querySelector('.cal-day[data-day="' + target.getDate() + '"]');
+      }
+      if (!next) return;
+      days.forEach(function(x) { x.tabIndex = -1; });
+      next.tabIndex = 0; next.focus();
+    });
 
     /* ── Roller ── */
     var HOURS = ['09','10','11','12','13','14','15','16','17','18'];
@@ -3963,6 +4043,11 @@
       var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
       var items = roller.querySelectorAll('.cal-roller-item');
       items.forEach(function(el, i) { el.classList.toggle('r-active', i === idx + 1); });
+      // Drehfeld für Screenreader und Tastatur
+      roller.setAttribute('aria-valuemin', 0);
+      roller.setAttribute('aria-valuemax', values.length - 1);
+      roller.setAttribute('aria-valuenow', Math.max(0, idx));
+      roller.setAttribute('aria-valuetext', values[Math.max(0, idx)]);
     }
 
     function updateConfirmText() {
@@ -3982,6 +4067,21 @@
     function attachRollerScroll(id, values) {
       var roller = document.getElementById(id);
       var t;
+      // Tastatur: Pfeil hoch/runter, Pos1/Ende
+      if (!roller._kb) {
+        roller._kb = true;
+        roller.addEventListener('keydown', function(e) {
+          var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
+          var n = { ArrowUp: idx - 1, ArrowDown: idx + 1, Home: 0, End: values.length - 1 }[e.key];
+          if (n === undefined) return;
+          e.preventDefault();
+          n = Math.max(0, Math.min(values.length - 1, n));
+          roller.scrollTop = n * ITEM_H;
+          updateRollerActive(id, values);
+          if (selectedDate) updateConfirmText();
+        });
+      }
+      updateRollerActive(id, values);
       roller.addEventListener('scroll', function() {
         clearTimeout(t);
         updateRollerActive(id, values);
@@ -3997,6 +4097,8 @@
     function selectDay(d) {
       selectedDate = { d: d, m: cur.month, y: cur.year };
       renderCal();
+      var sel = document.querySelector('#cal-days .cal-selected');
+      if (sel) sel.focus();   // Fokus bleibt nach dem Neuzeichnen auf dem gewählten Tag
       document.getElementById('cal-time-wrap').classList.add('open');
       updateConfirmText();
     }
@@ -4320,4 +4422,104 @@
     };
     if (window._preloaderHidden || !document.getElementById('preloader')) heroReady();
     else document.addEventListener('preloader:hidden', heroReady, { once: true });
+  })();
+
+  /* ══ BARRIEREFREIHEIT: Tastatur, Fokus in Ebenen, Beschriftungen ══ */
+  (function() {
+    const en = () => document.documentElement.lang === 'en';
+
+    // Kategorie-Kacheln und Werkkarten (div mit onclick) per Tastatur bedienbar machen:
+    // Kachel = Knopf, bei Karten der Titel (die Karte enthält selbst schon Knöpfe)
+    function decorate() {
+      document.querySelectorAll('.cat-tile:not([tabindex])').forEach(el => { el.tabIndex = 0; el.setAttribute('role', 'button'); });
+      document.querySelectorAll('.coll-card .coll-card-title:not([tabindex])').forEach(el => { el.tabIndex = 0; el.setAttribute('role', 'button'); });
+      relabel();
+    }
+    function relabel() {
+      // Alt-Texte der Werkbilder aus den belegten Werkdaten: Titel, Jahr, Technik (bei Plastiken mit Ansicht)
+      document.querySelectorAll('.coll-card').forEach(card => {
+        const tEl = card.querySelector('.coll-card-title');
+        const d = tEl && ARTWORKS[tEl.textContent.trim()];
+        if (!d) return;
+        const base = [tEl.textContent.trim(), d.year, en() ? d.technique_en : d.technique].filter(Boolean).join(', ');
+        const imgs = card.querySelectorAll('.coll-card-img img');
+        imgs.forEach((img, i) => { img.alt = base + (imgs.length > 1 ? (en() ? ' – view ' : ' – Ansicht ') + (i + 1) : ''); });
+      });
+      document.querySelectorAll('.coll-card .coll-card-title[role="button"]').forEach(el => {
+        el.setAttribute('aria-label', el.textContent.trim() + (en() ? ' – open work' : ' – Werk öffnen'));
+      });
+      document.querySelectorAll('.fav-btn, #ad-fav-btn').forEach(btn => {
+        const on = btn.classList.contains('fav-active');
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.setAttribute('aria-label', en() ? (on ? 'Remove from wishlist' : 'Add to wishlist')
+                                            : (on ? 'Von der Merkliste entfernen' : 'Zur Merkliste hinzufügen'));
+      });
+    }
+    // Beschriftungen nach Merklisten-Änderung, Sprachwechsel und neu gezeichneter Merkliste aktualisieren
+    ['toggleFav', 'setLang', 'renderFavs'].forEach(name => {
+      const fn = window[name];
+      if (typeof fn !== 'function') return;
+      window[name] = function() { const r = fn.apply(this, arguments); decorate(); return r; };
+    });
+    const _origOpenArtwork = window.openArtwork;
+    if (typeof _origOpenArtwork === 'function') {
+      window.openArtwork = function() { const r = _origOpenArtwork.apply(this, arguments); relabel(); return r; };
+    }
+    decorate();
+
+    // Enter/Leertaste lösen Kacheln, Kartentitel und Link-Knöpfe (Rundgang, Merkliste) aus
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const el = e.target.closest && e.target.closest('.cat-tile[role="button"], .coll-card-title[role="button"], a[role="button"]');
+      if (!el || el !== e.target) return;
+      e.preventDefault();
+      el.click();
+    });
+
+    // Ebenen (Dialoge): Fokus beim Öffnen hinein, beim Schließen zurück zum Auslöser, Tab bleibt in der obersten Ebene
+    const LAYERS = '.legal-overlay, #cal-overlay, .coll-overlay, #artwork-detail, #gallery-vr';
+    const isOpen = el => el.id === 'gallery-vr' ? el.style.display === 'block' : el.classList.contains('active');
+    const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+    const visible = el => !!(el.offsetParent || el.getClientRects().length) && getComputedStyle(el).visibility !== 'hidden';
+    function topLayer() {
+      let top = null, z = -Infinity;
+      document.querySelectorAll(LAYERS).forEach(el => {
+        if (!isOpen(el)) return;
+        const zi = parseInt(getComputedStyle(el).zIndex, 10) || 0;
+        if (zi >= z) { z = zi; top = el; }
+      });
+      return top;
+    }
+    const mo = new MutationObserver(muts => {
+      muts.forEach(m => {
+        const el = m.target, open = isOpen(el);
+        if (open === !!el._a11yOpen) return;
+        el._a11yOpen = open;
+        if (open) {
+          const act = document.activeElement;
+          el._opener = act && act !== document.body && !el.contains(act) ? act : null;
+          if (!el.hasAttribute('tabindex')) el.tabIndex = -1;
+          setTimeout(() => { if (isOpen(el) && !el.contains(document.activeElement)) el.focus({ preventScroll: true }); }, 60);
+        } else {
+          const op = el._opener; el._opener = null;
+          const act = document.activeElement;
+          if (op && op.isConnected && visible(op) && (!act || act === document.body || el.contains(act))) op.focus({ preventScroll: true });
+        }
+      });
+    });
+    document.querySelectorAll(LAYERS).forEach(el => {
+      el._a11yOpen = isOpen(el);
+      mo.observe(el, { attributes: true, attributeFilter: ['class', 'style'] });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Tab') return;
+      const top = topLayer();
+      if (!top) return;
+      const items = [...top.querySelectorAll(FOCUSABLE)].filter(visible);
+      if (!items.length) { e.preventDefault(); top.focus({ preventScroll: true }); return; }
+      const first = items[0], last = items[items.length - 1], act = document.activeElement;
+      if (!top.contains(act) || act === top) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+      else if (e.shiftKey && act === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && act === last) { e.preventDefault(); first.focus(); }
+    }, true);
   })();

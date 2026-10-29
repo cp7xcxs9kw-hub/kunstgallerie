@@ -877,7 +877,9 @@
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--cream);
+    min-width: 0; overflow-wrap: anywhere;   /* lange Wörter („ZEICHNUNGEN“) ragen am schmalen Handy nicht über den Rand */
   }
+  @media (max-width: 400px) { .coll-heading { letter-spacing: 0.16em; } }
   .wip-banner {
     border: 1px solid var(--gold);
     padding: 2.5rem 3rem;
@@ -946,6 +948,7 @@
     padding: 0.8rem; box-sizing: border-box;
   }
   .coll-card-img svg { opacity: 0.18; }
+  .coll-card-meta:empty { display: none; }   /* Platzhalter-Werke ohne Werkangaben */
   /* Mini-Vorschau, bis das Vorschaubild geladen ist: füllt die Bildfläche im richtigen Seitenverhältnis, weich gezeichnet */
   .coll-card-img img.lqip { filter: blur(0.7rem); }
   .coll-card-img:not(.coll-card-views) img.lqip { width: 100%; height: 100%; object-fit: contain; }
@@ -1717,6 +1720,18 @@
     box-shadow: 0 0 22px rgba(201,168,76,0.07), inset 0 0 14px rgba(201,168,76,0.04);
     text-shadow: 0 0 10px rgba(201,168,76,0.35);
   }
+  /* „Ohne 3D“-Weg zur Werkübersicht im Hilfefenster und Hinweis ohne WebGL */
+  .vr-info-alt {
+    display: inline-block; margin-top: 1.1rem;
+    font-size: max(0.55rem, var(--label-min)); letter-spacing: 0.18em;
+    color: var(--gold); text-decoration: underline; text-underline-offset: 0.25em;
+  }
+  #vr-nowebgl {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    z-index: 20; max-width: min(28rem, 90vw); text-align: center;
+    opacity: 1; background: #0b0a09;   /* sofort sichtbar, ohne die Einblendung des Hilfefensters */
+  }
+  #vr-nowebgl .vr-info-close { display: inline-block; text-decoration: none; margin-top: 1.4rem; }
   .vr-info-close:hover {
     background: var(--gold); color: #0A0A0A;
     box-shadow: 0 0 40px rgba(201,168,76,0.3); text-shadow: none;
@@ -1905,12 +1920,13 @@
     padding: 0.5rem 0.75rem;
     font-size: 0.65rem;
     letter-spacing: 0.12em;
-    color: var(--gold-dim);
+    color: var(--gold);   /* Bildnachweis: ausreichend Kontrast auf dem dunklen Popup */
     text-align: center;
     font-family: 'Montserrat', sans-serif;
   }
 
-  .tooltip-wrap:hover .tooltip-popup {
+  .tooltip-wrap:hover .tooltip-popup,
+  .tooltip-wrap:focus-visible .tooltip-popup {   /* auch per Tastatur (Tab) erreichbar */
     opacity: 1;
     visibility: visible;
   }
@@ -2309,7 +2325,9 @@
     font-family: 'Montserrat', sans-serif; font-size: 0.62rem;
     color: rgba(250,250,248,0.7); cursor: pointer; border-radius: 2px;
     transition: background 0.2s, color 0.2s; border: 1px solid transparent;
+    background: transparent; padding: 0; width: 100%;   /* Tage sind echte Buttons */
   }
+  .cal-day:disabled { cursor: default; }
   .cal-day:hover:not(.cal-empty):not(.cal-past) {
     background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.3); color: var(--gold);
   }
@@ -3177,3 +3195,43 @@
     #lang-switcher { top: 0.55rem; padding-top: 0.3rem; padding-bottom: 0.3rem; }
     .intro-scene-pin::before { height: 5rem; }   /* weiße Abdeckung unter der Navigation nur so hoch wie die Navigation */
   }
+
+  /* ── Tastatur-Fokus: sichtbarer Goldrahmen (dunkler auf hellem, heller auf dunklem Grund) ── */
+  :focus-visible { outline: 2px solid var(--gold-dim); outline-offset: 3px; }
+  #hero :focus-visible, .coll-overlay :focus-visible, #socials :focus-visible, #kontakt :focus-visible,
+  footer :focus-visible, .legal-overlay :focus-visible, #cal-overlay :focus-visible, #gallery-vr :focus-visible,
+  .ausst-card :focus-visible { outline-color: var(--gold); }
+  /* Ebenen selbst bekommen beim Öffnen den Fokus (für Screenreader), ohne Rahmen um den ganzen Bildschirm */
+  [role="dialog"]:focus, [role="dialog"]:focus-visible { outline: none; }
+  .coll-card-title[role="button"] { cursor: pointer; }
+  .cal-roller:focus-visible { outline-offset: -2px; }
+
+  /* ── Kontraste nach WCAG AA (mind. 4,5 : 1 für kleine Schrift): Farbtöne nur so weit angepasst wie nötig ── */
+  /* helle Flächen: etwas dunkleres Grau bzw. Gold */
+  .nav-links a { color: #6E6D66; }
+  .nav-links a:hover, .nav-links a.active { color: #806530; }
+  .lang-toggle-btn .l-active { color: #806530; }
+  #intro .section-label, #galerie .gallery-header .section-label, #ueber-uns .section-label,
+  #das-werk .section-label, #ausstellungen .section-label { color: #806530; }
+  .ad-meta-line, .ad-detail-label { color: #6E6D66; }
+  .ad-story-head { color: #806530; }
+  .ad-offer-btn { color: #806530; border-color: #806530; }
+  .ad-topbar-title { color: rgba(26,26,26,0.62); }
+  .ad-back-btn { color: rgba(26,26,26,0.65); }
+  .intro-scroll-hint { color: #806530; }
+  .werk-figure figcaption { color: #6E6D66; }
+  .lang-toggle-btn { color: #6E6D66; }
+  .ad-eyebrow { color: #806530; }
+  #kontakt .section-label { color: #9A7B35; }
+  /* dunkle Flächen: Gold etwas heller bzw. deckender */
+  #socials .section-label, .legal-eyebrow, .legal-body a { color: #9A7B35; }
+  .footer-links a { color: rgba(201,168,76,0.7); }
+  .footer-copy { color: rgba(201,168,76,0.7); }
+  .legal-note { color: rgba(232,224,210,0.6); }
+  .coll-card-meta { color: rgba(242,236,222,0.55); }
+  .coll-back-btn { color: rgba(201,168,76,0.75); }
+  #vr-free-btn { color: rgba(201,168,76,0.75); }
+  .cat-tile-count { color: rgba(201,168,76,0.75); }
+  .cal-weekdays span { color: rgba(201,168,76,0.75); }
+  .cal-confirm { color: rgba(201,168,76,0.75); }
+  #ad-rundgang-btn { background: rgba(8,7,6,0.85); }
