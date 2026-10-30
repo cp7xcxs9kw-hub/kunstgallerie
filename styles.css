@@ -2051,26 +2051,24 @@
     padding: 7.5rem max(3rem, calc((100% - 66rem) / 2));
   }
   #das-werk { background: var(--white); }
-  /* Weicher Übergang ins Schwarz des Socials-Bereichs: der Papierton dunkelt am Ende sanft ab, mittig eine feine Goldlinie */
-  #ausstellungen {
-    --fade-h: 22rem;
-    padding-bottom: calc(5rem + var(--fade-h));
-    background: linear-gradient(to bottom,
-      var(--off-white) 0, var(--off-white) calc(100% - var(--fade-h)),
-      #E4E1D9 calc(100% - var(--fade-h) * 0.78),
-      #B9B4A8 calc(100% - var(--fade-h) * 0.56),
-      #6E6A61 calc(100% - var(--fade-h) * 0.34),
-      #2A2824 calc(100% - var(--fade-h) * 0.14),
-      var(--black) 100%);
-  }
+  /* Übergang zum dunklen Socials-Bereich: klarer Schnitt statt Verlauf – der helle Teil endet mit einem
+     Goldornament (Linie · Raute · Linie), der dunkle beginnt mit einer feinen Goldkante */
+  #ausstellungen { padding-bottom: 9rem; background: var(--off-white); }
   #ausstellungen::after {
     content: '';
     position: absolute;
-    left: 50%; bottom: 0;
-    width: 4.5rem; height: 1px;
+    left: 50%; bottom: 3.6rem;
+    width: 11rem; height: 1px;
     transform: translateX(-50%);
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    opacity: 0.7;
+    background: linear-gradient(to right, transparent, var(--gold) 38%, transparent 45%, transparent 55%, var(--gold) 62%, transparent);
+  }
+  #ausstellungen::before {
+    content: '';
+    position: absolute;
+    left: 50%; bottom: calc(3.6rem - 0.17rem);
+    width: 0.38rem; height: 0.38rem;
+    transform: translateX(-50%) rotate(45deg);
+    background: var(--gold);
   }
 
   .werk-grid {
@@ -2192,8 +2190,9 @@
   /* ── SOCIALS ── */
   #socials {
     background: var(--black);
-    padding: 5rem 3rem 7rem;   /* oben knapper: der Verlauf darüber gibt schon Luft */
+    padding: 7rem 3rem;
     text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.45);   /* feine Goldkante am Übergang von hell zu dunkel */
   }
 
   #socials .section-label { color: var(--gold-dim); }
@@ -2415,7 +2414,7 @@
   /* ── CONTACT ── */
   #kontakt {
     background: var(--black);
-    padding: 5rem 3rem 7rem;   /* oben knapper: der Verlauf darüber gibt schon Luft */
+    padding: 7rem 3rem;
     text-align: center;
   }
 
@@ -2952,7 +2951,9 @@
     .life-year, .life-item:nth-child(even) .life-year { grid-column: 2; grid-row: 1; text-align: left; font-size: 1.2rem; }
     .life-text, .life-item:nth-child(even) .life-text { grid-column: 2; grid-row: 2; text-align: left; }
     #das-werk, #ausstellungen { padding: 5rem 1.5rem; }
-    #ausstellungen { --fade-h: 16rem; padding-bottom: calc(3.5rem + var(--fade-h)); }
+    #ausstellungen { padding-bottom: 6.5rem; }
+    #ausstellungen::after { bottom: 2.6rem; width: 9rem; }
+    #ausstellungen::before { bottom: calc(2.6rem - 0.17rem); }
     .werk-grid { grid-template-columns: 1fr; gap: 2.4rem; margin-bottom: 3rem; }
     .werk-facts { grid-template-columns: 1fr; gap: 2rem; }
     .ausst-cards { grid-template-columns: 1fr; gap: 1.6rem; margin-bottom: 3.5rem; }
@@ -2963,7 +2964,7 @@
     .ausst-gruppe { text-align: left; }
 
     /* ── Socials / Kontakt ── */
-    #socials { padding: 3.5rem 1.5rem 5rem; }
+    #socials { padding: 5rem 1.5rem; }
     .socials-grid { gap: 2.5rem; }
     #kontakt { padding: 5rem 1.5rem; }
     .contact-grid { gap: 2rem; }
