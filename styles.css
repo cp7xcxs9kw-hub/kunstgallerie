@@ -2543,36 +2543,6 @@
     text-transform: uppercase;
   }
 
-  /* ── NACH-OBEN BUTTON ── */
-  #back-to-top {
-    position: fixed;
-    bottom: 2.2rem;
-    right: 2.2rem;
-    width: 2.625rem;
-    height: 2.625rem;
-    background: rgba(8,7,6,0.88);
-    border: 1px solid rgba(201,168,76,0.35);
-    color: var(--gold);
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-    z-index: 300;
-    opacity: 0;
-    transform: translateY(0.75rem);
-    pointer-events: none;
-    transition: opacity 0.35s ease, transform 0.35s ease, bottom 0.35s ease, background 0.25s, border-color 0.25s;
-    backdrop-filter: blur(6px);
-  }
-  #back-to-top.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  #back-to-top:hover {
-    background: rgba(201,168,76,0.12);
-    border-color: rgba(201,168,76,0.7);
-  }
-
   /* ── LEGAL OVERLAYS (Impressum / Datenschutz) ─────────────── */
   .legal-overlay {
     position: fixed;
@@ -3148,10 +3118,8 @@
     #rundgang-hint .rh-title { font-size: 0.92rem; margin: 0; flex: 1; min-width: 0; line-height: 1.2; }
     #rundgang-hint .rh-btn { width: auto; padding: 0.5rem 0.8rem; letter-spacing: 0.18em; white-space: nowrap; }
     #rundgang-hint .rh-close { top: 50%; transform: translateY(-50%); }
-    /* Nach-oben-Knopf solange darüber setzen – sonst trifft ein Tipp darauf „Rundgang starten" */
-    body:has(#rundgang-hint.visible) #back-to-top { bottom: 4.6rem; }
     /* solange die Kategorie-Kacheln zu sehen sind, nichts darüberlegen */
-    body.scene-tiles #rundgang-hint, body.scene-tiles #back-to-top { opacity: 0; pointer-events: none; }
+    body.scene-tiles #rundgang-hint { opacity: 0; pointer-events: none; }
   }
 
   /* ── NAV SWEEP TRANSITION ── */
