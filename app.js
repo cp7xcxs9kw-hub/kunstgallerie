@@ -147,7 +147,7 @@
   // Navigationsleiste gehört dieser Ebene – die Hero-Sperre greift dort nicht
   function _inLayer(t) {
     if (document.body.style.overflow === 'hidden') return true;
-    return !!(t && t.closest && t.closest('.coll-overlay, #artwork-detail, .legal-overlay, #cal-overlay, #gallery-vr, .nav-links, #rundgang-hint'));
+    return !!(t && t.closest && t.closest('.coll-overlay, #artwork-detail, .legal-overlay, #cal-overlay, #gallery-vr, .nav-links, #rundgang-hint, #assist-panel, #assist-toggle'));
   }
   /* ══ BROWSER-ZURÜCK: jede geöffnete Ebene ist ein Schritt im Browserverlauf ══
      Jeder Verlaufseintrag speichert den kompletten Ebenen-Stapel (z. B. ['gallery','col:mixed','art:Meer']).
@@ -492,6 +492,8 @@
     _saveFavs();
     _updateFavBtns(title);
     _updateFavBadge();
+    const _reqBtn = document.getElementById('fav-request-btn');   // „alle gemerkten Werke anfragen“ nur bei gemerkten Werken
+    if (_reqBtn) _reqBtn.hidden = _favs.size === 0;
     if (_favs.has(title)) {
       function _pulse(btn) {
         if (!btn) return;
@@ -4499,6 +4501,39 @@
     };
     if (window._preloaderHidden || !document.getElementById('preloader')) heroReady();
     else document.addEventListener('preloader:hidden', heroReady, { once: true });
+  })();
+
+  /* ══ BESUCHER-ASSISTENT: Laden bei Bedarf ══ */
+  // Inhalte (chatbot-content.js) und Logik (chatbot.js) kommen erst beim ersten Klick – die Seite lädt dadurch nicht langsamer
+  (function() {
+    const ASSIST_V = '20261030a';
+    const t = document.getElementById('assist-toggle');
+    if (!t) return;
+    let loading = false;
+    const load = src => new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = src + '?v=' + ASSIST_V; s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    t.addEventListener('click', () => {
+      if (window.Assistent) { window.Assistent.toggle(); return; }
+      if (loading) return;
+      loading = true;
+      load('chatbot-content.js').then(() => load('chatbot.js')).then(() => { if (window.Assistent) window.Assistent.open(); })
+        .catch(() => { loading = false; });
+    });
+    // Knopf über dem Rundgang-Hinweis halten, solange dieser unten eingeblendet ist
+    function lift() {
+      const h = document.getElementById('rundgang-hint');
+      const r = h && h.classList.contains('visible') ? h.getBoundingClientRect() : null;
+      t.style.setProperty('--assist-lift', r ? Math.max(0, Math.round(window.innerHeight - r.top + 8)) + 'px' : '0px');
+    }
+    let hintObs = null;
+    new MutationObserver(() => {
+      const h = document.getElementById('rundgang-hint');
+      if (h && !h._assistObs) { h._assistObs = true; hintObs = new MutationObserver(lift); hintObs.observe(h, { attributes: true, attributeFilter: ['class'] }); }
+      lift();
+    }).observe(document.body, { childList: true });
+    window.addEventListener('resize', lift);
   })();
 
   /* ══ BARRIEREFREIHEIT: Tastatur, Fokus in Ebenen, Beschriftungen ══ */

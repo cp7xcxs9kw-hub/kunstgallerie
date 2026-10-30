@@ -117,7 +117,7 @@
   }
 
 </style>
-<link rel="stylesheet" href="styles.css?v=20261030d">
+<link rel="stylesheet" href="styles.css?v=20261030e">
 <script>
 /* Galerie schon betreten (Neuladen): Startseite sofort ausblenden – vor dem ersten Aufbau,
    damit die wiederhergestellte Scrollposition stimmt (siehe _syncHero in app.js) */
@@ -1258,9 +1258,23 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
+    <!-- 7. BESUCHER-ASSISTENT -->
+    <div class="legal-block">
+      <p class="legal-section-head">7 · Besucher-Assistent</p>
+      <div class="legal-body">
+        <p>
+          Der Besucher-Assistent („Fragen?“ unten rechts) ist keine künstliche Intelligenz. Er arbeitet ausschließlich mit vorgefertigten Antworten und läuft vollständig lokal in Ihrem Browser. Ihre Eingaben werden nur auf Ihrem Gerät mit diesen Antworten abgeglichen; sie werden weder gespeichert noch an uns oder Dritte übertragen. Beim Neuladen der Seite ist der Verlauf gelöscht.
+        </p>
+        <p>
+          Wenn Sie über den Assistenten Kontakt aufnehmen, öffnet sich lediglich Ihr eigenes E-Mail-Programm bzw. der Dialog „Besichtigung anfragen“ (siehe Abschnitt 4). Es gelten dann die Angaben zur Kontaktaufnahme per E-Mail.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
     <!-- 7. RECHTE DER BETROFFENEN -->
     <div class="legal-block">
-      <p class="legal-section-head">7 · Ihre Rechte als betroffene Person</p>
+      <p class="legal-section-head">8 · Ihre Rechte als betroffene Person</p>
       <div class="legal-body">
         <p>Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
         <p>
@@ -1280,7 +1294,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
     <!-- 8. BESCHWERDERECHT -->
     <div class="legal-block">
-      <p class="legal-section-head">8 · Beschwerderecht bei der Aufsichtsbehörde</p>
+      <p class="legal-section-head">9 · Beschwerderecht bei der Aufsichtsbehörde</p>
       <div class="legal-body">
         <p>
           Unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher Rechtsbehelfe steht Ihnen das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde zu, wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt.
@@ -1295,7 +1309,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
     <!-- 9. ÄNDERUNGEN -->
     <div class="legal-block">
-      <p class="legal-section-head">9 · Änderungen dieser Datenschutzerklärung</p>
+      <p class="legal-section-head">10 · Änderungen dieser Datenschutzerklärung</p>
       <div class="legal-body">
         <p>
           Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, um sie stets den aktuellen rechtlichen Anforderungen zu entsprechen oder um Änderungen unserer Leistungen umzusetzen. Die jeweils aktuelle Version gilt für Ihren nächsten Besuch.
@@ -1408,9 +1422,23 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
     </div>
     <hr class="legal-divider">
 
+    <!-- 7. VISITOR ASSISTANT -->
+    <div class="legal-block">
+      <p class="legal-section-head">7 · Visitor Assistant</p>
+      <div class="legal-body">
+        <p>
+          The visitor assistant (‘Questions?’ at the bottom right) is not artificial intelligence. It works exclusively with prepared answers and runs entirely locally in your browser. Your input is only matched against these answers on your own device; it is neither stored nor transmitted to us or to third parties. The conversation is cleared when the page is reloaded.
+        </p>
+        <p>
+          If you get in touch via the assistant, only your own email program or the ‘Request a Viewing’ dialog opens (see section 4). The information on contact by email then applies.
+        </p>
+      </div>
+    </div>
+    <hr class="legal-divider">
+
     <!-- 7. DATA SUBJECT RIGHTS -->
     <div class="legal-block">
-      <p class="legal-section-head">7 · Your Rights as a Data Subject</p>
+      <p class="legal-section-head">8 · Your Rights as a Data Subject</p>
       <div class="legal-body">
         <p>You have the following rights against us with regard to your personal data:</p>
         <p>
@@ -1430,7 +1458,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
     <!-- 8. RIGHT TO LODGE A COMPLAINT -->
     <div class="legal-block">
-      <p class="legal-section-head">8 · Right to Lodge a Complaint with a Supervisory Authority</p>
+      <p class="legal-section-head">9 · Right to Lodge a Complaint with a Supervisory Authority</p>
       <div class="legal-body">
         <p>
           Without prejudice to any other administrative or judicial remedy, you have the right to lodge a complaint with a data protection supervisory authority if you believe that the processing of your personal data infringes the GDPR.
@@ -1445,7 +1473,7 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
     <!-- 9. CHANGES -->
     <div class="legal-block">
-      <p class="legal-section-head">9 · Changes to this Privacy Policy</p>
+      <p class="legal-section-head">10 · Changes to this Privacy Policy</p>
       <div class="legal-body">
         <p>
           We reserve the right to amend this privacy policy where necessary in order to keep it in line with current legal requirements or to reflect changes to our services. The version current at the time applies to your next visit.
@@ -1467,6 +1495,12 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
   </ul>
   <span class="footer-copy" data-en="© 2026 Estate of the Schwab Family">© 2026 Nachlass Familie Schwab</span>
 </footer>
+
+<!-- Besucher-Assistent (keine KI): Panel und Inhalte werden erst beim ersten Öffnen geladen -->
+<button id="assist-toggle" type="button" aria-expanded="false" aria-controls="assist-panel" aria-label="Besucher-Assistent öffnen" data-en-aria-label="Open visitor assistant">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 5h16v10H9l-4 4v-4H4z"/><path d="M8 9h8M8 12h5"/></svg>
+  <span class="assist-toggle-text" data-en="Questions?">Fragen?</span>
+</button>
 
 
 <!-- ══ KALENDER OVERLAY ══ -->
@@ -1614,6 +1648,6 @@ try { if (sessionStorage.getItem('galleryEntered') === '1') document.documentEle
 
 </div>
 
-<script src="app.js?v=20261030b"></script>
+<script src="app.js?v=20261030c"></script>
 </body>
 </html>
