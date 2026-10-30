@@ -365,12 +365,9 @@
   function _artMeta(d, isEN) {
     return [isEN ? d.technique_en : d.technique, d.size, d.year].filter(Boolean).join('  ·  ');
   }
-  // Die Website verkauft nichts: „Besichtigung anfragen“ öffnet nur das E-Mail-Programm des Besuchers
-  // mit vorausgefülltem Betreff – über die Website selbst werden keine Daten übertragen
+  // Die Website verkauft nichts: „Besichtigung anfragen“ öffnet den Termin-Dialog; am Ende öffnet sich nur das
+  // E-Mail-Programm des Besuchers mit der fertigen Anfrage – über die Website selbst werden keine Daten übertragen
   const CONTACT_MAIL = 'info@horstschwab.de';
-  function _viewingMail(title) {
-    return 'mailto:' + CONTACT_MAIL + '?subject=' + encodeURIComponent((_lang === 'en' ? 'Viewing request: ' : 'Besichtigungsanfrage: ') + title);
-  }
 
   /* ══ LANGUAGE ══ */
   let _lang = localStorage.getItem('lang') || 'de';
@@ -470,8 +467,7 @@
       var meta = card.querySelector('.coll-card-meta');
       if (meta) meta.textContent = _artMeta(d, lang === 'en');
     });
-    // Besichtigungs-Links: Betreff in der eingestellten Sprache
-    document.querySelectorAll('a.coll-offer-btn[data-title]').forEach(function(a) { a.href = _viewingMail(a.dataset.title); });
+    if (window._calRelabel) window._calRelabel();
     if (window._heroArtRelabel) window._heroArtRelabel();
     if (window._bioCapRelabel) window._bioCapRelabel();
     // re-render open artwork if any
@@ -546,6 +542,8 @@
   let _favEmptyMsg = null;
   function renderFavs() {
     const grid = document.getElementById('fav-grid');
+    const reqBtn = document.getElementById('fav-request-btn');
+    if (reqBtn) reqBtn.hidden = _favs.size === 0;
     const emptyMsg = _favEmptyMsg = _favEmptyMsg || document.getElementById('fav-empty-msg');
     if (_favs.size === 0) {
       grid.innerHTML = '';
@@ -617,7 +615,7 @@
     document.getElementById('ad-story').textContent = story;
     if (document.getElementById('ad-story-head')) document.getElementById('ad-story-head').textContent = t['ad-story-head'];
     const _offer = document.getElementById('ad-offer-btn');
-    if (_offer) { _offer.textContent = t['ad-offer-btn']; _offer.href = _viewingMail(title); }
+    if (_offer) _offer.textContent = t['ad-offer-btn'];
     // nur bei Werken mit Bild – bei Platzhaltern entfällt der ganze Fußbereich
     const _adFoot = document.getElementById('ad-info-footer');
     if (_adFoot) _adFoot.style.display = d.img ? '' : 'none';
@@ -3938,239 +3936,320 @@
     render(0);
   })();
 
-  /* ══ KALENDER ══ */
-  // Wunschtermin auswählen → das E-Mail-Programm öffnet sich mit vorbereiteter Anfrage. Es gibt kein Konto
-  // und keine Datenübertragung über die Website; früher lokal gespeicherte Kontodaten werden entfernt.
+  /* ══ BESICHTIGUNG ANFRAGEN (Termin-Dialog) ══ */
+  // Bis zu drei Wunschtermine (nur Sa/So) mit Rangfolge, dazu Name/Telefon/Nachricht → das E-Mail-Programm des
+  // Besuchers öffnet sich mit der fertigen Anfrage. Über die Website selbst wird nichts übertragen;
+  // früher lokal gespeicherte Kontodaten werden entfernt.
   try { localStorage.removeItem('_gal_accounts'); localStorage.removeItem('_gal_session'); } catch (e) {}
   (function() {
     var MONTHS_DE = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
     var MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    var today = new Date();
-    var cur = { year: today.getFullYear(), month: today.getMonth() };
-    var selectedDate = null;
+    var DAYS_DE = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+    var DAYS_EN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var HOURS = ['10','11','12','13','14','15','16','17'];   // Beginn 10:00 bis 17:30, halbstündlich
+    var MINS  = ['00','30'];
+    var ITEM_H = 44;
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var first = new Date(today); first.setDate(first.getDate() + 1);   // frühestens morgen
+    var last  = new Date(today); last.setMonth(last.getMonth() + 6);   // bis etwa ein halbes Jahr im Voraus
+    var slots = [null, null, null], active = 0, works = [], prevOverflow = '';
+    var cur = { year: first.getFullYear(), month: first.getMonth() };
+    function $(id) { return document.getElementById(id); }
+    function en() { return document.documentElement.lang === 'en'; }
+    function selectable(dt) { var w = dt.getDay(); return dt >= first && dt <= last && (w === 0 || w === 6); }
+    function sameDay(s, y, m, d) { return s && s.y === y && s.m === m && s.d === d; }
 
-    function getLang() { return document.documentElement.lang === 'en' ? 'en' : 'de'; }
+    function fmt(s) {   // „Samstag, 14. November 2026, 14:30 Uhr“
+      var w = new Date(s.y, s.m, s.d).getDay();
+      return en() ? DAYS_EN[w] + ', ' + s.d + ' ' + MONTHS_EN[s.m] + ' ' + s.y + ', ' + s.h + ':' + s.mi
+                  : DAYS_DE[w] + ', ' + s.d + '. ' + MONTHS_DE[s.m] + ' ' + s.y + ', ' + s.h + ':' + s.mi + ' Uhr';
+    }
+    function fmtShort(s) {   // „Sa 14.11. · 14:30“
+      var w = new Date(s.y, s.m, s.d).getDay();
+      return en() ? DAYS_EN[w].slice(0, 3) + ' ' + s.d + ' ' + MONTHS_EN[s.m].slice(0, 3) + ' · ' + s.h + ':' + s.mi
+                  : DAYS_DE[w].slice(0, 2) + ' ' + s.d + '.' + (s.m + 1) + '. · ' + s.h + ':' + s.mi;
+    }
+    function rankLabel(i) { return en() ? ['1st', '2nd', '3rd'][i] + ' choice' : (i + 1) + '. Wahl'; }
 
     function renderCal() {
-      var lang = getLang();
-      var months = lang === 'en' ? MONTHS_EN : MONTHS_DE;
-      document.getElementById('cal-month-label').textContent = months[cur.month] + ' ' + cur.year;
-      var grid = document.getElementById('cal-days');
+      var E = en(), months = E ? MONTHS_EN : MONTHS_DE, days = E ? DAYS_EN : DAYS_DE;
+      $('cal-month-label').textContent = months[cur.month] + ' ' + cur.year;
+      var grid = $('cal-days');
       grid.innerHTML = '';
-      var firstDay = new Date(cur.year, cur.month, 1).getDay();
-      var offset = (firstDay === 0) ? 6 : firstDay - 1;
-      var daysInMonth = new Date(cur.year, cur.month + 1, 0).getDate();
-      for (var i = 0; i < offset; i++) {
-        var empty = document.createElement('div');
-        empty.className = 'cal-day cal-empty';
-        grid.appendChild(empty);
-      }
-      for (var d = 1; d <= daysInMonth; d++) {
-        // echte Buttons: per Tastatur erreichbar, vergangene Tage deaktiviert, volles Datum für Screenreader
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'cal-day';
-        btn.textContent = d;
-        btn.dataset.day = d;
-        btn.tabIndex = -1;
-        btn.setAttribute('aria-label', lang === 'en' ? d + ' ' + months[cur.month] + ' ' + cur.year : d + '. ' + months[cur.month] + ' ' + cur.year);
-        var isPast = (cur.year < today.getFullYear()) ||
-          (cur.year === today.getFullYear() && cur.month < today.getMonth()) ||
-          (cur.year === today.getFullYear() && cur.month === today.getMonth() && d < today.getDate());
-        var isToday = cur.year === today.getFullYear() && cur.month === today.getMonth() && d === today.getDate();
-        if (isPast) { btn.classList.add('cal-past'); btn.disabled = true; }
-        if (isToday) { btn.classList.add('cal-today'); btn.setAttribute('aria-current', 'date'); }
-        var isSel = !!(selectedDate && selectedDate.d === d && selectedDate.m === cur.month && selectedDate.y === cur.year);
+      var offset = (new Date(cur.year, cur.month, 1).getDay() + 6) % 7;
+      var n = new Date(cur.year, cur.month + 1, 0).getDate();
+      for (var i = 0; i < offset; i++) { var e = document.createElement('div'); e.className = 'cal-day cal-empty'; grid.appendChild(e); }
+      for (var d = 1; d <= n; d++) {
+        // echte Buttons: per Tastatur erreichbar, nicht wählbare Tage deaktiviert, volles Datum für Screenreader
+        var dt = new Date(cur.year, cur.month, d), btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'cal-day'; btn.textContent = d; btn.dataset.day = d; btn.tabIndex = -1;
+        var label = E ? days[dt.getDay()] + ', ' + d + ' ' + months[cur.month] + ' ' + cur.year
+                      : days[dt.getDay()] + ', ' + d + '. ' + months[cur.month] + ' ' + cur.year;
+        if (!selectable(dt)) { btn.disabled = true; btn.classList.add('cal-past'); }
+        if (dt.getTime() === today.getTime()) { btn.classList.add('cal-today'); btn.setAttribute('aria-current', 'date'); }
+        var rank = slots.findIndex(function(s) { return sameDay(s, cur.year, cur.month, d); });
+        if (rank >= 0) { btn.classList.add('cal-chosen'); btn.dataset.rank = rank + 1; label += ' – ' + rankLabel(rank); }
+        var isSel = sameDay(slots[active], cur.year, cur.month, d);
         if (isSel) btn.classList.add('cal-selected');
         btn.setAttribute('aria-pressed', isSel ? 'true' : 'false');
-        if (!isPast) btn.addEventListener('click', (function(day) {
-          return function() { selectDay(day); };
-        })(d));
+        btn.setAttribute('aria-label', label);
+        if (!btn.disabled) btn.addEventListener('click', (function(day) { return function() { selectDay(day); }; })(d));
         grid.appendChild(btn);
       }
-      // nur ein Tag ist per Tab erreichbar (gewählter, sonst heutiger, sonst erster freier); Pfeiltasten wechseln
-      var days = grid.querySelectorAll('button.cal-day:not(:disabled)');
-      var focusDay = grid.querySelector('button.cal-selected') || grid.querySelector('button.cal-today:not(:disabled)') || days[0];
-      if (focusDay) focusDay.tabIndex = 0;
+      // nur ein Tag per Tab erreichbar (der gewählte, sonst der erste freie); Pfeiltasten wechseln
+      var free = grid.querySelectorAll('button.cal-day:not(:disabled)');
+      var f = grid.querySelector('button.cal-selected') || free[0];
+      if (f) f.tabIndex = 0;
+      // nicht vor den ersten und nicht hinter den letzten wählbaren Monat blättern
+      var ym = cur.year * 12 + cur.month;
+      $('cal-prev').disabled = ym <= first.getFullYear() * 12 + first.getMonth();
+      $('cal-next').disabled = ym >= last.getFullYear() * 12 + last.getMonth();
     }
 
-    document.getElementById('cal-days').addEventListener('keydown', function(e) {
+    function renderSlots() {
+      document.querySelectorAll('#cal-overlay .cal-slot').forEach(function(b, i) {
+        var s = slots[i];
+        b.classList.toggle('active', i === active);
+        b.classList.toggle('filled', !!s);
+        b.setAttribute('aria-pressed', i === active ? 'true' : 'false');
+        b.querySelector('.cal-slot-v').textContent = s ? fmtShort(s) : (en() ? 'choose' : 'wählen');
+      });
+      var s = slots[active];
+      $('cal-time-wrap').classList.toggle('open', !!s);
+      $('cal-slot-clear').classList.toggle('visible', !!s);
+      $('cal-next-step').classList.toggle('visible', slots.some(Boolean));
+      var conf = $('cal-confirm');
+      conf.textContent = s ? rankLabel(active) + ': ' + fmt(s)
+        : (en() ? 'Choose a Saturday or Sunday for your ' + rankLabel(active) : 'Samstag oder Sonntag für die ' + rankLabel(active) + ' wählen');
+      conf.classList.toggle('has-date', !!s);
+    }
+
+    /* Uhrzeit-Walzen */
+    function buildRoller(id, values) {
+      var roller = $(id);
+      roller.innerHTML = '';
+      var items = [''].concat(values, ['']);
+      items.forEach(function(v) { var el = document.createElement('div'); el.className = 'cal-roller-item'; el.textContent = v; roller.appendChild(el); });
+    }
+    function rollerIdx(id, values) { return Math.max(0, Math.min(Math.round($(id).scrollTop / ITEM_H), values.length - 1)); }
+    function setRoller(id, values, v) { $(id).scrollTop = Math.max(0, values.indexOf(v)) * ITEM_H; markRoller(id, values); }
+    function markRoller(id, values) {
+      var roller = $(id), idx = rollerIdx(id, values);
+      roller.querySelectorAll('.cal-roller-item').forEach(function(el, i) { el.classList.toggle('r-active', i === idx + 1); });
+      roller.setAttribute('aria-valuemin', 0);
+      roller.setAttribute('aria-valuemax', values.length - 1);
+      roller.setAttribute('aria-valuenow', idx);
+      roller.setAttribute('aria-valuetext', values[idx]);
+    }
+    function timeChanged() {
+      var s = slots[active];
+      if (!s) return;
+      s.h = HOURS[rollerIdx('cal-roller-h', HOURS)];
+      s.mi = MINS[rollerIdx('cal-roller-m', MINS)];
+      renderSlots();
+    }
+    function attachRoller(id, values) {
+      var roller = $(id), t;
+      roller.addEventListener('scroll', function() {
+        clearTimeout(t);
+        markRoller(id, values);
+        t = setTimeout(function() {
+          roller.scrollTo({ top: rollerIdx(id, values) * ITEM_H, behavior: 'smooth' });
+          markRoller(id, values);
+          timeChanged();
+        }, 120);
+      }, { passive: true });
+      // Tastatur: Pfeil hoch/runter, Pos1/Ende
+      roller.addEventListener('keydown', function(e) {
+        var n = { ArrowUp: rollerIdx(id, values) - 1, ArrowDown: rollerIdx(id, values) + 1, Home: 0, End: values.length - 1 }[e.key];
+        if (n === undefined) return;
+        e.preventDefault();
+        roller.scrollTop = Math.max(0, Math.min(values.length - 1, n)) * ITEM_H;
+        markRoller(id, values);
+        timeChanged();
+      });
+    }
+    buildRoller('cal-roller-h', HOURS); buildRoller('cal-roller-m', MINS);
+    attachRoller('cal-roller-h', HOURS); attachRoller('cal-roller-m', MINS);
+
+    function selectDay(d) {
+      slots[active] = { y: cur.year, m: cur.month, d: d,
+        h: HOURS[rollerIdx('cal-roller-h', HOURS)], mi: MINS[rollerIdx('cal-roller-m', MINS)] };
+      renderCal(); renderSlots();
+      var sel = document.querySelector('#cal-days .cal-selected');
+      if (sel) sel.focus();   // Fokus bleibt nach dem Neuzeichnen auf dem gewählten Tag
+    }
+    function activateSlot(i) {
+      active = i;
+      var s = slots[i];
+      if (s) {
+        cur = { year: s.y, month: s.m };
+        setRoller('cal-roller-h', HOURS, s.h); setRoller('cal-roller-m', MINS, s.mi);
+      }
+      renderCal(); renderSlots();
+    }
+    document.querySelectorAll('#cal-overlay .cal-slot').forEach(function(b) {
+      b.addEventListener('click', function() { activateSlot(+b.dataset.slot); });
+    });
+    $('cal-slot-clear').addEventListener('click', function() {
+      slots[active] = null;
+      renderCal(); renderSlots();
+      document.querySelector('#cal-overlay .cal-slot.active').focus();
+    });
+
+    // Pfeiltasten im Tagesraster: zum nächsten wählbaren Tag (Sa/So), auch über die Monatsgrenze
+    $('cal-days').addEventListener('keydown', function(e) {
       var btn = e.target.closest('button.cal-day');
       if (!btn) return;
       var step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
-      if (!step && e.key !== 'Home' && e.key !== 'End') return;
+      var free = [].slice.call(this.querySelectorAll('button.cal-day:not(:disabled)'));
+      var target = null;
+      if (e.key === 'Home' && free.length) target = new Date(cur.year, cur.month, +free[0].dataset.day);
+      else if (e.key === 'End' && free.length) target = new Date(cur.year, cur.month, +free[free.length - 1].dataset.day);
+      else if (step) {
+        target = new Date(cur.year, cur.month, +btn.dataset.day);
+        for (var k = 0; k < 60; k++) {
+          target.setDate(target.getDate() + step);
+          if (target < first || target > last) { target = null; break; }
+          if (selectable(target)) break;
+        }
+      } else return;
       e.preventDefault();
-      var days = [].slice.call(this.querySelectorAll('button.cal-day:not(:disabled)'));
-      var d = +btn.dataset.day;
-      var next = e.key === 'Home' ? days[0] : e.key === 'End' ? days[days.length - 1]
-        : this.querySelector('button.cal-day[data-day="' + (d + step) + '"]:not(:disabled)');
-      if (!next && step) {
-        // über den Monatsrand: Monat wechseln und dort weiter (nicht in die Vergangenheit)
-        var target = new Date(cur.year, cur.month, d + step);
-        var t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        if (target < t0) return;
+      if (!target) return;
+      if (target.getMonth() !== cur.month || target.getFullYear() !== cur.year) {
         cur = { year: target.getFullYear(), month: target.getMonth() };
         renderCal();
-        next = this.querySelector('button.cal-day[data-day="' + target.getDate() + '"]');
       }
-      if (!next) return;
-      // nach einem Monatswechsel sind die Knöpfe neu – deshalb frisch abfragen, damit nur ein Tag per Tab erreichbar bleibt
+      var next = this.querySelector('button.cal-day[data-day="' + target.getDate() + '"]');
       this.querySelectorAll('button.cal-day').forEach(function(x) { x.tabIndex = -1; });
       next.tabIndex = 0; next.focus();
     });
-
-    /* ── Roller ── */
-    var HOURS = ['09','10','11','12','13','14','15','16','17','18'];
-    var MINS  = ['00','15','30','45'];
-    var ITEM_H = 44;
-
-    function buildRoller(id, values, defaultIdx) {
-      var roller = document.getElementById(id);
-      roller.innerHTML = '';
-      var ghost1 = document.createElement('div');
-      ghost1.className = 'cal-roller-item';
-      roller.appendChild(ghost1);
-      values.forEach(function(v, i) {
-        var el = document.createElement('div');
-        el.className = 'cal-roller-item' + (i === defaultIdx ? ' r-active' : '');
-        el.textContent = v;
-        roller.appendChild(el);
-      });
-      var ghost2 = document.createElement('div');
-      ghost2.className = 'cal-roller-item';
-      roller.appendChild(ghost2);
-      roller.scrollTop = defaultIdx * ITEM_H;
-    }
-
-    function getRollerValue(id, values) {
-      var roller = document.getElementById(id);
-      var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
-      return values[Math.max(0, idx)];
-    }
-
-    function updateRollerActive(id, values) {
-      var roller = document.getElementById(id);
-      var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
-      var items = roller.querySelectorAll('.cal-roller-item');
-      items.forEach(function(el, i) { el.classList.toggle('r-active', i === idx + 1); });
-      // Drehfeld für Screenreader und Tastatur
-      roller.setAttribute('aria-valuemin', 0);
-      roller.setAttribute('aria-valuemax', values.length - 1);
-      roller.setAttribute('aria-valuenow', Math.max(0, idx));
-      roller.setAttribute('aria-valuetext', values[Math.max(0, idx)]);
-    }
-
-    function updateConfirmText() {
-      if (!selectedDate) return;
-      var lang = getLang();
-      var months = lang === 'en' ? MONTHS_EN : MONTHS_DE;
-      var h = getRollerValue('cal-roller-h', HOURS);
-      var m = getRollerValue('cal-roller-m', MINS);
-      var conf = document.getElementById('cal-confirm');
-      conf.textContent = lang === 'en'
-        ? 'Selected: ' + selectedDate.d + ' ' + months[selectedDate.m] + ' ' + selectedDate.y + ' · ' + h + ':' + m
-        : 'Gewählt: ' + selectedDate.d + '. ' + months[selectedDate.m] + ' ' + selectedDate.y + ' · ' + h + ':' + m + ' Uhr';
-      conf.classList.add('has-date');
-      document.getElementById('cal-book-btn').classList.add('visible');
-    }
-
-    function attachRollerScroll(id, values) {
-      var roller = document.getElementById(id);
-      var t;
-      // Tastatur: Pfeil hoch/runter, Pos1/Ende
-      if (!roller._kb) {
-        roller._kb = true;
-        roller.addEventListener('keydown', function(e) {
-          var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
-          var n = { ArrowUp: idx - 1, ArrowDown: idx + 1, Home: 0, End: values.length - 1 }[e.key];
-          if (n === undefined) return;
-          e.preventDefault();
-          n = Math.max(0, Math.min(values.length - 1, n));
-          roller.scrollTop = n * ITEM_H;
-          updateRollerActive(id, values);
-          if (selectedDate) updateConfirmText();
-        });
-      }
-      updateRollerActive(id, values);
-      roller.addEventListener('scroll', function() {
-        clearTimeout(t);
-        updateRollerActive(id, values);
-        t = setTimeout(function() {
-          var idx = Math.min(Math.round(roller.scrollTop / ITEM_H), values.length - 1);
-          roller.scrollTo({ top: idx * ITEM_H, behavior: 'smooth' });
-          updateRollerActive(id, values);
-          if (selectedDate) updateConfirmText();
-        }, 120);
-      }, { passive: true });
-    }
-
-    function selectDay(d) {
-      selectedDate = { d: d, m: cur.month, y: cur.year };
+    $('cal-prev').addEventListener('click', function() {
+      cur.month--; if (cur.month < 0) { cur.month = 11; cur.year--; }
       renderCal();
-      var sel = document.querySelector('#cal-days .cal-selected');
-      if (sel) sel.focus();   // Fokus bleibt nach dem Neuzeichnen auf dem gewählten Tag
-      document.getElementById('cal-time-wrap').classList.add('open');
-      updateConfirmText();
+    });
+    $('cal-next').addEventListener('click', function() {
+      cur.month++; if (cur.month > 11) { cur.month = 0; cur.year++; }
+      renderCal();
+    });
+
+    /* Schritt 2: Angaben */
+    function setStep(n) {
+      $('cal-main').hidden = n !== 1;
+      $('cal-details').hidden = n !== 2;
+      $('cal-step1-ind').classList.toggle('on', n === 1);
+      $('cal-step2-ind').classList.toggle('on', n === 2);
     }
+    function renderSummary() {
+      $('cal-summary').innerHTML = '';
+      slots.filter(Boolean).forEach(function(s, i) {
+        var li = document.createElement('li');
+        var r = document.createElement('span'); r.className = 'cal-summary-rank'; r.textContent = rankLabel(i);
+        li.appendChild(r); li.appendChild(document.createTextNode(fmt(s)));
+        $('cal-summary').appendChild(li);
+      });
+    }
+    $('cal-next-step').addEventListener('click', function() {
+      if (!slots.some(Boolean)) return;
+      renderSummary(); setStep(2);
+      $('cal-name').focus();
+    });
+    $('cal-back-step').addEventListener('click', function() {
+      setStep(1); renderSlots();
+      $('cal-next-step').focus();
+    });
+    $('cal-name').addEventListener('input', function() {
+      if (this.value.trim()) { $('cal-error').textContent = ''; this.removeAttribute('aria-invalid'); }
+    });
+
+    function worksLabel() {
+      if (!works.length) return '';
+      return (en() ? (works.length > 1 ? 'Works: ' : 'Work: ') : (works.length > 1 ? 'Werke: ' : 'Werk: ')) + works.join(', ');
+    }
+    // fertige E-Mail-Adresse samt Betreff und Text (für den E-Mail-Entwurf)
+    window._bookingMailto = function() {
+      var E = en(), list = slots.filter(Boolean);
+      var name = $('cal-name').value.trim(), phone = $('cal-phone').value.trim(), msg = $('cal-msg').value.trim();
+      var workLines = works.length
+        ? works.map(function(t) { var d = ARTWORKS[t]; return '– ' + t + (d && d.year ? ' (' + d.year + ')' : ''); })
+        : [E ? '– no particular work (general viewing)' : '– kein bestimmtes Werk (allgemeine Besichtigung)'];
+      var subject = (E ? 'Viewing request' : 'Besichtigungsanfrage') +
+        (works.length === 1 ? ': ' + works[0] : works.length > 1 ? (E ? ' (' + works.length + ' works)' : ' (' + works.length + ' Werke)') : '');
+      var lines = [E ? 'Hello,' : 'Guten Tag,', '',
+        E ? 'I would like to arrange a private viewing.' : 'ich möchte gern eine private Besichtigung vereinbaren.', '',
+        E ? (works.length > 1 ? 'Works:' : 'Work:') : (works.length > 1 ? 'Werke:' : 'Werk:')]
+        .concat(workLines, ['', E ? 'Preferred dates (in order of preference):' : 'Wunschtermine (nach Priorität):'],
+          list.map(function(s, i) { return (i + 1) + '. ' + fmt(s); }),
+          ['', 'Name: ' + name], phone ? [(E ? 'Phone: ' : 'Telefon: ') + phone] : [],
+          msg ? ['', E ? 'Message:' : 'Nachricht:', msg] : [],
+          ['', E ? 'Kind regards' : 'Viele Grüße', name]);
+      return 'mailto:' + CONTACT_MAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\r\n'));
+    };
+    window.confirmBooking = function() {
+      if (!slots.some(Boolean)) { setStep(1); return; }
+      if (!$('cal-name').value.trim()) {
+        $('cal-error').textContent = en() ? 'Please enter your name.' : 'Bitte geben Sie Ihren Namen an.';
+        $('cal-name').setAttribute('aria-invalid', 'true');
+        $('cal-name').focus();
+        return;
+      }
+      window.location.href = window._bookingMailto();
+      $('cal-details').hidden = true;
+      $('cal-success').classList.add('show');
+    };
 
     window.showCalMain = function showCalMain() {
-      selectedDate = null;
-      cur = { year: today.getFullYear(), month: today.getMonth() };
-      document.getElementById('cal-success').classList.remove('show');
-      document.getElementById('cal-main').style.display = '';
-      document.getElementById('cal-time-wrap').classList.remove('open');
-      buildRoller('cal-roller-h', HOURS, 0);
-      buildRoller('cal-roller-m', MINS, 0);
-      attachRollerScroll('cal-roller-h', HOURS);
-      attachRollerScroll('cal-roller-m', MINS);
-      renderCal();
-      var conf = document.getElementById('cal-confirm');
-      conf.textContent = getLang() === 'en' ? 'Select a date' : 'Datum wählen';
-      conf.classList.remove('has-date');
-      document.getElementById('cal-book-btn').classList.remove('visible');
-    }
+      slots = [null, null, null]; active = 0;
+      var f = new Date(first); while (!selectable(f)) f.setDate(f.getDate() + 1);
+      cur = { year: f.getFullYear(), month: f.getMonth() };
+      setRoller('cal-roller-h', HOURS, '14'); setRoller('cal-roller-m', MINS, '00');
+      ['cal-name', 'cal-phone', 'cal-msg'].forEach(function(id) { $(id).value = ''; });
+      $('cal-error').textContent = ''; $('cal-name').removeAttribute('aria-invalid');
+      $('cal-success').classList.remove('show');
+      setStep(1); renderCal(); renderSlots();
+    };
+    // Sprachwechsel bei offenem Dialog: Datumsangaben und Hinweise neu beschriften
+    window._calRelabel = function() {
+      if (!$('cal-overlay').classList.contains('active')) return;
+      $('cal-works').textContent = worksLabel();
+      renderCal(); renderSlots();
+      if (!$('cal-details').hidden) renderSummary();
+    };
 
-    window.openCal = function() {
-      document.getElementById('cal-overlay').classList.add('active');
+    // titles: Werktitel (eins oder mehrere, z. B. die ganze Merkliste); ohne Angabe allgemeine Besichtigung
+    window.openCal = function(titles) {
+      works = Array.isArray(titles) ? titles.slice() : (typeof titles === 'string' ? [titles] : []);
+      $('cal-works').textContent = worksLabel();
+      $('cal-works').hidden = !works.length;
+      prevOverflow = document.body.style.overflow;
+      $('cal-overlay').classList.add('active');
       document.body.style.overflow = 'hidden';
       _navOpen('cal');
       showCalMain();
     };
-
     window.closeCal = function() {
-      document.getElementById('cal-overlay').classList.remove('active');
-      document.body.style.overflow = '';
+      $('cal-overlay').classList.remove('active');
+      document.body.style.overflow = prevOverflow;   // aus einer Kollektion geöffnet: deren Scroll-Sperre bleibt
       _navClosed('cal');
     };
 
-    window.confirmBooking = function() {
-      if (!selectedDate) return;
-      var en = getLang() === 'en';
-      var when = document.getElementById('cal-confirm').textContent.replace(/^(Gewählt|Selected):\s*/, '');
-      var subject = en ? 'Viewing appointment request' : 'Anfrage Besichtigungstermin';
-      var body = en
-        ? 'Hello,\n\nI would like to arrange a private viewing of the works of Horst Schwab.\nPreferred date: ' + when + '\n\nName:\nPhone (optional):\n\nKind regards'
-        : 'Guten Tag,\n\nich möchte gern eine private Besichtigung der Werke von Horst Schwab vereinbaren.\nWunschtermin: ' + when + '\n\nName:\nTelefon (optional):\n\nViele Grüße';
-      window.location.href = 'mailto:' + CONTACT_MAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body.replace(/\n/g, '\r\n'));
-      document.getElementById('cal-main').style.display = 'none';
-      document.getElementById('cal-success').classList.add('show');
-    };
+    // Einstiege: „Besichtigung anfragen“ an Werkkarte und Werkansicht, „alle gemerkten Werke“ in der Merkliste
+    document.addEventListener('click', function(e) {
+      var a = e.target.closest && e.target.closest('a.coll-offer-btn[data-title], #ad-offer-btn, #fav-request-btn');
+      if (!a) return;
+      e.preventDefault(); e.stopPropagation();
+      if (a.id === 'fav-request-btn') window.openCal(Array.from(_favs));
+      else if (a.id === 'ad-offer-btn') window.openCal([_adCurrentTitle]);
+      else window.openCal([a.dataset.title]);
+    }, true);
 
-    document.getElementById('cal-prev').addEventListener('click', function() {
-      cur.month--; if (cur.month < 0) { cur.month = 11; cur.year--; }
-      renderCal();
-    });
-    document.getElementById('cal-next').addEventListener('click', function() {
-      cur.month++; if (cur.month > 11) { cur.month = 0; cur.year++; }
-      renderCal();
-    });
-    document.getElementById('cal-overlay').addEventListener('click', function(e) {
-      if (e.target === this) closeCal();
+    $('cal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) window.closeCal();
     });
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && document.getElementById('cal-overlay').classList.contains('active')) {
+      if (e.key === 'Escape' && $('cal-overlay').classList.contains('active')) {
         e._escHandled = true;
-        closeCal();
+        window.closeCal();
       }
     });
   })();

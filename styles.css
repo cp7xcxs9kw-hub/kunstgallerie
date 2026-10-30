@@ -2277,7 +2277,7 @@
   /* Zentriert über margin:auto der Box – ist sie höher als das Fenster (niedrige Laptops mit offener
      Zeitwalze), beginnt sie oben und das Overlay lässt sich scrollen statt oben abzuschneiden */
   #cal-overlay {
-    position: fixed; inset: 0; z-index: 800;
+    position: fixed; inset: 0; z-index: 990;   /* über Kollektion und Werkansicht, aus denen er geöffnet wird */
     background: rgba(5,4,3,0.88); backdrop-filter: blur(10px);
     display: flex; overflow-y: auto; padding: 1rem 0;
     opacity: 0; pointer-events: none; visibility: hidden;
@@ -3215,3 +3215,70 @@
   .cal-time-label { color: rgba(201,168,76,0.75); }
   /* Bio-Karussell: Pfeile auch bei Tastaturfokus sichtbar */
   .about-visual:focus-within .bio-nav, .bio-nav:focus-visible { opacity: 1; }
+
+  /* ── BESICHTIGUNG ANFRAGEN: Kopf, Wunschtermine, Angaben ── */
+  .cal-box { width: min(28rem, 92vw); }
+  .cal-eyebrow { text-align: center; font-size: max(0.5rem, var(--label-min)); letter-spacing: 0.4em; text-transform: uppercase; color: rgba(201,168,76,0.75); margin-bottom: 0.5rem; }
+  .cal-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.7rem; text-align: center; color: var(--cream); margin: 0 0 0.4rem; }
+  .cal-works { text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: var(--gold-light); margin: 0 0 0.6rem; }
+  .cal-steps { display: flex; justify-content: center; gap: 1.6rem; list-style: none; padding: 0; margin: 0.8rem 0 1.4rem; counter-reset: calstep; }
+  .cal-steps li { counter-increment: calstep; font-size: max(0.5rem, var(--label-min)); letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,250,248,0.55); }
+  .cal-steps li::before { content: counter(calstep) ' · '; }
+  .cal-steps li.on { color: var(--gold); }
+  .cal-hint { text-align: center; font-size: max(0.6rem, var(--label-min)); line-height: 1.7; color: rgba(250,250,248,0.72); margin: 0 0 1.1rem; }
+  .cal-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.4rem; }
+  .cal-slot {
+    background: transparent; border: 1px solid rgba(201,168,76,0.3); padding: 0.55rem 0.3rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem; cursor: pointer;
+    font-family: 'Montserrat', sans-serif; transition: border-color 0.2s, background 0.2s;
+  }
+  .cal-slot-n { font-size: max(0.48rem, var(--label-min)); letter-spacing: 0.2em; text-transform: uppercase; color: rgba(201,168,76,0.8); }
+  .cal-slot-v { font-size: max(0.56rem, var(--label-min)); color: rgba(250,250,248,0.6); white-space: nowrap; }
+  .cal-slot.filled .cal-slot-v { color: var(--cream); }
+  .cal-slot.active { border-color: var(--gold); background: rgba(201,168,76,0.12); }
+  .cal-slot.active .cal-slot-n { color: var(--gold); }
+  /* gewählte Tage tragen ihre Rangziffer */
+  .cal-day { position: relative; }
+  .cal-day.cal-chosen { border-color: rgba(201,168,76,0.55); color: var(--gold); }
+  .cal-day.cal-chosen::after {
+    content: attr(data-rank); position: absolute; top: 0.12rem; right: 0.22rem;
+    font-size: 0.5rem; line-height: 1; color: var(--gold);
+  }
+  .cal-nav:disabled { opacity: 0.25; cursor: default; }
+  .cal-slot-clear {
+    display: block; margin: 0.4rem auto 0; background: none; border: none; cursor: pointer;
+    font-family: 'Montserrat', sans-serif; font-size: max(0.52rem, var(--label-min)); letter-spacing: 0.14em;
+    color: rgba(250,250,248,0.65); text-decoration: underline; text-underline-offset: 0.25em;
+  }
+  .cal-slot-clear:not(.visible) { display: none; }
+  .cal-summary { list-style: none; padding: 0; margin: 0 0 1.6rem; border-top: 1px solid rgba(201,168,76,0.18); }
+  .cal-summary li { padding: 0.65rem 0; border-bottom: 1px solid rgba(201,168,76,0.18); font-family: 'Cormorant Garamond', serif; font-size: 1.02rem; color: var(--cream); }
+  .cal-summary-rank { display: block; margin-bottom: 0.2rem; font-family: 'Montserrat', sans-serif; font-size: max(0.5rem, var(--label-min)); letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+  .cal-field { margin-bottom: 1rem; }
+  .cal-field label { display: block; margin-bottom: 0.4rem; font-size: max(0.55rem, var(--label-min)); letter-spacing: 0.14em; color: rgba(201,168,76,0.85); }
+  .cal-field input, .cal-field textarea {
+    width: 100%; box-sizing: border-box; padding: 0.65rem 0.75rem;
+    background: rgba(250,250,248,0.04); border: 1px solid rgba(201,168,76,0.35); border-radius: 0;
+    color: var(--cream); font-family: 'Montserrat', sans-serif; font-size: 16px;   /* 16 px: iPhone zoomt beim Tippen nicht hinein */
+  }
+  .cal-field textarea { resize: vertical; min-height: 4.5rem; }
+  .cal-field input:focus, .cal-field textarea:focus { border-color: var(--gold); }
+  .cal-field input[aria-invalid="true"] { border-color: #E07A6A; }
+  .cal-error { min-height: 1.1rem; margin: 0 0 0.4rem; font-size: max(0.6rem, var(--label-min)); color: #F0A090; }
+  .cal-note { font-size: max(0.56rem, var(--label-min)); line-height: 1.7; color: rgba(250,250,248,0.65); margin: 0 0 0.6rem; }
+  .cal-actions { display: flex; gap: 0.8rem; align-items: stretch; }
+  .cal-actions .cal-book-btn { margin-top: 0; flex: 1; }
+  .cal-back-btn {
+    background: transparent; border: 1px solid rgba(250,250,248,0.25); color: rgba(250,250,248,0.75);
+    font-family: 'Montserrat', sans-serif; font-size: max(0.55rem, var(--label-min)); letter-spacing: 0.22em;
+    text-transform: uppercase; padding: 0.85rem 1.1rem; cursor: pointer;
+  }
+  /* Merkliste: alle gemerkten Werke auf einmal anfragen */
+  .fav-request-wrap { text-align: center; margin-top: 2.5rem; }
+  .fav-request-btn {
+    background: transparent; border: 1px solid rgba(201,168,76,0.6); color: var(--gold);
+    font-family: 'Montserrat', sans-serif; font-size: max(0.58rem, var(--label-min)); letter-spacing: 0.24em;
+    text-transform: uppercase; padding: 0.95rem 1.8rem; cursor: pointer; transition: background 0.25s;
+  }
+  .fav-request-btn:hover { background: rgba(201,168,76,0.12); }
+  .fav-request-btn[hidden] { display: none; }
